@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>小程序预览 - 手机模拟器</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .title {
+      color: white;
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .phone-frame {
+      width: 375px;
+      height: 812px;
+      background: #1a1a1a;
+      border-radius: 45px;
+      padding: 12px;
+      box-shadow: 
+        0 50px 100px rgba(0,0,0,0.4),
+        inset 0 2px 0 rgba(255,255,255,0.1);
+      position: relative;
+    }
+    
+    /* 刘海区域 */
+    .phone-frame::before {
+      content: '';
+      position: absolute;
+      top: 12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 30px;
+      background: #1a1a1a;
+      border-radius: 0 0 20px 20px;
+      z-index: 10;
+    }
+    
+    /* Home 指示条 */
+    .phone-frame::after {
+      content: '';
+      position: absolute;
+      bottom: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 4px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 2px;
+    }
+    
+    .phone-screen {
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      border-radius: 35px;
+      overflow: hidden;
+      position: relative;
+    }
+    
+    .phone-screen iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    
+    /* 页面选择器 */
+    .page-selector {
+      margin-top: 25px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      max-width: 375px;
+    }
+    
+    .page-btn {
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.3);
+      border-radius: 20px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    
+    .page-btn:hover {
+      background: rgba(255,255,255,0.3);
+    }
+    
+    .page-btn.active {
+      background: white;
+      color: #667eea;
+    }
+    
+    .tip {
+      color: rgba(255,255,255,0.7);
+      font-size: 13px;
+      margin-top: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="title">📱 小程序原型预览</div>
+  
+  <div class="phone-frame">
+    <div class="phone-screen">
+      <iframe id="previewFrame" src="miniprogram/index.html"></iframe>
+    </div>
+  </div>
+  
+  <div class="page-selector">
+    <a class="page-btn active" href="#" onclick="changePage('miniprogram/index.html', this)">首页</a>
+    <a class="page-btn" href="#" onclick="changePage('miniprogram/task-list.html', this)">任务列表</a>
+    <a class="page-btn" href="#" onclick="changePage('miniprogram/task-detail.html', this)">任务详情</a>
+    <a class="page-btn" href="#" onclick="changePage('miniprogram/exam.html', this)">答题</a>
+    <a class="page-btn" href="#" onclick="changePage('miniprogram/train.html', this)">训练</a>
+    <a class="page-btn" href="#" onclick="changePage('miniprogram/profile.html', this)">我的</a>
+  </div>
+  
+  <div class="tip">💡 在右侧页面列表选择不同页面进行预览</div>
+
+  <script>
+    function changePage(url, btn) {
+      document.getElementById('previewFrame').src = url;
+      document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      return false;
+    }
+  </script>
+</body>
+</html>
