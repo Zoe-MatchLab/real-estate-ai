@@ -1,0 +1,16 @@
+{
+  "name": "real-estate-ai",
+  "version": "1.0.0",
+  "description": "房产AI作业平台",
+  "main": "index.js",
+  "scripts": {
+    "start": "npx http-server ./proto -p 3000 -o",
+    "dev": "npx http-server ./proto -p 3000 -o"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}

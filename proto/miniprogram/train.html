@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI训练中心</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#fa8c16',
+                        warning: '#FF9D2B',
+                        danger: '#FA5151',
+                        success: '#00B42A',
+                        purple: '#9B5DE5',
+                        orange: '#FF7D00',
+                        blue: '#165DFF',
+                        gray: {
+                            50: '#F7F8FA',
+                            100: '#EDEEF2',
+                            200: '#D8D9DD',
+                            300: '#B4B5B9',
+                            400: '#86878B',
+                            500: '#4E5969',
+                            600: '#272E3B',
+                            700: '#1D2129',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #F7F8FA;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .train-card {
+            transition: all 0.2s;
+        }
+        .train-card:active {
+            transform: scale(0.98);
+        }
+    </style>
+<style>
+/* 微信小程序全局优化样式 */
+
+/* 1. 禁止字体缩放 */
+body {
+    -webkit-text-size-adjust: 100% !important;
+    text-size-adjust: 100% !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+}
+
+/* 2. 安全区适配 */
+.safe-area-bottom {
+    padding-bottom: calc(16px + env(safe-area-inset-bottom)) !important;
+}
+
+.page-container {
+    min-height: calc(100vh - env(safe-area-inset-bottom));
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 3. 底部标签栏安全区适配 */
+.tab-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: calc(56px + env(safe-area-inset-bottom));
+    padding-bottom: env(safe-area-inset-bottom);
+    background: white;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+    z-index: 999;
+}
+
+.tab-bar-item {
+    padding-top: 6px;
+}
+
+/* 4. 统一按钮样式 */
+.btn {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn:active {
+    transform: scale(0.95);
+    opacity: 0.8;
+}
+
+.btn-primary {
+    background: #fa8c16;
+    color: white;
+}
+
+.btn-primary:active {
+    background: #d46b08;
+}
+
+.btn-secondary {
+    background: white;
+    color: #fa8c16;
+    border: 1px solid #fa8c16;
+}
+
+.btn-secondary:active {
+    background: #fff7e6;
+}
+
+/* 5. 统一卡片样式 */
+.card {
+    border-radius: 12px;
+    background: white;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    transition: all 0.2s ease;
+}
+
+.card:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* 6. 列表项点击效果 */
+.list-item:active {
+    background: #f5f5f5;
+}
+
+/* 7. 加载状态 */
+.loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: #999;
+}
+
+/* 8. 空状态 */
+.empty-state {
+    padding: 60px 20px;
+    text-align: center;
+    color: #999;
+}
+
+.empty-state .icon {
+    font-size: 48px;
+    color: #ccc;
+    margin-bottom: 12px;
+}
+
+/* 9. Toast提示 */
+.toast {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    z-index: 9999;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+    to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+
+/* 10. 图片优化 */
+img {
+    -webkit-user-drag: none;
+    user-select: none;
+    max-width: 100%;
+}
+
+/* 11. 防止双击缩放 */
+* {
+    touch-action: manipulation;
+}
+
+/* 12. 滚动优化 */
+.scroll-view {
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+}
+</style>
+</head>
+<body class="pb-16 page-container">
+    <!-- 顶部导航 -->
+    <div class="bg-white sticky top-0 z-40">
+        <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+            <button class="text-gray-700 btn" onclick="history.back()">
+                <i class="fa fa-angle-left text-xl"></i>
+            </button>
+            <h1 class="font-medium text-gray-700">AI训练中心</h1>
+            <button class="text-primary text-sm flex items-center btn btn-secondary">
+                <i class="fa fa-bar-chart mr-1"></i> 训练报告
+            </button>
+        </div>
+    </div>
+
+    <!-- 数据概览 -->
+    <div class="bg-gradient-to-r from-primary/90 to-primary p-4 text-white">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="font-bold">我的训练数据</h2>
+            <span class="text-xs bg-white/20 px-2 py-1 rounded">更新于 2026-03-26</span>
+        </div>
+        <div class="grid grid-cols-3 gap-4 text-center">
+            <div>
+                <p class="text-2xl font-bold">85</p>
+                <p class="text-xs text-white/80 mt-1">当前平均分</p>
+            </div>
+            <div>
+                <p class="text-2xl font-bold">12</p>
+                <p class="text-xs text-white/80 mt-1">已完成训练</p>
+            </div>
+            <div>
+                <p class="text-2xl font-bold">3</p>
+                <p class="text-xs text-white/80 mt-1">待完成训练</p>
+            </div>
+        </div>
+        <!-- 能力雷达图 -->
+        <div class="mt-6 bg-white/10 rounded-lg p-3">
+            <div class="flex items-center justify-between mb-2">
+                <p class="text-sm font-medium">能力维度得分</p>
+                <span class="text-xs">满分100分</span>
+            </div>
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-xs">产品知识</span>
+                        <span class="text-xs">92分</span>
+                    </div>
+                    <div class="h-1.5 bg-white/20 rounded-full overflow-hidden">
+                        <div class="h-full bg-white rounded-full" style="width: 92%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-xs">销售话术</span>
+                        <span class="text-xs">78分</span>
+                    </div>
+                    <div class="h-1.5 bg-white/20 rounded-full overflow-hidden">
+                        <div class="h-full bg-white rounded-full" style="width: 78%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-xs">议价能力</span>
+                        <span class="text-xs">81分</span>
+                    </div>
+                    <div class="h-1.5 bg-white/20 rounded-full overflow-hidden">
+                        <div class="h-full bg-white rounded-full" style="width: 81%"></div>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-xs">政策法规</span>
+                        <span class="text-xs">88分</span>
+                    </div>
+                    <div class="h-1.5 bg-white/20 rounded-full overflow-hidden">
+                        <div class="h-full bg-white rounded-full" style="width: 88%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 训练类型选择 -->
+    <div class="p-4">
+        <h3 class="font-bold text-gray-700 mb-3">训练类型</h3>
+        <div class="grid grid-cols-2 gap-3">
+            <div class="train-card bg-white rounded-xl p-4 shadow-sm" card onclick="goToTrain('product')">
+                <div class="flex items-center mb-3">
+                    <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-500">
+                        <i class="fa fa-book text-xl"></i>
+                    </div>
+                    <div class="ml-3">
+                        <h4 class="font-medium text-gray-700">产品力训练</h4>
+                        <p class="text-xs text-gray-500 mt-0.5">楼盘知识掌握</p>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-gray-500">已完成：8/12</span>
+                    <span class="text-primary">去训练 <i class="fa fa-angle-right ml-0.5"></i></span>
+                </div>
+            </div>
+
+            <div class="train-card bg-white rounded-xl p-4 shadow-sm" card onclick="goToTrain('speech')">
+                <div class="flex items-center mb-3">
+                    <div class="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center text-purple-500">
+                        <i class="fa fa-comments text-xl"></i>
+                    </div>
+                    <div class="ml-3">
+                        <h4 class="font-medium text-gray-700">话术训练</h4>
+                        <p class="text-xs text-gray-500 mt-0.5">沟通能力提升</p>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-gray-500">已完成：4/8</span>
+                    <span class="text-primary">去训练 <i class="fa fa-angle-right ml-0.5"></i></span>
+                </div>
+            </div>
+
+            <div class="train-card bg-white rounded-xl p-4 shadow-sm" card onclick="goToTrain('negotiate')">
+                <div class="flex items-center mb-3">
+                    <div class="w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center text-orange-500">
+                        <i class="fa fa-handshake-o text-xl"></i>
+                    </div>
+                    <div class="ml-3">
+                        <h4 class="font-medium text-gray-700">议价谈判</h4>
+                        <p class="text-xs text-gray-500 mt-0.5">成交能力训练</p>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-gray-500">已完成：2/6</span>
+                    <span class="text-primary">去训练 <i class="fa fa-angle-right ml-0.5"></i></span>
+                </div>
+            </div>
+
+            <div class="train-card bg-white rounded-xl p-4 shadow-sm" card onclick="goToTrain('law')">
+                <div class="flex items-center mb-3">
+                    <div class="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center text-red-500">
+                        <i class="fa fa-file-text-o text-xl"></i>
+                    </div>
+                    <div class="ml-3">
+                        <h4 class="font-medium text-gray-700">政策法规</h4>
+                        <p class="text-xs text-gray-500 mt-0.5">合规知识学习</p>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between text-xs">
+                    <span class="text-gray-500">已完成：3/5</span>
+                    <span class="text-primary">去训练 <i class="fa fa-angle-right ml-0.5"></i></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 待完成训练 -->
+    <div class="px-4">
+        <h3 class="font-bold text-gray-700 mb-3">待完成训练</h3>
+        <div class="space-y-3">
+            <div class="train-card bg-white rounded-xl p-4 shadow-sm" card onclick="startTrain('exam.html')">
+                <div class="flex justify-between items-start">
+                    <div class="flex items-start">
+                        <div class="w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center text-orange-500 flex-shrink-0">
+                            <i class="fa fa-book"></i>
+                        </div>
+                        <div class="ml-3">
+                            <div class="flex items-center">
+                                <span class="px-2 py-0.5 bg-orange-100 text-orange-500 text-xs rounded mr-2">产品力训练</span>
+                                <span class="text-xs text-orange-500">今日截止</span>
+                            </div>
+                            <h4 class="font-medium text-gray-700 mt-1">中海汇德里产品知识专项训练</h4>
+                            <p class="text-xs text-gray-500 mt-1">20道题 · 预计15分钟完成 · 需达到80分合格</p>
+                        </div>
+                    </div>
+                    <button class="px-3 py-1 bg-primary text-white text-xs rounded btn btn-primary">开始训练</button>
+                </div>
+            </div>
+
+            <div class="train-card bg-white rounded-xl p-4 shadow-sm" card onclick="startTrain('speech-train.html')">
+                <div class="flex justify-between items-start">
+                    <div class="flex items-start">
+                        <div class="w-10 h-10 bg-purple-50 rounded-lg flex items-center justify-center text-purple-500 flex-shrink-0">
+                            <i class="fa fa-comments"></i>
+                        </div>
+                        <div class="ml-3">
+                            <div class="flex items-center">
+                                <span class="px-2 py-0.5 bg-purple-100 text-purple-500 text-xs rounded mr-2">话术训练</span>
+                                <span class="text-xs text-gray-500">明日截止</span>
+                            </div>
+                            <h4 class="font-medium text-gray-700 mt-1">邀约话术专项训练</h4>
+                            <p class="text-xs text-gray-500 mt-1">10道情景题 · 上传1段录音 · AI智能评分</p>
+                        </div>
+                    </div>
+                    <button class="px-3 py-1 bg-gray-200 text-gray-500 text-xs rounded btn">明天做</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 最近训练记录 -->
+    <div class="px-4 mt-4 mb-4">
+        <h3 class="font-bold text-gray-700 mb-3">最近训练记录</h3>
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+            <div class="p-4 border-b border-gray-100">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center text-success">
+                            <i class="fa fa-check"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h4 class="font-medium text-gray-700 text-sm">未来城产品知识训练</h4>
+                            <p class="text-xs text-gray-500 mt-0.5">2026-03-25 14:30</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-success font-bold">92分</span>
+                        <p class="text-xs text-gray-500 mt-0.5">优秀</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 border-b border-gray-100">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center text-success">
+                            <i class="fa fa-check"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h4 class="font-medium text-gray-700 text-sm">带看话术训练</h4>
+                            <p class="text-xs text-gray-500 mt-0.5">2026-03-24 16:20</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-success font-bold">86分</span>
+                        <p class="text-xs text-gray-500 mt-0.5">良好</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4 border-b border-gray-100">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-warning/10 rounded-lg flex items-center justify-center text-warning">
+                            <i class="fa fa-exclamation-circle"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h4 class="font-medium text-gray-700 text-sm">政策法规考试</h4>
+                            <p class="text-xs text-gray-500 mt-0.5">2026-03-23 10:15</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-warning font-bold">72分</span>
+                        <p class="text-xs text-gray-500 mt-0.5">需补考</p>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center text-success">
+                            <i class="fa fa-check"></i>
+                        </div>
+                        <div class="ml-3">
+                            <h4 class="font-medium text-gray-700 text-sm">议价谈判模拟训练</h4>
+                            <p class="text-xs text-gray-500 mt-0.5">2026-03-22 15:40</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-success font-bold">88分</span>
+                        <p class="text-xs text-gray-500 mt-0.5">优秀</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部标签栏 -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white h-14 flex justify-around items-center border-t border-gray-100">
+        <a href="index.html" class="flex flex-col items-center text-gray-400">
+            <i class="fa fa-home text-lg"></i>
+            <span class="text-xs mt-1">首页</span>
+        </a>
+        <a href="task-list.html" class="flex flex-col items-center text-gray-400">
+            <i class="fa fa-tasks text-lg"></i>
+            <span class="text-xs mt-1">任务</span>
+        </a>
+        <a href="train.html" class="flex flex-col items-center text-primary">
+            <i class="fa fa-lightbulb-o text-lg"></i>
+            <span class="text-xs mt-1">AI工具</span>
+        </a>
+        <a href="profile.html" class="flex flex-col items-center text-gray-400">
+            <i class="fa fa-user-o text-lg"></i>
+            <span class="text-xs mt-1">我的</span>
+        </a>
+    </div>
+
+    <!-- 模拟手机边框 -->
+    <div class="hidden lg:block fixed right-10 top-1/2 -translate-y-1/2 w-[360px] h-[720px] border-8 border-gray-800 rounded-[40px] pointer-events-none z-50">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[120px] h-[25px] bg-gray-800 rounded-b-[20px]"></div>
+    </div>
+    <div class="hidden lg:block fixed right-10 top-1/2 -translate-y-1/2 w-[320px] h-[660px] rounded-[30px] overflow-hidden pointer-events-none z-40">
+        <p class="absolute top-0 left-0 right-0 bg-white/80 text-center text-xs py-1 text-gray-500">AI训练中心</p>
+    </div>
+
+    <script>
+        function goToTrain(type) {
+            if (type === 'product') {
+                // 跳转到产品力训练列表
+                alert('跳转到产品力训练列表页');
+            } else if (type === 'speech') {
+                // 跳转到话术训练列表
+                alert('跳转到话术训练列表页');
+            } else if (type === 'negotiate') {
+                // 跳转到议价谈判训练
+                alert('跳转到议价谈判训练页');
+            } else if (type === 'law') {
+                // 跳转到政策法规训练
+                alert('跳转到政策法规训练页');
+            }
+        }
+
+        function startTrain(url) {
+            window.location.href = url;
+        }
+
+        // 点击训练报告
+        document.querySelector('.text-primary.text-sm').addEventListener('click', () => {
+            alert('跳转到训练报告页');
+        });
+    </script>
+
+<script>
+// 全局Toast提示
+function showToast(message, duration = 2000) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+        toast.remove();
+    }, duration);
+}
+</script>
+</body>
+</html>
