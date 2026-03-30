@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>内容日历 - 房产AI作业平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        success: '#00B42A',
+                        warning: '#FF7D00',
+                        danger: '#F53F3F',
+                        purple: '#722ED1',
+                        orange: '#FF7D00',
+                        green: '#00B42A',
+                        red: '#F53F3F',
+                        blue: '#165DFF',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .calendar-cell {
+            min-height: 120px;
+            border-right: 1px solid #E5E6EB;
+            border-bottom: 1px solid #E5E6EB;
+            padding: 4px;
+        }
+        .calendar-cell.today {
+            background: #E8F3FF;
+        }
+        .calendar-cell.other-month {
+            background: #F7F8FA;
+        }
+        .calendar-header-cell {
+            padding: 8px;
+            text-align: center;
+            font-weight: 500;
+            border-right: 1px solid #E5E6EB;
+            border-bottom: 2px solid #E5E6EB;
+        }
+        .task-item {
+            border-radius: 4px;
+            padding: 2px 4px;
+            margin-bottom: 2px;
+            font-size: 11px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+        }
+        .task-item.task-tansuo {
+            background: #E8F3FF;
+            color: #165DFF;
+            border-left: 2px solid #165DFF;
+        }
+        .task-item.task-wuliao {
+            background: #F9F0FF;
+            color: #722ED1;
+            border-left: 2px solid #722ED1;
+        }
+        .task-item.task-xunlian {
+            background: #E8FFEA;
+            color: #00B42A;
+            border-left: 2px solid #00B42A;
+        }
+        .task-item.task-neirong {
+            background: #FFF7E8;
+            color: #FF7D00;
+            border-left: 2px solid #FF7D00;
+        }
+        .task-item.task-overdue {
+            background: #FFECE8;
+            color: #F53F3F;
+            border-left: 2px solid #F53F3F;
+        }
+        .view-switcher button.active {
+            background: #165DFF;
+            color: white;
+        }
+        .tag {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 顶部导航 -->
+    <nav class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
+        <div class="flex justify-between items-center px-6 py-3">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-home text-primary text-2xl"></i>
+                <span class="text-xl font-bold text-dark">房产AI作业平台</span>
+                <span class="text-sm text-gray-500 ml-2">管理后台</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-600 hover:text-primary relative">
+                    <i class="fa fa-bell-o text-lg"></i>
+                    <span class="absolute top-0 right-0 bg-danger text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center">管</div>
+                    <span class="text-sm font-medium">上海区总监</span>
+                    <i class="fa fa-angle-down text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex pt-14">
+        <!-- 侧边栏容器 - 动态加载公共组件 -->
+        <div id="sidebar-container"></div>
+
+        <!-- 动态加载公共侧边栏 -->
+        <script>
+        // 加载公共侧边栏组件
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const res = await fetch('components/sidebar.html');
+                const sidebarHtml = await res.text();
+                document.getElementById('sidebar-container').innerHTML = sidebarHtml;
+                
+                // 初始化侧边栏高亮
+                const currentPage = window.location.pathname.split('/').pop();
+                const navLinks = document.querySelectorAll('aside a');
+                
+                navLinks.forEach(link => {
+                    const href = link.getAttribute('href');
+                    if (href === currentPage || (currentPage === '' && href === 'index.html')) {
+                        link.classList.remove('text-gray-600', 'hover:bg-gray-50');
+                        link.classList.add('text-primary', 'bg-blue-50', 'border-r-4', 'border-primary');
+                    } else {
+                        link.classList.remove('text-primary', 'bg-blue-50', 'border-r-4', 'border-primary');
+                        link.classList.add('text-gray-600', 'hover:bg-gray-50');
+                    }
+                });
+            } catch (e) {
+                console.error('侧边栏加载失败:', e);
+            }
+        });
+        </script>
+
+        <!-- 主内容区 -->
+        <div class="ml-64 flex-1 p-6 min-h-[calc(100vh-56px)]">
+            <!-- 头部 -->
+            <div class="flex justify-between items-center mb-6">
+                <div class="flex items-center gap-6">
+                    <h1 class="text-2xl font-bold">📅 内容日历</h1>
+                    <div class="flex items-center gap-2">
+                        <button class="border border-gray-300 rounded px-3 py-1 text-sm">
+                            <i class="fa fa-chevron-left"></i>
+                        </button>
+                        <span class="text-lg font-medium">2026年3月</span>
+                        <button class="border border-gray-300 rounded px-3 py-1 text-sm">
+                            <i class="fa fa-chevron-right"></i>
+                        </button>
+                        <button class="border border-primary text-primary rounded px-3 py-1 text-sm ml-2">
+                            今天
+                        </button>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <!-- 视图切换 -->
+                    <div class="flex view-switcher border border-gray-300 rounded-lg overflow-hidden">
+                        <button class="px-3 py-1 text-sm active">月视图</button>
+                        <button class="px-3 py-1 text-sm">周视图</button>
+                        <button class="px-3 py-1 text-sm">日视图</button>
+                    </div>
+                    <!-- 筛选 -->
+                    <div class="flex gap-2">
+                        <select class="border border-gray-300 rounded px-3 py-1 text-sm">
+                            <option>全部任务类型</option>
+                            <option>探盘任务</option>
+                            <option>物料生成</option>
+                            <option>训练任务</option>
+                            <option>内容发布</option>
+                        </select>
+                        <select class="border border-gray-300 rounded px-3 py-1 text-sm">
+                            <option>全部区域</option>
+                            <option>浦东新区</option>
+                            <option>徐汇区</option>
+                            <option>松江区</option>
+                        </select>
+                    </div>
+                    <button class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm">
+                        <i class="fa fa-plus mr-2"></i> 新建任务
+                    </button>
+                </div>
+            </div>
+
+            <!-- 图例 -->
+            <div class="flex items-center gap-4 mb-4 bg-white p-3 rounded-lg shadow-sm">
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded bg-blue-500"></div>
+                    <span class="text-sm">探盘任务</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded bg-purple-500"></div>
+                    <span class="text-sm">物料生成</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded bg-green-500"></div>
+                    <span class="text-sm">训练任务</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded bg-orange-500"></div>
+                    <span class="text-sm">内容发布</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded bg-red-500"></div>
+                    <span class="text-sm">已超时</span>
+                </div>
+            </div>
+
+            <!-- 日历表格 -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <!-- 星期表头 -->
+                <div class="grid grid-cols-7">
+                    <div class="calendar-header-cell">周日</div>
+                    <div class="calendar-header-cell">周一</div>
+                    <div class="calendar-header-cell">周二</div>
+                    <div class="calendar-header-cell">周三</div>
+                    <div class="calendar-header-cell">周四</div>
+                    <div class="calendar-header-cell">周五</div>
+                    <div class="calendar-header-cell">周六</div>
+                </div>
+
+                <!-- 日历内容 - 第一行 -->
+                <div class="grid grid-cols-7">
+                    <div class="calendar-cell other-month">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-gray-400">25</span>
+                        </div>
+                        <div class="task-item task-tansuo">
+                            <i class="fa fa-map-marker mr-1"></i> 中海汇德里探盘
+                        </div>
+                    </div>
+                    <div class="calendar-cell other-month">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-gray-400">26</span>
+                        </div>
+                    </div>
+                    <div class="calendar-cell other-month">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-gray-400">27</span>
+                        </div>
+                        <div class="task-item task-xunlian">
+                            <i class="fa fa-graduation-cap mr-1"></i> 3月产品力月考
+                        </div>
+                    </div>
+                    <div class="calendar-cell other-month">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-gray-400">28</span>
+                        </div>
+                    </div>
+                    <div class="calendar-cell other-month">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-gray-400">29</span>
+                        </div>
+                    </div>
+                    <div class="calendar-cell other-month">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-gray-400">1</span>
+                        </div>
+                        <div class="task-item task-neirong">
+                            <i class="fa fa-magic mr-1"></i> 春季营销内容发布
+                        </div>
+                    </div>
+                    <div class="calendar-cell other-month">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-gray-400">2</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 第二行 -->
+                <div class="grid grid-cols-7">
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">3</span>
+                        </div>
+                        <div class="task-item task-tansuo">
+                            <i class="fa fa-map-marker mr-1"></i> 保利中央公园探盘
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">4</span>
+                        </div>
+                        <div class="task-item task-wuliao">
+                            <i class="fa fa-film mr-1"></i> 保利物料生成截止
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">5</span>
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">6</span>
+                        </div>
+                        <div class="task-item task-xunlian">
+                            <i class="fa fa-graduation-cap mr-1"></i> 保利项目专项训练
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">7</span>
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">8</span>
+                        </div>
+                        <div class="task-item task-neirong">
+                            <i class="fa fa-magic mr-1"></i> 女神节内容发布
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">9</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 第三行 -->
+                <div class="grid grid-cols-7">
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">10</span>
+                        </div>
+                        <div class="task-item task-tansuo">
+                            <i class="fa fa-map-marker mr-1"></i> 万科城市之光探盘
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">11</span>
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">12</span>
+                        </div>
+                        <div class="task-item task-wuliao">
+                            <i class="fa fa-film mr-1"></i> 万科物料生成截止
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">13</span>
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">14</span>
+                        </div>
+                        <div class="task-item task-xunlian">
+                            <i class="fa fa-graduation-cap mr-1"></i> 万科项目专项训练
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">15</span>
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">16</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 第四行（当前周） -->
+                <div class="grid grid-cols-7">
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">17</span>
+                        </div>
+                        <div class="task-item task-tansuo">
+                            <i class="fa fa-map-marker mr-1"></i> 碧桂园天玺探盘
+                        </div>
+                        <div class="task-item task-overdue">
+                            <i class="fa fa-exclamation-triangle mr-1"></i> 融创探盘超时
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">18</span>
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">19</span>
+                        </div>
+                        <div class="task-item task-wuliao">
+                            <i class="fa fa-film mr-1"></i> 碧桂园物料生成截止
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">20</span>
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">21</span>
+                        </div>
+                        <div class="task-item task-xunlian">
+                            <i class="fa fa-graduation-cap mr-1"></i> 碧桂园项目专项训练
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">22</span>
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">23</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 第五行 -->
+                <div class="grid grid-cols-7">
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">24</span>
+                        </div>
+                        <div class="task-item task-neirong">
+                            <i class="fa fa-magic mr-1"></i> 春季房展会内容发布
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">25</span>
+                        </div>
+                        <div class="task-item task-tansuo">
+                            <i class="fa fa-map-marker mr-1"></i> 金地项目探盘
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">26</span>
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">27</span>
+                        </div>
+                        <div class="task-item task-wuliao">
+                            <i class="fa fa-film mr-1"></i> 金地物料生成截止
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">28</span>
+                        </div>
+                        <div class="task-item task-xunlian">
+                            <i class="fa fa-graduation-cap mr-1"></i> 金地项目专项训练
+                        </div>
+                    </div>
+                    <div class="calendar-cell today">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs font-bold text-primary">29</span>
+                            <span class="tag bg-blue-100 text-primary">今天</span>
+                        </div>
+                        <div class="task-item task-tansuo">
+                            <i class="fa fa-map-marker mr-1"></i> 中海汇德里探盘截止
+                        </div>
+                        <div class="task-item task-wuliao">
+                            <i class="fa fa-film mr-1"></i> 中海物料生成中
+                        </div>
+                        <div class="task-item task-neirong">
+                            <i class="fa fa-magic mr-1"></i> 月底营销内容发布
+                        </div>
+                    </div>
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">30</span>
+                        </div>
+                        <div class="task-item task-xunlian">
+                            <i class="fa fa-graduation-cap mr-1"></i> 3月月度考核
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 第六行 -->
+                <div class="grid grid-cols-7">
+                    <div class="calendar-cell">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs">31</span>
+                        </div>
+                        <div class="task-item task-neirong">
+                            <i class="fa fa-magic mr-1"></i> 月度总结内容发布
+                        </div>
+                    </div>
+                    <div class="calendar-cell other-month">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-gray-400">1</span>
+                        </div>
+                    </div>
+                    <div class="calendar-cell other-month">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-gray-400">2</span>
+                        </div>
+                        <div class="task-item task-tansuo">
+                            <i class="fa fa-map-marker mr-1"></i> 4月新盘探盘计划
+                        </div>
+                    </div>
+                    <div class="calendar-cell other-month">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-gray-400">3</span>
+                        </div>
+                    </div>
+                    <div class="calendar-cell other-month">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-gray-400">4</span>
+                        </div>
+                    </div>
+                    <div class="calendar-cell other-month">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-gray-400">5</span>
+                        </div>
+                    </div>
+                    <div class="calendar-cell other-month">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-gray-400">6</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 任务详情弹窗 -->
+    <div id="taskDetailModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-xl w-96 p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold">任务详情</h3>
+                <button class="text-gray-500" onclick="document.getElementById('taskDetailModal').classList.add('hidden')">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <h4 class="font-medium text-lg">中海汇德里探盘任务</h4>
+                    <div class="flex items-center gap-2 mt-2">
+                        <span class="tag tag-info">探盘任务</span>
+                        <span class="tag tag-warning">进行中</span>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex items-center">
+                        <i class="fa fa-building text-gray-500 w-5"></i>
+                        <span class="text-sm">所属项目：中海汇德里</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fa fa-map-marker text-gray-500 w-5"></i>
+                        <span class="text-sm">所属区域：浦东新区</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fa fa-user text-gray-500 w-5"></i>
+                        <span class="text-sm">负责人：张总监</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fa fa-clock-o text-gray-500 w-5"></i>
+                        <span class="text-sm">截止时间：2026-03-29 18:00</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="fa fa-users text-gray-500 w-5"></i>
+                        <span class="text-sm">执行人数：32人，已完成18人</span>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-value" style="width: 56%"></div>
+                </div>
+                <p class="text-xs text-right text-gray-500">完成率：56%</p>
+                <div class="flex justify-end gap-3 pt-4 border-t border-gray-100">
+                    <button class="border border-gray-300 px-4 py-2 rounded" onclick="document.getElementById('taskDetailModal').classList.add('hidden')">
+                        关闭
+                    </button>
+                    <button class="bg-primary text-white px-4 py-2 rounded">
+                        查看详情
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 点击任务打开详情
+        document.querySelectorAll('.task-item').forEach(item => {
+            item.addEventListener('click', () => {
+                document.getElementById('taskDetailModal').classList.remove('hidden');
+            });
+        });
+
+        // 视图切换
+        document.querySelectorAll('.view-switcher button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.view-switcher button').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                alert('切换到' + this.textContent + '（功能开发中）');
+            });
+        });
+
+        // 新建任务
+        document.querySelector('button:has(.fa-plus)').addEventListener('click', () => {
+            window.location.href = 'task-create.html';
+        });
+    </script>
+</body>
+</html>

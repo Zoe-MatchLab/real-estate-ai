@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Claw AI助手</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#fa8c16',
+                        warning: '#FF9D2B',
+                        danger: '#FA5151',
+                        success: '#00B42A',
+                        gray: {
+                            50: '#F7F8FA',
+                            100: '#EDEEF2',
+                            200: '#D8D9DD',
+                            300: '#B4B5B9',
+                            400: '#86878B',
+                            500: '#4E5969',
+                            600: '#272E3B',
+                            700: '#1D2129',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #F7F8FA;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .page-container {
+            padding-bottom: calc(56px + env(safe-area-inset-bottom));
+        }
+        .chat-container {
+            height: calc(100vh - 56px - 60px - env(safe-area-inset-bottom));
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .message-bubble {
+            max-width: 75%;
+            word-wrap: break-word;
+        }
+        .user-message {
+            background: linear-gradient(135deg, #fa8c16 0%, #ffad33 100%);
+            color: white;
+            border-radius: 18px 18px 4px 18px;
+        }
+        .ai-message {
+            background: white;
+            color: #1D2129;
+            border-radius: 18px 18px 18px 4px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+        .input-bar {
+            position: fixed;
+            bottom: 56px;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #EDEEF2;
+            padding: 10px 12px;
+        }
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: calc(56px + env(safe-area-inset-bottom));
+            padding-bottom: env(safe-area-inset-bottom);
+            background: white;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 999;
+        }
+        .tab-bar-item {
+            padding-top: 6px;
+            color: #86878B;
+        }
+        .tab-bar-item.active {
+            color: #fa8c16;
+        }
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            z-index: 9999;
+            animation: fadeIn 0.2s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        @keyframes typing {
+            0% { content: "."; }
+            33% { content: ".."; }
+            66% { content: "..."; }
+            100% { content: "."; }
+        }
+        .typing::after {
+            content: ".";
+            animation: typing 1.5s infinite;
+        }
+    </style>
+</head>
+<body class="page-container">
+    <!-- 顶部导航 -->
+    <div class="bg-white px-4 py-3 flex justify-between items-center sticky top-0 z-40 shadow-sm">
+        <button class="text-gray-700" onclick="history.back()">
+            <i class="fa fa-angle-left text-xl"></i>
+        </button>
+        <h1 class="font-medium text-gray-700">Claw AI助手</h1>
+        <button class="text-gray-500" onclick="clearChat()">
+            <i class="fa fa-trash-o text-lg"></i>
+        </button>
+    </div>
+
+    <!-- 聊天内容区域 -->
+    <div class="chat-container p-4" id="chatContainer">
+        <!-- AI欢迎消息 -->
+        <div class="flex items-start mb-4">
+            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm mr-2 flex-shrink-0">
+                🤖
+            </div>
+            <div class="message-bubble ai-message p-3">
+                <p class="text-sm">你好👋 我是你的专属房产AI助手Claw，有什么可以帮到你？</p>
+                <p class="text-xs text-gray-400 mt-1">10:00</p>
+            </div>
+        </div>
+
+        <!-- 快捷提问卡片 -->
+        <div class="mb-4 ml-10">
+            <p class="text-xs text-gray-500 mb-2">你可以问我：</p>
+            <div class="grid grid-cols-2 gap-2">
+                <div class="bg-white rounded-lg p-3 shadow-sm border border-gray-100 cursor-pointer" onclick="sendQuickQuestion('上海最新购房政策是什么？')">
+                    <p class="text-xs text-gray-700">上海最新购房政策</p>
+                </div>
+                <div class="bg-white rounded-lg p-3 shadow-sm border border-gray-100 cursor-pointer" onclick="sendQuickQuestion('如何撰写房产朋友圈文案？')">
+                    <p class="text-xs text-gray-700">房产朋友圈文案</p>
+                </div>
+                <div class="bg-white rounded-lg p-3 shadow-sm border border-gray-100 cursor-pointer" onclick="sendQuickQuestion('客户说价格太高了怎么应对？')">
+                    <p class="text-xs text-gray-700">客户议价应对话术</p>
+                </div>
+                <div class="bg-white rounded-lg p-3 shadow-sm border border-gray-100 cursor-pointer" onclick="sendQuickQuestion('探盘报告怎么写更专业？')">
+                    <p class="text-xs text-gray-700">探盘报告模板</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 示例对话 -->
+        <div class="flex items-start justify-end mb-4">
+            <div class="message-bubble user-message p-3">
+                <p class="text-sm">中海汇德里这个项目有什么优缺点？</p>
+                <p class="text-xs text-white/80 mt-1">10:01</p>
+            </div>
+            <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-white text-sm ml-2 flex-shrink-0">
+                你
+            </div>
+        </div>
+
+        <div class="flex items-start mb-4">
+            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm mr-2 flex-shrink-0">
+                🤖
+            </div>
+            <div class="message-bubble ai-message p-3">
+                <p class="text-sm">中海汇德里项目优点：</p>
+                <p class="text-sm mt-1">✅ 区位优势明显，位于浦东核心张江板块，周边产业聚集，购买力强</p>
+                <p class="text-sm mt-1">✅ 交通便利，距离13号线张江路站仅500米，自驾可快速接入中环</p>
+                <p class="text-sm mt-1">✅ 配套成熟，周边有张江商业广场、万科活力城等商业体</p>
+                <p class="text-sm mt-2">缺点：</p>
+                <p class="text-sm mt-1">⚠️ 均价6.8万/㎡，相比周边同类型项目略高</p>
+                <p class="text-sm mt-1">⚠️ 小区容积率2.5，居住密度稍高</p>
+                <p class="text-xs text-gray-400 mt-1">10:02</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 输入框区域 -->
+    <div class="input-bar">
+        <div class="flex items-center gap-2">
+            <button class="text-gray-500 w-8 h-8 flex items-center justify-center" onclick="showToast('语音输入功能开发中')">
+                <i class="fa fa-microphone text-lg"></i>
+            </button>
+            <input type="text" id="messageInput" class="flex-1 bg-gray-50 rounded-full px-4 py-2 text-sm placeholder-gray-400 outline-none" placeholder="输入你的问题...">
+            <button class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white" onclick="sendMessage()">
+                <i class="fa fa-paper-plane-o text-xs"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 底部标签栏 -->
+    <div class="tab-bar">
+        <div class="grid grid-cols-5 h-full">
+            <a href="tools.html" class="tab-bar-item flex flex-col items-center justify-center">
+                <i class="fa fa-th text-xl"></i>
+                <span class="text-xs mt-1">AI工具</span>
+            </a>
+            <a href="ai-design.html" class="tab-bar-item flex flex-col items-center justify-center">
+                <i class="fa fa-paint-brush text-xl"></i>
+                <span class="text-xs mt-1">AI设计</span>
+            </a>
+            <a href="claw.html" class="tab-bar-item flex flex-col items-center justify-center active">
+                <i class="fa fa-home text-xl"></i>
+                <span class="text-xs mt-1">Claw</span>
+            </a>
+            <a href="calendar.html" class="tab-bar-item flex flex-col items-center justify-center">
+                <i class="fa fa-calendar text-xl"></i>
+                <span class="text-xs mt-1">日历</span>
+            </a>
+            <a href="profile.html" class="tab-bar-item flex flex-col items-center justify-center">
+                <i class="fa fa-user text-xl"></i>
+                <span class="text-xs mt-1">我的</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // 全局Toast
+        function showToast(message, duration = 2000) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, duration);
+        }
+
+        // 发送消息
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            // 添加用户消息到聊天
+            const chatContainer = document.getElementById('chatContainer');
+            const userMsgHtml = `
+                <div class="flex items-start justify-end mb-4">
+                    <div class="message-bubble user-message p-3">
+                        <p class="text-sm">${message}</p>
+                        <p class="text-xs text-white/80 mt-1">${new Date().getHours()}:${String(new Date().getMinutes()).padStart(2, '0')}</p>
+                    </div>
+                    <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center text-white text-sm ml-2 flex-shrink-0">
+                        你
+                    </div>
+                </div>
+            `;
+            chatContainer.insertAdjacentHTML('beforeend', userMsgHtml);
+
+            // 清空输入框
+            input.value = '';
+
+            // 添加AI正在输入提示
+            const typingHtml = `
+                <div class="flex items-start mb-4" id="typingIndicator">
+                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm mr-2 flex-shrink-0">
+                        🤖
+                    </div>
+                    <div class="message-bubble ai-message p-3">
+                        <p class="text-sm typing">正在思考</p>
+                    </div>
+                </div>
+            `;
+            chatContainer.insertAdjacentHTML('beforeend', typingHtml);
+
+            // 滚动到底部
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            // 模拟AI回复
+            setTimeout(() => {
+                document.getElementById('typingIndicator').remove();
+                
+                let reply = '';
+                if (message.includes('政策')) {
+                    reply = '2026年上海最新购房政策：\n1. 限购政策：本市户籍限购2套，非本市户籍缴纳社保满5年限购1套\n2. 贷款政策：首套首付35%，二套普通首付50%，非普通首付70%\n3. 人才政策：重点产业高层次人才可直接落户，不受社保限制';
+                } else if (message.includes('文案') || message.includes('朋友圈')) {
+                    reply = '给你写一条中海汇德里的朋友圈文案：\n🔥 张江核心红盘【中海汇德里】盛大加推\n✅ 13号线张江路站500米，中环旁出行无忧\n✅ 95-142㎡精装3-4房，低密度居住社区\n✅ 周边产业聚集，升值潜力巨大\n💬 感兴趣的朋友随时咨询，预约看房享专属优惠！';
+                } else if (message.includes('客户') || message.includes('议价') || message.includes('价格高')) {
+                    reply = '客户说价格太高可以这样应对：\n1. 价值认同法："哥/姐，这个价格对应这样的地段、配套、品质，其实性价比非常高，周边同类型项目都比这个贵了"\n2. 拆分价格法："算下来每平才6.8万，100平的房子首付才200多万，您每个月还款也就1万多，以您的收入完全没问题"\n3. 突出稀缺性："这个户型整个小区只有20套，现在已经卖了15套了，您今天定还能享受开盘优惠，明天就收回了"';
+                } else if (message.includes('探盘报告') || message.includes('报告怎么写')) {
+                    reply = '专业探盘报告结构：\n1. 项目基础信息：位置、开发商、均价、户数、容积率、绿化率\n2. 区位分析：交通、配套、板块规划\n3. 产品分析：户型解析、优缺点、装修标准\n4. 客群分析：适合购买人群\n5. 销售政策：优惠、付款方式\n6. 个人总结：推荐指数、适合客户类型';
+                } else {
+                    reply = '好的，我了解你的问题了，我正在整理相关资料，稍后给你详细解答~';
+                }
+
+                const aiMsgHtml = `
+                    <div class="flex items-start mb-4">
+                        <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm mr-2 flex-shrink-0">
+                            🤖
+                        </div>
+                        <div class="message-bubble ai-message p-3">
+                            <p class="text-sm whitespace-pre-line">${reply}</p>
+                            <p class="text-xs text-gray-400 mt-1">${new Date().getHours()}:${String(new Date().getMinutes()).padStart(2, '0')}</p>
+                        </div>
+                    </div>
+                `;
+                chatContainer.insertAdjacentHTML('beforeend', aiMsgHtml);
+                
+                // 滚动到底部
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }, 1500);
+        }
+
+        // 快捷提问
+        function sendQuickQuestion(question) {
+            document.getElementById('messageInput').value = question;
+            sendMessage();
+        }
+
+        // 清空聊天
+        function clearChat() {
+            if (confirm('确定要清空所有聊天记录吗？')) {
+                const chatContainer = document.getElementById('chatContainer');
+                chatContainer.innerHTML = `
+                    <div class="flex items-start mb-4">
+                        <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white text-sm mr-2 flex-shrink-0">
+                            🤖
+                        </div>
+                        <div class="message-bubble ai-message p-3">
+                            <p class="text-sm">你好👋 我是你的专属房产AI助手Claw，有什么可以帮到你？</p>
+                            <p class="text-xs text-gray-400 mt-1">${new Date().getHours()}:${String(new Date().getMinutes()).padStart(2, '0')}</p>
+                        </div>
+                    </div>
+                    <div class="mb-4 ml-10">
+                        <p class="text-xs text-gray-500 mb-2">你可以问我：</p>
+                        <div class="grid grid-cols-2 gap-2">
+                            <div class="bg-white rounded-lg p-3 shadow-sm border border-gray-100 cursor-pointer" onclick="sendQuickQuestion('上海最新购房政策是什么？')">
+                                <p class="text-xs text-gray-700">上海最新购房政策</p>
+                            </div>
+                            <div class="bg-white rounded-lg p-3 shadow-sm border border-gray-100 cursor-pointer" onclick="sendQuickQuestion('如何撰写房产朋友圈文案？')">
+                                <p class="text-xs text-gray-700">房产朋友圈文案</p>
+                            </div>
+                            <div class="bg-white rounded-lg p-3 shadow-sm border border-gray-100 cursor-pointer" onclick="sendQuickQuestion('客户说价格太高了怎么应对？')">
+                                <p class="text-xs text-gray-700">客户议价应对话术</p>
+                            </div>
+                            <div class="bg-white rounded-lg p-3 shadow-sm border border-gray-100 cursor-pointer" onclick="sendQuickQuestion('探盘报告怎么写更专业？')">
+                                <p class="text-xs text-gray-700">探盘报告模板</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                showToast('聊天记录已清空');
+            }
+        }
+
+        // 回车发送
+        document.getElementById('messageInput').addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>

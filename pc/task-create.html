@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新建探盘任务 - 房产AI作业平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        success: '#00B42A',
+                        warning: '#FF7D00',
+                        danger: '#F53F3F',
+                        dark: '#1D2129',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .tag {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+        .tag-danger {
+            background: #FFECE8;
+            color: #F53F3F;
+        }
+        .tag-warning {
+            background: #FFF7E8;
+            color: #FF7D00;
+        }
+        .tag-success {
+            background: #E8FFEA;
+            color: #00B42A;
+        }
+        .tag-info {
+            background: #E8F3FF;
+            color: #165DFF;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 顶部导航 -->
+    <nav class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
+        <div class="flex justify-between items-center px-6 py-3">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-home text-primary text-2xl"></i>
+                <span class="text-xl font-bold text-dark">房产AI作业平台</span>
+                <span class="text-sm text-gray-500 ml-2">管理后台</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-600 hover:text-primary">
+                    <i class="fa fa-bell-o text-lg"></i>
+                    <span class="absolute top-2 right-16 bg-danger text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center">总</div>
+                    <span class="text-sm font-medium">总部管理员</span>
+                    <i class="fa fa-angle-down text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex pt-14">
+        <!-- 侧边栏容器 - 动态加载公共组件 -->
+        <div id="sidebar-container"></div>
+
+        <!-- 动态加载公共侧边栏 -->
+        <script>
+        // 加载公共侧边栏组件
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const res = await fetch('components/sidebar.html');
+                const sidebarHtml = await res.text();
+                document.getElementById('sidebar-container').innerHTML = sidebarHtml;
+                
+                // 初始化侧边栏高亮
+                const currentPage = window.location.pathname.split('/').pop();
+                const navLinks = document.querySelectorAll('aside a');
+                
+                navLinks.forEach(link => {
+                    const href = link.getAttribute('href');
+                    if (href === currentPage || (currentPage === '' && href === 'index.html')) {
+                        link.classList.remove('text-gray-600', 'hover:bg-gray-50');
+                        link.classList.add('text-primary', 'bg-blue-50', 'border-r-4', 'border-primary');
+                    } else {
+                        link.classList.remove('text-primary', 'bg-blue-50', 'border-r-4', 'border-primary');
+                        link.classList.add('text-gray-600', 'hover:bg-gray-50');
+                    }
+                });
+            } catch (e) {
+                console.error('侧边栏加载失败:', e);
+            }
+        });
+        </script>
+
+        <!-- 主内容区 -->
+        <main class="ml-64 flex-1 p-6">
+            <!-- 头部 -->
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h1 class="text-2xl font-bold mb-1">📝 新建探盘任务</h1>
+                    <p class="text-gray-500">配置项目基础信息和打卡模板，完成新盘上线</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button class="border border-gray-300 bg-white px-4 py-2 rounded-lg hover:bg-gray-50" onclick="window.location.href='task-manage.html'">
+                        取消
+                    </button>
+                    <button class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg">
+                        保存并上线
+                    </button>
+                </div>
+            </div>
+
+            <!-- 步骤指示器 -->
+            <div class="p-4 bg-white border-b border-gray-100 rounded-xl shadow-sm mb-6">
+                <div class="flex justify-between items-center">
+                    <div class="step-item completed">
+                        <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-bold">1</div>
+                        <span class="text-sm font-medium">项目基础信息</span>
+                    </div>
+                    <div class="flex-1 h-1 bg-gray-200 mx-2">
+                        <div class="h-full bg-primary w-full"></div>
+                    </div>
+                    <div class="step-item">
+                        <div class="w-8 h-8 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center font-bold">2</div>
+                        <span class="text-sm font-medium">打卡模板配置</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第一步：项目基础信息配置 -->
+            <div class="p-4">
+                <h3 class="font-medium mb-3">1. 项目基础信息配置</h3>
+                <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="form-item">
+                            <label class="block text-sm font-medium mb-2">项目名称 <span class="text-danger">*</span></label>
+                            <input type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="请输入项目名称" value="中海汇德里">
+                        </div>
+                        <div class="form-item">
+                            <label class="block text-sm font-medium mb-2">所在城市 <span class="text-danger">*</span></label>
+                            <select class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                <option>请选择城市</option>
+                                <option selected>上海市</option>
+                                <option>杭州市</option>
+                                <option>南京市</option>
+                                <option>苏州市</option>
+                            </select>
+                        </div>
+                        <div class="form-item">
+                            <label class="block text-sm font-medium mb-2">详细地址 <span class="text-danger">*</span></label>
+                            <input type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="请输入详细地址" value="浦东新区张江高科技园区科苑路88号">
+                        </div>
+                        <div class="form-item">
+                            <label class="block text-sm font-medium mb-2">物业类型 <span class="text-danger">*</span></label>
+                            <select class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                <option>请选择物业类型</option>
+                                <option selected>住宅</option>
+                                <option>商业</option>
+                                <option>公寓</option>
+                                <option>别墅</option>
+                                <option>商住混合</option>
+                            </select>
+                        </div>
+                        <div class="form-item">
+                            <label class="block text-sm font-medium mb-2">销售状态 <span class="text-danger">*</span></label>
+                            <select class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                <option>请选择状态</option>
+                                <option>待售</option>
+                                <option selected>在售</option>
+                                <option>售罄</option>
+                            </select>
+                        </div>
+                        <div class="form-item">
+                            <label class="block text-sm font-medium mb-2">均价（元/㎡）</label>
+                            <input type="number" class="w-full border border-gray-300 rounded-lg px-3 py-2" placeholder="请输入均价" value="68000">
+                        </div>
+                        <div class="form-item">
+                            <label class="block text-sm font-medium mb-2">政策有效期开始 <span class="text-danger">*</span></label>
+                            <input type="date" class="w-full border border-gray-300 rounded-lg px-3 py-2" value="2026-03-26">
+                        </div>
+                        <div class="form-item">
+                            <label class="block text-sm font-medium mb-2">政策有效期结束 <span class="text-danger">*</span></label>
+                            <input type="date" class="w-full border border-gray-300 rounded-lg px-3 py-2" value="2026-04-30">
+                        </div>
+                        <div class="form-item col-span-2">
+                            <label class="block text-sm font-medium mb-2">优惠返点政策 <span class="text-danger">*</span></label>
+                            <textarea class="w-full border border-gray-300 rounded-lg px-3 py-2" rows="3" placeholder="请输入具体的优惠和返点政策，会同步给所有执行人">1. 认购返点3万/套，准时签约额外奖励5000元；
+2. 带看奖励200元/组，成交额外奖励1000元/套；
+3. 政策有效期：2026-03-26至2026-04-30。</textarea>
+                        </div>
+                        <div class="form-item col-span-2">
+                            <label class="block text-sm font-medium mb-2">可见范围配置 <span class="text-danger">*</span></label>
+                            <div class="border border-gray-300 rounded-lg p-3 bg-gray-50">
+                                <p class="text-sm mb-2">已选择：华东事业部 → 上海区域 → 浦东大区</p>
+                                <button class="text-xs text-primary">选择组织架构</button>
+                                <p class="text-xs text-gray-500 mt-2">只有选中组织架构内的人员可以看到该项目和相关任务</p>
+                            </div>
+                        </div>
+                        <div class="form-item col-span-2">
+                            <label class="block text-sm font-medium mb-2">默认执行人 <span class="text-danger">*</span></label>
+                            <select class="w-full border border-gray-300 rounded-lg px-3 py-2">
+                                <option value="director">总监</option>
+                                <option value="manager" selected>区域经理</option>
+                                <option value="broker">经纪人</option>
+                            </select>
+                            <p class="text-xs text-gray-500 mt-1">任务会默认下发给对应层级的人员，接收人可以再次分配给下级，区经默认不纳入考核</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第二步：打卡模板配置 -->
+            <div class="p-4">
+                <h3 class="font-medium mb-3">2. 打卡模板配置</h3>
+                <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                    <div class="space-y-4 p-3 bg-gray-50 rounded-lg">
+                        <div class="flex justify-between items-center">
+                            <p class="text-sm font-medium">打卡模板配置</p>
+                            <div class="flex gap-2">
+                                <button class="border border-primary text-primary px-3 py-1 rounded text-xs">
+                                    <i class="fa fa-copy mr-1"></i> 从模板库导入
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="form-item">
+                            <label class="block text-xs text-gray-500 mb-1">默认打卡范围</label>
+                            <div class="flex items-center">
+                                <input type="number" class="w-24 border border-gray-300 rounded px-2 py-1" value="1000">
+                                <span class="ml-2 text-sm">米</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">所有点位默认的定位校验范围，可单独调整每个点位的范围</p>
+                        </div>
+
+                        <div class="form-item">
+                            <label class="block text-xs text-gray-500 mb-1">完成规则配置</label>
+                            <div class="flex items-center">
+                                <span class="text-sm">完成</span>
+                                <input type="number" class="w-16 mx-2 border border-gray-300 rounded px-2 py-1" value="100">
+                                <span class="text-sm">% 的点位即可提交</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">设置整体任务的完成标准，无需100%完成也可以提交</p>
+                        </div>
+
+                        <div class="form-item">
+                            <label class="block text-xs text-gray-500 mb-1">结果流向配置 <span class="text-danger">*</span></label>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2" checked>
+                                    <span class="text-sm">同步到内容素材库（可用于生成营销内容）</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2" checked>
+                                    <span class="text-sm">同步到训练题库（可用于生成产品力训练题目）</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2">
+                                    <span class="text-sm">同步到推荐系统（用于楼盘智能推荐）</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="checkbox" class="mr-2" checked>
+                                    <span class="text-sm">同步到复盘案例库（用于项目复盘分析）</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 点位列表 -->
+                        <div class="form-item">
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="block text-xs text-gray-500 mb-0">打卡点位配置</label>
+                                <button class="text-xs text-primary">
+                                    <i class="fa fa-plus mr-1"></i> 新增点位
+                                </button>
+                            </div>
+
+                            <!-- 点位1 -->
+                            <div class="p-3 border border-gray-200 rounded-lg mb-2 bg-white">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div class="flex items-center">
+                                        <span class="font-medium text-sm">1. 沙盘拍照</span>
+                                        <span class="tag tag-info ml-2">必填</span>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button class="text-xs text-gray-600">编辑</button>
+                                        <button class="text-xs text-danger">删除</button>
+                                    </div>
+                                </div>
+                                <div class="text-xs text-gray-500 mb-2">
+                                    打卡范围：1000米 | 采集要求：拍照≥3张 + 文字备注
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="text-xs bg-gray-100 px-2 py-1 rounded">拍照</span>
+                                    <span class="text-xs bg-gray-100 px-2 py-1 rounded">文字备注</span>
+                                    <span class="text-xs bg-green-50 px-2 py-1 rounded text-green-600">AI初审：照片清晰度检测</span>
+                                    <span class="text-xs bg-blue-50 px-2 py-1 rounded text-blue-600">人工抽检比例：10%</span>
+                                </div>
+                            </div>
+
+                            <!-- 点位2 -->
+                            <div class="p-3 border border-gray-200 rounded-lg mb-2 bg-white">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div class="flex items-center">
+                                        <span class="font-medium text-sm">2. 样板间视频拍摄</span>
+                                        <span class="tag tag-info ml-2">必填</span>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button class="text-xs text-gray-600">编辑</button>
+                                        <button class="text-xs text-danger">删除</button>
+                                    </div>
+                                </div>
+                                <div class="text-xs text-gray-500 mb-2">
+                                    打卡范围：800米 | 采集要求：视频≥15秒 + 语音讲解
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="text-xs bg-gray-100 px-2 py-1 rounded">视频</span>
+                                    <span class="text-xs bg-gray-100 px-2 py-1 rounded">语音</span>
+                                    <span class="text-xs bg-green-50 px-2 py-1 rounded text-green-600">AI初审：视频时长校验</span>
+                                    <span class="text-xs bg-blue-50 px-2 py-1 rounded text-blue-600">人工抽检比例：20%</span>
+                                </div>
+                            </div>
+
+                            <!-- 点位3 -->
+                            <div class="p-3 border border-gray-200 rounded-lg mb-2 bg-white">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div class="flex items-center">
+                                        <span class="font-medium text-sm">3. 区位图拍照</span>
+                                        <span class="tag tag-warning ml-2">可选</span>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button class="text-xs text-gray-600">编辑</button>
+                                        <button class="text-xs text-danger">删除</button>
+                                    </div>
+                                </div>
+                                <div class="text-xs text-gray-500 mb-2">
+                                    打卡范围：1000米 | 采集要求：拍照≥1张
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="text-xs bg-gray-100 px-2 py-1 rounded">拍照</span>
+                                    <span class="text-xs bg-green-50 px-2 py-1 rounded text-green-600">AI初审：图片内容识别</span>
+                                    <span class="text-xs bg-blue-50 px-2 py-1 rounded text-blue-600">人工抽检比例：5%</span>
+                                </div>
+                            </div>
+
+                            <!-- 点位4 -->
+                            <div class="p-3 border border-gray-200 rounded-lg mb-2 bg-white">
+                                <div class="flex justify-between items-center mb-2">
+                                    <div class="flex items-center">
+                                        <span class="font-medium text-sm">4. 周边配套调研</span>
+                                        <span class="tag tag-warning ml-2">可选</span>
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button class="text-xs text-gray-600">编辑</button>
+                                        <button class="text-xs text-danger">删除</button>
+                                    </div>
+                                </div>
+                                <div class="text-xs text-gray-500 mb-2">
+                                    打卡范围：2000米 | 采集要求：拍照+文字说明+标签
+                                </div>
+                                <div class="flex flex-wrap gap-2">
+                                    <span class="text-xs bg-gray-100 px-2 py-1 rounded">拍照</span>
+                                    <span class="text-xs bg-gray-100 px-2 py-1 rounded">文字备注</span>
+                                    <span class="text-xs bg-gray-100 px-2 py-1 rounded">标签</span>
+                                    <span class="text-xs bg-blue-50 px-2 py-1 rounded text-blue-600">人工抽检比例：30%</span>
+                                </div>
+                            </div>
+
+                            <button class="w-full border border-dashed border-gray-300 rounded py-2 text-sm text-gray-500 hover:border-primary hover:text-primary">
+                                <i class="fa fa-plus mr-1"></i> 新增点位
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

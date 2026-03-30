@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>物料生成管理 - 房产AI作业平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        success: '#00B42A',
+                        warning: '#FF7D00',
+                        danger: '#F53F3F',
+                        dark: '#1D2129',
+                        'gray-light': '#F2F3F5',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .tag {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .tag-success {
+            background: #E8FFEA;
+            color: #00B42A;
+        }
+        .tag-warning {
+            background: #FFF7E8;
+            color: #FF7D00;
+        }
+        .tag-danger {
+            background: #FFECE8;
+            color: #F53F3F;
+        }
+        .tag-info {
+            background: #E8F3FF;
+            color: #165DFF;
+        }
+        .tag-gray {
+            background: #F2F3F5;
+            color: #86878B;
+        }
+        .progress-bar {
+            height: 6px;
+            border-radius: 3px;
+            background: #f0f0f0;
+            overflow: hidden;
+        }
+        .progress-value {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #165DFF, #4080FF);
+        }
+        .hover-row:hover {
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 顶部导航 -->
+    <nav class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
+        <div class="flex justify-between items-center px-6 py-3">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-home text-primary text-2xl"></i>
+                <span class="text-xl font-bold text-dark">房产AI作业平台</span>
+                <span class="text-sm text-gray-500 ml-2">管理后台</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-600 hover:text-primary relative">
+                    <i class="fa fa-bell-o text-lg"></i>
+                    <span class="absolute top-0 right-0 bg-danger text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">2</span>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center">管</div>
+                    <span class="text-sm font-medium">运营管理员</span>
+                    <i class="fa fa-angle-down text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex pt-14">
+        <!-- 侧边栏容器 - 动态加载公共组件 -->
+        <div id="sidebar-container"></div>
+
+        <!-- 动态加载公共侧边栏 -->
+        <script>
+        // 加载公共侧边栏组件
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const res = await fetch('components/sidebar.html');
+                const sidebarHtml = await res.text();
+                document.getElementById('sidebar-container').innerHTML = sidebarHtml;
+                
+                // 初始化侧边栏高亮
+                const currentPage = window.location.pathname.split('/').pop();
+                const navLinks = document.querySelectorAll('aside a');
+                
+                navLinks.forEach(link => {
+                    const href = link.getAttribute('href');
+                    if (href === currentPage || (currentPage === '' && href === 'index.html')) {
+                        link.classList.remove('text-gray-600', 'hover:bg-gray-50');
+                        link.classList.add('text-primary', 'bg-blue-50', 'border-r-4', 'border-primary');
+                    } else {
+                        link.classList.remove('text-primary', 'bg-blue-50', 'border-r-4', 'border-primary');
+                        link.classList.add('text-gray-600', 'hover:bg-gray-50');
+                    }
+                });
+            } catch (e) {
+                console.error('侧边栏加载失败:', e);
+            }
+        });
+        </script>
+
+        <!-- 主内容区 -->
+        <div class="ml-64 flex-1 p-6 min-h-[calc(100vh-56px)]">
+            <!-- 头部 -->
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h1 class="text-2xl font-bold mb-1">🎬 物料生成管理</h1>
+                    <p class="text-gray-500">管理AI自动生成的营销物料，支持查看、审核、导出、批量操作</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button class="border border-gray-300 bg-white px-4 py-2 rounded-lg hover:bg-gray-50">
+                        <i class="fa fa-download mr-2"></i> 导出报表
+                    </button>
+                    <button class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg">
+                        <i class="fa fa-refresh mr-2"></i> 同步生成状态
+                    </button>
+                </div>
+            </div>
+
+            <!-- 统计卡片 -->
+            <div class="grid grid-cols-4 gap-4 mb-6">
+                <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-sm mb-1">总生成任务</p>
+                            <h3 class="text-3xl font-bold">86</h3>
+                            <p class="text-success text-sm mt-2"><i class="fa fa-arrow-up"></i> 12个 今日新增</p>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-50 rounded-full flex items-center justify-center text-primary text-xl">
+                            <i class="fa fa-film"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-sm mb-1">已完成</p>
+                            <h3 class="text-3xl font-bold">68</h3>
+                            <p class="text-success text-sm mt-2">完成率：79.1%</p>
+                        </div>
+                        <div class="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center text-success text-xl">
+                            <i class="fa fa-check-circle"></i>
+                        </div>
+                    </div>
+                    <div class="progress-bar mt-3">
+                        <div class="progress-value bg-success" style="width: 79%"></div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-sm mb-1">生成中</p>
+                            <h3 class="text-3xl font-bold">12</h3>
+                            <p class="text-warning text-sm mt-2">平均耗时：12分钟</p>
+                        </div>
+                        <div class="w-12 h-12 bg-orange-50 rounded-full flex items-center justify-center text-warning text-xl">
+                            <i class="fa fa-spinner fa-spin"></i>
+                        </div>
+                    </div>
+                    <div class="progress-bar mt-3">
+                        <div class="progress-value bg-warning" style="width: 14%"></div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-sm mb-1">生成失败</p>
+                            <h3 class="text-3xl font-bold">6</h3>
+                            <p class="text-danger text-sm mt-2">失败率：7.0%</p>
+                        </div>
+                        <div class="w-12 h-12 bg-red-50 rounded-full flex items-center justify-center text-danger text-xl">
+                            <i class="fa fa-exclamation-triangle"></i>
+                        </div>
+                    </div>
+                    <div class="progress-bar mt-3">
+                        <div class="progress-value bg-danger" style="width: 7%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 筛选区域 -->
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 mb-6">
+                <div class="grid grid-cols-5 gap-4">
+                    <div>
+                        <label class="text-xs text-gray-500 mb-1 block">所属项目</label>
+                        <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                            <option value="">全部</option>
+                            <option>中海汇德里</option>
+                            <option>保利中央公园</option>
+                            <option>万科城市之光</option>
+                            <option>碧桂园天玺</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500 mb-1 block">物料类型</label>
+                        <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                            <option value="">全部</option>
+                            <option>文案</option>
+                            <option>封面图</option>
+                            <option>短视频</option>
+                            <option>脚本</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500 mb-1 block">生成状态</label>
+                        <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                            <option value="">全部</option>
+                            <option>待生成</option>
+                            <option>生成中</option>
+                            <option>已完成</option>
+                            <option>生成失败</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500 mb-1 block">生成模式</label>
+                        <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                            <option value="">全部</option>
+                            <option>闪电生成</option>
+                            <option>快速生成</option>
+                            <option>自定义生成</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button class="w-full bg-primary text-white rounded-lg px-3 py-2 text-sm">
+                            <i class="fa fa-search mr-1"></i> 筛选
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 物料列表 -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">
+                                <input type="checkbox" class="mr-2">
+                                物料信息
+                            </th>
+                            <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">所属项目</th>
+                            <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">物料类型</th>
+                            <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">生成模式</th>
+                            <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">生成状态</th>
+                            <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">创建时间</th>
+                            <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">完成时间</th>
+                            <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 生成成功 -->
+                        <tr class="border-b border-gray-100 hover-row">
+                            <td class="px-4 py-3">
+                                <div class="flex items-center">
+                                    <input type="checkbox" class="mr-3">
+                                    <div>
+                                        <div class="font-medium text-sm">中海汇德里 朋友圈文案</div>
+                                        <p class="text-xs text-gray-500">适用平台：微信朋友圈、小红书</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 text-sm">中海汇德里</td>
+                            <td class="px-4 py-3">
+                                <span class="tag tag-info">文案</span>
+                            </td>
+                            <td class="px-4 py-3 text-sm">自动生成</td>
+                            <td class="px-4 py-3">
+                                <span class="tag tag-success">已完成</span>
+                            </td>
+                            <td class="px-4 py-3 text-sm">2026-03-28 10:23</td>
+                            <td class="px-4 py-3 text-sm">2026-03-28 10:25</td>
+                            <td class="px-4 py-3">
+                                <div class="flex gap-2">
+                                    <button class="text-xs text-primary">查看</button>
+                                    <button class="text-xs text-gray-600">下载</button>
+                                    <button class="text-xs text-gray-600">推送</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- 生成中 -->
+                        <tr class="border-b border-gray-100 hover-row">
+                            <td class="px-4 py-3">
+                                <div class="flex items-center">
+                                    <input type="checkbox" class="mr-3">
+                                    <div>
+                                        <div class="font-medium text-sm">保利中央公园 短视频</div>
+                                        <p class="text-xs text-gray-500">适用平台：抖音、视频号</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 text-sm">保利中央公园</td>
+                            <td class="px-4 py-3">
+                                <span class="tag tag-warning">短视频</span>
+                            </td>
+                            <td class="px-4 py-3 text-sm">闪电生成</td>
+                            <td class="px-4 py-3">
+                                <span class="tag tag-warning">生成中</span>
+                            </td>
+                            <td class="px-4 py-3 text-sm">2026-03-28 14:35</td>
+                            <td class="px-4 py-3 text-sm">预计14:47完成</td>
+                            <td class="px-4 py-3">
+                                <div class="flex gap-2">
+                                    <button class="text-xs text-gray-600">查看进度</button>
+                                    <button class="text-xs text-gray-600" disabled>下载</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- 生成失败 -->
+                        <tr class="border-b border-gray-100 hover-row bg-red-50/30">
+                            <td class="px-4 py-3">
+                                <div class="flex items-center">
+                                    <input type="checkbox" class="mr-3">
+                                    <div>
+                                        <div class="font-medium text-sm">万科城市之光 封面图</div>
+                                        <p class="text-xs text-gray-500">适用平台：小红书、公众号头图</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 text-sm">万科城市之光</td>
+                            <td class="px-4 py-3">
+                                <span class="tag tag-danger">封面图</span>
+                            </td>
+                            <td class="px-4 py-3 text-sm">快速生成</td>
+                            <td class="px-4 py-3">
+                                <span class="tag tag-danger">生成失败</span>
+                            </td>
+                            <td class="px-4 py-3 text-sm">2026-03-28 09:12</td>
+                            <td class="px-4 py-3 text-sm text-danger">素材不足，生成失败</td>
+                            <td class="px-4 py-3">
+                                <div class="flex gap-2">
+                                    <button class="text-xs text-primary">重试</button>
+                                    <button class="text-xs text-gray-600">查看原因</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- 待生成 -->
+                        <tr class="border-b border-gray-100 hover-row">
+                            <td class="px-4 py-3">
+                                <div class="flex items-center">
+                                    <input type="checkbox" class="mr-3">
+                                    <div>
+                                        <div class="font-medium text-sm">碧桂园天玺 销售脚本</div>
+                                        <p class="text-xs text-gray-500">适用场景：电话邀约、客户接待</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3 text-sm">碧桂园天玺</td>
+                            <td class="px-4 py-3">
+                                <span class="tag tag-gray">脚本</span>
+                            </td>
+                            <td class="px-4 py-3 text-sm">自定义生成</td>
+                            <td class="px-4 py-3">
+                                <span class="tag tag-gray">待生成</span>
+                            </td>
+                            <td class="px-4 py-3 text-sm">2026-03-28 16:00</td>
+                            <td class="px-4 py-3 text-sm">等待探盘完成</td>
+                            <td class="px-4 py-3">
+                                <div class="flex gap-2">
+                                    <button class="text-xs text-primary" disabled>查看</button>
+                                    <button class="text-xs text-warning">立即生成</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- 分页 -->
+                <div class="p-4 border-t border-gray-100 flex justify-between items-center">
+                    <p class="text-xs text-gray-500">共 86 条记录，第 1 / 5 页</p>
+                    <div class="flex gap-2">
+                        <button class="text-xs border border-gray-300 rounded px-3 py-1 hover:bg-gray-50" disabled>上一页</button>
+                        <button class="text-xs border border-primary bg-primary text-white rounded px-3 py-1">1</button>
+                        <button class="text-xs border border-gray-300 rounded px-3 py-1 hover:bg-gray-50">2</button>
+                        <button class="text-xs border border-gray-300 rounded px-3 py-1 hover:bg-gray-50">3</button>
+                        <button class="text-xs border border-gray-300 rounded px-3 py-1 hover:bg-gray-50">...</button>
+                        <button class="text-xs border border-gray-300 rounded px-3 py-1 hover:bg-gray-50">5</button>
+                        <button class="text-xs border border-gray-300 rounded px-3 py-1 hover:bg-gray-50">下一页</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全选功能
+        document.querySelector('thead input[type="checkbox"]').addEventListener('change', function(e) {
+            const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+            checkboxes.forEach(cb => {
+                cb.checked = e.target.checked;
+            });
+        });
+
+        // 重试生成
+        document.querySelectorAll('button:has(.fa-refresh)').forEach(btn => {
+            btn.addEventListener('click', () => {
+                alert('已触发重新同步，正在获取最新生成状态');
+                setTimeout(() => {
+                    alert('状态同步完成');
+                }, 1000);
+            });
+        });
+
+        // 重试失败任务
+        document.querySelectorAll('button:has(:contains("重试"))').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (confirm('确定要重试生成这个物料吗？')) {
+                    this.closest('tr').querySelector('.tag-danger').textContent = '生成中';
+                    this.closest('tr').querySelector('.tag-danger').classList.replace('tag-danger', 'tag-warning');
+                    alert('已提交重新生成请求，预计15分钟内完成');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
