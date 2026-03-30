@@ -78,13 +78,12 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.75);
+            background: rgba(0,0,0,0.7);
             color: white;
-            padding: 12px 24px;
+            padding: 12px 20px;
             border-radius: 8px;
             z-index: 9999;
             animation: fadeIn 0.2s ease;
-            font-size: 14px;
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
@@ -118,7 +117,7 @@
                                 <span class="text-xs text-warning">今天 18:00 截止</span>
                             </div>
                             <h4 class="font-medium text-gray-700 mt-1">中海汇德里3月探盘任务</h4>
-                            <p class="text-xs text-gray-500 mt-1">共4个打卡点：沙盘、样板间，区位图、周边配套</p>
+                            <p class="text-xs text-gray-500 mt-1">共4个打卡点：沙盘、样板间、区位图、周边配套</p>
                         </div>
                         <button onclick="window.location.href='task-detail.html?id=1'" class="px-3 py-1 bg-primary text-white text-xs rounded btn btn-primary">去完成</button>
                     </div>
@@ -178,7 +177,7 @@
                                 <span class="text-xs text-gray-500">4月2日 18:00 截止</span>
                             </div>
                             <h4 class="font-medium text-gray-700 mt-1">万科城市之光新盘探盘</h4>
-                            <p class="text-xs text-gray-500 mt-1">共5个打卡点：沙盘、样板间，区位图、周边配套、竞品对比</p>
+                            <p class="text-xs text-gray-500 mt-1">共5个打卡点：沙盘、样板间、区位图、周边配套、竞品对比</p>
                         </div>
                         <button onclick="window.location.href='task-detail.html?id=3&readonly=1'" class="px-3 py-1 bg-gray-200 text-gray-600 text-xs rounded btn">查看</button>
                     </div>
@@ -224,11 +223,11 @@
     <!-- 底部导航 -->
     <div class="tab-bar">
         <div class="grid grid-cols-5 h-full">
-            <a href="javascript:void(0)" onclick="showToast('页面不存在'); return false;" class="tab-bar-item flex flex-col items-center justify-center">
+            <a href="tools.html" class="tab-bar-item flex flex-col items-center justify-center">
                 <i class="fa fa-th text-xl"></i>
                 <span class="text-xs mt-1">AI工具</span>
             </a>
-            <a href="javascript:void(0)" onclick="showToast('页面不存在'); return false;" class="tab-bar-item flex flex-col items-center justify-center">
+            <a href="ai-design.html" class="tab-bar-item flex flex-col items-center justify-center">
                 <i class="fa fa-paint-brush text-xl"></i>
                 <span class="text-xs mt-1">AI设计</span>
             </a>
@@ -236,7 +235,7 @@
                 <i class="fa fa-home text-xl"></i>
                 <span class="text-xs mt-1">Claw</span>
             </a>
-            <a href="calendar.html" class="tab-bar-item active flex flex-col items-center justify-center">
+            <a href="calendar.html" class="tab-bar-item flex flex-col items-center justify-center active">
                 <i class="fa fa-calendar text-xl"></i>
                 <span class="text-xs mt-1">日历</span>
             </a>
@@ -278,13 +277,11 @@
         // 模拟PC端下发新任务推送效果
         setTimeout(() => {
             const notification = document.getElementById('pushNotification');
-            if (notification) {
-                notification.classList.remove('translate-y-[-200%]');
-                // 3秒后自动关闭
-                setTimeout(() => {
-                    notification.classList.add('translate-y-[-200%]');
-                }, 3000);
-            }
+            notification.classList.remove('translate-y-[-200%]');
+            // 3秒后自动关闭
+            setTimeout(() => {
+                notification.classList.add('translate-y-[-200%]');
+            }, 3000);
         }, 2000);
     </script>
 </body>
