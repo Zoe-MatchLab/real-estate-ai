@@ -327,26 +327,28 @@
     <div class="status-bar bg-white"></div>
     
     <!-- 标题栏 -->
-    <div class="title-bar bg-white">
-        <div class="logo-icon mr-2">
-            <span class="text-white font-bold text-sm">AI</span>
+    <div class="title-bar bg-white flex items-center justify-between px-4">
+        <div class="flex items-center">
+            <div class="logo-icon mr-2">
+                <span class="text-white font-bold text-sm">AI</span>
+            </div>
+            <span class="text-base font-semibold text-gray-800">服务工具</span>
         </div>
-        <span class="text-base font-semibold text-gray-800">服务工具</span>
+        <!-- 通知铃铛 -->
+        <div class="relative w-10 h-10 flex items-center justify-center cursor-pointer" onclick="showNotificationPanel()">
+            <i class="fa fa-bell text-gray-500 text-xl"></i>
+            <span id="notifyBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center" style="display: none;">3</span>
+        </div>
     </div>
     
-    <!-- 搜索栏 + 通知入口 -->
-    <div class="flex items-center gap-2 px-4 py-3">
-        <div class="search-bar flex-1">
+    <!-- 搜索栏 -->
+    <div class="px-4 py-3">
+        <div class="search-bar">
             <div class="search-input-wrap">
                 <i class="fa fa-search text-gray-400 mr-2"></i>
                 <input type="text" class="search-input" placeholder="输入工具名称">
                 <button class="search-btn">搜索</button>
             </div>
-        </div>
-        <!-- 通知铃铛 -->
-        <div class="relative w-10 h-10 flex items-center justify-center bg-gray-100 rounded-lg cursor-pointer" onclick="showNotificationPanel()">
-            <i class="fa fa-bell text-gray-500 text-lg"></i>
-            <span id="notifyBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center" style="display: none;">3</span>
         </div>
     </div>
     
