@@ -275,12 +275,19 @@
         <span class="text-base font-semibold text-gray-800">服务工具</span>
     </div>
     
-    <!-- 搜索栏 -->
-    <div class="search-bar">
-        <div class="search-input-wrap">
-            <i class="fa fa-search text-gray-400 mr-2"></i>
-            <input type="text" class="search-input" placeholder="输入工具名称">
-            <button class="search-btn">搜索</button>
+    <!-- 搜索栏 + 通知入口 -->
+    <div class="flex items-center gap-2 px-4 py-3">
+        <div class="search-bar flex-1">
+            <div class="search-input-wrap">
+                <i class="fa fa-search text-gray-400 mr-2"></i>
+                <input type="text" class="search-input" placeholder="输入工具名称">
+                <button class="search-btn">搜索</button>
+            </div>
+        </div>
+        <!-- 通知铃铛 -->
+        <div class="relative w-10 h-10 flex items-center justify-center bg-gray-100 rounded-lg cursor-pointer" onclick="showNotificationPanel()">
+            <i class="fa fa-bell text-gray-500 text-lg"></i>
+            <span id="notifyBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center" style="display: none;">3</span>
         </div>
     </div>
     
@@ -422,6 +429,53 @@
                 btn.style.background = '';
                 showToast('已移除');
             }
+        }
+    </script>
+    
+    <!-- 通知数据 -->
+    <script>
+        // 模拟通知数据
+        window.notificationData = [
+            {
+                id: 1,
+                taskName: '中海汇德里探盘任务',
+                taskType: 'exploration',
+                message: '2/4阶段进行中，请注意完成',
+                isRead: false,
+                createTime: new Date()
+            },
+            {
+                id: 2,
+                taskName: '万科城市之光话术训练',
+                taskType: 'speech',
+                message: '新任务已下发，请及时完成',
+                isRead: false,
+                createTime: new Date(Date.now() - 10*60*1000)
+            },
+            {
+                id: 3,
+                taskName: '朋友圈文案生成',
+                taskType: 'content',
+                message: '等待探盘完成后执行',
+                isRead: true,
+                createTime: new Date(Date.now() - 24*60*60*1000)
+            }
+        ];
+        
+        // 页面加载时更新badge
+        document.addEventListener('DOMContentLoaded', updateBadge);
+        
+        function updateBadge() {
+            const badge = document.getElementById('notifyBadge');
+            if (!badge) return;
+            const unreadCount = (window.notificationData || []).filter(n => !n.isRead).length;
+            badge.textContent = unreadCount;
+            badge.style.display = unreadCount > 0 ? 'flex' : 'none';
+        }
+        
+        function showNotificationPanel() {
+            // 跳转到日历页面查看通知
+            window.location.href = 'calendar.html';
         }
     </script>
 </body>
