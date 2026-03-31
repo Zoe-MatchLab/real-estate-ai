@@ -18,9 +18,16 @@
         }
     </script>
     <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
         body {
             background: #F7F8FA;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            display: flex;
+            flex-direction: column;
         }
         
         /* 底部Tab栏 */
@@ -98,14 +105,28 @@
             border-radius: 12px;
             z-index: 99999;
         }
+        
+        /* 页面容器 */
+        .page-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            padding-bottom: 80px;
+        }
+        .main-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
     </style>
 </head>
 <body>
     <!-- 状态栏 -->
-    <div class="h-11 bg-white"></div>
+    <div class="h-11 bg-white flex-shrink-0"></div>
     
     <!-- 标题栏 -->
-    <div class="h-11 bg-white flex items-center justify-center border-b border-gray-100 relative">
+    <div class="h-11 bg-white flex items-center justify-center border-b border-gray-100 relative flex-shrink-0">
         <span class="text-base font-semibold text-gray-800">内容日历</span>
         <div class="absolute right-4 flex items-center gap-2">
             <i class="fa fa-search text-gray-400"></i>
@@ -114,112 +135,125 @@
     </div>
     
     <!-- 主内容区 -->
-    <div class="flex" style="height: calc(100vh - 200px);">
-        <!-- 左侧日期列表 -->
-        <div class="w-20 bg-white overflow-y-auto border-r border-gray-100 flex-shrink-0">
-            <!-- 日期项 -->
-            <div class="date-item py-4 px-2 border-b border-gray-50">
-                <div class="text-xs text-gray-500">3月28日</div>
-                <div class="text-xs text-gray-400 mt-1">周五</div>
-            </div>
-            <div class="date-item py-4 px-2 border-b border-gray-50">
-                <div class="text-xs text-gray-500">3月29日</div>
-                <div class="text-xs text-gray-400 mt-1">周六</div>
-            </div>
-            <div class="date-item py-4 px-2 border-b border-gray-50">
-                <div class="text-xs text-gray-500">3月30日</div>
-                <div class="text-xs text-gray-400 mt-1">周日</div>
-            </div>
-            <div class="date-item py-4 px-2 border-b border-gray-50 bg-orange-50 active">
-                <div class="text-xs text-primary font-medium">今天</div>
-                <div class="text-xs text-primary mt-1">3月31日</div>
-            </div>
-            <div class="date-item py-4 px-2 border-b border-gray-50">
-                <div class="text-xs text-gray-500">4月1日</div>
-                <div class="text-xs text-gray-400 mt-1">周二</div>
-            </div>
-            <div class="date-item py-4 px-2 border-b border-gray-50">
-                <div class="text-xs text-gray-500">4月2日</div>
-                <div class="text-xs text-gray-400 mt-1">周三</div>
-            </div>
-            <div class="date-item py-4 px-2 border-b border-gray-50">
-                <div class="text-xs text-gray-500">4月3日</div>
-                <div class="text-xs text-gray-400 mt-1">周四</div>
-            </div>
-        </div>
-        
-        <!-- 右侧任务列表 -->
-        <div class="flex-1 overflow-y-auto bg-gray-50 p-3">
-            <!-- 类型筛选 -->
-            <div class="flex gap-2 overflow-x-auto pb-3 mb-3 -mx-3 px-3">
-                <div class="filter-chip active" onclick="filterTasks('all', this)">全部(4)</div>
-                <div class="filter-chip" onclick="filterTasks('house', this)">🏠新房</div>
-                <div class="filter-chip" onclick="filterTasks('speech', this)">💬话术</div>
-                <div class="filter-chip" onclick="filterTasks('content', this)">📝内容</div>
-                <div class="filter-chip" onclick="filterTasks('self', this)">✨自创</div>
-            </div>
-            
-            <!-- 任务卡片1 - 新房 -->
-            <div class="bg-white rounded-xl task-card type-house shadow-sm" onclick="showToast('查看任务详情')">
-                <div class="flex justify-between items-start mb-2">
-                    <div class="flex items-center">
-                        <span class="text-lg mr-2">🏠</span>
-                        <span class="text-xs font-medium text-orange-500">新房探盘</span>
-                    </div>
-                    <span class="status-tag status-progress">进行中</span>
+    <div class="page-content">
+        <div class="main-content">
+            <!-- 左侧日期列表 -->
+            <div class="w-20 bg-white border-r border-gray-100 flex-shrink-0 overflow-y-auto">
+                <div class="date-item py-4 px-2 border-b border-gray-50" onclick="selectDate(this)">
+                    <div class="text-xs text-gray-500">3月28日</div>
+                    <div class="text-xs text-gray-400 mt-1">周五</div>
                 </div>
-                <h4 class="font-medium text-gray-700 mb-1">中海汇德里3月探盘任务</h4>
-                <div class="flex items-center text-xs text-gray-400 gap-3">
-                    <span>📍 浦东新区</span>
-                    <span>🕐 10:00</span>
+                <div class="date-item py-4 px-2 border-b border-gray-50" onclick="selectDate(this)">
+                    <div class="text-xs text-gray-500">3月29日</div>
+                    <div class="text-xs text-gray-400 mt-1">周六</div>
+                </div>
+                <div class="date-item py-4 px-2 border-b border-gray-50" onclick="selectDate(this)">
+                    <div class="text-xs text-gray-500">3月30日</div>
+                    <div class="text-xs text-gray-400 mt-1">周日</div>
+                </div>
+                <div class="date-item py-4 px-2 border-b border-gray-50 bg-orange-50 active" onclick="selectDate(this)">
+                    <div class="text-xs text-primary font-medium">今天</div>
+                    <div class="text-xs text-primary mt-1">3月31日</div>
+                </div>
+                <div class="date-item py-4 px-2 border-b border-gray-50" onclick="selectDate(this)">
+                    <div class="text-xs text-gray-500">4月1日</div>
+                    <div class="text-xs text-gray-400 mt-1">周二</div>
+                </div>
+                <div class="date-item py-4 px-2 border-b border-gray-50" onclick="selectDate(this)">
+                    <div class="text-xs text-gray-500">4月2日</div>
+                    <div class="text-xs text-gray-400 mt-1">周三</div>
+                </div>
+                <div class="date-item py-4 px-2 border-b border-gray-50" onclick="selectDate(this)">
+                    <div class="text-xs text-gray-500">4月3日</div>
+                    <div class="text-xs text-gray-400 mt-1">周四</div>
+                </div>
+                <div class="date-item py-4 px-2 border-b border-gray-50" onclick="selectDate(this)">
+                    <div class="text-xs text-gray-500">4月4日</div>
+                    <div class="text-xs text-gray-400 mt-1">周五</div>
+                </div>
+                <div class="date-item py-4 px-2 border-b border-gray-50" onclick="selectDate(this)">
+                    <div class="text-xs text-gray-500">4月5日</div>
+                    <div class="text-xs text-gray-400 mt-1">周六</div>
+                </div>
+                <div class="date-item py-4 px-2 border-b border-gray-50" onclick="selectDate(this)">
+                    <div class="text-xs text-gray-500">4月6日</div>
+                    <div class="text-xs text-gray-400 mt-1">周日</div>
                 </div>
             </div>
             
-            <!-- 任务卡片2 - 话术 -->
-            <div class="bg-white rounded-xl task-card type-speech shadow-sm" onclick="showToast('查看任务详情')">
-                <div class="flex justify-between items-start mb-2">
-                    <div class="flex items-center">
-                        <span class="text-lg mr-2">💬</span>
-                        <span class="text-xs font-medium text-purple-500">话术训练</span>
+            <!-- 右侧任务列表 -->
+            <div class="flex-1 overflow-y-auto bg-gray-50 p-3">
+                <!-- 类型筛选 -->
+                <div class="flex gap-2 overflow-x-auto pb-3 mb-3">
+                    <div class="filter-chip active whitespace-nowrap px-3 py-1.5 bg-orange-100 text-primary rounded-full text-xs font-medium" onclick="filterTasks('all', this)">全部(4)</div>
+                    <div class="filter-chip whitespace-nowrap px-3 py-1.5 bg-gray-100 text-gray-600 rounded-full text-xs" onclick="filterTasks('house', this)">🏠新房</div>
+                    <div class="filter-chip whitespace-nowrap px-3 py-1.5 bg-gray-100 text-gray-600 rounded-full text-xs" onclick="filterTasks('speech', this)">💬话术</div>
+                    <div class="filter-chip whitespace-nowrap px-3 py-1.5 bg-gray-100 text-gray-600 rounded-full text-xs" onclick="filterTasks('content', this)">📝内容</div>
+                    <div class="filter-chip whitespace-nowrap px-3 py-1.5 bg-gray-100 text-gray-600 rounded-full text-xs" onclick="filterTasks('self', this)">✨自创</div>
+                </div>
+                
+                <!-- 任务卡片1 - 新房 -->
+                <div class="bg-white rounded-xl task-card type-house shadow-sm" onclick="showToast('查看任务详情')">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-center">
+                            <span class="text-lg mr-2">🏠</span>
+                            <span class="text-xs font-medium text-orange-500">新房探盘</span>
+                        </div>
+                        <span class="status-tag status-progress">进行中</span>
                     </div>
-                    <span class="status-tag status-pending">待执行</span>
-                </div>
-                <h4 class="font-medium text-gray-700 mb-1">万科城市之光接待话术练习</h4>
-                <div class="flex items-center text-xs text-gray-400 gap-3">
-                    <span>📍 线上练习</span>
-                    <span>🕐 14:00</span>
-                </div>
-            </div>
-            
-            <!-- 任务卡片3 - 内容 -->
-            <div class="bg-white rounded-xl task-card type-content shadow-sm" onclick="showToast('查看任务详情')">
-                <div class="flex justify-between items-start mb-2">
-                    <div class="flex items-center">
-                        <span class="text-lg mr-2">📝</span>
-                        <span class="text-xs font-medium text-green-500">内容发布</span>
+                    <h4 class="font-medium text-gray-700 mb-1">中海汇德里3月探盘任务</h4>
+                    <div class="flex items-center text-xs text-gray-400 gap-3">
+                        <span>📍 浦东新区</span>
+                        <span>🕐 10:00</span>
                     </div>
-                    <span class="status-tag status-done">已完成</span>
                 </div>
-                <h4 class="font-medium text-gray-700 mb-1">二手房交易税费科普文案</h4>
-                <div class="flex items-center text-xs text-gray-400 gap-3">
-                    <span>📍 已发布</span>
-                    <span>🕐 09:00</span>
-                </div>
-            </div>
-            
-            <!-- 任务卡片4 - 自创 -->
-            <div class="bg-white rounded-xl task-card type-self shadow-sm" onclick="showToast('查看任务详情')">
-                <div class="flex justify-between items-start mb-2">
-                    <div class="flex items-center">
-                        <span class="text-lg mr-2">✨</span>
-                        <span class="text-xs font-medium text-yellow-500">自创任务</span>
+                
+                <!-- 任务卡片2 - 话术 -->
+                <div class="bg-white rounded-xl task-card type-speech shadow-sm" onclick="showToast('查看任务详情')">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-center">
+                            <span class="text-lg mr-2">💬</span>
+                            <span class="text-xs font-medium text-purple-500">话术训练</span>
+                        </div>
+                        <span class="status-tag status-pending">待执行</span>
                     </div>
-                    <span class="status-tag status-overdue">已逾期</span>
+                    <h4 class="font-medium text-gray-700 mb-1">万科城市之光接待话术练习</h4>
+                    <div class="flex items-center text-xs text-gray-400 gap-3">
+                        <span>📍 线上练习</span>
+                        <span>🕐 14:00</span>
+                    </div>
                 </div>
-                <h4 class="font-medium text-gray-700 mb-1">个人客户跟进记录</h4>
-                <div class="flex items-center text-xs text-gray-400 gap-3">
-                    <span>📍 私客维护</span>
-                    <span>🕐 18:00</span>
+                
+                <!-- 任务卡片3 - 内容 -->
+                <div class="bg-white rounded-xl task-card type-content shadow-sm" onclick="showToast('查看任务详情')">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-center">
+                            <span class="text-lg mr-2">📝</span>
+                            <span class="text-xs font-medium text-green-500">内容发布</span>
+                        </div>
+                        <span class="status-tag status-done">已完成</span>
+                    </div>
+                    <h4 class="font-medium text-gray-700 mb-1">二手房交易税费科普文案</h4>
+                    <div class="flex items-center text-xs text-gray-400 gap-3">
+                        <span>📍 已发布</span>
+                        <span>🕐 09:00</span>
+                    </div>
+                </div>
+                
+                <!-- 任务卡片4 - 自创 -->
+                <div class="bg-white rounded-xl task-card type-self shadow-sm" onclick="showToast('查看任务详情')">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-center">
+                            <span class="text-lg mr-2">✨</span>
+                            <span class="text-xs font-medium text-yellow-500">自创任务</span>
+                        </div>
+                        <span class="status-tag status-overdue">已逾期</span>
+                    </div>
+                    <h4 class="font-medium text-gray-700 mb-1">个人客户跟进记录</h4>
+                    <div class="flex items-center text-xs text-gray-400 gap-3">
+                        <span>📍 私客维护</span>
+                        <span>🕐 18:00</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -256,20 +290,21 @@
         }
         
         function filterTasks(type, el) {
-            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-            el.classList.add('active');
+            document.querySelectorAll('.filter-chip').forEach(c => {
+                c.classList.remove('bg-orange-100', 'text-primary', 'font-medium');
+                c.classList.add('bg-gray-100', 'text-gray-600');
+            });
+            el.classList.remove('bg-gray-100', 'text-gray-600');
+            el.classList.add('bg-orange-100', 'text-primary', 'font-medium');
             showToast('筛选：' + type);
         }
         
-        // 日期选择
-        document.querySelectorAll('.date-item').forEach(item => {
-            item.addEventListener('click', function() {
-                document.querySelectorAll('.date-item').forEach(i => {
-                    i.classList.remove('bg-orange-50', 'active');
-                });
-                this.classList.add('bg-orange-50', 'active');
+        function selectDate(el) {
+            document.querySelectorAll('.date-item').forEach(i => {
+                i.classList.remove('bg-orange-50', 'active');
             });
-        });
+            el.classList.add('bg-orange-50', 'active');
+        }
     </script>
 </body>
 </html>
