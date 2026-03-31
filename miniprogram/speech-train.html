@@ -190,25 +190,13 @@
     <!-- 主内容区 -->
     <div class="px-4 py-6 pb-32">
         
-        <!-- 右侧模式选择按钮 -->
-        <div class="flex justify-end gap-3 mb-4">
-            <!-- 语音按钮 -->
-            <div class="mode-btn" onclick="selectMode(this, '电话')">
-                <i class="fa fa-phone text-gray-500 text-sm"></i>
-            </div>
-            <!-- 添加按钮 -->
-            <div class="mode-btn" onclick="showProjectModal()">
-                <i class="fa fa-plus text-gray-500 text-sm"></i>
-            </div>
-        </div>
-        
         <!-- AI形象 -->
         <div class="ai-avatar mb-6">
             <i class="fa fa-comments text-white text-5xl"></i>
         </div>
         
         <!-- 欢迎语 -->
-        <div class="text-center mb-8">
+        <div class="text-center mb-6">
             <h1 class="text-xl font-bold text-gray-800 mb-1">Hi，欢迎来到话术训练智能体</h1>
             <p class="text-sm text-gray-500">你可以在这里训练不同类型的项目</p>
         </div>
@@ -216,8 +204,8 @@
         <!-- 选择项目 + 开始训练 -->
         <div class="flex flex-col items-center gap-4">
             <!-- 选择项目 -->
-            <button class="flex items-center gap-2 px-4 py-2 bg-gray-100 rounded-full" onclick="showProjectModal()">
-                <i class="fa fa-th-large text-primary text-sm"></i>
+            <button class="flex items-center gap-2 px-5 py-3 bg-gray-100 rounded-full" onclick="showProjectModal()">
+                <i class="fa fa-th-large text-primary"></i>
                 <span id="selectedProject" class="text-sm text-gray-700">选择项目</span>
                 <i class="fa fa-chevron-down text-gray-400 text-xs"></i>
             </button>
@@ -259,7 +247,12 @@
             <div class="px-4 pb-3 border-b border-gray-100">
                 <div class="flex items-center justify-between">
                     <span class="text-base font-semibold text-gray-800">选择项目</span>
-                    <i class="fa fa-times text-gray-400" onclick="hideProjectModal()"></i>
+                    <div class="flex items-center gap-3">
+                        <button class="text-primary text-sm" onclick="createProject()">
+                            <i class="fa fa-plus mr-1"></i>新建
+                        </button>
+                        <i class="fa fa-times text-gray-400" onclick="hideProjectModal()"></i>
+                    </div>
                 </div>
             </div>
             
@@ -358,6 +351,10 @@
         
         function showProjectModal() {
             document.getElementById('projectModal').classList.add('show');
+        }
+        
+        function createProject() {
+            showToast('新建项目功能开发中');
         }
         
         function hideProjectModal() {
