@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI内容管理 - 房产AI小程序</title>
+    <title>内容日历 - 房产AI小程序</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <script>
@@ -57,6 +57,35 @@
             color: #FF6B35;
         }
         
+        /* 任务卡片样式 */
+        .task-card {
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
+            transition: all 0.2s;
+            border-left: 4px solid transparent;
+        }
+        .task-card:active {
+            transform: scale(0.98);
+        }
+        .task-card.type-house { border-left-color: #FF6B35; }
+        .task-card.type-speech { border-left-color: #9B59FF; }
+        .task-card.type-content { border-left-color: #00B42A; }
+        .task-card.type-self { border-left-color: #FFD000; }
+        .task-card.type-info { border-left-color: #86909C; }
+        
+        /* 状态标签 */
+        .status-tag {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .status-pending { background: #FFF7E6; color: #FF7D00; }
+        .status-progress { background: #E8F3FF; color: #165DFF; }
+        .status-done { background: #E8FFEA; color: #00B42A; }
+        .status-overdue { background: #FFECE8; color: #F53F3F; }
+        
         /* Toast */
         .toast {
             position: fixed;
@@ -77,8 +106,9 @@
     
     <!-- 标题栏 -->
     <div class="h-11 bg-white flex items-center justify-center border-b border-gray-100 relative">
-        <span class="text-base font-semibold text-gray-800">AI内容管理</span>
-        <div class="absolute right-4">
+        <span class="text-base font-semibold text-gray-800">内容日历</span>
+        <div class="absolute right-4 flex items-center gap-2">
+            <i class="fa fa-search text-gray-400"></i>
             <i class="fa fa-ellipsis-h text-gray-400"></i>
         </div>
     </div>
@@ -88,96 +118,108 @@
         <!-- 左侧日期列表 -->
         <div class="w-20 bg-white overflow-y-auto border-r border-gray-100 flex-shrink-0">
             <!-- 日期项 -->
-            <div class="date-item py-4 px-2 border-b border-gray-50 active">
-                <div class="text-xs text-gray-800 font-medium">2025-09-16</div>
-                <div class="text-xs text-gray-400 mt-1">7天前</div>
+            <div class="date-item py-4 px-2 border-b border-gray-50">
+                <div class="text-xs text-gray-500">3月28日</div>
+                <div class="text-xs text-gray-400 mt-1">周五</div>
             </div>
             <div class="date-item py-4 px-2 border-b border-gray-50">
-                <div class="text-xs text-gray-500">2025-09-17</div>
-                <div class="text-xs text-gray-400 mt-1">6天前</div>
+                <div class="text-xs text-gray-500">3月29日</div>
+                <div class="text-xs text-gray-400 mt-1">周六</div>
             </div>
             <div class="date-item py-4 px-2 border-b border-gray-50">
-                <div class="text-xs text-gray-500">2025-09-18</div>
-                <div class="text-xs text-gray-400 mt-1">5天前</div>
+                <div class="text-xs text-gray-500">3月30日</div>
+                <div class="text-xs text-gray-400 mt-1">周日</div>
+            </div>
+            <div class="date-item py-4 px-2 border-b border-gray-50 bg-orange-50 active">
+                <div class="text-xs text-primary font-medium">今天</div>
+                <div class="text-xs text-primary mt-1">3月31日</div>
             </div>
             <div class="date-item py-4 px-2 border-b border-gray-50">
-                <div class="text-xs text-gray-500">2025-09-19</div>
-                <div class="text-xs text-gray-400 mt-1">4天前</div>
+                <div class="text-xs text-gray-500">4月1日</div>
+                <div class="text-xs text-gray-400 mt-1">周二</div>
             </div>
             <div class="date-item py-4 px-2 border-b border-gray-50">
-                <div class="text-xs text-gray-500">2025-09-20</div>
-                <div class="text-xs text-gray-400 mt-1">3天前</div>
+                <div class="text-xs text-gray-500">4月2日</div>
+                <div class="text-xs text-gray-400 mt-1">周三</div>
             </div>
             <div class="date-item py-4 px-2 border-b border-gray-50">
-                <div class="text-xs text-gray-500">2025-09-21</div>
-                <div class="text-xs text-gray-400 mt-1">2天前</div>
-            </div>
-            <div class="date-item py-4 px-2 border-b border-gray-50">
-                <div class="text-xs text-gray-500">2025-09-22</div>
-                <div class="text-xs text-gray-400 mt-1">昨天</div>
-            </div>
-            <div class="date-item py-4 px-2 border-b border-gray-50 bg-orange-50">
-                <div class="text-xs text-primary font-medium">2025-09-23</div>
-                <div class="text-xs text-primary mt-1">今天</div>
+                <div class="text-xs text-gray-500">4月3日</div>
+                <div class="text-xs text-gray-400 mt-1">周四</div>
             </div>
         </div>
         
-        <!-- 右侧内容列表 -->
+        <!-- 右侧任务列表 -->
         <div class="flex-1 overflow-y-auto bg-gray-50 p-3">
-            <!-- 内容卡片 -->
-            <div class="bg-white rounded-xl p-4 mb-3" onclick="showToast('查看详情')">
-                <div class="flex gap-3">
-                    <img class="w-24 h-20 rounded-lg object-cover" src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=200&h=160&fit=crop" alt="">
-                    <div class="flex-1">
-                        <h4 class="text-sm font-medium text-gray-800 line-clamp-2">重磅！上海取消限购政策解读新房市场迎来重大利好</h4>
-                        <div class="flex items-center gap-2 mt-2 text-xs text-gray-400">
-                            <span>政策解读</span>
-                            <span>·</span>
-                            <span>2025-09-23</span>
-                        </div>
+            <!-- 类型筛选 -->
+            <div class="flex gap-2 overflow-x-auto pb-3 mb-3 -mx-3 px-3">
+                <div class="filter-chip active" onclick="filterTasks('all', this)">全部(4)</div>
+                <div class="filter-chip" onclick="filterTasks('house', this)">🏠新房</div>
+                <div class="filter-chip" onclick="filterTasks('speech', this)">💬话术</div>
+                <div class="filter-chip" onclick="filterTasks('content', this)">📝内容</div>
+                <div class="filter-chip" onclick="filterTasks('self', this)">✨自创</div>
+            </div>
+            
+            <!-- 任务卡片1 - 新房 -->
+            <div class="bg-white rounded-xl task-card type-house shadow-sm" onclick="showToast('查看任务详情')">
+                <div class="flex justify-between items-start mb-2">
+                    <div class="flex items-center">
+                        <span class="text-lg mr-2">🏠</span>
+                        <span class="text-xs font-medium text-orange-500">新房探盘</span>
                     </div>
+                    <span class="status-tag status-progress">进行中</span>
+                </div>
+                <h4 class="font-medium text-gray-700 mb-1">中海汇德里3月探盘任务</h4>
+                <div class="flex items-center text-xs text-gray-400 gap-3">
+                    <span>📍 浦东新区</span>
+                    <span>🕐 10:00</span>
                 </div>
             </div>
             
-            <div class="bg-white rounded-xl p-4 mb-3" onclick="showToast('查看详情')">
-                <div class="flex gap-3">
-                    <img class="w-24 h-20 rounded-lg object-cover" src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=200&h=160&fit=crop" alt="">
-                    <div class="flex-1">
-                        <h4 class="text-sm font-medium text-gray-800 line-clamp-2">二手房交易税费计算方式详解避免踩坑必看</h4>
-                        <div class="flex items-center gap-2 mt-2 text-xs text-gray-400">
-                            <span>二手房</span>
-                            <span>·</span>
-                            <span>2025-09-22</span>
-                        </div>
+            <!-- 任务卡片2 - 话术 -->
+            <div class="bg-white rounded-xl task-card type-speech shadow-sm" onclick="showToast('查看任务详情')">
+                <div class="flex justify-between items-start mb-2">
+                    <div class="flex items-center">
+                        <span class="text-lg mr-2">💬</span>
+                        <span class="text-xs font-medium text-purple-500">话术训练</span>
                     </div>
+                    <span class="status-tag status-pending">待执行</span>
+                </div>
+                <h4 class="font-medium text-gray-700 mb-1">万科城市之光接待话术练习</h4>
+                <div class="flex items-center text-xs text-gray-400 gap-3">
+                    <span>📍 线上练习</span>
+                    <span>🕐 14:00</span>
                 </div>
             </div>
             
-            <div class="bg-white rounded-xl p-4 mb-3" onclick="showToast('查看详情')">
-                <div class="flex gap-3">
-                    <img class="w-24 h-20 rounded-lg object-cover" src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=200&h=160&fit=crop" alt="">
-                    <div class="flex-1">
-                        <h4 class="text-sm font-medium text-gray-800 line-clamp-2">租房市场行情分析租金走势预测报告</h4>
-                        <div class="flex items-center gap-2 mt-2 text-xs text-gray-400">
-                            <span>租赁市场</span>
-                            <span>·</span>
-                            <span>2025-09-21</span>
-                        </div>
+            <!-- 任务卡片3 - 内容 -->
+            <div class="bg-white rounded-xl task-card type-content shadow-sm" onclick="showToast('查看任务详情')">
+                <div class="flex justify-between items-start mb-2">
+                    <div class="flex items-center">
+                        <span class="text-lg mr-2">📝</span>
+                        <span class="text-xs font-medium text-green-500">内容发布</span>
                     </div>
+                    <span class="status-tag status-done">已完成</span>
+                </div>
+                <h4 class="font-medium text-gray-700 mb-1">二手房交易税费科普文案</h4>
+                <div class="flex items-center text-xs text-gray-400 gap-3">
+                    <span>📍 已发布</span>
+                    <span>🕐 09:00</span>
                 </div>
             </div>
             
-            <div class="bg-white rounded-xl p-4 mb-3" onclick="showToast('查看详情')">
-                <div class="flex gap-3">
-                    <img class="w-24 h-20 rounded-lg object-cover" src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=200&h=160&fit=crop" alt="">
-                    <div class="flex-1">
-                        <h4 class="text-sm font-medium text-gray-800 line-clamp-2">新房开盘预告多个热门项目即将入市</h4>
-                        <div class="flex items-center gap-2 mt-2 text-xs text-gray-400">
-                            <span>新房资讯</span>
-                            <span>·</span>
-                            <span>2025-09-20</span>
-                        </div>
+            <!-- 任务卡片4 - 自创 -->
+            <div class="bg-white rounded-xl task-card type-self shadow-sm" onclick="showToast('查看任务详情')">
+                <div class="flex justify-between items-start mb-2">
+                    <div class="flex items-center">
+                        <span class="text-lg mr-2">✨</span>
+                        <span class="text-xs font-medium text-yellow-500">自创任务</span>
                     </div>
+                    <span class="status-tag status-overdue">已逾期</span>
+                </div>
+                <h4 class="font-medium text-gray-700 mb-1">个人客户跟进记录</h4>
+                <div class="flex items-center text-xs text-gray-400 gap-3">
+                    <span>📍 私客维护</span>
+                    <span>🕐 18:00</span>
                 </div>
             </div>
         </div>
@@ -213,17 +255,19 @@
             setTimeout(() => toast.remove(), 2000);
         }
         
+        function filterTasks(type, el) {
+            document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            showToast('筛选：' + type);
+        }
+        
         // 日期选择
         document.querySelectorAll('.date-item').forEach(item => {
             item.addEventListener('click', function() {
                 document.querySelectorAll('.date-item').forEach(i => {
                     i.classList.remove('bg-orange-50', 'active');
-                    i.querySelector('div').classList.remove('text-primary', 'font-medium');
-                    i.querySelector('div').classList.add('text-gray-500');
                 });
                 this.classList.add('bg-orange-50', 'active');
-                this.querySelector('div').classList.remove('text-gray-500');
-                this.querySelector('div').classList.add('text-primary', 'font-medium');
             });
         });
     </script>
