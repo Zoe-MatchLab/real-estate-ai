@@ -253,7 +253,32 @@
                     <div class="filter-chip whitespace-nowrap px-3 py-1.5 bg-gray-100 text-gray-600 rounded-full text-xs" onclick="filterTasks('house', this)">🏠探盘(2)</div>
                     <div class="filter-chip whitespace-nowrap px-3 py-1.5 bg-gray-100 text-gray-600 rounded-full text-xs" onclick="filterTasks('speech', this)">💬话术(3)</div>
                     <div class="filter-chip whitespace-nowrap px-3 py-1.5 bg-gray-100 text-gray-600 rounded-full text-xs" onclick="filterTasks('content', this)">📝内容(1)</div>
-                    <div class="filter-chip whitespace-nowrap px-3 py-1.5 bg-gray-100 text-gray-600 rounded-full text-xs" onclick="filterTasks('self', this)">✨自创(2)</div>
+                    <div class="filter-chip whitespace-nowrap px-3 py-1.5 bg-red-100 text-red-500 rounded-full text-xs font-medium" onclick="filterTasks('newHouse', this)">🏠新房(1)</div>
+                </div>
+                
+                <!-- 新房上线通知卡片 -->
+                <div class="task-card bg-white rounded-xl p-4 mb-3 shadow-sm border-l-4 border-red-500" onclick="gotoHouseNotify()">
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-center mb-2">
+                            <span class="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center mr-2">
+                                <i class="fa fa-home text-red-500 text-xs"></i>
+                            </span>
+                            <span class="text-xs font-medium text-red-500">新房上线</span>
+                            <span class="text-xs text-gray-400 ml-2">刚刚</span>
+                        </div>
+                    </div>
+                    <h3 class="font-medium text-gray-800 mb-1">中海汇德里</h3>
+                    <p class="text-xs text-gray-500 mb-2">新房项目已上线，请配置探盘任务</p>
+                    <div class="flex items-center text-xs text-gray-400">
+                        <i class="fa fa-map-marker mr-1"></i>
+                        <span>浦东新区</span>
+                        <span class="mx-2">·</span>
+                        <i class="fa fa-jpy mr-1"></i>
+                        <span>8.5万/㎡</span>
+                    </div>
+                    <div class="mt-3 flex justify-end">
+                        <button class="px-3 py-1.5 bg-red-500 text-white text-xs rounded-full">立即配置</button>
+                    </div>
                 </div>
                 
                 <!-- 任务卡片1 - 探盘任务 进行中（参考task-list.html样式） -->
@@ -489,6 +514,11 @@
         // 跳转话术训练
         function gotoSpeechTrain() {
             window.location.href = 'speech-train.html';
+        }
+        
+        // 跳转新房通知 - 楼盘详情
+        function gotoHouseNotify() {
+            window.location.href = 'house-notify.html';
         }
         
         // 内容发布点击处理
