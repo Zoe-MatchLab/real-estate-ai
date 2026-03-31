@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>话术训练助手 - 麦田小程序</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B35',
+                        orange: '#FF7D00',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background: #F5F5F5;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+        }
+        
+        /* 状态栏 */
+        .status-bar {
+            height: 44px;
+            background: white;
+            padding-top: 12px;
+        }
+        
+        /* 标题栏 */
+        .title-bar {
+            height: 44px;
+            background: white;
+            border-bottom: 1px solid #F0F0F0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* AI形象 */
+        .ai-avatar {
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* 模式选择按钮 */
+        .mode-btn {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            transition: all 0.2s;
+            background: white;
+            border: 2px solid #E8E8E8;
+        }
+        .mode-btn.active {
+            border-color: #FF6B35;
+            background: #FFF7F0;
+        }
+        .mode-btn i {
+            font-size: 20px;
+            color: #666;
+        }
+        .mode-btn.active i {
+            color: #FF6B35;
+        }
+        .mode-btn span {
+            font-size: 11px;
+            color: #999;
+        }
+        .mode-btn.active span {
+            color: #FF6B35;
+            font-weight: 500;
+        }
+        
+        /* 按钮样式 */
+        .btn-primary {
+            background: linear-gradient(135deg, #FF6B35, #FF8C5A);
+            color: white;
+            border-radius: 40px;
+            padding: 14px 32px;
+            font-weight: 600;
+            box-shadow: 0 4px 16px rgba(255, 107, 53, 0.4);
+        }
+        .btn-secondary {
+            background: white;
+            color: #333;
+            border: 1px solid #E8E8E8;
+            border-radius: 40px;
+            padding: 14px 24px;
+            font-weight: 500;
+        }
+        
+        /* 底部Tab栏 */
+        .tab-bar {
+            position: fixed;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(29, 29, 29, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 26px;
+            padding: 8px 16px;
+            z-index: 9999;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+        .tab-bar-inner {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .tab-item {
+            width: 44px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 18px;
+            color: rgba(255,255,255,0.5);
+        }
+        .tab-item i { font-size: 18px; }
+        .tab-item.active {
+            background: rgba(255, 107, 53, 0.15);
+            color: #FF6B35;
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.75);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            z-index: 99999;
+        }
+        
+        /* 项目选择弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 24px 24px 0 0;
+            max-height: 70vh;
+            overflow: hidden;
+            transform: translateY(100%);
+            transition: transform 0.3s;
+            z-index: 1000;
+        }
+        .modal-overlay.show .modal-content {
+            transform: translateY(0);
+        }
+        .modal-handle {
+            width: 40px;
+            height: 4px;
+            background: #E8E8E8;
+            border-radius: 2px;
+            margin: 12px auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- 状态栏 -->
+    <div class="status-bar bg-white px-4"></div>
+    
+    <!-- 标题栏 -->
+    <div class="title-bar bg-white px-4">
+        <div class="absolute left-4 flex items-center">
+            <i class="fa fa-chevron-left text-gray-600"></i>
+        </div>
+        <span class="text-base font-semibold text-gray-800">话术训练助手</span>
+        <div class="absolute right-4">
+            <i class="fa fa-ellipsis-h text-gray-400"></i>
+        </div>
+    </div>
+    
+    <!-- 主内容区 -->
+    <div class="px-4 py-8 pb-24">
+        <!-- AI形象 -->
+        <div class="flex justify-center mb-6">
+            <div class="ai-avatar">
+                <i class="fa fa-comments text-white text-4xl"></i>
+            </div>
+        </div>
+        
+        <!-- 欢迎语 -->
+        <div class="text-center mb-8">
+            <h1 class="text-xl font-bold text-gray-800 mb-2">Hi，欢迎来到话术训练智能体</h1>
+            <p class="text-sm text-gray-500">你可以在这里训练不同类型的项目</p>
+        </div>
+        
+        <!-- 模式选择 -->
+        <div class="flex justify-center gap-6 mb-8">
+            <!-- 电话模式 -->
+            <div class="mode-btn active" onclick="selectMode(this, '电话')">
+                <i class="fa fa-phone"></i>
+                <span>电话</span>
+            </div>
+            
+            <!-- 文字模式 -->
+            <div class="mode-btn" onclick="selectMode(this, '文字')">
+                <i class="fa fa-commenting"></i>
+                <span>文字</span>
+            </div>
+            
+            <!-- 录音模式 -->
+            <div class="mode-btn" onclick="selectMode(this, '录音')">
+                <i class="fa fa-microphone"></i>
+                <span>录音</span>
+            </div>
+        </div>
+        
+        <!-- 选择项目按钮 -->
+        <div class="flex justify-center mb-4">
+            <button class="btn-secondary" onclick="showProjectModal()">
+                <i class="fa fa-th-large mr-2 text-primary"></i>
+                <span id="selectedProject">选择项目</span>
+                <i class="fa fa-chevron-down ml-2 text-gray-400 text-xs"></i>
+            </button>
+        </div>
+        
+        <!-- 开始训练按钮 -->
+        <div class="flex justify-center">
+            <button class="btn-primary" onclick="startTraining()">
+                开始训练
+            </button>
+        </div>
+    </div>
+    
+    <!-- 底部Tab栏 -->
+    <div class="tab-bar">
+        <div class="tab-bar-inner">
+            <a href="tools.html" class="tab-item">
+                <i class="fa fa-rocket"></i>
+            </a>
+            <a href="ai-design.html" class="tab-item">
+                <i class="fa fa-paint-brush"></i>
+            </a>
+            <a href="claw.html" class="tab-item">
+                <i class="fa fa-commenting"></i>
+            </a>
+            <a href="calendar.html" class="tab-item">
+                <i class="fa fa-calendar"></i>
+            </a>
+            <a href="profile.html" class="tab-item">
+                <i class="fa fa-user"></i>
+            </a>
+        </div>
+    </div>
+    
+    <!-- 项目选择弹窗 -->
+    <div class="modal-overlay" id="projectModal">
+        <div class="modal-content">
+            <div class="modal-handle"></div>
+            
+            <!-- 弹窗标题 -->
+            <div class="px-4 pb-3 border-b border-gray-100">
+                <div class="flex items-center justify-between">
+                    <span class="text-base font-semibold text-gray-800">选择项目</span>
+                    <i class="fa fa-times text-gray-400" onclick="hideProjectModal()"></i>
+                </div>
+            </div>
+            
+            <!-- Tab切换 -->
+            <div class="flex px-4 py-3 gap-4 border-b border-gray-100">
+                <button class="px-4 py-2 text-sm font-medium text-primary border-b-2 border-primary" id="tabOfficial">官方推荐</button>
+                <button class="px-4 py-2 text-sm font-medium text-gray-400" id="tabMine" onclick="switchTab('mine')">我创建的</button>
+            </div>
+            
+            <!-- 项目列表 -->
+            <div class="overflow-y-auto" style="max-height: 50vh;">
+                <div class="p-4 space-y-3" id="projectList">
+                    <!-- 项目1 -->
+                    <div class="bg-gray-50 rounded-xl p-4" onclick="selectProject('中海汇德里', '邀约/接待/沙盘讲解', 12, 85)">
+                        <div class="flex items-center mb-2">
+                            <div class="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center mr-2">
+                                <i class="fa fa-home text-primary text-sm"></i>
+                            </div>
+                            <span class="font-medium text-gray-800">中海汇德里</span>
+                        </div>
+                        <div class="text-xs text-gray-500 mb-2">场景：邀约/接待/沙盘讲解</div>
+                        <div class="flex text-xs text-gray-400">
+                            <span>已完成：12次</span>
+                            <span class="mx-2">|</span>
+                            <span class="text-green-500">评分：85分</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 项目2 -->
+                    <div class="bg-gray-50 rounded-xl p-4" onclick="selectProject('万科城市之光', '邀约/接待', 8, 78)">
+                        <div class="flex items-center mb-2">
+                            <div class="w-8 h-8 bg-blue-500/10 rounded-lg flex items-center justify-center mr-2">
+                                <i class="fa fa-building text-blue-500 text-sm"></i>
+                            </div>
+                            <span class="font-medium text-gray-800">万科城市之光</span>
+                        </div>
+                        <div class="text-xs text-gray-500 mb-2">场景：邀约/接待</div>
+                        <div class="flex text-xs text-gray-400">
+                            <span>已完成：8次</span>
+                            <span class="mx-2">|</span>
+                            <span class="text-orange-500">评分：78分</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 项目3 -->
+                    <div class="bg-gray-50 rounded-xl p-4" onclick="selectProject('保利天汇', '沙盘讲解/样板间', 5, 92)">
+                        <div class="flex items-center mb-2">
+                            <div class="w-8 h-8 bg-purple-500/10 rounded-lg flex items-center justify-center mr-2">
+                                <i class="fa fa-star text-purple-500 text-sm"></i>
+                            </div>
+                            <span class="font-medium text-gray-800">保利天汇</span>
+                        </div>
+                        <div class="text-xs text-gray-500 mb-2">场景：沙盘讲解/样板间</div>
+                        <div class="flex text-xs text-gray-400">
+                            <span>已完成：5次</span>
+                            <span class="mx-2">|</span>
+                            <span class="text-green-500">评分：92分</span>
+                        </div>
+                    </div>
+                    
+                    <!-- 项目4 -->
+                    <div class="bg-gray-50 rounded-xl p-4" onclick="selectProject('龙湖天街', '成交逼定', 3, 65)">
+                        <div class="flex items-center mb-2">
+                            <div class="w-8 h-8 bg-red-500/10 rounded-lg flex items-center justify-center mr-2">
+                                <i class="fa fa-handshake-o text-red-500 text-sm"></i>
+                            </div>
+                            <span class="font-medium text-gray-800">龙湖天街</span>
+                        </div>
+                        <div class="text-xs text-gray-500 mb-2">场景：成交逼定</div>
+                        <div class="flex text-xs text-gray-400">
+                            <span>已完成：3次</span>
+                            <span class="mx-2">|</span>
+                            <span class="text-orange-500">评分：65分</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 我的创建Tab内容 -->
+                <div class="p-4 hidden" id="myProjectList">
+                    <div class="text-center text-gray-400 py-8">
+                        <i class="fa fa-folder-open text-4xl mb-2"></i>
+                        <p class="text-sm">暂无创建的训练项目</p>
+                        <button class="mt-3 text-primary text-sm">去创建</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedMode = '电话';
+        let selectedProjectName = '';
+        
+        function selectMode(btn, mode) {
+            // 移除所有active
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            // 添加active到当前
+            btn.classList.add('active');
+            selectedMode = mode;
+        }
+        
+        function showProjectModal() {
+            document.getElementById('projectModal').classList.add('show');
+        }
+        
+        function hideProjectModal() {
+            document.getElementById('projectModal').classList.remove('show');
+        }
+        
+        function switchTab(tab) {
+            const officialTab = document.getElementById('tabOfficial');
+            const mineTab = document.getElementById('tabMine');
+            const projectList = document.getElementById('projectList');
+            const myProjectList = document.getElementById('myProjectList');
+            
+            if (tab === 'mine') {
+                mineTab.classList.add('text-primary', 'border-b-2', 'border-primary');
+                mineTab.classList.remove('text-gray-400');
+                officialTab.classList.remove('text-primary', 'border-b-2', 'border-primary');
+                officialTab.classList.add('text-gray-400');
+                projectList.classList.add('hidden');
+                myProjectList.classList.remove('hidden');
+            } else {
+                officialTab.classList.add('text-primary', 'border-b-2', 'border-primary');
+                officialTab.classList.remove('text-gray-400');
+                mineTab.classList.remove('text-primary', 'border-b-2', 'border-primary');
+                mineTab.classList.add('text-gray-400');
+                projectList.classList.remove('hidden');
+                myProjectList.classList.add('hidden');
+            }
+        }
+        
+        function selectProject(name, scenes, times, score) {
+            document.getElementById('selectedProject').textContent = name;
+            selectedProjectName = name;
+            hideProjectModal();
+            showToast('已选择：' + name);
+        }
+        
+        function startTraining() {
+            if (!selectedProjectName) {
+                showToast('请先选择训练项目');
+                return;
+            }
+            showToast('即将开始' + selectedMode + '训练...');
+            // 实际跳转逻辑
+            setTimeout(() => {
+                showToast('训练功能开发中');
+            }, 1500);
+        }
+        
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
+        
+        // 点击遮罩关闭
+        document.getElementById('projectModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideProjectModal();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -42,7 +42,7 @@
             border-bottom: 1px solid #F0F0F0;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: start;
         }
         
         /* 麦田Logo */
@@ -263,7 +263,7 @@
     <!-- 标题栏 -->
     <div class="title-bar bg-white">
         <div class="logo-icon mr-2">
-            <span class="text-white font-bold text-sm">麦</span>
+            <span class="text-white font-bold text-sm">AI</span>
         </div>
         <span class="text-base font-semibold text-gray-800">服务工具</span>
     </div>
@@ -284,8 +284,8 @@
             <span>管理排序</span>
         </div>
         <div class="filter-right">
-            <span>Collapse All</span>
-            <i class="fa fa-chevron-up"></i>
+            <!-- <span>Collapse All</span>
+            <i class="fa fa-chevron-up"></i> -->
         </div>
     </div>
     
@@ -342,6 +342,22 @@
                     <i class="fa fa-plus"></i>
                 </button>
                 <h4 class="tool-card-title">麦田推荐</h4>
+                <p class="tool-card-desc">为您的房一键生成营销方案</p>
+            </div>
+        </div>
+        
+        <!-- AI话术训练 -->
+        <div class="tool-card tool-card-medium" onclick="window.location.href='speech-train.html'">
+            <img class="tool-card-img" src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?w=336&h=326&fit=crop" alt="">
+            <div class="tool-card-overlay" style="background: linear-gradient(135deg, rgba(0,200,200,0.6) 0%, rgba(0,150,150,0.85) 100%);"></div>
+            <div class="tool-card-content">
+                <button class="tool-card-collect" onclick="event.stopPropagation();toggleCollect(this)">
+                    <i class="fa fa-plus"></i>
+                </button>
+                <h4 class="tool-card-title">AI话术训练</h4>
+                <p class="tool-card-desc">智能对话，仿真场景练习</p>
+            </div>
+        </div>
                 <p class="tool-card-desc">为您的房一键生成营销方案</p>
             </div>
         </div>
