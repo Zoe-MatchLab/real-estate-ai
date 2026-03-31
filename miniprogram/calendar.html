@@ -192,22 +192,67 @@
                     <div class="filter-chip whitespace-nowrap px-3 py-1.5 bg-gray-100 text-gray-600 rounded-full text-xs" onclick="filterTasks('self', this)">✨自创(2)</div>
                 </div>
                 
-                <!-- 任务卡片1 - 新房 已逾期 -->
-                <div class="bg-white rounded-xl task-card type-house shadow-sm" onclick="window.location.href='task-detail.html?id=1'">
-                    <div class="flex justify-between items-start mb-2">
-                        <div class="flex items-center">
-                            <span class="text-lg mr-2">🏠</span>
-                            <span class="text-xs font-medium text-orange-500">新房探盘</span>
+                <!-- 任务卡片1 - 探盘任务（项目制） -->
+                <div class="bg-white rounded-xl shadow-sm mb-3" onclick="handleTaskCardClick('exploration')">
+                    <div class="p-4">
+                        <!-- 任务头部 -->
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex items-center">
+                                <span class="text-lg mr-2">🏠</span>
+                                <span class="font-medium text-gray-800">中海汇德里探盘任务</span>
+                            </div>
+                            <span class="px-2 py-0.5 bg-orange-100 text-orange-500 text-xs rounded">进行中</span>
                         </div>
-                        <span class="status-tag status-overdue">已逾期</span>
-                    </div>
-                    <h4 class="font-medium text-gray-700 mb-1">中海汇德里3月探盘任务</h4>
-                    <div class="flex items-center text-xs text-gray-400 gap-3">
-                        <span>📍 浦东新区</span>
-                        <span>🕐 10:00</span>
-                    </div>
-                    <div class="mt-2 flex justify-end">
-                        <button class="px-3 py-1 bg-primary text-white text-xs rounded-full">去完成</button>
+                        
+                        <!-- 子任务入口 -->
+                        <div class="space-y-2 mb-3">
+                            <!-- 探盘打卡 -->
+                            <div class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg cursor-pointer" onclick="event.stopPropagation();gotoTask('exploration')">
+                                <div class="flex items-center">
+                                    <span class="text-sm mr-2">📸</span>
+                                    <span class="text-sm text-gray-700">探盘打卡</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="text-xs text-blue-500 mr-2">待执行</span>
+                                    <i class="fa fa-chevron-right text-gray-400 text-xs"></i>
+                                </div>
+                            </div>
+                            
+                            <!-- 话术训练 -->
+                            <div class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg cursor-pointer" onclick="event.stopPropagation();gotoSpeechTrain()">
+                                <div class="flex items-center">
+                                    <span class="text-sm mr-2">💬</span>
+                                    <span class="text-sm text-gray-700">话术训练</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="text-xs text-green-500 mr-2">已完成</span>
+                                    <i class="fa fa-chevron-right text-gray-400 text-xs"></i>
+                                </div>
+                            </div>
+                            
+                            <!-- 内容发布 -->
+                            <div class="flex items-center justify-between py-2 px-3 bg-gray-50 rounded-lg opacity-60 cursor-pointer" onclick="event.stopPropagation();handleContentClick('locked')">
+                                <div class="flex items-center">
+                                    <span class="text-sm mr-2">📝</span>
+                                    <span class="text-sm text-gray-700">内容发布</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="text-xs text-gray-400 mr-2">待解锁</span>
+                                    <i class="fa fa-chevron-right text-gray-400 text-xs"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 进度条 -->
+                        <div class="mt-2">
+                            <div class="flex justify-between text-xs text-gray-500 mb-1">
+                                <span>进度：2/4 阶段</span>
+                                <span>50%</span>
+                            </div>
+                            <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                                <div class="h-full bg-primary rounded-full" style="width: 50%"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
@@ -385,6 +430,31 @@
                 i.classList.remove('bg-orange-50', 'active');
             });
             el.classList.add('bg-orange-50', 'active');
+        }
+        
+        // 任务卡片点击
+        function handleTaskCardClick(type) {
+            // 可以根据任务类型做不同处理
+            console.log('点击任务卡片:', type);
+        }
+        
+        // 跳转探盘任务
+        function gotoTask(type) {
+            window.location.href = 'task-detail.html';
+        }
+        
+        // 跳转话术训练
+        function gotoSpeechTrain() {
+            window.location.href = 'speech-train.html';
+        }
+        
+        // 内容发布点击处理
+        function handleContentClick(status) {
+            if (status === 'locked') {
+                showToast('内容发布需先完成探盘打卡');
+                return;
+            }
+            showToast('内容发布功能即将上线');
         }
     </script>
 </body>
