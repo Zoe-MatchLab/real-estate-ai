@@ -77,28 +77,38 @@ body {
 }
 
 .tab-bar-inner {
-    display: flex;
-    align-items: center;
-    height: 100%;
-    gap: 8px;
-}
-
-.tab-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 6px 16px;
-    border-radius: 20px;
-    transition: all 0.2s;
-    color: rgba(255,255,255,0.5);
-}
-
-.tab-item.active {
-    background: #fa8c16;
-    color: white;
-    box-shadow: 0 4px 12px rgba(250, 140, 22, 0.4);
-}
+            display: flex;
+            align-items: center;
+            height: 100%;
+            width: 100%;
+        }
+        .tab-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 2px;
+            transition: all 0.2s;
+            color: rgba(255,255,255,0.5);
+            min-width: 0;
+        }
+        .tab-item.active {
+            background: #fa8c16;
+            color: white;
+            box-shadow: 0 4px 12px rgba(250, 140, 22, 0.4);
+            border-radius: 20px;
+        }
+        .tab-item i {
+            font-size: 16px;
+        }
+        .tab-item span {
+            font-size: 9px;
+            margin-top: 3px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
 /* 4. 统一按钮样式 */
 .btn {
@@ -154,6 +164,7 @@ body {
 /* 7. 加载状态 */
 .loading {
     display: flex;
+            flex: 1;
     align-items: center;
     justify-content: center;
     padding: 20px;
