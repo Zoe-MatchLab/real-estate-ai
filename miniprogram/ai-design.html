@@ -54,18 +54,20 @@
             font-size: 14px;
         }
         
+        .page-container {
+
         /* 底部Tab栏 - 胶囊悬浮 */
         .tab-bar {
             position: fixed;
             bottom: 16px;
             left: 50%;
             transform: translateX(-50%);
-            height: 56px;
+            height: 52px;
             background: rgba(29, 33, 41, 0.95);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-radius: 28px;
-            padding: 0 12px;
+            border-radius: 26px;
+            padding: 0 16px;
             z-index: 9999;
             box-shadow: 0 8px 32px rgba(0,0,0,0.24);
             border: 1px solid rgba(255,255,255,0.1);
@@ -73,41 +75,73 @@
         .tab-bar-inner {
             display: flex;
             align-items: center;
+            justify-content: space-around;
             height: 100%;
             width: 100%;
         }
         .tab-item {
-            flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 6px 2px;
+            padding: 4px 12px;
             transition: all 0.2s;
             color: rgba(255,255,255,0.5);
-            min-width: 0;
+            border-radius: 16px;
         }
         .tab-item.active {
+            color: #fa8c16;
+        }
+        .tab-item.active::after {
+            content: '';
+            position: absolute;
+            top: 6px;
+            width: 4px;
+            height: 4px;
             background: #fa8c16;
-            color: white;
-            box-shadow: 0 4px 12px rgba(250, 140, 22, 0.4);
-            border-radius: 20px;
+            border-radius: 50%;
         }
         .tab-item i {
-            font-size: 16px;
+            font-size: 20px;
         }
-        .tab-item span {
-            font-size: 9px;
-            margin-top: 3px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+
+    
+        /* 底部Tab栏 */
+        .tab-bar {
+            position: fixed;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(29, 33, 41, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 26px;
+            padding: 8px 16px;
+            z-index: 9999;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.24);
+            border: 1px solid rgba(255,255,255,0.1);
         }
-            margin-top: 2px;
+        .tab-bar-inner {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        
-        .page-container {
-            padding-bottom: calc(80px + env(safe-area-inset-bottom));
+        .tab-item {
+            width: 44px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 18px;
+            color: rgba(255,255,255,0.5);
+            transition: all 0.2s;
+        }
+        .tab-item i {
+            font-size: 18px;
+        }
+        .tab-item.active {
+            background: rgba(250, 140, 22, 0.15);
+            color: #fa8c16;
         }
     </style>
 </head>
@@ -208,31 +242,26 @@
     </div>
 
     <!-- 底部Tab栏 -->
+        <!-- 底部Tab栏 -->
     <div class="tab-bar">
         <div class="tab-bar-inner">
             <a href="tools.html" class="tab-item">
                 <i class="fa fa-rocket"></i>
-                <span>AI工具</span>
             </a>
-            <a href="ai-design.html" class="tab-item active">
+            <a href="ai-design.html" class="tab-item">
                 <i class="fa fa-paint-brush"></i>
-                <span>AI设计</span>
             </a>
             <a href="claw.html" class="tab-item">
                 <i class="fa fa-commenting"></i>
-                <span>Claw</span>
             </a>
             <a href="calendar.html" class="tab-item">
                 <i class="fa fa-calendar"></i>
-                <span>日历</span>
             </a>
             <a href="profile.html" class="tab-item">
                 <i class="fa fa-user"></i>
-                <span>我的</span>
             </a>
         </div>
     </div>
-
     <script>
         function showToast(message) {
             const toast = document.createElement('div');
