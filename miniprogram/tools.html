@@ -522,7 +522,13 @@
         ];
         
         // 页面加载时更新badge
-        document.addEventListener('DOMContentLoaded', updateBadge);
+        document.addEventListener('DOMContentLoaded', function() {
+            updateBadge();
+            // 自动弹出通知提示（演示用）
+            setTimeout(function() {
+                showAutoToast('您有新的任务通知');
+            }, 1500);
+        });
         
         function updateBadge() {
             const badge = document.getElementById('notifyBadge');
@@ -533,8 +539,104 @@
         }
         
         function showNotificationPanel() {
-            // 跳转到日历页面查看通知
-            window.location.href = 'calendar.html';
+            document.getElementById('notifyOverlay').classList.add('show');
+            document.getElementById('notifyPanel').classList.add('show');
+            renderNotificationList('all');
+        }
+        
+        function hideNotificationPanel() {
+            document.getElementById('notifyOverlay').classList.remove('show');
+            document.getElementById('notifyPanel').classList.remove('show');
+        }
+        
+        function renderNotificationList(filterType) {
+            const list = document.getElementById('notifyList');
+            if (!list) return;
+            const data = window.notificationData || [];
+            
+            const filtered = filterType === 'all' 
+                ? data 
+                : data.filter(item => item.taskType === filterType);
+            
+            if (filtered.length === 0) {
+                list.innerHTML = '<div class="p-8 text-center text-gray-400">暂无通知</div>';
+                return;
+            }
+            
+            const typeNames = {
+                'exploration': '探盘',
+                'speech': '话术',
+                'content': '内容'
+            };
+            
+            list.innerHTML = filtered.map(function(item) {
+                return '<div class="notification-item ' + (item.isRead ? 'read' : '') + '" onclick="handleNotificationClick(' + item.id + ', \'' + item.taskType + '\')">' +
+                    '<div class="flex items-center gap-2 mb-1">' +
+                    '<span class="' + (item.isRead ? 'bg-gray-300' : 'bg-red-500') + ' w-2 h-2 rounded-full"></span>' +
+                    '<span class="font-medium text-gray-800">' + item.taskName + '</span>' +
+                    '<span class="text-xs text-gray-400 ml-auto">' + typeNames[item.taskType] + '</span>' +
+                    '</div>' +
+                    '<div class="text-sm text-gray-500 mb-1">' + item.message + '</div>' +
+                    '<div class="text-xs text-gray-400">' + formatTime(item.createTime) + '</div>' +
+                    '</div>';
+            }).join('');
+        }
+        
+        function filterNotifications(type) {
+            // 更新Tab状态
+            document.querySelectorAll('.filter-tab').forEach(function(tab) {
+                tab.classList.remove('active');
+                if (tab.dataset.type === type) tab.classList.add('active');
+            });
+            renderNotificationList(type);
+        }
+        
+        function handleNotificationClick(id, type) {
+            // 标记已读
+            const item = window.notificationData.find(function(n) { return n.id === id; });
+            if (item) item.isRead = true;
+            updateBadge();
+            hideNotificationPanel();
+            
+            // 跳转对应页面
+            if (type === 'exploration') {
+                window.location.href = 'task-detail.html';
+            } else if (type === 'speech') {
+                window.location.href = 'speech-train.html';
+            } else if (type === 'content') {
+                window.location.href = 'calendar.html';
+            }
+        }
+        
+        function clearAllNotifications() {
+            window.notificationData = [];
+            updateBadge();
+            renderNotificationList('all');
+            showAutoToast('已清空全部通知');
+        }
+        
+        function formatTime(date) {
+            const now = new Date();
+            const diff = now - date;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+            
+            if (minutes < 1) return '刚刚';
+            if (minutes < 60) return minutes + '分钟前';
+            if (hours < 24) return hours + '小时前';
+            if (days < 7) return days + '天前';
+            return date.toLocaleDateString();
+        }
+        
+        function showAutoToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-16 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white px-4 py-2 rounded-lg text-sm z-99999';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(function() {
+                toast.remove();
+            }, 2000);
         }
     </script>
 </body>
