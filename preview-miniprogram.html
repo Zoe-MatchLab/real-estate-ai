@@ -122,20 +122,23 @@
   
   <div class="phone-frame">
     <div class="phone-screen">
-      <iframe id="previewFrame" src="miniprogram/index.html"></iframe>
+      <iframe id="previewFrame" src="miniprogram/tools.html"></iframe>
     </div>
   </div>
   
   <div class="page-selector">
-    <a class="page-btn active" href="#" onclick="changePage('miniprogram/index.html', this)">首页</a>
+    <a class="page-btn active" href="#" onclick="changePage('miniprogram/tools.html', this)">首页/AI工具</a>
+    <a class="page-btn" href="#" onclick="changePage('miniprogram/ai-design.html', this)">AI设计</a>
+    <a class="page-btn" href="#" onclick="changePage('miniprogram/claw.html', this)">Claw</a>
+    <a class="page-btn" href="#" onclick="changePage('miniprogram/calendar.html', this)">日历</a>
+    <a class="page-btn" href="#" onclick="changePage('miniprogram/profile.html', this)">我的</a>
     <a class="page-btn" href="#" onclick="changePage('miniprogram/task-list.html', this)">任务列表</a>
     <a class="page-btn" href="#" onclick="changePage('miniprogram/task-detail.html', this)">任务详情</a>
-    <a class="page-btn" href="#" onclick="changePage('miniprogram/exam.html', this)">答题</a>
     <a class="page-btn" href="#" onclick="changePage('miniprogram/train.html', this)">训练</a>
-    <a class="page-btn" href="#" onclick="changePage('miniprogram/profile.html', this)">我的</a>
+    <a class="page-btn" href="#" onclick="changePage('miniprogram/exam.html', this)">答题</a>
   </div>
   
-  <div class="tip">💡 在右侧页面列表选择不同页面进行预览</div>
+  <div class="tip">💡 点击上方按钮切换不同页面</div>
 
   <script>
     function changePage(url, btn) {

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI工具 - 房产AI小程序</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#fa8c16',
+                        warning: '#FF9D2B',
+                        danger: '#FA5151',
+                        success: '#00B42A',
+                        gray: {
+                            50: '#F7F8FA',
+                            100: '#EDEEF2',
+                            200: '#D8D9DD',
+                            300: '#B4B5B9',
+                            400: '#86878B',
+                            500: '#4E5969',
+                            600: '#272E3B',
+                            700: '#1D2129',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #F7F8FA;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .page-container {
+            padding-bottom: calc(80px + env(safe-area-inset-bottom));
+        }
+        .search-btn {
+            background: linear-gradient(135deg, #fa8c16 0%, #ff7c00 100%);
+        }
+        .tool-card {
+            border-radius: 20px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+        }
+        .tool-card:active {
+            transform: scale(0.96);
+        }
+        .tool-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+        }
+        .card-orange { background: linear-gradient(135deg, #FF7A00 0%, #FF4500 100%); }
+        .card-blue { background: linear-gradient(135deg, #165DFF 0%, #4080FF 100%); }
+        .card-dark { background: linear-gradient(135deg, #272E3B 0%, #1D2129 100%); }
+        .card-yellow { background: linear-gradient(135deg, #FFD000 0%, #FFA500 100%); }
+        .card-green { background: linear-gradient(135deg, #00B42A 0%, #00D084 100%); }
+        .card-purple { background: linear-gradient(135deg, #722ED1 0%, #9B59FF 100%); }
+        .card-pink { background: linear-gradient(135deg, #F53F3F 0%, #FF6B6B 100%); }
+        .card-cyan { background: linear-gradient(135deg, #00C4CC 0%, #00D4AA 100%); }
+        
+        /* 3D icon effect */
+        .icon-3d {
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+        }
+        
+        /* 底部Tab栏 - 胶囊悬浮 */
+        .tab-bar {
+            position: fixed;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 56px;
+            background: rgba(29, 33, 41, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 28px;
+            padding: 0 12px;
+            z-index: 9999;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.24);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .tab-bar-inner {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            gap: 8px;
+        }
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 16px;
+            border-radius: 20px;
+            transition: all 0.2s;
+            color: rgba(255,255,255,0.5);
+        }
+        .tab-item.active {
+            background: #fa8c16;
+            color: white;
+            box-shadow: 0 4px 12px rgba(250, 140, 22, 0.4);
+        }
+        .tab-item i {
+            font-size: 18px;
+        }
+        .tab-item span {
+            font-size: 10px;
+            margin-top: 2px;
+        }
+        
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.75);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            z-index: 99999;
+            font-size: 14px;
+        }
+        
+        /* 分类标题 */
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1D2129;
+            margin-bottom: 16px;
+            padding-left: 4px;
+        }
+        
+        /* 横幅 */
+        .banner-card {
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            height: 120px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+<body class="page-container">
+    <!-- 顶部区域 -->
+    <div class="bg-gradient-to-br from-orange-500 to-orange-600 px-4 pt-12 pb-6 rounded-b-3xl">
+        <!-- Logo区 -->
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center">
+                <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center mr-3 shadow-lg">
+                    <span class="text-orange-500 font-bold text-lg">房</span>
+                </div>
+                <div>
+                    <h1 class="text-white font-bold text-base">房产咨询师</h1>
+                    <p class="text-orange-200 text-xs">智能作业平台</p>
+                </div>
+            </div>
+            <div class="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center">
+                <i class="fa fa-bell text-white text-sm"></i>
+            </div>
+        </div>
+        
+        <!-- 搜索栏 -->
+        <div class="bg-white rounded-full flex items-center px-4 py-2 shadow-lg">
+            <i class="fa fa-search text-gray-400 mr-3"></i>
+            <input type="text" placeholder="输入工具名称" class="flex-1 text-sm text-gray-700 outline-none bg-transparent">
+            <button class="search-btn text-white text-xs px-4 py-1.5 rounded-full font-medium">搜索</button>
+        </div>
+    </div>
+
+    <!-- 工具列表 -->
+    <div class="px-4 py-5">
+        <!-- 常用工具 - 交错布局 -->
+        <h2 class="section-title">🔥 常用工具</h2>
+        <div class="grid grid-cols-2 gap-4 mb-6">
+            <!-- AI助手 - 大卡片 -->
+            <div class="tool-card bg-white col-span-2 p-5 flex items-center shadow-lg" onclick="window.location.href='claw.html'">
+                <div class="tool-icon card-orange mr-4">
+                    <i class="fa fa-comments text-white text-2xl icon-3d"></i>
+                </div>
+                <div class="flex-1">
+                    <h3 class="font-bold text-base text-gray-800">好房榜AI助手</h3>
+                    <p class="text-xs text-gray-400 mt-1">智能问答·房源推荐·市场分析</p>
+                </div>
+                <div class="text-orange-400">
+                    <i class="fa fa-chevron-right"></i>
+                </div>
+            </div>
+            
+            <!-- 营销方案 -->
+            <div class="tool-card bg-white p-4 shadow-md" onclick="showToast('房屋营销方案')">
+                <div class="tool-icon card-blue mb-3 mx-auto">
+                    <i class="fa fa-building text-white text-2xl icon-3d"></i>
+                </div>
+                <h3 class="font-bold text-sm text-gray-800 text-center">房屋营销方案</h3>
+                <p class="text-xs text-gray-400 mt-1 text-center">智能生成方案</p>
+            </div>
+            
+            <!-- 笔记生成 -->
+            <div class="tool-card bg-white p-4 shadow-md" onclick="showToast('房源笔记生成')">
+                <div class="tool-icon card-dark mb-3 mx-auto">
+                    <i class="fa fa-file-text text-white text-2xl icon-3d"></i>
+                </div>
+                <h3 class="font-bold text-sm text-gray-800 text-center">房源笔记生成</h3>
+                <p class="text-xs text-gray-400 mt-1 text-center">快速生成笔记</p>
+            </div>
+        </div>
+
+        <!-- 获客工具 -->
+        <h2 class="section-title">📣 获客工具</h2>
+        <div class="grid grid-cols-2 gap-4 mb-6">
+            <div class="tool-card bg-white p-4 shadow-md" onclick="showToast('朋友圈文案')">
+                <div class="tool-icon card-yellow mb-3 mx-auto">
+                    <i class="fa fa-image text-white text-2xl icon-3d"></i>
+                </div>
+                <h3 class="font-bold text-sm text-gray-800 text-center">朋友圈文案</h3>
+                <p class="text-xs text-gray-400 mt-1 text-center">一键生成文案配图</p>
+            </div>
+            
+            <div class="tool-card bg-white p-4 shadow-md" onclick="showToast('客户画像分析')">
+                <div class="tool-icon card-purple mb-3 mx-auto">
+                    <i class="fa fa-user-circle text-white text-2xl icon-3d"></i>
+                </div>
+                <h3 class="font-bold text-sm text-gray-800 text-center">客户画像分析</h3>
+                <p class="text-xs text-gray-400 mt-1 text-center">精准定位客户需求</p>
+            </div>
+            
+            <div class="tool-card bg-white p-4 shadow-md" onclick="showToast('竞品对比分析')">
+                <div class="tool-icon card-green mb-3 mx-auto">
+                    <i class="fa fa-balance-scale text-white text-2xl icon-3d"></i>
+                </div>
+                <h3 class="font-bold text-sm text-gray-800 text-center">竞品对比分析</h3>
+                <p class="text-xs text-gray-400 mt-1 text-center">客观对比优劣</p>
+            </div>
+            
+            <div class="tool-card bg-white p-4 shadow-md" onclick="showToast('价格估算')">
+                <div class="tool-icon card-cyan mb-3 mx-auto">
+                    <i class="fa fa-calculator text-white text-2xl icon-3d"></i>
+                </div>
+                <h3 class="font-bold text-sm text-gray-800 text-center">购房价格估算</h3>
+                <p class="text-xs text-gray-400 mt-1 text-center">精准计算成本</p>
+            </div>
+        </div>
+
+        <!-- 学习培训 -->
+        <h2 class="section-title">📚 学习培训</h2>
+        <div class="grid grid-cols-2 gap-4 mb-6">
+            <div class="tool-card bg-white p-4 shadow-md" onclick="window.location.href='train.html'">
+                <div class="tool-icon card-pink mb-3 mx-auto">
+                    <i class="fa fa-book text-white text-2xl icon-3d"></i>
+                </div>
+                <h3 class="font-bold text-sm text-gray-800 text-center">产品知识训练</h3>
+                <p class="text-xs text-gray-400 mt-1 text-center">楼盘知识学习</p>
+            </div>
+            
+            <div class="tool-card bg-white p-4 shadow-md" onclick="window.location.href='exam.html'">
+                <div class="tool-icon card-orange mb-3 mx-auto">
+                    <i class="fa fa-tasks text-white text-2xl icon-3d"></i>
+                </div>
+                <h3 class="font-bold text-sm text-gray-800 text-center">答题练习</h3>
+                <p class="text-xs text-gray-400 mt-1 text-center">巩固知识体系</p>
+            </div>
+        </div>
+
+        <!-- 横幅广告位 -->
+        <div class="banner-card mb-4" onclick="showToast('活动详情')">
+            <div class="absolute inset-0 bg-gradient-to-r from-purple-600 to-indigo-600"></div>
+            <div class="relative z-10 p-5 h-full flex items-center">
+                <div class="flex-1">
+                    <h3 class="text-white font-bold text-lg">🏃 搭建运动新场景</h3>
+                    <p class="text-white/80 text-xs mt-1">把握时机，助力成交</p>
+                </div>
+                <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
+                    <i class="fa fa-soccer-ball-o text-white text-2xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- 管理排序 -->
+        <div class="flex justify-between items-center text-xs text-gray-400 mb-4">
+            <span>管理排序</span>
+            <span>全部收起 <i class="fa fa-chevron-up"></i></span>
+        </div>
+    </div>
+
+    <!-- 底部Tab栏 -->
+    <div class="tab-bar">
+        <div class="tab-bar-inner">
+            <a href="tools.html" class="tab-item active">
+                <i class="fa fa-rocket"></i>
+                <span>AI工具</span>
+            </a>
+            <a href="ai-design.html" class="tab-item">
+                <i class="fa fa-paint-brush"></i>
+                <span>AI设计</span>
+            </a>
+            <a href="claw.html" class="tab-item">
+                <i class="fa fa-commenting"></i>
+                <span>Claw</span>
+            </a>
+            <a href="calendar.html" class="tab-item">
+                <i class="fa fa-calendar"></i>
+                <span>日历</span>
+            </a>
+            <a href="profile.html" class="tab-item">
+                <i class="fa fa-user"></i>
+                <span>我的</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
+    </script>
+</body>
+</html>

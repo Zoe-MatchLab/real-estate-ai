@@ -60,7 +60,7 @@
         }
         .input-bar {
             position: fixed;
-            bottom: 56px;
+            bottom: 80px;
             left: 0;
             right: 0;
             background: white;
@@ -69,33 +69,51 @@
         }
         .tab-bar {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: calc(56px + env(safe-area-inset-bottom));
-            padding-bottom: env(safe-area-inset-bottom);
-            background: white;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
-            z-index: 999;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 56px;
+            background: rgba(29, 33, 41, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 28px;
+            padding: 0 12px;
+            z-index: 9999;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.24);
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        .tab-bar-item {
-            padding-top: 6px;
-            color: #86878B;
+        .tab-bar-inner {
+            display: flex;
+            align-items: center;
+            height: 100%;
+            gap: 8px;
         }
-        .tab-bar-item.active {
-            color: #fa8c16;
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 16px;
+            border-radius: 20px;
+            transition: all 0.2s;
+            color: rgba(255,255,255,0.5);
+        }
+        .tab-item.active {
+            background: #fa8c16;
+            color: white;
+            box-shadow: 0 4px 12px rgba(250, 140, 22, 0.4);
         }
         .toast {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.75);
             color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            z-index: 9999;
-            animation: fadeIn 0.2s ease;
+            padding: 12px 24px;
+            border-radius: 12px;
+            z-index: 99999;
+            font-size: 14px;
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
@@ -198,28 +216,28 @@
         </div>
     </div>
 
-    <!-- 底部标签栏 -->
+    <!-- 底部Tab栏 -->
     <div class="tab-bar">
-        <div class="grid grid-cols-5 h-full">
-            <a href="javascript:void(0)" onclick="showToast('页面不存在'); return false;" class="tab-bar-item flex flex-col items-center justify-center">
-                <i class="fa fa-th text-xl"></i>
-                <span class="text-xs mt-1">AI工具</span>
+        <div class="tab-bar-inner">
+            <a href="tools.html" class="tab-item">
+                <i class="fa fa-rocket"></i>
+                <span>AI工具</span>
             </a>
-            <a href="javascript:void(0)" onclick="showToast('页面不存在'); return false;" class="tab-bar-item flex flex-col items-center justify-center">
-                <i class="fa fa-paint-brush text-xl"></i>
-                <span class="text-xs mt-1">AI设计</span>
+            <a href="ai-design.html" class="tab-item">
+                <i class="fa fa-paint-brush"></i>
+                <span>AI设计</span>
             </a>
-            <a href="claw.html" class="tab-bar-item flex flex-col items-center justify-center active">
-                <i class="fa fa-home text-xl"></i>
-                <span class="text-xs mt-1">Claw</span>
+            <a href="claw.html" class="tab-item active">
+                <i class="fa fa-commenting"></i>
+                <span>Claw</span>
             </a>
-            <a href="calendar.html" class="tab-bar-item flex flex-col items-center justify-center">
-                <i class="fa fa-calendar text-xl"></i>
-                <span class="text-xs mt-1">日历</span>
+            <a href="calendar.html" class="tab-item">
+                <i class="fa fa-calendar"></i>
+                <span>日历</span>
             </a>
-            <a href="profile.html" class="tab-bar-item flex flex-col items-center justify-center">
-                <i class="fa fa-user text-xl"></i>
-                <span class="text-xs mt-1">我的</span>
+            <a href="profile.html" class="tab-item">
+                <i class="fa fa-user"></i>
+                <span>我的</span>
             </a>
         </div>
     </div>
