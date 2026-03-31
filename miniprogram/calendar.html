@@ -14,6 +14,7 @@
                         primary: '#fa8c16',
                         warning: '#FF9D2B',
                         danger: '#FA5151',
+                        success: '#00B42A',
                         gray: {
                             50: '#F7F8FA',
                             100: '#EDEEF2',
@@ -37,6 +38,11 @@
         * {
             -webkit-tap-highlight-color: transparent;
         }
+        .page-container {
+            padding-bottom: calc(80px + env(safe-area-inset-bottom));
+        }
+        
+        /* 底部Tab栏 - 胶囊悬浮 */
         .tab-bar {
             position: fixed;
             bottom: 16px;
@@ -73,167 +79,371 @@
             color: white;
             box-shadow: 0 4px 12px rgba(250, 140, 22, 0.4);
         }
-        .page-container {
-            padding-bottom: calc(80px + env(safe-area-inset-bottom));
-        }
-        .card-shadow {
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-        }
-        .calendar-day {
-            aspect-ratio: 1/1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            padding: 6px 0;
-        }
-        .task-dot {
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            margin-top: 3px;
-        }
+        
+        /* Toast */
         .toast {
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.7);
+            background: rgba(0,0,0,0.75);
             color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            z-index: 9999;
-            animation: fadeIn 0.2s ease;
+            padding: 12px 24px;
+            border-radius: 12px;
+            z-index: 99999;
+            font-size: 14px;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
-            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        
+        /* 日期轴样式 */
+        .date-scroll {
+            width: 85px;
+            flex-shrink: 0;
+            background: white;
+            border-right: 1px solid #F0F0F0;
+        }
+        .date-item {
+            padding: 12px 8px;
+            text-align: center;
+            border-bottom: 1px solid #F5F5F5;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .date-item:active {
+            background: #FFF7E6;
+        }
+        .date-item.active {
+            background: #FFF7E6;
+            border-left: 3px solid #fa8c16;
+        }
+        .date-item.today .date-day {
+            background: #fa8c16;
+            color: white;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* 任务卡片样式 */
+        .task-card {
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 10px;
+            transition: all 0.2s;
+            border-left: 4px solid transparent;
+        }
+        .task-card:active {
+            transform: scale(0.98);
+        }
+        .task-card.type-house { border-left-color: #fa8c16; }
+        .task-card.type-speech { border-left-color: #9B59FF; }
+        .task-card.type-content { border-left-color: #00B42A; }
+        .task-card.type-self { border-left-color: #FFD000; }
+        .task-card.type-info { border-left-color: #86909C; }
+        
+        /* 状态标签 */
+        .status-tag {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .status-pending { background: #FFF7E6; color: #FF7D00; }
+        .status-progress { background: #E8F3FF; color: #165DFF; }
+        .status-done { background: #E8FFEA; color: #00B42A; }
+        .status-overdue { background: #FFECE8; color: #F53F3F; }
+        
+        /* 分类筛选 */
+        .filter-chip {
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 13px;
+            background: #F2F3F5;
+            color: #666;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .filter-chip.active {
+            background: #FFF7E6;
+            color: #fa8c16;
+            font-weight: 500;
+        }
+        
+        /* 时间线圆点 */
+        .time-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
         }
     </style>
 </head>
-<body class="pb-16 page-container">
-    <!-- 顶部搜索栏 -->
-    <div class="bg-white px-4 py-3 sticky top-0 z-40 card-shadow">
-        <div class="relative">
-            <i class="fa fa-search text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"></i>
-            <input type="text" class="w-full bg-gray-50 rounded-lg pl-10 pr-4 py-2 text-sm placeholder-gray-400" placeholder="搜索任务名称/楼盘名称">
-        </div>
-    </div>
-
-    <!-- 任务时间分组列表 -->
-    <div class="px-4 py-3 space-y-4">
-        <!-- 今日任务 -->
-        <div class="bg-white rounded-xl p-4 card-shadow">
-            <h3 class="font-bold text-gray-700 mb-3 flex items-center">
-                <span class="inline-block w-2 h-2 bg-danger rounded-full mr-2"></span>
-                今日（3月29日）
-            </h3>
-            <div class="space-y-3">
-                <div class="p-3 bg-orange-50 rounded-lg border border-orange-100">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <div class="flex items-center">
-                                <span class="px-2 py-0.5 bg-warning text-white text-xs rounded mr-2">探盘任务</span>
-                                <span class="text-xs text-warning">今天 18:00 截止</span>
-                            </div>
-                            <h4 class="font-medium text-gray-700 mt-1">中海汇德里3月探盘任务</h4>
-                            <p class="text-xs text-gray-500 mt-1">共4个打卡点：沙盘、样板间、区位图、周边配套</p>
-                        </div>
-                        <button onclick="window.location.href='task-detail.html?id=1'" class="px-3 py-1 bg-primary text-white text-xs rounded btn btn-primary">去完成</button>
-                    </div>
+<body class="page-container">
+    <!-- 顶部标题栏 -->
+    <div class="bg-white px-4 py-3 sticky top-0 z-50 shadow-sm">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center">
+                <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center mr-2">
+                    <i class="fa fa-bell-o text-primary text-sm"></i>
                 </div>
-
-                <div class="p-3 bg-blue-50 rounded-lg border border-blue-100">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <div class="flex items-center">
-                                <span class="px-2 py-0.5 bg-blue-500 text-white text-xs rounded mr-2">进行中</span>
-                                <span class="text-xs text-blue-500">今天 20:00 截止</span>
-                            </div>
-                            <h4 class="font-medium text-gray-700 mt-1">中海汇德里产品知识训练</h4>
-                            <p class="text-xs text-gray-500 mt-1">共20道题，需达到80分以上合格</p>
-                        </div>
-                        <button onclick="window.location.href='exam.html'" class="px-3 py-1 bg-primary text-white text-xs rounded btn btn-primary">去训练</button>
-                    </div>
-                </div>
+                <span class="w-2 h-2 bg-danger rounded-full absolute top-2 right-2"></span>
+            </div>
+            <h1 class="text-lg font-bold text-gray-700">内容日历</h1>
+            <div class="flex items-center gap-2">
+                <button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center" onclick="showToast('搜索')">
+                    <i class="fa fa-search text-gray-500 text-sm"></i>
+                </button>
             </div>
         </div>
-
-        <!-- 明日任务 -->
-        <div class="bg-white rounded-xl p-4 card-shadow">
-            <h3 class="font-bold text-gray-700 mb-3 flex items-center">
-                <span class="inline-block w-2 h-2 bg-warning rounded-full mr-2"></span>
-                明日（3月30日）
-            </h3>
-            <div class="space-y-3">
-                <div class="p-3 bg-purple-50 rounded-lg border border-purple-100">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <div class="flex items-center">
-                                <span class="px-2 py-0.5 bg-purple-500 text-white text-xs rounded mr-2">话术训练</span>
-                                <span class="text-xs text-purple-500">明天 12:00 截止</span>
-                            </div>
-                            <h4 class="font-medium text-gray-700 mt-1">邀约话术专项训练</h4>
-                            <p class="text-xs text-gray-500 mt-1">上传1段邀约录音，获取智能分析报告</p>
-                        </div>
-                        <button onclick="showToast('预约提醒')" class="px-3 py-1 bg-gray-200 text-gray-600 text-xs rounded btn">明天做</button>
-                    </div>
-                </div>
+        
+        <!-- 视图切换 + 日期 -->
+        <div class="flex items-center justify-between mt-3">
+            <div class="flex items-center">
+                <span class="text-sm text-gray-500 mr-2">📅</span>
+                <span class="text-sm font-medium text-gray-700">2026年3月</span>
             </div>
-        </div>
-
-        <!-- 本周任务 -->
-        <div class="bg-white rounded-xl p-4 card-shadow">
-            <h3 class="font-bold text-gray-700 mb-3 flex items-center">
-                <span class="inline-block w-2 h-2 bg-primary rounded-full mr-2"></span>
-                本周（3月31日-4月5日）
-            </h3>
-            <div class="space-y-3">
-                <div class="p-3 bg-gray-50 rounded-lg border border-gray-100">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <div class="flex items-center">
-                                <span class="px-2 py-0.5 bg-gray-500 text-white text-xs rounded mr-2">探盘任务</span>
-                                <span class="text-xs text-gray-500">4月2日 18:00 截止</span>
-                            </div>
-                            <h4 class="font-medium text-gray-700 mt-1">万科城市之光新盘探盘</h4>
-                            <p class="text-xs text-gray-500 mt-1">共5个打卡点：沙盘、样板间、区位图、周边配套、竞品对比</p>
-                        </div>
-                        <button onclick="window.location.href='task-detail.html?id=3&readonly=1'" class="px-3 py-1 bg-gray-200 text-gray-600 text-xs rounded btn">查看</button>
-                    </div>
-                </div>
+            <div class="flex bg-gray-100 rounded-lg p-1">
+                <button class="px-3 py-1 text-xs rounded-md bg-white shadow-sm text-primary font-medium">日</button>
+                <button class="px-3 py-1 text-xs rounded-md text-gray-500" onclick="showToast('切换到周视图')">周</button>
+                <button class="px-3 py-1 text-xs rounded-md text-gray-500" onclick="showToast('切换到月视图')">月</button>
             </div>
         </div>
     </div>
 
-    <!-- 今日推荐内容 -->
-    <div class="px-4 mb-4">
-        <div class="bg-white rounded-xl p-4 card-shadow">
-            <h3 class="font-bold text-gray-700 mb-4">今日推荐内容</h3>
-            <div class="space-y-3">
-                <div class="p-4 bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h4 class="font-medium mb-1">3月政策解读：限购放松利好分析</h4>
-                            <p class="text-xs text-gray-600 mb-2">官方解读+市场分析+客户答疑</p>
-                            <div class="flex items-center text-xs text-gray-500">
-                                <span>发布时间: 2026-03-27</span>
-                            </div>
+    <!-- 主内容区：日期轴 + 任务列表 -->
+    <div class="flex" style="height: calc(100vh - 180px);">
+        <!-- 左侧日期时间轴 -->
+        <div class="date-scroll overflow-y-auto" id="dateScroll">
+            <!-- 回到今天 -->
+            <div class="date-item py-3 border-b border-orange-100 bg-orange-50" onclick="scrollToToday()">
+                <span class="text-xs text-primary font-medium">◀ 今天</span>
+            </div>
+            
+            <!-- 3月28日 -->
+            <div class="date-item" onclick="selectDate(this)">
+                <div class="text-xs text-gray-400 mb-1">昨天</div>
+                <div class="text-xs text-gray-500">3月28日</div>
+                <div class="mt-1">
+                    <span class="time-dot bg-success"></span>
+                </div>
+            </div>
+            
+            <!-- 3月29日 -->
+            <div class="date-item" onclick="selectDate(this)">
+                <div class="text-xs text-gray-400 mb-1">昨天</div>
+                <div class="text-xs text-gray-500">3月29日</div>
+                <div class="mt-1">
+                    <span class="time-dot bg-success"></span>
+                </div>
+            </div>
+            
+            <!-- 3月30日 -->
+            <div class="date-item" onclick="selectDate(this)">
+                <div class="text-xs text-gray-400 mb-1">昨天</div>
+                <div class="text-xs text-gray-500">3月30日</div>
+                <div class="mt-1">
+                    <span class="time-dot bg-warning"></span>
+                    <span class="time-dot bg-purple-500 ml-1"></span>
+                </div>
+            </div>
+            
+            <!-- 3月31日 今天 -->
+            <div class="date-item today active" onclick="selectDate(this)">
+                <div class="text-xs text-primary font-medium mb-1">今天</div>
+                <div class="date-day text-sm font-bold text-gray-700">31</div>
+                <div class="mt-1">
+                    <span class="time-dot bg-danger"></span>
+                    <span class="time-dot bg-purple-500 ml-1"></span>
+                    <span class="time-dot bg-green-500 ml-1"></span>
+                </div>
+            </div>
+            
+            <!-- 4月1日 -->
+            <div class="date-item" onclick="selectDate(this)">
+                <div class="text-xs text-gray-400 mb-1">明天</div>
+                <div class="text-xs text-gray-500">4月1日</div>
+                <div class="mt-1">
+                    <span class="time-dot bg-yellow-500"></span>
+                </div>
+            </div>
+            
+            <!-- 4月2日 -->
+            <div class="date-item" onclick="selectDate(this)">
+                <div class="text-xs text-gray-400 mb-1">周四</div>
+                <div class="text-xs text-gray-500">4月2日</div>
+                <div class="mt-1">
+                    <span class="time-dot bg-orange-500"></span>
+                </div>
+            </div>
+            
+            <!-- 4月3日 -->
+            <div class="date-item" onclick="selectDate(this)">
+                <div class="text-xs text-gray-400 mb-1">周五</div>
+                <div class="text-xs text-gray-500">4月3日</div>
+                <div class="mt-1">
+                    <span class="time-dot bg-gray-400"></span>
+                </div>
+            </div>
+            
+            <!-- 4月4日 -->
+            <div class="date-item" onclick="selectDate(this)">
+                <div class="text-xs text-gray-400 mb-1">周六</div>
+                <div class="text-xs text-gray-500">4月4日</div>
+                <div class="mt-1"></div>
+            </div>
+            
+            <!-- 4月5日 -->
+            <div class="date-item" onclick="selectDate(this)">
+                <div class="text-xs text-gray-400 mb-1">周日</div>
+                <div class="text-xs text-gray-500">4月5日</div>
+                <div class="mt-1"></div>
+            </div>
+            
+            <!-- 4月6日 -->
+            <div class="date-item" onclick="selectDate(this)">
+                <div class="text-xs text-gray-400 mb-1">周一</div>
+                <div class="text-xs text-gray-500">4月6日</div>
+                <div class="mt-1">
+                    <span class="time-dot bg-primary"></span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 右侧任务列表区域 -->
+        <div class="flex-1 overflow-y-auto px-3 py-3 bg-gray-50">
+            <!-- 类型筛选 -->
+            <div class="flex gap-2 overflow-x-auto pb-3 mb-3 -mx-3 px-3">
+                <div class="filter-chip active" onclick="filterTasks('all', this)">全部(8)</div>
+                <div class="filter-chip" onclick="filterTasks('house', this)">🏠新房(2)</div>
+                <div class="filter-chip" onclick="filterTasks('speech', this)">💬话术(2)</div>
+                <div class="filter-chip" onclick="filterTasks('content', this)">📝内容(2)</div>
+                <div class="filter-chip" onclick="filterTasks('self', this)">✨自创(1)</div>
+                <div class="filter-chip" onclick="filterTasks('info', this)">📰资讯(1)</div>
+            </div>
+            
+            <!-- 任务列表 -->
+            <div id="taskList">
+                <!-- 10:00 新房任务 -->
+                <div class="bg-white rounded-xl task-card type-house shadow-sm" onclick="window.location.href='task-detail.html?id=1'">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-center">
+                            <span class="text-lg mr-2">🏠</span>
+                            <span class="text-xs font-medium text-orange-500">新房探盘</span>
                         </div>
-                        <a href="javascript:showToast('查看内容详情')" class="text-xs text-primary px-3 py-1 bg-white/80 rounded hover:bg-white">查看详情</a>
+                        <span class="status-tag status-overdue">已逾期</span>
+                    </div>
+                    <h4 class="font-medium text-gray-700 mb-1">中海汇德里3月探盘任务</h4>
+                    <div class="flex items-center text-xs text-gray-400 gap-3">
+                        <span>📍 浦东新区</span>
+                        <span>⏰ 10:00</span>
+                    </div>
+                    <div class="mt-2 flex justify-end">
+                        <button class="px-3 py-1 bg-primary text-white text-xs rounded-full">去完成</button>
                     </div>
                 </div>
                 
-                <div class="p-4 bg-gradient-to-r from-green-50 to-green-100 rounded-lg">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <h4 class="font-medium mb-1">4月销售策略：如何利用假期促成交</h4>
-                            <p class="text-xs text-gray-600 mb-2">五一假期销售话术+活动策划</p>
-                            <div class="flex items-center text-xs text-gray-500">
-                                <span>发布时间: 2026-03-26</span>
-                            </div>
+                <!-- 14:00 话术训练 -->
+                <div class="bg-white rounded-xl task-card type-speech shadow-sm" onclick="showToast('进入话术训练')">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-center">
+                            <span class="text-lg mr-2">💬</span>
+                            <span class="text-xs font-medium text-purple-500">话术训练</span>
                         </div>
-                        <a href="javascript:showToast('查看内容详情')" class="text-xs text-primary px-3 py-1 bg-white/80 rounded hover:bg-white">查看详情</a>
+                        <span class="status-tag status-progress">进行中</span>
+                    </div>
+                    <h4 class="font-medium text-gray-700 mb-1">邀约话术专项训练</h4>
+                    <div class="flex items-center text-xs text-gray-400 gap-3">
+                        <span>📍 完成度 60%</span>
+                        <span>⏰ 14:00</span>
+                    </div>
+                    <div class="mt-2 flex justify-end">
+                        <button class="px-3 py-1 bg-purple-500 text-white text-xs rounded-full">继续训练</button>
+                    </div>
+                </div>
+                
+                <!-- 15:00 内容任务 -->
+                <div class="bg-white rounded-xl task-card type-content shadow-sm" onclick="showToast('查看内容任务详情')">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-center">
+                            <span class="text-lg mr-2">📝</span>
+                            <span class="text-xs font-medium text-green-500">内容任务</span>
+                        </div>
+                        <span class="status-tag status-pending">待执行</span>
+                    </div>
+                    <h4 class="font-medium text-gray-700 mb-1">朋友圈文案生成 - 中海汇德里</h4>
+                    <div class="flex items-center text-xs text-gray-400 gap-3">
+                        <span>📍 需生成3条</span>
+                        <span>⏰ 15:00</span>
+                    </div>
+                    <div class="mt-2 flex justify-end">
+                        <button class="px-3 py-1 bg-green-500 text-white text-xs rounded-full">去创作</button>
+                    </div>
+                </div>
+                
+                <!-- 16:00 自创任务 -->
+                <div class="bg-white rounded-xl task-card type-self shadow-sm" onclick="showToast('查看自创任务')">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-center">
+                            <span class="text-lg mr-2">✨</span>
+                            <span class="text-xs font-medium text-yellow-600">自创任务</span>
+                        </div>
+                        <span class="status-tag status-done">已完成</span>
+                    </div>
+                    <h4 class="font-medium text-gray-700 mb-1">客户跟进记录 - 王先生</h4>
+                    <div class="flex items-center text-xs text-gray-400 gap-3">
+                        <span>📍 跟进状态：意向强</span>
+                        <span>⏰ 16:00</span>
+                    </div>
+                </div>
+                
+                <!-- 今日推荐资讯 -->
+                <div class="bg-white rounded-xl task-card type-info shadow-sm" onclick="showToast('查看资讯详情')">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-center">
+                            <span class="text-lg mr-2">📰</span>
+                            <span class="text-xs font-medium text-gray-500">资讯推送</span>
+                        </div>
+                        <span class="status-tag" style="background:#F2F3F5;color:#86909C;">新</span>
+                    </div>
+                    <h4 class="font-medium text-gray-700 mb-1">3月政策解读：限购放松利好分析</h4>
+                    <div class="flex items-center text-xs text-gray-400 gap-3">
+                        <span>📍 政策</span>
+                        <span>🕐 刚刚</span>
+                    </div>
+                    <div class="mt-2 flex justify-end gap-2">
+                        <button class="px-3 py-1 bg-gray-100 text-gray-600 text-xs rounded-full" onclick="event.stopPropagation();showToast('已收藏')">
+                            <i class="fa fa-bookmark-o mr-1"></i>收藏
+                        </button>
+                        <button class="px-3 py-1 bg-primary text-white text-xs rounded-full" onclick="event.stopPropagation();showToast('分享给客户')">
+                            <i class="fa fa-share-alt mr-1"></i>分享
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 明日预告 -->
+                <div class="mt-4 mb-2">
+                    <div class="flex items-center text-xs text-gray-400 mb-2">
+                        <span class="w-8 h-px bg-gray-300 mr-2"></span>
+                        <span>📅 明日预告</span>
+                        <span class="w-8 h-px bg-gray-300 ml-2"></span>
+                    </div>
+                </div>
+                
+                <!-- 明日9:00 自创任务 -->
+                <div class="bg-white rounded-xl task-card type-self shadow-sm opacity-80" onclick="showToast('查看明日任务')">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex items-center">
+                            <span class="text-lg mr-2">✨</span>
+                            <span class="text-xs font-medium text-yellow-600">自创任务</span>
+                        </div>
+                        <span class="status-tag status-pending">待执行</span>
+                    </div>
+                    <h4 class="font-medium text-gray-700 mb-1">预约看房 - 李女士</h4>
+                    <div class="flex items-center text-xs text-gray-400 gap-3">
+                        <span>📍 万科城市之光</span>
+                        <span>⏰ 明天 09:00</span>
                     </div>
                 </div>
             </div>
@@ -267,41 +477,69 @@
     </div>
 
     <!-- 新任务推送通知 -->
-    <div id="pushNotification" class="fixed top-20 left-4 right-4 bg-white rounded-lg card-shadow p-4 z-50 transform transition-all duration-300 translate-y-[-200%]">
+    <div id="pushNotification" class="fixed top-20 left-4 right-4 bg-white rounded-2xl shadow-xl p-4 z-50 transform transition-all duration-300 translate-y-[-200%]">
         <div class="flex items-start gap-3">
-            <div class="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary">
-                <i class="fa fa-bell-o"></i>
+            <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-orange-500 rounded-xl flex items-center justify-center shadow-lg">
+                <i class="fa fa-bell text-white text-lg"></i>
             </div>
             <div class="flex-1">
-                <h4 class="text-sm font-medium text-gray-700">新任务推送</h4>
-                <p class="text-xs text-gray-500 mt-1">您有一个新的探盘任务：「万科城市之光新盘探盘」已下发，点击查看详情</p>
+                <h4 class="text-sm font-bold text-gray-800">📬 新任务推送</h4>
+                <p class="text-xs text-gray-500 mt-1 leading-relaxed">您有一个新的探盘任务：「万科城市之光新盘探盘」已下发</p>
             </div>
-            <button class="text-gray-400" onclick="document.getElementById('pushNotification').classList.add('translate-y-[-200%]')">
-                <i class="fa fa-times"></i>
+            <button class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center" onclick="document.getElementById('pushNotification').classList.add('translate-y-[-200%]')">
+                <i class="fa fa-times text-gray-400"></i>
             </button>
+        </div>
+        <div class="mt-3 flex gap-2">
+            <button class="flex-1 py-2 bg-gray-100 text-gray-600 text-xs rounded-lg font-medium" onclick="document.getElementById('pushNotification').classList.add('translate-y-[-200%]')">稍后查看</button>
+            <button class="flex-1 py-2 bg-primary text-white text-xs rounded-lg font-medium" onclick="document.getElementById('pushNotification').classList.add('translate-y-[-200%]'); window.location.href='task-detail.html?id=3'">立即查看</button>
         </div>
     </div>
 
     <script>
-        // 全局工具函数
+        // Toast提示
         function showToast(message, duration = 2000) {
             const toast = document.createElement('div');
             toast.className = 'toast';
             toast.textContent = message;
             document.body.appendChild(toast);
-            setTimeout(() => {
-                toast.remove();
-            }, duration);
+            setTimeout(() => toast.remove(), duration);
         }
 
-        // 模拟PC端下发新任务推送效果
+        // 选择日期
+        function selectDate(el) {
+            document.querySelectorAll('.date-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            el.classList.add('active');
+            showToast('已切换日期');
+        }
+
+        // 回到今天
+        function scrollToToday() {
+            const todayItem = document.querySelector('.date-item.today');
+            if (todayItem) {
+                todayItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                document.querySelectorAll('.date-item').forEach(item => item.classList.remove('active'));
+                todayItem.classList.add('active');
+            }
+            showToast('已回到今天');
+        }
+
+        // 筛选任务
+        function filterTasks(type, el) {
+            document.querySelectorAll('.filter-chip').forEach(chip => chip.classList.remove('active'));
+            el.classList.add('active');
+            showToast('筛选: ' + type);
+        }
+
+        // 模拟推送通知
         setTimeout(() => {
             const notification = document.getElementById('pushNotification');
             notification.classList.remove('translate-y-[-200%]');
-            // 3秒后自动关闭
             setTimeout(() => {
                 notification.classList.add('translate-y-[-200%]');
-            }, 3000);
+            }, 4000);
         }, 2000);
     </script>
 </body>
