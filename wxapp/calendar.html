@@ -14,6 +14,7 @@
             --color-warning: #FF7D00;
             --color-danger: #FA5151;
             --color-info: #007AFF;
+            --color-purple: #722ED1;
             --color-title: #1D2129;
             --color-text: #4E5969;
             --color-sub: #86909C;
@@ -32,14 +33,12 @@
             --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
             --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
             --font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.25s ease;
         }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         html, body {
             height: 100%;
             font-family: var(--font-family);
@@ -56,21 +55,14 @@
             outline: 2px solid var(--brand-primary);
             outline-offset: 2px;
         }
-        
+
         .page {
             display: flex;
             flex-direction: column;
             height: 100vh;
             height: 100dvh;
         }
-        
-        /* 状态栏 */
-        .status-bar {
-            height: calc(44px + env(safe-area-inset-top));
-            background: var(--color-card);
-            flex-shrink: 0;
-        }
-        
+
         /* 标题栏 */
         .header {
             display: flex;
@@ -81,19 +73,19 @@
             border-bottom: 1px solid var(--color-border);
             flex-shrink: 0;
         }
-        
+
         .header-title {
             font-size: 17px;
             font-weight: 600;
             color: var(--color-title);
         }
-        
+
         .header-actions {
             display: flex;
             align-items: center;
             gap: var(--spacing-md);
         }
-        
+
         .header-action {
             width: 36px;
             height: 36px;
@@ -103,21 +95,18 @@
             cursor: pointer;
             position: relative;
             color: var(--color-sub);
-            transition: color 0.2s ease;
+            transition: color var(--transition-fast);
+            background: none;
+            border: none;
         }
-        
-        .header-action:active {
-            color: var(--color-title);
-        }
-        
-        .header-action i {
-            font-size: 18px;
-        }
-        
+
+        .header-action:active { color: var(--color-title); }
+        .header-action i { font-size: 18px; }
+
         .notify-badge {
             position: absolute;
-            top: 4px;
-            right: 4px;
+            top: 2px;
+            right: 2px;
             min-width: 16px;
             height: 16px;
             background: var(--color-danger);
@@ -130,71 +119,143 @@
             justify-content: center;
             padding: 0 4px;
         }
-        
-        /* 主内容区 */
+
+        /* ========== 筛选栏（独立一行） ========== */
+        .filter-section {
+            background: var(--color-card);
+            border-bottom: 1px solid var(--color-border);
+            flex-shrink: 0;
+        }
+
+        .filter-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .filter-label {
+            font-size: 12px;
+            color: var(--color-sub);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .filter-label i { font-size: 14px; }
+
+        .filter-tabs {
+            display: flex;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-sm) var(--spacing-md);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .filter-tabs::-webkit-scrollbar { display: none; }
+
+        .filter-chip {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: 8px 14px;
+            background: var(--color-bg);
+            border-radius: var(--radius-full);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--color-text);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border: 1.5px solid transparent;
+            white-space: nowrap;
+        }
+
+        .filter-chip:active { transform: scale(0.96); }
+
+        .filter-chip.active {
+            background: var(--brand-primary);
+            color: white;
+            border-color: var(--brand-primary);
+        }
+
+        .filter-chip .count {
+            font-size: 11px;
+            opacity: 0.8;
+        }
+
+        .filter-chip[data-type="house"].active { background: var(--brand-primary); border-color: var(--brand-primary); }
+        .filter-chip[data-type="speech"].active { background: var(--color-purple); border-color: var(--color-purple); }
+        .filter-chip[data-type="content"].active { background: var(--color-success); border-color: var(--color-success); }
+        .filter-chip[data-type="new"].active { background: var(--color-danger); border-color: var(--color-danger); }
+
+        .filter-chip[data-type]:not(.active) {
+            border-color: var(--color-border);
+        }
+
+        /* ========== 主内容区 ========== */
         .main {
             flex: 1;
             display: flex;
             overflow: hidden;
             min-height: 0;
         }
-        
+
         /* 左侧日期列表 */
         .date-list {
-            width: 80px;
+            width: 72px;
             background: var(--color-card);
             border-right: 1px solid var(--color-border);
             overflow-y: auto;
             flex-shrink: 0;
             -webkit-overflow-scrolling: touch;
         }
-        
+
         .date-item {
-            padding: 14px 8px;
+            padding: 12px 4px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all var(--transition-fast);
             border-bottom: 1px solid var(--color-border);
             position: relative;
         }
-        
-        .date-item:active {
-            background: var(--color-bg);
-        }
-        
+
+        .date-item:active { background: var(--color-bg); }
+
         .date-item.active {
             background: var(--brand-primary-light);
         }
-        
-        .date-item.today::before {
-            content: '';
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 6px;
-            height: 6px;
-            background: var(--color-danger);
-            border-radius: 50%;
-        }
-        
-        .date-day {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--color-text);
-            margin-bottom: 2px;
-        }
-        
-        .date-weekday {
-            font-size: 11px;
-            color: var(--color-sub);
-        }
-        
+
         .date-item.active .date-day,
         .date-item.active .date-weekday {
             color: var(--brand-primary);
             font-weight: 600;
         }
-        
+
+        .date-item.today::before {
+            content: '';
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 6px;
+            height: 6px;
+            background: var(--color-danger);
+            border-radius: 50%;
+        }
+
+        .date-day {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--color-text);
+            margin-bottom: 2px;
+        }
+
+        .date-weekday {
+            font-size: 11px;
+            color: var(--color-sub);
+        }
+
         /* 右侧任务列表 */
         .task-list {
             flex: 1;
@@ -203,59 +264,26 @@
             background: var(--color-bg);
             -webkit-overflow-scrolling: touch;
         }
-        
-        /* 筛选标签 */
-        .filter-bar {
-            display: flex;
-            gap: var(--spacing-sm);
-            overflow-x: auto;
-            padding-bottom: var(--spacing-sm);
-            margin-bottom: var(--spacing-md);
-            -webkit-overflow-scrolling: touch;
-        }
-        
-        .filter-bar::-webkit-scrollbar {
-            display: none;
-        }
-        
-        .filter-chip {
-            flex-shrink: 0;
-            padding: 6px 14px;
-            background: var(--color-card);
-            border-radius: var(--radius-full);
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--color-text);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: var(--shadow-sm);
-        }
-        
-        .filter-chip:active {
-            transform: scale(0.95);
-        }
-        
-        .filter-chip.active {
-            background: var(--brand-primary);
-            color: white;
-        }
-        
-        .filter-chip.house { border: 1px solid var(--brand-primary); color: var(--brand-primary); }
-        .filter-chip.house.active { background: var(--brand-primary); color: white; }
-        
+
         /* 任务卡片 */
         .task-card {
             background: var(--color-card);
-            border-radius: var(--radius-lg);
+            border-radius: var(--radius-xl);
             padding: var(--spacing-md);
             margin-bottom: var(--spacing-md);
             box-shadow: var(--shadow-sm);
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all var(--transition-fast);
             position: relative;
             overflow: hidden;
         }
-        
+
+        .task-card:active {
+            transform: scale(0.99);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* 左侧彩边 */
         .task-card::before {
             content: '';
             position: absolute;
@@ -263,32 +291,26 @@
             top: 0;
             bottom: 0;
             width: 4px;
-            background: transparent;
         }
-        
-        .task-card:active {
-            transform: scale(0.99);
-            box-shadow: var(--shadow-md);
-        }
-        
+
         .task-card.type-house::before { background: var(--brand-primary); }
-        .task-card.type-speech::before { background: #722ED1; }
+        .task-card.type-speech::before { background: var(--color-purple); }
         .task-card.type-content::before { background: var(--color-success); }
         .task-card.type-new::before { background: var(--color-danger); }
-        
+
         .task-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: var(--spacing-sm);
         }
-        
+
         .task-type {
             display: flex;
             align-items: center;
             gap: var(--spacing-sm);
         }
-        
+
         .type-icon {
             width: 24px;
             height: 24px;
@@ -298,40 +320,40 @@
             justify-content: center;
             font-size: 12px;
         }
-        
-        .type-icon.house { background: #FFF7E6; color: var(--brand-primary); }
-        .type-icon.speech { background: #F7F0FF; color: #722ED1; }
+
+        .type-icon.house { background: var(--brand-primary-light); color: var(--brand-primary); }
+        .type-icon.speech { background: #F7F0FF; color: var(--color-purple); }
         .type-icon.content { background: #F6FFED; color: var(--color-success); }
         .type-icon.new { background: #FFF1F0; color: var(--color-danger); }
-        
+
         .type-text {
             font-size: 12px;
             font-weight: 500;
         }
-        
+
         .type-text.house { color: var(--brand-primary); }
-        .type-text.speech { color: #722ED1; }
+        .type-text.speech { color: var(--color-purple); }
         .type-text.content { color: var(--color-success); }
         .type-text.new { color: var(--color-danger); }
-        
+
         .task-time {
             font-size: 11px;
             color: var(--color-sub);
         }
-        
+
         .task-title {
             font-size: 15px;
             font-weight: 600;
             color: var(--color-title);
             margin-bottom: var(--spacing-xs);
         }
-        
+
         .task-desc {
             font-size: 12px;
             color: var(--color-sub);
             margin-bottom: var(--spacing-sm);
         }
-        
+
         .task-meta {
             display: flex;
             align-items: center;
@@ -339,15 +361,10 @@
             font-size: 12px;
             color: var(--color-sub);
         }
-        
-        .task-meta i {
-            margin-right: 4px;
-        }
-        
-        .task-meta .warning {
-            color: var(--color-warning);
-        }
-        
+
+        .task-meta i { margin-right: 4px; }
+        .task-meta .warning { color: var(--color-warning); }
+
         .task-footer {
             display: flex;
             align-items: center;
@@ -356,31 +373,29 @@
             padding-top: var(--spacing-md);
             border-top: 1px solid var(--color-border);
         }
-        
-        .progress-info {
-            flex: 1;
-        }
-        
+
+        .progress-info { flex: 1; }
+
         .progress-text {
             font-size: 12px;
             color: var(--color-sub);
             margin-bottom: 6px;
         }
-        
+
         .progress-bar {
             height: 4px;
             background: var(--color-bg);
             border-radius: 2px;
             overflow: hidden;
         }
-        
+
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, var(--brand-primary), #FF9500);
             border-radius: 2px;
             transition: width 0.3s ease;
         }
-        
+
         .task-action {
             padding: 6px 14px;
             border-radius: var(--radius-full);
@@ -388,40 +403,16 @@
             font-weight: 500;
             border: none;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all var(--transition-fast);
         }
-        
-        .task-action:active {
-            transform: scale(0.95);
-            opacity: 0.9;
-        }
-        
-        .task-action.primary {
-            background: var(--brand-primary);
-            color: white;
-        }
-        
-        .task-action.success {
-            background: var(--color-success);
-            color: white;
-        }
-        
-        .task-action.purple {
-            background: #722ED1;
-            color: white;
-        }
-        
-        .task-action.outline {
-            background: transparent;
-            border: 1px solid var(--brand-primary);
-            color: var(--brand-primary);
-        }
-        
-        .task-action.danger {
-            background: var(--color-danger);
-            color: white;
-        }
-        
+
+        .task-action:active { transform: scale(0.95); opacity: 0.9; }
+        .task-action.primary { background: var(--brand-primary); color: white; }
+        .task-action.success { background: var(--color-success); color: white; }
+        .task-action.purple { background: var(--color-purple); color: white; }
+        .task-action.outline { background: transparent; border: 1px solid var(--brand-primary); color: var(--brand-primary); }
+        .task-action.danger { background: var(--color-danger); color: white; }
+
         /* 标签 */
         .tag {
             display: inline-flex;
@@ -431,22 +422,11 @@
             font-size: 11px;
             font-weight: 500;
         }
-        
-        .tag.progress {
-            background: #E8F3FF;
-            color: #165DFF;
-        }
-        
-        .tag.pending {
-            background: var(--brand-primary-light);
-            color: var(--brand-primary);
-        }
-        
-        .tag.done {
-            background: #E8FFEA;
-            color: var(--color-success);
-        }
-        
+
+        .tag.progress { background: #E8F3FF; color: #165DFF; }
+        .tag.pending { background: var(--brand-primary-light); color: var(--brand-primary); }
+        .tag.done { background: #E8FFEA; color: var(--color-success); }
+
         /* 底部TabBar */
         .tab-bar {
             position: fixed;
@@ -464,7 +444,7 @@
             gap: 4px;
             flex-shrink: 0;
         }
-        
+
         .tab-item {
             width: 44px;
             height: 36px;
@@ -473,18 +453,13 @@
             justify-content: center;
             border-radius: 18px;
             color: rgba(255,255,255,0.5);
-            transition: all 0.3s ease;
+            transition: all var(--transition-normal);
+            text-decoration: none;
         }
-        
-        .tab-item i {
-            font-size: 20px;
-        }
-        
-        .tab-item.active {
-            background: rgba(250, 140, 22, 0.2);
-            color: var(--brand-primary);
-        }
-        
+
+        .tab-item i { font-size: 20px; }
+        .tab-item.active { background: rgba(250, 140, 22, 0.2); color: var(--brand-primary); }
+
         /* Toast */
         .toast {
             position: fixed;
@@ -497,14 +472,15 @@
             border-radius: var(--radius-lg);
             z-index: 99999;
             font-size: 14px;
-            animation: toastIn 0.3s ease forwards;
+            animation: toastIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            pointer-events: none;
         }
-        
+
         @keyframes toastIn {
             from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
             to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
-        
+
         /* 通知面板 */
         .notify-overlay {
             position: fixed;
@@ -516,14 +492,11 @@
             z-index: 10000;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.3s ease;
+            transition: opacity var(--transition-normal);
         }
-        
-        .notify-overlay.show {
-            opacity: 1;
-            pointer-events: auto;
-        }
-        
+
+        .notify-overlay.show { opacity: 1; pointer-events: auto; }
+
         .notify-panel {
             position: fixed;
             bottom: 0;
@@ -533,16 +506,14 @@
             border-radius: var(--radius-xl) var(--radius-xl) 0 0;
             z-index: 10001;
             transform: translateY(100%);
-            transition: transform 0.3s ease;
+            transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
             max-height: 70vh;
             display: flex;
             flex-direction: column;
         }
-        
-        .notify-overlay.show .notify-panel {
-            transform: translateY(0);
-        }
-        
+
+        .notify-overlay.show .notify-panel { transform: translateY(0); }
+
         .notify-header {
             display: flex;
             align-items: center;
@@ -551,19 +522,11 @@
             border-bottom: 1px solid var(--color-border);
             flex-shrink: 0;
         }
-        
-        .notify-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--color-title);
-        }
-        
-        .notify-actions {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-md);
-        }
-        
+
+        .notify-title { font-size: 16px; font-weight: 600; color: var(--color-title); }
+
+        .notify-actions { display: flex; align-items: center; gap: var(--spacing-md); }
+
         .notify-clear {
             font-size: 13px;
             color: var(--brand-primary);
@@ -571,7 +534,7 @@
             border: none;
             cursor: pointer;
         }
-        
+
         .notify-close {
             width: 28px;
             height: 28px;
@@ -579,8 +542,9 @@
             align-items: center;
             justify-content: center;
             color: var(--color-sub);
+            cursor: pointer;
         }
-        
+
         .notify-tabs {
             display: flex;
             border-bottom: 1px solid var(--color-border);
@@ -588,6 +552,8 @@
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
         }
+
+        .notify-tabs::-webkit-scrollbar { display: none; }
 
         .notify-tab {
             flex: 0 0 auto;
@@ -599,14 +565,11 @@
             border: none;
             cursor: pointer;
             position: relative;
-            transition: color 0.2s ease;
+            transition: color var(--transition-fast);
             white-space: nowrap;
         }
 
-        .notify-tab.active {
-            color: var(--brand-primary);
-            font-weight: 600;
-        }
+        .notify-tab.active { color: var(--brand-primary); font-weight: 600; }
 
         .notify-tab.active::after {
             content: '';
@@ -623,35 +586,30 @@
         .notify-tab-badge {
             position: absolute;
             top: 6px;
-            right: 8px;
+            right: 6px;
             width: 8px;
             height: 8px;
             background: var(--color-danger);
             border-radius: 50%;
         }
-        
+
         .notify-list {
             flex: 1;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
         }
-        
+
         .notify-item {
             display: flex;
             padding: var(--spacing-md);
             border-bottom: 1px solid var(--color-border);
             cursor: pointer;
-            transition: background 0.2s ease;
+            transition: background var(--transition-fast);
         }
-        
-        .notify-item:active {
-            background: var(--color-bg);
-        }
-        
-        .notify-item.read {
-            opacity: 0.6;
-        }
-        
+
+        .notify-item:active { background: var(--color-bg); }
+        .notify-item.read { opacity: 0.6; }
+
         .notify-dot {
             width: 8px;
             height: 8px;
@@ -661,33 +619,25 @@
             margin-top: 6px;
             flex-shrink: 0;
         }
-        
-        .notify-item.read .notify-dot {
-            background: var(--color-sub);
-        }
-        
-        .notify-content {
-            flex: 1;
-        }
-        
+
+        .notify-item.read .notify-dot { background: var(--color-sub); }
+
+        .notify-content { flex: 1; }
+
         .notify-task {
             font-size: 14px;
             font-weight: 500;
             color: var(--color-title);
             margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
         }
-        
-        .notify-message {
-            font-size: 13px;
-            color: var(--color-text);
-            margin-bottom: 4px;
-        }
-        
-        .notify-time {
-            font-size: 11px;
-            color: var(--color-sub);
-        }
-        
+
+        .notify-message { font-size: 13px; color: var(--color-text); margin-bottom: 4px; }
+
+        .notify-time { font-size: 11px; color: var(--color-sub); }
+
         .notify-type {
             font-size: 11px;
             color: var(--color-sub);
@@ -695,16 +645,6 @@
             padding: 2px 8px;
             border-radius: var(--radius-sm);
             margin-left: var(--spacing-sm);
-        }
-        
-        /* 动画 */
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .fade-in {
-            animation: fadeIn 0.3s ease forwards;
         }
     </style>
 </head>
@@ -714,30 +654,50 @@
         <div class="header">
             <span class="header-title">内容日历</span>
             <div class="header-actions">
-                <div class="header-action" onclick="showNotifyPanel()">
+                <button class="header-action" onclick="showNotifyPanel()" aria-label="通知">
                     <i class="fa fa-bell"></i>
                     <span class="notify-badge">3</span>
-                </div>
+                </button>
             </div>
         </div>
-        
+
+        <!-- ========== 筛选栏（独立一行） ========== -->
+        <div class="filter-section">
+            <div class="filter-header">
+                <span class="filter-label">
+                    <i class="fa fa-filter"></i>
+                    任务筛选
+                </span>
+            </div>
+            <div class="filter-tabs">
+                <button class="filter-chip active" onclick="filterTasks('all', this)" data-type="all">
+                    全部<span class="count">(8)</span>
+                </button>
+                <button class="filter-chip" onclick="filterTasks('house', this)" data-type="house">
+                    🏠 探盘<span class="count">(2)</span>
+                </button>
+                <button class="filter-chip" onclick="filterTasks('speech', this)" data-type="speech">
+                    💬 话术<span class="count">(3)</span>
+                </button>
+                <button class="filter-chip" onclick="filterTasks('content', this)" data-type="content">
+                    📝 内容<span class="count">(1)</span>
+                </button>
+                <button class="filter-chip" onclick="filterTasks('new', this)" data-type="new">
+                    🆕 新盘<span class="count">(1)</span>
+                </button>
+                <button class="filter-chip" onclick="filterTasks('done', this)" data-type="done">
+                    ✅ 已完成<span class="count">(1)</span>
+                </button>
+            </div>
+        </div>
+
         <!-- 主内容区 -->
         <div class="main">
             <!-- 左侧日期列表 -->
-            <div class="date-list" id="dateList">
-                <!-- 日期项由JS生成 -->
-            </div>
-            
+            <div class="date-list" id="dateList"></div>
+
             <!-- 右侧任务列表 -->
-            <div class="task-list">
-                <!-- 筛选标签 -->
-                <div class="filter-bar">
-                    <div class="filter-chip active" onclick="filterTasks('all', this)">全部(8)</div>
-                    <div class="filter-chip house" onclick="filterTasks('house', this)">🏠探盘(2)</div>
-                    <div class="filter-chip" onclick="filterTasks('speech', this)">💬话术(3)</div>
-                    <div class="filter-chip" onclick="filterTasks('content', this)">📝内容(1)</div>
-                </div>
-                
+            <div class="task-list" id="taskList">
                 <!-- 新房上线卡片 -->
                 <div class="task-card type-new" onclick="location.href='tools.html'">
                     <div class="task-header">
@@ -754,17 +714,16 @@
                         <span><i class="fa fa-jpy"></i>8.5万/㎡</span>
                     </div>
                     <div class="task-footer">
-                        <div class="task-action danger">立即配置</div>
+                        <div></div>
+                        <button class="task-action danger" onclick="event.stopPropagation(); location.href='tools.html'">立即配置</button>
                     </div>
                 </div>
-                
+
                 <!-- 探盘任务卡片 -->
                 <div class="task-card type-house" onclick="location.href='task-detail.html'">
                     <div class="task-header">
-                        <div class="task-type">
-                            <span class="tag progress">进行中</span>
-                        </div>
-                        <span class="task-title" style="margin: 0;">中海汇德里新盘探盘</span>
+                        <span class="tag progress">进行中</span>
+                        <span class="task-title" style="margin:0;">中海汇德里新盘探盘</span>
                     </div>
                     <div class="task-desc">共4个打卡点 · 已完成2个</div>
                     <div class="task-meta">
@@ -780,13 +739,11 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- 内容任务卡片 -->
                 <div class="task-card type-content" onclick="showToast('内容发布功能开发中')">
                     <div class="task-header">
-                        <div class="task-type">
-                            <span class="tag pending">待执行</span>
-                        </div>
+                        <span class="tag pending">待执行</span>
                     </div>
                     <div class="task-title">朋友圈文案生成 - 中海汇德里</div>
                     <div class="task-desc">需生成3条文案</div>
@@ -795,10 +752,11 @@
                         <span><i class="fa fa-clock-o"></i>明天15:00截止</span>
                     </div>
                     <div class="task-footer">
-                        <div class="task-action success">去创作</div>
+                        <div></div>
+                        <button class="task-action success" onclick="event.stopPropagation(); showToast('去创作')">去创作</button>
                     </div>
                 </div>
-                
+
                 <!-- 话术训练卡片 -->
                 <div class="task-card type-speech" onclick="location.href='speech-train.html'">
                     <div class="task-header">
@@ -814,32 +772,23 @@
                         <span>🕐 明天 14:00</span>
                     </div>
                     <div class="task-footer">
-                        <div class="task-action purple">开始训练</div>
+                        <div></div>
+                        <button class="task-action purple" onclick="event.stopPropagation(); location.href='speech-train.html'">开始训练</button>
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <!-- 底部TabBar -->
         <div class="tab-bar">
-            <a href="tools.html" class="tab-item">
-                <i class="fa fa-rocket"></i>
-            </a>
-            <a href="ai-design.html" class="tab-item">
-                <i class="fa fa-paint-brush"></i>
-            </a>
-            <a href="claw.html" class="tab-item">
-                <i class="fa fa-commenting"></i>
-            </a>
-            <a href="calendar.html" class="tab-item active">
-                <i class="fa fa-calendar"></i>
-            </a>
-            <a href="profile.html" class="tab-item">
-                <i class="fa fa-user"></i>
-            </a>
+            <a href="tools.html" class="tab-item"><i class="fa fa-rocket"></i></a>
+            <a href="ai-design.html" class="tab-item"><i class="fa fa-paint-brush"></i></a>
+            <a href="claw.html" class="tab-item"><i class="fa fa-commenting"></i></a>
+            <a href="calendar.html" class="tab-item active"><i class="fa fa-calendar"></i></a>
+            <a href="profile.html" class="tab-item"><i class="fa fa-user"></i></a>
         </div>
     </div>
-    
+
     <!-- 通知面板 -->
     <div class="notify-overlay" id="notifyOverlay" onclick="hideNotifyPanel()">
         <div class="notify-panel" onclick="event.stopPropagation()">
@@ -847,9 +796,7 @@
                 <span class="notify-title">通知</span>
                 <div class="notify-actions">
                     <button class="notify-clear" onclick="clearAll()">清空全部</button>
-                    <div class="notify-close" onclick="hideNotifyPanel()">
-                        <i class="fa fa-times"></i>
-                    </div>
+                    <div class="notify-close" onclick="hideNotifyPanel()"><i class="fa fa-times"></i></div>
                 </div>
             </div>
             <div class="notify-tabs">
@@ -859,27 +806,25 @@
                 <button class="notify-tab" onclick="filterNotify('content', this)">内容</button>
                 <button class="notify-tab" onclick="filterNotify('building', this)">新盘</button>
             </div>
-            <div class="notify-list" id="notifyList">
-                <!-- 通知项由JS生成 -->
-            </div>
+            <div class="notify-list" id="notifyList"></div>
         </div>
     </div>
-    
+
     <script>
         // 日期数据
         const dates = [
-            { day: '28', weekday: '周五', date: '3月28日' },
-            { day: '29', weekday: '周六', date: '3月29日' },
-            { day: '30', weekday: '周日', date: '3月30日' },
-            { day: '今天', weekday: '周一', date: '3月31日', today: true },
-            { day: '1', weekday: '周二', date: '4月1日' },
-            { day: '2', weekday: '周三', date: '4月2日' },
-            { day: '3', weekday: '周四', date: '4月3日' },
-            { day: '4', weekday: '周五', date: '4月4日' },
-            { day: '5', weekday: '周六', date: '4月5日' },
-            { day: '6', weekday: '周日', date: '4月6日' },
+            { day: '28', weekday: '周五' },
+            { day: '29', weekday: '周六' },
+            { day: '30', weekday: '周日' },
+            { day: '今天', weekday: '周一', today: true },
+            { day: '1', weekday: '周二' },
+            { day: '2', weekday: '周三' },
+            { day: '3', weekday: '周四' },
+            { day: '4', weekday: '周五' },
+            { day: '5', weekday: '周六' },
+            { day: '6', weekday: '周日' },
         ];
-        
+
         // 通知数据
         const notifications = [
             { id: 1, task: '中海汇德里探盘任务', type: 'exploration', message: '2/4阶段进行中，请注意完成', time: '刚刚', isRead: false, link: 'task-detail.html' },
@@ -890,7 +835,7 @@
             { id: 6, task: '华润橡树湾话术训练', type: 'speech', message: '完成训练可提升产品力评分', time: '1天前', isRead: true, link: 'speech-train.html' },
             { id: 7, task: '金地壹号院探盘任务', type: 'exploration', message: '新任务已下发，请及时处理', time: '2天前', isRead: true, link: 'task-detail.html' },
         ];
-        
+
         // 渲染日期列表
         function renderDates() {
             const list = document.getElementById('dateList');
@@ -901,54 +846,43 @@
                 </div>
             `).join('');
         }
-        
+
         // 选择日期
         function selectDate(el, index) {
-            document.querySelectorAll('.date-item').forEach(item => {
-                item.classList.remove('active');
-            });
+            document.querySelectorAll('.date-item').forEach(item => item.classList.remove('active'));
             el.classList.add('active');
-            showToast(`已切换到${dates[index].date}`);
+            showToast(`已切换到${dates[index].weekday}`);
         }
-        
+
         // 筛选任务
         function filterTasks(type, el) {
-            document.querySelectorAll('.filter-chip').forEach(chip => {
-                chip.classList.remove('active');
-                if (!chip.classList.contains('house')) {
-                    chip.style.background = '';
-                    chip.style.color = '';
-                }
-            });
+            document.querySelectorAll('.filter-chip').forEach(chip => chip.classList.remove('active'));
             el.classList.add('active');
-            showToast(`筛选：${type}`);
+            const typeNames = { all: '全部', house: '探盘', speech: '话术', content: '内容', new: '新盘', done: '已完成' };
+            showToast(`筛选：${typeNames[type] || type}`);
         }
-        
+
         // Toast提示
         function showToast(message) {
             const existing = document.querySelector('.toast');
             if (existing) existing.remove();
-            
             const toast = document.createElement('div');
             toast.className = 'toast';
             toast.textContent = message;
             document.body.appendChild(toast);
-            
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translate(-50%, -50%) scale(0.9)';
-                setTimeout(() => toast.remove(), 200);
-            }, 2000);
+            setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translate(-50%, -50%) scale(0.9)'; setTimeout(() => toast.remove(), 200); }, 2000);
         }
-        
+
         // 渲染通知列表
         function renderNotifications(filter = 'all') {
             const list = document.getElementById('notifyList');
-            const filtered = filter === 'all'
-                ? notifications
-                : notifications.filter(n => n.type === filter);
-
+            const filtered = filter === 'all' ? notifications : notifications.filter(n => n.type === filter);
             const typeNames = { exploration: '探盘', speech: '话术', content: '内容', building: '新盘' };
+
+            if (filtered.length === 0) {
+                list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--color-sub);">暂无通知</div>';
+                return;
+            }
 
             list.innerHTML = filtered.map(n => `
                 <div class="notify-item ${n.isRead ? 'read' : ''}" onclick="clickNotify(${n.id})">
@@ -964,43 +898,28 @@
 
         // 筛选通知
         function filterNotify(type, el) {
-            document.querySelectorAll('.notify-tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
+            document.querySelectorAll('.notify-tab').forEach(tab => tab.classList.remove('active'));
             el.classList.add('active');
             renderNotifications(type);
         }
 
-        // 显示通知面板
-        function showNotifyPanel() {
-            document.getElementById('notifyOverlay').classList.add('show');
-            renderNotifications();
-        }
+        // 显示/隐藏通知面板
+        function showNotifyPanel() { document.getElementById('notifyOverlay').classList.add('show'); renderNotifications(); }
+        function hideNotifyPanel() { document.getElementById('notifyOverlay').classList.remove('show'); }
 
-        // 隐藏通知面板
-        function hideNotifyPanel() {
-            document.getElementById('notifyOverlay').classList.remove('show');
-        }
-
-        // 点击通知 - 跳转到对应页面
+        // 点击通知
         function clickNotify(id) {
             const notify = notifications.find(n => n.id === id);
             if (notify) {
                 notify.isRead = true;
                 hideNotifyPanel();
-                if (notify.link) {
-                    window.location.href = notify.link;
-                }
+                if (notify.link) window.location.href = notify.link;
             }
         }
-        
+
         // 清空全部
-        function clearAll() {
-            notifications.length = 0;
-            renderNotifications();
-            showToast('已清空全部通知');
-        }
-        
+        function clearAll() { notifications.length = 0; renderNotifications(); showToast('已清空全部通知'); }
+
         // 初始化
         renderDates();
     </script>
