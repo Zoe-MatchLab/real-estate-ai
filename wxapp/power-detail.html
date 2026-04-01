@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>算力明细 - 房产AI助手</title>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        :root { --brand-primary: #FA8C16; --color-purple: #722ED1; --color-success: #00B42A; --color-title: #1D2129; --color-text: #4E5969; --color-sub: #86909C; --color-border: #E5E6EB; --color-bg: #F7F8FA; --color-card: #FFFFFF; --spacing-md: 16px; --spacing-lg: 24px; --radius-xl: 16px; --shadow-sm: 0 1px 3px rgba(0,0,0,0.04); --font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { font-family: var(--font-family); font-size: 14px; line-height: 1.5; color: var(--color-text); background: var(--color-bg); -webkit-font-smoothing: antialiased; }
+        body { padding-bottom: 80px; }
+        .header { background: linear-gradient(135deg, var(--color-purple) 0%, #8B5CF6 100%); padding: calc(12px + env(safe-area-inset-top)) var(--spacing-md) var(--spacing-md); color: white; display: flex; align-items: center; gap: var(--spacing-md); }
+        .back-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: white; }
+        .header-title { flex: 1; font-size: 17px; font-weight: 600; }
+        .content { padding: var(--spacing-md); }
+        .balance-card { background: white; border-radius: var(--radius-xl); padding: var(--spacing-lg); text-align: center; box-shadow: var(--shadow-sm); margin-bottom: var(--spacing-md); }
+        .balance-icon { font-size: 32px; margin-bottom: var(--spacing-md); }
+        .balance-value { font-size: 36px; font-weight: 700; color: var(--color-purple); margin-bottom: 4px; }
+        .balance-label { font-size: 14px; color: var(--color-sub); margin-bottom: var(--spacing-md); }
+        .balance-btn { display: inline-block; padding: 10px 24px; background: var(--color-purple); color: white; border-radius: var(--radius-xl); font-size: 14px; font-weight: 500; }
+        .section-title { font-size: 15px; font-weight: 600; color: var(--color-title); margin-bottom: var(--spacing-sm); padding-left: var(--spacing-md); }
+        .record-card { background: white; border-radius: var(--radius-xl); padding: var(--spacing-md); margin-bottom: var(--spacing-sm); box-shadow: var(--shadow-sm); display: flex; align-items: center; }
+        .record-icon { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: var(--spacing-md); font-size: 18px; }
+        .record-icon.earn { background: #F6FFED; color: var(--color-success); }
+        .record-icon.use { background: #FFF1F0; color: #FA5151; }
+        .record-info { flex: 1; }
+        .record-title { font-size: 14px; font-weight: 500; color: var(--color-title); }
+        .record-time { font-size: 12px; color: var(--color-sub); }
+        .record-amount { font-size: 16px; font-weight: 600; }
+        .record-amount.positive { color: var(--color-success); }
+        .record-amount.negative { color: #FA5151; }
+        .tab-bar { position: fixed; bottom: calc(16px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); background: rgba(29,33,41,0.96); backdrop-filter: blur(20px); border-radius: 28px; padding: 8px 20px; z-index: 9999; display: flex; gap: 4px; }
+        .tab-item { width: 44px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 18px; color: rgba(255,255,255,0.5); text-decoration: none; }
+        .tab-item i { font-size: 20px; }
+        .tab-item.active { background: rgba(250,140,22,0.2); color: var(--brand-primary); }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="back-btn" onclick="history.back()"><i class="fa fa-angle-left" style="font-size:22px"></i></button>
+        <span class="header-title">算力明细</span>
+    </div>
+    <div class="content">
+        <div class="balance-card">
+            <div class="balance-icon">⚡</div>
+            <div class="balance-value">580</div>
+            <div class="balance-label">我的算力</div>
+            <span class="balance-btn">获取更多算力</span>
+        </div>
+        <div class="section-title">今日获取</div>
+        <div class="record-card">
+            <div class="record-icon earn"><i class="fa fa-check-circle"></i></div>
+            <div class="record-info"><div class="record-title">完成探盘任务</div><div class="record-time">10:30</div></div>
+            <div class="record-amount positive">+50</div>
+        </div>
+        <div class="record-card">
+            <div class="record-icon earn"><i class="fa fa-check-circle"></i></div>
+            <div class="record-info"><div class="record-title">完成话术训练</div><div class="record-time">09:15</div></div>
+            <div class="record-amount positive">+20</div>
+        </div>
+        <div class="record-card">
+            <div class="record-icon earn"><i class="fa fa-calendar-check-o"></i></div>
+            <div class="record-info"><div class="record-title">每日签到</div><div class="record-time">08:00</div></div>
+            <div class="record-amount positive">+10</div>
+        </div>
+        <div class="section-title">今日消费</div>
+        <div class="record-card">
+            <div class="record-icon use"><i class="fa fa-magic"></i></div>
+            <div class="record-info"><div class="record-title">AI内容生成</div><div class="record-time">14:20</div></div>
+            <div class="record-amount negative">-30</div>
+        </div>
+        <div class="record-card">
+            <div class="record-icon use"><i class="fa fa-comments"></i></div>
+            <div class="record-info"><div class="record-title">AI话术训练</div><div class="record-time">11:00</div></div>
+            <div class="record-amount negative">-20</div>
+        </div>
+    </div>
+    <div class="tab-bar">
+        <a href="tools.html" class="tab-item"><i class="fa fa-rocket"></i></a>
+        <a href="ai-design.html" class="tab-item"><i class="fa fa-paint-brush"></i></a>
+        <a href="claw.html" class="tab-item"><i class="fa fa-commenting"></i></a>
+        <a href="calendar.html" class="tab-item"><i class="fa fa-calendar"></i></a>
+        <a href="profile.html" class="tab-item active"><i class="fa fa-user"></i></a>
+    </div>
+</body>
+</html>

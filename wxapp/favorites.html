@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>我的收藏 - 房产AI助手</title>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        :root { --brand-primary: #FA8C16; --color-title: #1D2129; --color-text: #4E5969; --color-sub: #86909C; --color-bg: #F7F8FA; --color-card: #FFFFFF; --spacing-md: 16px; --radius-xl: 16px; --shadow-sm: 0 1px 3px rgba(0,0,0,0.04); --font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { font-family: var(--font-family); font-size: 14px; line-height: 1.5; color: var(--color-text); background: var(--color-bg); -webkit-font-smoothing: antialiased; }
+        body { padding-bottom: 80px; }
+        .header { background: white; padding: calc(12px + env(safe-area-inset-top)) var(--spacing-md) var(--spacing-md); display: flex; align-items: center; border-bottom: 1px solid #E5E6EB; position: sticky; top: 0; z-index: 100; }
+        .back-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: var(--color-text); }
+        .header-title { flex: 1; font-size: 17px; font-weight: 600; color: var(--color-title); text-align: center; }
+        .filter-tabs { display: flex; gap: 8px; padding: 8px var(--spacing-md); background: white; overflow-x: auto; }
+        .filter-tab { flex: 0 0 auto; padding: 8px 16px; font-size: 14px; color: var(--color-text); background: var(--color-bg); border-radius: 9999px; border: none; cursor: pointer; white-space: nowrap; }
+        .filter-tab.active { background: var(--brand-primary); color: white; }
+        .content { padding: var(--spacing-md); }
+        .empty-state { text-align: center; padding: 60px 0; color: var(--color-sub); }
+        .empty-icon { font-size: 64px; margin-bottom: 16px; opacity: 0.5; }
+        .favorite-card { background: white; border-radius: var(--radius-xl); padding: var(--spacing-md); margin-bottom: var(--spacing-md); box-shadow: var(--shadow-sm); display: flex; gap: var(--spacing-md); cursor: pointer; }
+        .favorite-icon { width: 60px; height: 60px; background: #FFF7E6; border-radius: var(--radius-xl); display: flex; align-items: center; justify-content: center; font-size: 28px; }
+        .favorite-info { flex: 1; }
+        .favorite-title { font-size: 15px; font-weight: 600; color: var(--color-title); margin-bottom: 4px; }
+        .favorite-desc { font-size: 12px; color: var(--color-sub); margin-bottom: 4px; }
+        .favorite-time { font-size: 11px; color: var(--color-sub); }
+        .tab-bar { position: fixed; bottom: calc(16px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); background: rgba(29,33,41,0.96); backdrop-filter: blur(20px); border-radius: 28px; padding: 8px 20px; z-index: 9999; display: flex; gap: 4px; }
+        .tab-item { width: 44px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 18px; color: rgba(255,255,255,0.5); text-decoration: none; }
+        .tab-item i { font-size: 20px; }
+        .tab-item.active { background: rgba(250,140,22,0.2); color: var(--brand-primary); }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <button class="back-btn" onclick="history.back()"><i class="fa fa-angle-left" style="font-size:22px"></i></button>
+        <span class="header-title">我的收藏</span>
+    </div>
+    <div class="filter-tabs">
+        <button class="filter-tab active">全部</button>
+        <button class="filter-tab">楼盘</button>
+        <button class="filter-tab">模板</button>
+        <button class="filter-tab">学习</button>
+    </div>
+    <div class="content">
+        <div class="favorite-card">
+            <div class="favorite-icon">🏠</div>
+            <div class="favorite-info">
+                <div class="favorite-title">中海汇德里</div>
+                <div class="favorite-desc">浦东新区张江高科技园区</div>
+                <div class="favorite-time">昨天收藏</div>
+            </div>
+        </div>
+        <div class="favorite-card">
+            <div class="favorite-icon" style="background:#F0F5FF;">📝</div>
+            <div class="favorite-info">
+                <div class="favorite-title">探盘文案模板-开盘来袭</div>
+                <div class="favorite-desc">适用于新盘开盘类文案创作</div>
+                <div class="favorite-time">3天前收藏</div>
+            </div>
+        </div>
+        <div class="favorite-card">
+            <div class="favorite-icon" style="background:#F7F0FF;">📚</div>
+            <div class="favorite-info">
+                <div class="favorite-title">逼定话术大全</div>
+                <div class="favorite-desc">10大逼定技巧合集</div>
+                <div class="favorite-time">1周前收藏</div>
+            </div>
+        </div>
+    </div>
+    <div class="tab-bar">
+        <a href="tools.html" class="tab-item"><i class="fa fa-rocket"></i></a>
+        <a href="ai-design.html" class="tab-item"><i class="fa fa-paint-brush"></i></a>
+        <a href="claw.html" class="tab-item"><i class="fa fa-commenting"></i></a>
+        <a href="calendar.html" class="tab-item"><i class="fa fa-calendar"></i></a>
+        <a href="profile.html" class="tab-item active"><i class="fa fa-user"></i></a>
+    </div>
+</body>
+</html>
