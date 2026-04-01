@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>新建谈判任务 - 房产AI助手</title>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --brand-primary: #FA8C16;
+            --brand-primary-light: #FFF7E6;
+            --color-success: #00B42A;
+            --color-success-light: #E8FFEA;
+            --color-warning: #FF7D00;
+            --color-warning-light: #FFF7E6;
+            --color-danger: #FA5151;
+            --color-danger-light: #FFECE8;
+            --color-info: #165DFF;
+            --color-info-light: #E8F3FF;
+            --color-purple: #722ED1;
+            --color-purple-light: #F7F0FF;
+            --color-title: #1D2129;
+            --color-text: #4E5969;
+            --color-sub: #86909C;
+            --color-border: #E5E6EB;
+            --color-bg: #F7F8FA;
+            --color-card: #FFFFFF;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+            --font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.25s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            font-family: var(--font-family);
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--color-text);
+            background: var(--color-bg);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Focus 样式 */
+        button:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 2px solid var(--brand-primary);
+            outline-offset: 2px;
+        }
+
+        .page {
+            min-height: 100vh;
+            padding-bottom: calc(100px + env(safe-area-inset-bottom));
+        }
+
+        /* 头部 */
+        .header {
+            background: var(--color-card);
+            padding: calc(12px + env(safe-area-inset-top)) var(--spacing-md) var(--spacing-md);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .header-back {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-title);
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        .header-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--color-title);
+        }
+
+        .header-save {
+            padding: 6px 16px;
+            background: var(--brand-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-full);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .header-save:active {
+            transform: scale(0.95);
+            background: var(--color-warning);
+        }
+
+        /* 表单内容 */
+        .form-content {
+            padding: var(--spacing-md);
+        }
+
+        /* 表单区块 */
+        .form-section {
+            background: var(--color-card);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .form-section-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-title);
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .form-section-title i {
+            color: var(--brand-primary);
+        }
+
+        /* 表单行 */
+        .form-row {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .form-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            font-size: 13px;
+            color: var(--color-text);
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .form-label .required {
+            color: var(--color-danger);
+        }
+
+        /* 输入框 */
+        .form-input {
+            width: 100%;
+            padding: 12px var(--spacing-md);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            color: var(--color-title);
+            background: var(--color-bg);
+            transition: all var(--transition-fast);
+        }
+
+        .form-input:focus {
+            border-color: var(--brand-primary);
+            background: white;
+        }
+
+        .form-input::placeholder {
+            color: var(--color-sub);
+        }
+
+        /* 选择器 */
+        .form-select {
+            width: 100%;
+            padding: 12px var(--spacing-md);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            color: var(--color-title);
+            background: var(--color-bg);
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2386909C' d='M2.5 4.5L6 8l3.5-3.5'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            transition: all var(--transition-fast);
+        }
+
+        .form-select:focus {
+            border-color: var(--brand-primary);
+            background-color: white;
+        }
+
+        /* 复选框组 */
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: 8px 12px;
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .checkbox-item input {
+            display: none;
+        }
+
+        .checkbox-item.checked {
+            background: var(--brand-primary-light);
+            border-color: var(--brand-primary);
+            color: var(--brand-primary);
+        }
+
+        .checkbox-item:active {
+            transform: scale(0.98);
+        }
+
+        /* 单选组 */
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md);
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .radio-item input {
+            display: none;
+        }
+
+        .radio-item.checked {
+            background: var(--brand-primary-light);
+            border-color: var(--brand-primary);
+        }
+
+        .radio-item:active {
+            transform: scale(0.99);
+        }
+
+        .radio-icon {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--color-border);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+            transition: all var(--transition-fast);
+        }
+
+        .radio-item.checked .radio-icon {
+            border-color: var(--brand-primary);
+            background: var(--brand-primary);
+        }
+
+        .radio-item.checked .radio-icon::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .radio-content { flex: 1; }
+        .radio-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-title);
+        }
+        .radio-desc {
+            font-size: 12px;
+            color: var(--color-sub);
+            margin-top: 2px;
+        }
+
+        /* 卖点标签组 */
+        .tag-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+        }
+
+        .tag-item {
+            padding: 8px 14px;
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-full);
+            font-size: 13px;
+            color: var(--color-text);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            user-select: none;
+        }
+
+        .tag-item.selected {
+            background: var(--brand-primary);
+            border-color: var(--brand-primary);
+            color: white;
+        }
+
+        .tag-item:active {
+            transform: scale(0.95);
+        }
+
+        .tag-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* 楼盘信息卡片 */
+        .house-card {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .house-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .house-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-title);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .house-info {
+            font-size: 12px;
+            color: var(--color-sub);
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+        }
+
+        .house-info span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* 价格输入组 */
+        .price-group {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-md);
+        }
+
+        .price-item {
+            text-align: center;
+        }
+
+        .price-item .form-input {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .price-label {
+            font-size: 11px;
+            color: var(--color-sub);
+            margin-top: var(--spacing-xs);
+        }
+
+        .price-label .best {
+            color: var(--color-success);
+        }
+
+        /* 参考话术 */
+        .script-card {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .script-card:active {
+            transform: scale(0.99);
+            background: var(--brand-primary-light);
+        }
+
+        .script-card.selected {
+            background: var(--brand-primary-light);
+            border: 1px solid var(--brand-primary);
+        }
+
+        .script-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-title);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .script-preview {
+            font-size: 12px;
+            color: var(--color-sub);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .script-tags {
+            display: flex;
+            gap: var(--spacing-xs);
+            margin-top: var(--spacing-sm);
+        }
+
+        .script-tag {
+            padding: 2px 8px;
+            background: white;
+            border-radius: var(--radius-full);
+            font-size: 11px;
+            color: var(--color-sub);
+        }
+
+        /* 底部操作栏 */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: var(--spacing-md);
+            padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.06);
+            display: flex;
+            gap: var(--spacing-md);
+            z-index: 100;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 0;
+            border-radius: var(--radius-xl);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border: none;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: var(--color-bg);
+            color: var(--color-text);
+        }
+
+        .btn-primary {
+            background: var(--brand-primary);
+            color: white;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.75);
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--radius-lg);
+            z-index: 99999;
+            font-size: 14px;
+            animation: toastIn 0.3s ease forwards;
+            pointer-events: none;
+        }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* 选择探盘任务弹窗 */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-height: 70vh;
+            background: white;
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            padding: var(--spacing-md);
+            padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .modal-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--color-title);
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-sub);
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            max-height: 50vh;
+            overflow-y: auto;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--spacing-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .task-item:active {
+            transform: scale(0.99);
+        }
+
+        .task-item.selected {
+            background: var(--brand-primary-light);
+            border: 1px solid var(--brand-primary);
+        }
+
+        .task-item-icon {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--brand-primary);
+            font-size: 18px;
+        }
+
+        .task-item-info { flex: 1; }
+        .task-item-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-title);
+        }
+        .task-item-meta {
+            font-size: 12px;
+            color: var(--color-sub);
+            margin-top: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- 头部 -->
+        <div class="header">
+            <a href="negotiation-list.html" class="header-back">
+                <i class="fa fa-chevron-left"></i>
+            </a>
+            <span class="header-title">新建谈判任务</span>
+            <button class="header-save" onclick="saveForm()">保存</button>
+        </div>
+
+        <!-- 表单内容 -->
+        <div class="form-content">
+            <!-- 关联探盘任务 -->
+            <div class="form-section">
+                <div class="form-section-title">
+                    <i class="fa fa-link"></i>
+                    关联探盘任务
+                </div>
+
+                <div id="selectedTask" class="house-card" style="display: none;">
+                    <div class="house-name" id="selectedTaskName">中海汇德里新盘探盘</div>
+                    <div class="house-info">
+                        <span><i class="fa fa-map-marker"></i> 浦东新区</span>
+                        <span><i class="fa fa-tag"></i> 均价 8.5万/㎡</span>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <button class="form-input" onclick="showTaskModal()" id="selectTaskBtn" style="text-align: left; cursor: pointer;">
+                        <i class="fa fa-plus" style="color: var(--brand-primary);"></i>
+                        选择探盘任务
+                    </button>
+                </div>
+            </div>
+
+            <!-- 谈判类型 -->
+            <div class="form-section">
+                <div class="form-section-title">
+                    <i class="fa fa-tag"></i>
+                    谈判类型 <span class="required">*</span>
+                </div>
+
+                <div class="checkbox-group">
+                    <label class="checkbox-item" onclick="toggleCheckbox(this)">
+                        <input type="checkbox" name="negotiationType" value="price">
+                        <i class="fa fa-check" style="font-size: 12px;"></i>
+                        价格谈判
+                    </label>
+                    <label class="checkbox-item" onclick="toggleCheckbox(this)">
+                        <input type="checkbox" name="negotiationType" value="discount">
+                        <i class="fa fa-check" style="font-size: 12px;"></i>
+                        优惠谈判
+                    </label>
+                    <label class="checkbox-item" onclick="toggleCheckbox(this)">
+                        <input type="checkbox" name="negotiationType" value="support">
+                        <i class="fa fa-check" style="font-size: 12px;"></i>
+                        配套谈判
+                    </label>
+                    <label class="checkbox-item" onclick="toggleCheckbox(this)">
+                        <input type="checkbox" name="negotiationType" value="combo">
+                        <i class="fa fa-check" style="font-size: 12px;"></i>
+                        综合谈判
+                    </label>
+                </div>
+            </div>
+
+            <!-- 谈判目标 -->
+            <div class="form-section">
+                <div class="form-section-title">
+                    <i class="fa fa-bullseye"></i>
+                    谈判目标
+                </div>
+
+                <div class="price-group">
+                    <div class="price-item">
+                        <input type="number" class="form-input" placeholder="520" id="idealPrice">
+                        <div class="price-label"><span class="best">最优价</span></div>
+                    </div>
+                    <div class="price-item">
+                        <input type="number" class="form-input" placeholder="500" id="targetPrice">
+                        <div class="price-label">目标价</div>
+                    </div>
+                    <div class="price-item">
+                        <input type="number" class="form-input" placeholder="480" id="bottomPrice">
+                        <div class="price-label">底价</div>
+                    </div>
+                </div>
+
+                <div class="form-row" style="margin-top: var(--spacing-md);">
+                    <label class="form-label">优惠目标</label>
+                    <input type="text" class="form-input" placeholder="如：9.5折、免物业费等" id="discountGoal">
+                </div>
+            </div>
+
+            <!-- 谈判策略 -->
+            <div class="form-section">
+                <div class="form-section-title">
+                    <i class="fa fa-compass"></i>
+                    谈判策略
+                </div>
+
+                <div class="radio-group">
+                    <label class="radio-item" onclick="selectRadio(this)">
+                        <input type="radio" name="strategy" value="anchor">
+                        <span class="radio-icon"></span>
+                        <div class="radio-content">
+                            <div class="radio-title">锚定策略</div>
+                            <div class="radio-desc">先开高价再逐步让步，给客户谈判空间</div>
+                        </div>
+                    </label>
+                    <label class="radio-item" onclick="selectRadio(this)">
+                        <input type="radio" name="strategy" value="concession">
+                        <span class="radio-icon"></span>
+                        <div class="radio-content">
+                            <div class="radio-title">让步策略</div>
+                            <div class="radio-desc">分步让步，每次让步都有条件交换</div>
+                        </div>
+                    </label>
+                    <label class="radio-item" onclick="selectRadio(this)">
+                        <input type="radio" name="strategy" value="value">
+                        <span class="radio-icon"></span>
+                        <div class="radio-content">
+                            <div class="radio-title">附加价值策略</div>
+                            <div class="radio-desc">强调楼盘配套、教育等附加价值</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <!-- 关键卖点 -->
+            <div class="form-section">
+                <div class="form-section-title">
+                    <i class="fa fa-star"></i>
+                    关键卖点 <span style="font-size: 12px; color: var(--color-sub); font-weight: 400;">（最多选3个）</span>
+                </div>
+
+                <div class="tag-group">
+                    <span class="tag-item" onclick="toggleTag(this, 3)">学区房</span>
+                    <span class="tag-item" onclick="toggleTag(this, 3)">地铁盘</span>
+                    <span class="tag-item" onclick="toggleTag(this, 3)">品牌开发商</span>
+                    <span class="tag-item" onclick="toggleTag(this, 3)">刚需首选</span>
+                    <span class="tag-item" onclick="toggleTag(this, 3)">改善型</span>
+                    <span class="tag-item" onclick="toggleTag(this, 3)">投资潜力</span>
+                    <span class="tag-item" onclick="toggleTag(this, 3)">园林社区</span>
+                    <span class="tag-item" onclick="toggleTag(this, 3)">智能家居</span>
+                    <span class="tag-item" onclick="toggleTag(this, 3)">商业配套</span>
+                </div>
+            </div>
+
+            <!-- 参考话术 -->
+            <div class="form-section">
+                <div class="form-section-title">
+                    <i class="fa fa-comments"></i>
+                    参考话术
+                </div>
+
+                <div class="script-card" onclick="selectScript(this)">
+                    <div class="script-title">价格谈判话术</div>
+                    <div class="script-preview">王先生，您考虑价格的心情我非常理解。这个户型是目前性价比最高的...</div>
+                    <div class="script-tags">
+                        <span class="script-tag">价格</span>
+                        <span class="script-tag">优惠</span>
+                    </div>
+                </div>
+
+                <div class="script-card" onclick="selectScript(this)">
+                    <div class="script-title">处理异议话术</div>
+                    <div class="script-preview">您的顾虑我完全理解。关于价格问题，我们可以先看看这个方案...</div>
+                    <div class="script-tags">
+                        <span class="script-tag">异议处理</span>
+                        <span class="script-tag">逼定</span>
+                    </div>
+                </div>
+
+                <div class="script-card" onclick="selectScript(this)">
+                    <div class="script-title">促成签约话术</div>
+                    <div class="script-preview">王先生，这个价格是今天专属的优惠，错过就没有了。您方便今天定下来吗？</div>
+                    <div class="script-tags">
+                        <span class="script-tag">促成</span>
+                        <span class="script-tag">逼定</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部操作栏 -->
+        <div class="bottom-bar">
+            <button class="btn btn-secondary" onclick="location.href='negotiation-list.html'">取消</button>
+            <button class="btn btn-primary" onclick="createNegotiation()">创建谈判任务</button>
+        </div>
+    </div>
+
+    <!-- 选择探盘任务弹窗 -->
+    <div class="modal" id="taskModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="modal-title">选择探盘任务</span>
+                <span class="modal-close" onclick="hideTaskModal()">
+                    <i class="fa fa-times"></i>
+                </span>
+            </div>
+            <div class="modal-body">
+                <div class="task-item" onclick="selectTask(this, '中海汇德里新盘探盘')">
+                    <div class="task-item-icon">
+                        <i class="fa fa-check-circle"></i>
+                    </div>
+                    <div class="task-item-info">
+                        <div class="task-item-name">中海汇德里新盘探盘</div>
+                        <div class="task-item-meta">已完成 · 浦东新区 · 2026-04-01</div>
+                    </div>
+                </div>
+                <div class="task-item" onclick="selectTask(this, '万科翡翠公园探盘')">
+                    <div class="task-item-icon">
+                        <i class="fa fa-check-circle"></i>
+                    </div>
+                    <div class="task-item-info">
+                        <div class="task-item-name">万科翡翠公园探盘</div>
+                        <div class="task-item-meta">已完成 · 徐汇区 · 2026-04-01</div>
+                    </div>
+                </div>
+                <div class="task-item" onclick="selectTask(this, '保利天汇新盘探盘')">
+                    <div class="task-item-icon">
+                        <i class="fa fa-check-circle"></i>
+                    </div>
+                    <div class="task-item-info">
+                        <div class="task-item-name">保利天汇新盘探盘</div>
+                        <div class="task-item-meta">已完成 · 静安区 · 2026-03-30</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 复选框切换
+        function toggleCheckbox(el) {
+            el.classList.toggle('checked');
+            const input = el.querySelector('input');
+            input.checked = !input.checked;
+        }
+
+        // 单选切换
+        function selectRadio(el) {
+            document.querySelectorAll('.radio-item').forEach(item => {
+                item.classList.remove('checked');
+                item.querySelector('input').checked = false;
+            });
+            el.classList.add('checked');
+            el.querySelector('input').checked = true;
+        }
+
+        // 标签切换（最多选N个）
+        let selectedTags = [];
+        function toggleTag(el, max) {
+            const isSelected = el.classList.contains('selected');
+            if (isSelected) {
+                el.classList.remove('selected');
+                selectedTags = selectedTags.filter(t => t !== el.textContent);
+            } else {
+                if (selectedTags.length >= max) {
+                    showToast(`最多选 ${max} 个卖点`);
+                    return;
+                }
+                el.classList.add('selected');
+                selectedTags.push(el.textContent);
+            }
+        }
+
+        // 话术卡片选择
+        function selectScript(el) {
+            el.classList.toggle('selected');
+        }
+
+        // 显示探盘任务弹窗
+        function showTaskModal() {
+            document.getElementById('taskModal').classList.add('show');
+        }
+
+        // 隐藏探盘任务弹窗
+        function hideTaskModal() {
+            document.getElementById('taskModal').classList.remove('show');
+        }
+
+        // 选择探盘任务
+        function selectTask(el, taskName) {
+            document.querySelectorAll('.task-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            el.classList.add('selected');
+
+            // 更新选中状态
+            document.getElementById('selectedTask').style.display = 'block';
+            document.getElementById('selectedTaskName').textContent = taskName;
+            document.getElementById('selectTaskBtn').style.display = 'none';
+
+            hideTaskModal();
+        }
+
+        // 保存表单
+        function saveForm() {
+            showToast('保存成功');
+            setTimeout(() => {
+                location.href = 'negotiation-list.html';
+            }, 1000);
+        }
+
+        // 创建谈判任务
+        function createNegotiation() {
+            // 简单校验
+            if (document.getElementById('selectedTask').style.display === 'none') {
+                showToast('请选择关联的探盘任务');
+                return;
+            }
+
+            const checkedTypes = document.querySelectorAll('input[name="negotiationType"]:checked');
+            if (checkedTypes.length === 0) {
+                showToast('请选择谈判类型');
+                return;
+            }
+
+            showToast('创建成功');
+            setTimeout(() => {
+                location.href = 'negotiation-list.html';
+            }, 1000);
+        }
+
+        // Toast
+        function showToast(message) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 200);
+            }, 2000);
+        }
+
+        // 点击弹窗背景关闭
+        document.getElementById('taskModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                hideTaskModal();
+            }
+        });
+    </script>
+</body>
+</html>
