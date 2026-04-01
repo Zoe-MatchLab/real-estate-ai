@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>内容日历 - 房产AI助手</title>
+    <title>任务中心 - 房产AI助手</title>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
         :root {
@@ -11,10 +11,15 @@
             --brand-primary-dark: #E67A0E;
             --brand-primary-light: #FFF7E6;
             --color-success: #00B42A;
+            --color-success-light: #E8FFEA;
             --color-warning: #FF7D00;
+            --color-warning-light: #FFF7E6;
             --color-danger: #FA5151;
+            --color-danger-light: #FFECE8;
             --color-info: #007AFF;
+            --color-info-light: #E8F3FF;
             --color-purple: #722ED1;
+            --color-purple-light: #F7F0FF;
             --color-title: #1D2129;
             --color-text: #4E5969;
             --color-sub: #86909C;
@@ -49,7 +54,7 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Focus 样式 - 可访问性 */
+        /* Focus 样式 */
         button:focus-visible,
         a:focus-visible {
             outline: 2px solid var(--brand-primary);
@@ -63,7 +68,7 @@
             height: 100dvh;
         }
 
-        /* 标题栏 */
+        /* ========== 标题栏 ========== */
         .header {
             display: flex;
             align-items: center;
@@ -98,6 +103,7 @@
             transition: color var(--transition-fast);
             background: none;
             border: none;
+            text-decoration: none;
         }
 
         .header-action:active { color: var(--color-title); }
@@ -120,55 +126,84 @@
             padding: 0 4px;
         }
 
-        /* ========== 筛选栏（独立一行） ========== */
+        /* ========== Tab 切换（类型） ========== */
+        .tab-section {
+            background: var(--color-card);
+            border-bottom: 1px solid var(--color-border);
+            flex-shrink: 0;
+        }
+
+        .tab-bar {
+            display: flex;
+            padding: var(--spacing-sm) var(--spacing-md);
+            gap: var(--spacing-xs);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tab-bar::-webkit-scrollbar { display: none; }
+
+        .tab-item {
+            flex: 0 0 auto;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-sub);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            white-space: nowrap;
+            border: none;
+            background: transparent;
+        }
+
+        .tab-item:active { transform: scale(0.95); }
+
+        .tab-item.active {
+            background: var(--brand-primary);
+            color: white;
+        }
+
+        .tab-item[data-type]:not(.active) {
+            background: var(--color-bg);
+        }
+
+        .tab-item[data-type="house"].active { background: var(--brand-primary); }
+        .tab-item[data-type="speech"].active { background: var(--color-purple); }
+        .tab-item[data-type="content"].active { background: var(--color-success); }
+        .tab-item[data-type="new"].active { background: var(--color-danger); }
+
+        /* ========== 筛选栏（状态） ========== */
         .filter-section {
             background: var(--color-card);
             border-bottom: 1px solid var(--color-border);
             flex-shrink: 0;
         }
 
-        .filter-header {
+        .filter-bar {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: var(--spacing-sm) var(--spacing-md);
-            border-bottom: 1px solid var(--color-border);
-        }
-
-        .filter-label {
-            font-size: 12px;
-            color: var(--color-sub);
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-xs);
-        }
-
-        .filter-label i { font-size: 14px; }
-
-        .filter-tabs {
-            display: flex;
-            gap: var(--spacing-xs);
+            gap: var(--spacing-sm);
             padding: var(--spacing-sm) var(--spacing-md);
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
         }
 
-        .filter-tabs::-webkit-scrollbar { display: none; }
+        .filter-bar::-webkit-scrollbar { display: none; }
 
         .filter-chip {
             flex: 0 0 auto;
             display: flex;
             align-items: center;
             gap: var(--spacing-xs);
-            padding: 8px 14px;
+            padding: 6px 12px;
             background: var(--color-bg);
             border-radius: var(--radius-full);
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 500;
             color: var(--color-text);
             cursor: pointer;
             transition: all var(--transition-fast);
-            border: 1.5px solid transparent;
+            border: 1px solid var(--color-border);
             white-space: nowrap;
         }
 
@@ -181,17 +216,11 @@
         }
 
         .filter-chip .count {
-            font-size: 11px;
+            font-size: 10px;
             opacity: 0.8;
-        }
-
-        .filter-chip[data-type="house"].active { background: var(--brand-primary); border-color: var(--brand-primary); }
-        .filter-chip[data-type="speech"].active { background: var(--color-purple); border-color: var(--color-purple); }
-        .filter-chip[data-type="content"].active { background: var(--color-success); border-color: var(--color-success); }
-        .filter-chip[data-type="new"].active { background: var(--color-danger); border-color: var(--color-danger); }
-
-        .filter-chip[data-type]:not(.active) {
-            border-color: var(--color-border);
+            background: rgba(255,255,255,0.3);
+            padding: 1px 6px;
+            border-radius: 10px;
         }
 
         /* ========== 主内容区 ========== */
@@ -265,6 +294,23 @@
             -webkit-overflow-scrolling: touch;
         }
 
+        /* 日期标题 */
+        .date-header {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--color-title);
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .date-header .task-count {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--color-sub);
+        }
+
         /* 任务卡片 */
         .task-card {
             background: var(--color-card);
@@ -322,9 +368,9 @@
         }
 
         .type-icon.house { background: var(--brand-primary-light); color: var(--brand-primary); }
-        .type-icon.speech { background: #F7F0FF; color: var(--color-purple); }
-        .type-icon.content { background: #F6FFED; color: var(--color-success); }
-        .type-icon.new { background: #FFF1F0; color: var(--color-danger); }
+        .type-icon.speech { background: var(--color-purple-light); color: var(--color-purple); }
+        .type-icon.content { background: var(--color-success-light); color: var(--color-success); }
+        .type-icon.new { background: var(--color-danger-light); color: var(--color-danger); }
 
         .type-text {
             font-size: 12px;
@@ -339,7 +385,13 @@
         .task-time {
             font-size: 11px;
             color: var(--color-sub);
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
+
+        .task-time.warning { color: var(--brand-primary); }
+        .task-time.danger { color: var(--color-danger); }
 
         .task-title {
             font-size: 15px;
@@ -348,38 +400,35 @@
             margin-bottom: var(--spacing-xs);
         }
 
-        .task-desc {
+        .task-subtitle {
             font-size: 12px;
             color: var(--color-sub);
             margin-bottom: var(--spacing-sm);
         }
 
-        .task-meta {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-md);
-            font-size: 12px;
-            color: var(--color-sub);
-        }
-
-        .task-meta i { margin-right: 4px; }
-        .task-meta .warning { color: var(--color-warning); }
-
-        .task-footer {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-top: var(--spacing-md);
-            padding-top: var(--spacing-md);
+        /* 进度条 */
+        .task-progress {
+            margin-top: var(--spacing-sm);
+            padding-top: var(--spacing-sm);
             border-top: 1px solid var(--color-border);
         }
 
-        .progress-info { flex: 1; }
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xs);
+        }
 
         .progress-text {
+            font-size: 11px;
+            color: var(--color-text);
+        }
+
+        .progress-value {
             font-size: 12px;
-            color: var(--color-sub);
-            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--brand-primary);
         }
 
         .progress-bar {
@@ -391,44 +440,94 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--brand-primary), #FF9500);
             border-radius: 2px;
             transition: width 0.3s ease;
         }
 
-        .task-action {
-            padding: 6px 14px;
-            border-radius: var(--radius-full);
-            font-size: 12px;
-            font-weight: 500;
-            border: none;
-            cursor: pointer;
-            transition: all var(--transition-fast);
-        }
+        .progress-fill.house { background: var(--brand-primary); }
+        .progress-fill.speech { background: var(--color-purple); }
+        .progress-fill.content { background: var(--color-success); }
+        .progress-fill.new { background: var(--color-danger); }
 
-        .task-action:active { transform: scale(0.95); opacity: 0.9; }
-        .task-action.primary { background: var(--brand-primary); color: white; }
-        .task-action.success { background: var(--color-success); color: white; }
-        .task-action.purple { background: var(--color-purple); color: white; }
-        .task-action.outline { background: transparent; border: 1px solid var(--brand-primary); color: var(--brand-primary); }
-        .task-action.danger { background: var(--color-danger); color: white; }
-
-        /* 标签 */
-        .tag {
+        /* 任务步骤 */
+        .task-step {
             display: inline-flex;
             align-items: center;
+            gap: var(--spacing-xs);
             padding: 2px 8px;
+            background: var(--color-bg);
             border-radius: var(--radius-sm);
             font-size: 11px;
-            font-weight: 500;
+            color: var(--color-sub);
         }
 
-        .tag.progress { background: #E8F3FF; color: #165DFF; }
-        .tag.pending { background: var(--brand-primary-light); color: var(--brand-primary); }
-        .tag.done { background: #E8FFEA; color: var(--color-success); }
+        /* 底部新建按钮 */
+        .create-btn {
+            position: fixed;
+            right: var(--spacing-md);
+            bottom: calc(90px + env(safe-area-inset-bottom));
+            width: 48px;
+            height: 48px;
+            background: var(--brand-primary);
+            color: white;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(250, 140, 22, 0.4);
+            z-index: 100;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all var(--transition-normal);
+        }
 
-        /* 底部TabBar */
-        .tab-bar {
+        .create-btn:active {
+            transform: scale(0.95);
+        }
+
+        .create-btn i {
+            font-size: 20px;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-xl);
+            text-align: center;
+            min-height: 300px;
+        }
+
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--color-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: var(--color-sub);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .empty-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-title);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .empty-desc {
+            font-size: 13px;
+            color: var(--color-sub);
+            max-width: 240px;
+        }
+
+        /* TabBar */
+        .tab-bar-bottom {
             position: fixed;
             bottom: calc(16px + env(safe-area-inset-bottom));
             left: 50%;
@@ -442,10 +541,9 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.24);
             display: flex;
             gap: 4px;
-            flex-shrink: 0;
         }
 
-        .tab-item {
+        .tab-item-bottom {
             width: 44px;
             height: 36px;
             display: flex;
@@ -453,12 +551,12 @@
             justify-content: center;
             border-radius: 18px;
             color: rgba(255,255,255,0.5);
-            transition: all var(--transition-normal);
             text-decoration: none;
+            transition: all var(--transition-normal);
         }
 
-        .tab-item i { font-size: 20px; }
-        .tab-item.active { background: rgba(250, 140, 22, 0.2); color: var(--brand-primary); }
+        .tab-item-bottom i { font-size: 20px; }
+        .tab-item-bottom.active { background: rgba(250, 140, 22, 0.2); color: var(--brand-primary); }
 
         /* Toast */
         .toast {
@@ -466,13 +564,13 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.75);
+            background: rgba(0,0,0,0.75);
             color: white;
             padding: 12px 24px;
             border-radius: var(--radius-lg);
             z-index: 99999;
             font-size: 14px;
-            animation: toastIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            animation: toastIn 0.3s ease forwards;
             pointer-events: none;
         }
 
@@ -480,389 +578,280 @@
             from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
             to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
-
-        /* 通知面板 */
-        .notify-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 10000;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity var(--transition-normal);
-        }
-
-        .notify-overlay.show { opacity: 1; pointer-events: auto; }
-
-        .notify-panel {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--color-card);
-            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
-            z-index: 10001;
-            transform: translateY(100%);
-            transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
-            max-height: 70vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .notify-overlay.show .notify-panel { transform: translateY(0); }
-
-        .notify-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: var(--spacing-md);
-            border-bottom: 1px solid var(--color-border);
-            flex-shrink: 0;
-        }
-
-        .notify-title { font-size: 16px; font-weight: 600; color: var(--color-title); }
-
-        .notify-actions { display: flex; align-items: center; gap: var(--spacing-md); }
-
-        .notify-clear {
-            font-size: 13px;
-            color: var(--brand-primary);
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
-
-        .notify-close {
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--color-sub);
-            cursor: pointer;
-        }
-
-        .notify-tabs {
-            display: flex;
-            border-bottom: 1px solid var(--color-border);
-            flex-shrink: 0;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .notify-tabs::-webkit-scrollbar { display: none; }
-
-        .notify-tab {
-            flex: 0 0 auto;
-            padding: 10px 16px;
-            text-align: center;
-            font-size: 14px;
-            color: var(--color-text);
-            background: none;
-            border: none;
-            cursor: pointer;
-            position: relative;
-            transition: color var(--transition-fast);
-            white-space: nowrap;
-        }
-
-        .notify-tab.active { color: var(--brand-primary); font-weight: 600; }
-
-        .notify-tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 24px;
-            height: 2px;
-            background: var(--brand-primary);
-            border-radius: 1px;
-        }
-
-        .notify-tab-badge {
-            position: absolute;
-            top: 6px;
-            right: 6px;
-            width: 8px;
-            height: 8px;
-            background: var(--color-danger);
-            border-radius: 50%;
-        }
-
-        .notify-list {
-            flex: 1;
-            overflow-y: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .notify-item {
-            display: flex;
-            padding: var(--spacing-md);
-            border-bottom: 1px solid var(--color-border);
-            cursor: pointer;
-            transition: background var(--transition-fast);
-        }
-
-        .notify-item:active { background: var(--color-bg); }
-        .notify-item.read { opacity: 0.6; }
-
-        .notify-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--color-danger);
-            border-radius: 50%;
-            margin-right: var(--spacing-sm);
-            margin-top: 6px;
-            flex-shrink: 0;
-        }
-
-        .notify-item.read .notify-dot { background: var(--color-sub); }
-
-        .notify-content { flex: 1; }
-
-        .notify-task {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--color-title);
-            margin-bottom: 4px;
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-        }
-
-        .notify-message { font-size: 13px; color: var(--color-text); margin-bottom: 4px; }
-
-        .notify-time { font-size: 11px; color: var(--color-sub); }
-
-        .notify-type {
-            font-size: 11px;
-            color: var(--color-sub);
-            background: var(--color-bg);
-            padding: 2px 8px;
-            border-radius: var(--radius-sm);
-            margin-left: var(--spacing-sm);
-        }
     </style>
 </head>
 <body>
     <div class="page">
         <!-- 标题栏 -->
         <div class="header">
-            <span class="header-title">内容日历</span>
+            <span class="header-title">任务中心</span>
             <div class="header-actions">
-                <button class="header-action" onclick="showNotifyPanel()" aria-label="通知">
-                    <i class="fa fa-bell"></i>
+                <a href="notify.html" class="header-action">
+                    <i class="fa fa-bell-o"></i>
                     <span class="notify-badge">3</span>
-                </button>
+                </a>
             </div>
         </div>
 
-        <!-- ========== 筛选栏（独立一行） ========== -->
-        <div class="filter-section">
-            <div class="filter-header">
-                <span class="filter-label">
-                    <i class="fa fa-filter"></i>
-                    任务筛选
-                </span>
+        <!-- Tab 切换（任务类型） -->
+        <div class="tab-section">
+            <div class="tab-bar">
+                <button class="tab-item active" onclick="switchTab(this, 'all')">全部</button>
+                <button class="tab-item" data-type="house" onclick="switchTab(this, 'house')">探盘</button>
+                <button class="tab-item" data-type="speech" onclick="switchTab(this, 'speech')">话术</button>
+                <button class="tab-item" data-type="content" onclick="switchTab(this, 'content')">内容</button>
+                <button class="tab-item" data-type="new" onclick="switchTab(this, 'new')">新盘</button>
             </div>
-            <div class="filter-tabs">
-                <button class="filter-chip active" onclick="filterTasks('all', this)" data-type="all">
-                    全部<span class="count">(8)</span>
-                </button>
-                <button class="filter-chip" onclick="filterTasks('house', this)" data-type="house">
-                    🏠 探盘<span class="count">(2)</span>
-                </button>
-                <button class="filter-chip" onclick="filterTasks('speech', this)" data-type="speech">
-                    💬 话术<span class="count">(3)</span>
-                </button>
-                <button class="filter-chip" onclick="filterTasks('content', this)" data-type="content">
-                    📝 内容<span class="count">(1)</span>
-                </button>
-                <button class="filter-chip" onclick="filterTasks('new', this)" data-type="new">
-                    🆕 新盘<span class="count">(1)</span>
-                </button>
-                <button class="filter-chip" onclick="filterTasks('done', this)" data-type="done">
-                    ✅ 已完成<span class="count">(1)</span>
-                </button>
+        </div>
+
+        <!-- 筛选栏（状态） -->
+        <div class="filter-section">
+            <div class="filter-bar">
+                <div class="filter-chip active" onclick="switchFilter(this, 'all')">
+                    全部 <span class="count">12</span>
+                </div>
+                <div class="filter-chip" onclick="switchFilter(this, 'in_progress')">
+                    进行中 <span class="count">3</span>
+                </div>
+                <div class="filter-chip" onclick="switchFilter(this, 'pending')">
+                    待执行 <span class="count">5</span>
+                </div>
+                <div class="filter-chip" onclick="switchFilter(this, 'submitted')">
+                    已提交 <span class="count">2</span>
+                </div>
+                <div class="filter-chip" onclick="switchFilter(this, 'completed')">
+                    已完成 <span class="count">2</span>
+                </div>
             </div>
         </div>
 
         <!-- 主内容区 -->
         <div class="main">
             <!-- 左侧日期列表 -->
-            <div class="date-list" id="dateList"></div>
+            <div class="date-list" id="dateList">
+                <!-- 由 JS 生成 -->
+            </div>
 
             <!-- 右侧任务列表 -->
             <div class="task-list" id="taskList">
-                <!-- 新房上线卡片 -->
-                <div class="task-card type-new" onclick="location.href='tools.html'">
-                    <div class="task-header">
-                        <div class="task-type">
-                            <div class="type-icon new"><i class="fa fa-home"></i></div>
-                            <span class="type-text new">新房上线</span>
-                        </div>
-                        <span class="task-time">刚刚</span>
-                    </div>
-                    <div class="task-title">中海汇德里</div>
-                    <div class="task-desc">新房项目已上线，请配置探盘任务</div>
-                    <div class="task-meta">
-                        <span><i class="fa fa-map-marker"></i>浦东新区</span>
-                        <span><i class="fa fa-jpy"></i>8.5万/㎡</span>
-                    </div>
-                    <div class="task-footer">
-                        <div></div>
-                        <button class="task-action danger" onclick="event.stopPropagation(); location.href='tools.html'">立即配置</button>
-                    </div>
+                <!-- 今日任务 -->
+                <div class="date-header">
+                    <span>今天 · 4月2日</span>
+                    <span class="task-count">3个任务</span>
                 </div>
 
-                <!-- 探盘任务卡片 -->
+                <!-- 探盘任务 - 进行中 -->
                 <div class="task-card type-house" onclick="location.href='task-detail.html'">
                     <div class="task-header">
-                        <span class="tag progress">进行中</span>
-                        <span class="task-title" style="margin:0;">中海汇德里新盘探盘</span>
+                        <div class="task-type">
+                            <span class="type-icon house"><i class="fa fa-map-marker"></i></span>
+                            <span class="type-text house">探盘任务</span>
+                        </div>
+                        <span class="task-time warning">
+                            <i class="fa fa-clock-o"></i> 今日18:00截止
+                        </span>
                     </div>
-                    <div class="task-desc">共4个打卡点 · 已完成2个</div>
-                    <div class="task-meta">
-                        <span><i class="fa fa-map-marker"></i>上海市浦东新区</span>
-                        <span class="warning"><i class="fa fa-clock-o"></i>今日18:00截止</span>
-                    </div>
-                    <div class="task-footer">
-                        <div class="progress-info">
-                            <div class="progress-text">50%</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 50%;"></div>
-                            </div>
+                    <div class="task-title">中海汇德里新盘探盘</div>
+                    <div class="task-subtitle">共4个打卡点 · 已完成2个</div>
+                    <div class="task-progress">
+                        <div class="progress-header">
+                            <span class="progress-text">完成进度</span>
+                            <span class="progress-value">50%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill house" style="width: 50%;"></div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 内容任务卡片 -->
-                <div class="task-card type-content" onclick="showToast('内容发布功能开发中')">
-                    <div class="task-header">
-                        <span class="tag pending">待执行</span>
-                    </div>
-                    <div class="task-title">朋友圈文案生成 - 中海汇德里</div>
-                    <div class="task-desc">需生成3条文案</div>
-                    <div class="task-meta">
-                        <span><i class="fa fa-file-text-o"></i>待发布</span>
-                        <span><i class="fa fa-clock-o"></i>明天15:00截止</span>
-                    </div>
-                    <div class="task-footer">
-                        <div></div>
-                        <button class="task-action success" onclick="event.stopPropagation(); showToast('去创作')">去创作</button>
-                    </div>
-                </div>
-
-                <!-- 话术训练卡片 -->
-                <div class="task-card type-speech" onclick="location.href='speech-train.html'">
+                <!-- 话术任务 - 待执行 -->
+                <div class="task-card type-speech" onclick="location.href='task-detail.html'">
                     <div class="task-header">
                         <div class="task-type">
-                            <div class="type-icon speech"><i class="fa fa-comments"></i></div>
+                            <span class="type-icon speech"><i class="fa fa-microphone"></i></span>
                             <span class="type-text speech">话术训练</span>
                         </div>
-                        <span class="tag pending">待执行</span>
+                        <span class="task-time">
+                            <i class="fa fa-clock-o"></i> 明天 10:00
+                        </span>
                     </div>
-                    <div class="task-title">沙盘讲解话术练习</div>
-                    <div class="task-meta">
-                        <span>📍 保利天汇</span>
-                        <span>🕐 明天 14:00</span>
+                    <div class="task-title">议价谈判话术练习</div>
+                    <div class="task-subtitle">约15分钟 · 5个场景</div>
+                </div>
+
+                <!-- 内容任务 - 已提交 -->
+                <div class="task-card type-content" onclick="location.href='task-detail.html'">
+                    <div class="task-header">
+                        <div class="task-type">
+                            <span class="type-icon content"><i class="fa fa-file-text-o"></i></span>
+                            <span class="type-text content">内容创作</span>
+                        </div>
+                        <span class="task-time">
+                            <i class="fa fa-check-circle"></i> 已提交
+                        </span>
                     </div>
-                    <div class="task-footer">
-                        <div></div>
-                        <button class="task-action purple" onclick="event.stopPropagation(); location.href='speech-train.html'">开始训练</button>
+                    <div class="task-title">中海汇德里朋友圈文案</div>
+                    <div class="task-subtitle">待审核</div>
+                </div>
+
+                <!-- 新盘任务 - 进行中 -->
+                <div class="task-card type-new" onclick="location.href='task-detail.html'">
+                    <div class="task-header">
+                        <div class="task-type">
+                            <span class="type-icon new"><i class="fa fa-home"></i></span>
+                            <span class="type-text new">新盘上线</span>
+                        </div>
+                        <span class="task-time">
+                            <i class="fa fa-clock-o"></i> 4月5日
+                        </span>
+                    </div>
+                    <div class="task-title">万科翡翠公园新盘上线</div>
+                    <div class="task-subtitle">准备上线物料</div>
+                    <div class="task-progress">
+                        <div class="progress-header">
+                            <span class="progress-text">完成进度</span>
+                            <span class="progress-value">30%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill new" style="width: 30%;"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- 底部TabBar -->
-        <div class="tab-bar">
-            <a href="tools.html" class="tab-item"><i class="fa fa-rocket"></i></a>
-            <a href="ai-design.html" class="tab-item"><i class="fa fa-paint-brush"></i></a>
-            <a href="claw.html" class="tab-item"><i class="fa fa-commenting"></i></a>
-            <a href="calendar.html" class="tab-item active"><i class="fa fa-calendar"></i></a>
-            <a href="profile.html" class="tab-item"><i class="fa fa-user"></i></a>
+                <!-- 探盘任务 - 待执行 -->
+                <div class="task-card type-house" onclick="location.href='task-detail.html'">
+                    <div class="task-header">
+                        <div class="task-type">
+                            <span class="type-icon house"><i class="fa fa-map-marker"></i></span>
+                            <span class="type-text house">探盘任务</span>
+                        </div>
+                        <span class="task-time">
+                            <i class="fa fa-clock-o"></i> 明天 14:00
+                        </span>
+                    </div>
+                    <div class="task-title">保利天汇新盘探盘</div>
+                    <div class="task-subtitle">共6个打卡点</div>
+                </div>
+
+                <!-- 探盘任务 - 已完成 -->
+                <div class="task-card type-house" onclick="location.href='task-detail.html'">
+                    <div class="task-header">
+                        <div class="task-type">
+                            <span class="type-icon house"><i class="fa fa-map-marker"></i></span>
+                            <span class="type-text house">探盘任务</span>
+                        </div>
+                        <span class="task-time">
+                            <i class="fa fa-check-circle" style="color: var(--color-success);"></i> 已完成
+                        </span>
+                    </div>
+                    <div class="task-title">公园壹号探盘任务</div>
+                    <div class="task-subtitle">4个打卡点全部完成</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- 通知面板 -->
-    <div class="notify-overlay" id="notifyOverlay" onclick="hideNotifyPanel()">
-        <div class="notify-panel" onclick="event.stopPropagation()">
-            <div class="notify-header">
-                <span class="notify-title">通知</span>
-                <div class="notify-actions">
-                    <button class="notify-clear" onclick="clearAll()">清空全部</button>
-                    <div class="notify-close" onclick="hideNotifyPanel()"><i class="fa fa-times"></i></div>
-                </div>
-            </div>
-            <div class="notify-tabs">
-                <button class="notify-tab active" onclick="filterNotify('all', this)">全部<span class="notify-tab-badge"></span></button>
-                <button class="notify-tab" onclick="filterNotify('exploration', this)">探盘</button>
-                <button class="notify-tab" onclick="filterNotify('speech', this)">话术</button>
-                <button class="notify-tab" onclick="filterNotify('content', this)">内容</button>
-                <button class="notify-tab" onclick="filterNotify('building', this)">新盘</button>
-            </div>
-            <div class="notify-list" id="notifyList"></div>
-        </div>
+    <!-- 新建按钮 -->
+    <a href="task-create.html" class="create-btn">
+        <i class="fa fa-plus"></i>
+    </a>
+
+    <!-- TabBar -->
+    <div class="tab-bar-bottom">
+        <a href="tools.html" class="tab-item-bottom">
+            <i class="fa fa-rocket"></i>
+        </a>
+        <a href="ai-design.html" class="tab-item-bottom">
+            <i class="fa fa-paint-brush"></i>
+        </a>
+        <a href="claw.html" class="tab-item-bottom">
+            <i class="fa fa-commenting"></i>
+        </a>
+        <a href="calendar.html" class="tab-item-bottom active">
+            <i class="fa fa-calendar"></i>
+        </a>
+        <a href="profile.html" class="tab-item-bottom">
+            <i class="fa fa-user"></i>
+        </a>
     </div>
 
     <script>
-        // 日期数据
-        const dates = [
-            { day: '28', weekday: '周五' },
-            { day: '29', weekday: '周六' },
-            { day: '30', weekday: '周日' },
-            { day: '今天', weekday: '周一', today: true },
-            { day: '1', weekday: '周二' },
-            { day: '2', weekday: '周三' },
-            { day: '3', weekday: '周四' },
-            { day: '4', weekday: '周五' },
-            { day: '5', weekday: '周六' },
-            { day: '6', weekday: '周日' },
-        ];
+        // 当前选中的 Tab 和筛选
+        let currentTab = 'all';
+        let currentFilter = 'all';
 
-        // 通知数据
-        const notifications = [
-            { id: 1, task: '中海汇德里探盘任务', type: 'exploration', message: '2/4阶段进行中，请注意完成', time: '刚刚', isRead: false, link: 'task-detail.html' },
-            { id: 2, task: '万科城市之光话术训练', type: 'speech', message: '新任务已下发，请及时完成', time: '10分钟前', isRead: false, link: 'speech-train.html' },
-            { id: 3, task: '金地壹号院新盘上线', type: 'building', message: '新盘已审核通过，可下发探盘任务', time: '30分钟前', isRead: false, link: 'tools.html' },
-            { id: 4, task: '探盘任务审核通过', type: 'exploration', message: '您的探盘成果已审核通过', time: '2小时前', isRead: true, link: 'task-list.html' },
-            { id: 5, task: '朋友圈文案已生成', type: 'content', message: '等待探盘完成后可发布', time: '1天前', isRead: true, link: 'calendar.html' },
-            { id: 6, task: '华润橡树湾话术训练', type: 'speech', message: '完成训练可提升产品力评分', time: '1天前', isRead: true, link: 'speech-train.html' },
-            { id: 7, task: '金地壹号院探盘任务', type: 'exploration', message: '新任务已下发，请及时处理', time: '2天前', isRead: true, link: 'task-detail.html' },
-        ];
+        // Tab 切换
+        function switchTab(el, type) {
+            document.querySelectorAll('.tab-item').forEach(tab => tab.classList.remove('active'));
+            el.classList.add('active');
+            currentTab = type;
+            showToast('切换到：' + (type === 'all' ? '全部' : type));
+        }
 
-        // 渲染日期列表
-        function renderDates() {
-            const list = document.getElementById('dateList');
-            list.innerHTML = dates.map((d, i) => `
-                <div class="date-item ${d.today ? 'today active' : ''}" onclick="selectDate(this, ${i})">
-                    <div class="date-day">${d.day}</div>
-                    <div class="date-weekday">${d.weekday}</div>
-                </div>
-            `).join('');
+        // 筛选切换
+        function switchFilter(el, filter) {
+            document.querySelectorAll('.filter-chip').forEach(chip => chip.classList.remove('active'));
+            el.classList.add('active');
+            currentFilter = filter;
+            showToast('筛选：' + getFilterName(filter));
+        }
+
+        // 获取筛选名称
+        function getFilterName(filter) {
+            const names = {
+                'all': '全部',
+                'in_progress': '进行中',
+                'pending': '待执行',
+                'submitted': '已提交',
+                'completed': '已完成'
+            };
+            return names[filter] || filter;
+        }
+
+        // 生成日期列表
+        function generateDateList() {
+            const container = document.getElementById('dateList');
+            const today = new Date();
+            const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
+            let html = '';
+
+            for (let i = 0; i < 14; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() + i);
+
+                const day = date.getDate();
+                const weekday = weekdays[date.getDay()];
+                const isToday = i === 0;
+                const isActive = i === 0;
+
+                html += `
+                    <div class="date-item${isToday ? ' today' : ''}${isActive ? ' active' : ''}" onclick="selectDate(this, ${i})">
+                        <div class="date-day">${day}</div>
+                        <div class="date-weekday">周${weekday}</div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
         }
 
         // 选择日期
         function selectDate(el, index) {
             document.querySelectorAll('.date-item').forEach(item => item.classList.remove('active'));
             el.classList.add('active');
-            showToast(`已切换到${dates[index].weekday}`);
+
+            const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+            const today = new Date();
+            today.setDate(today.getDate() + index);
+
+            const month = today.getMonth() + 1;
+            const day = today.getDate();
+            const weekday = weekdays[today.getDay()];
+
+            showToast(weekday + ' · ' + month + '月' + day + '日');
         }
 
-        // 筛选任务
-        function filterTasks(type, el) {
-            document.querySelectorAll('.filter-chip').forEach(chip => chip.classList.remove('active'));
-            el.classList.add('active');
-            const typeNames = { all: '全部', house: '探盘', speech: '话术', content: '内容', new: '新盘', done: '已完成' };
-            showToast(`筛选：${typeNames[type] || type}`);
-        }
-
-        // Toast提示
+        // Toast
         function showToast(message) {
             const existing = document.querySelector('.toast');
             if (existing) existing.remove();
@@ -870,58 +859,14 @@
             toast.className = 'toast';
             toast.textContent = message;
             document.body.appendChild(toast);
-            setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translate(-50%, -50%) scale(0.9)'; setTimeout(() => toast.remove(), 200); }, 2000);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 200);
+            }, 2000);
         }
-
-        // 渲染通知列表
-        function renderNotifications(filter = 'all') {
-            const list = document.getElementById('notifyList');
-            const filtered = filter === 'all' ? notifications : notifications.filter(n => n.type === filter);
-            const typeNames = { exploration: '探盘', speech: '话术', content: '内容', building: '新盘' };
-
-            if (filtered.length === 0) {
-                list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--color-sub);">暂无通知</div>';
-                return;
-            }
-
-            list.innerHTML = filtered.map(n => `
-                <div class="notify-item ${n.isRead ? 'read' : ''}" onclick="clickNotify(${n.id})">
-                    <div class="notify-dot"></div>
-                    <div class="notify-content">
-                        <div class="notify-task">${n.task}<span class="notify-type">${typeNames[n.type]}</span></div>
-                        <div class="notify-message">${n.message}</div>
-                        <div class="notify-time">${n.time}</div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // 筛选通知
-        function filterNotify(type, el) {
-            document.querySelectorAll('.notify-tab').forEach(tab => tab.classList.remove('active'));
-            el.classList.add('active');
-            renderNotifications(type);
-        }
-
-        // 显示/隐藏通知面板
-        function showNotifyPanel() { document.getElementById('notifyOverlay').classList.add('show'); renderNotifications(); }
-        function hideNotifyPanel() { document.getElementById('notifyOverlay').classList.remove('show'); }
-
-        // 点击通知
-        function clickNotify(id) {
-            const notify = notifications.find(n => n.id === id);
-            if (notify) {
-                notify.isRead = true;
-                hideNotifyPanel();
-                if (notify.link) window.location.href = notify.link;
-            }
-        }
-
-        // 清空全部
-        function clearAll() { notifications.length = 0; renderNotifications(); showToast('已清空全部通知'); }
 
         // 初始化
-        renderDates();
+        generateDateList();
     </script>
 </body>
 </html>
