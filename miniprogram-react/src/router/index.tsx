@@ -6,6 +6,7 @@ import Claw from '../pages/Claw';
 import Calendar from '../pages/Calendar';
 import Profile from '../pages/Profile';
 import TaskList from '../pages/TaskList';
+import TaskDetail from '../pages/TaskDetail';
 import Train from '../pages/Train';
 import SpeechTrain from '../pages/SpeechTrain';
 import Exam from '../pages/Exam';
@@ -60,6 +61,10 @@ const router = createBrowserRouter([
   {
     path: '/task-list',
     element: <TaskList />,
+  },
+  {
+    path: '/task-detail/:taskId',
+    element: <TaskDetail />,
   },
   {
     path: '/train',

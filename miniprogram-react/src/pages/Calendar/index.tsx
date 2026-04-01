@@ -107,7 +107,7 @@ const Calendar: React.FC = () => {
       </div>
 
       {/* 主内容区 */}
-      <div className="main-content">
+      <div className="main-content-calendar">
         {/* 左侧日期列表 */}
         <div className="date-sidebar">
           {dates.map((date, index) => (

@@ -65,17 +65,8 @@ const TaskList: React.FC = () => {
     },
   ];
 
-  const showToast = (message: string, duration: number = 2000) => {
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.textContent = message;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), duration);
-  };
-
   const goToDetail = (taskId: string) => {
-    // 跳转到任务详情页
-    showToast(`跳转到任务 ${taskId} 详情页`);
+    navigate(`/task-detail/${taskId}`);
   };
 
   const switchTab = (index: number) => {
