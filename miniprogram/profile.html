@@ -207,7 +207,7 @@
         <div class="bg-gradient-to-r from-primary/90 to-primary rounded-xl p-4 text-white card-shadow">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="font-bold">今日业绩概览</h2>
-                <span class="text-xs bg-white/20 px-2 py-1 rounded">2026-03-29</span>
+                <span class="text-xs bg-white/20 px-2 py-1 rounded" id="todayDate"></span>
             </div>
             <div class="grid grid-cols-3 gap-4 text-center">
                 <div>
@@ -503,6 +503,19 @@ function showToast(message, duration = 2000) {
         toast.remove();
     }, duration);
 }
+
+// 设置今日日期
+function setTodayDate() {
+    const now = new Date();
+    const month = now.getMonth() + 1;
+    const day = now.getDate();
+    const dateStr = `${now.getFullYear()}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    const dateEl = document.getElementById('todayDate');
+    if (dateEl) {
+        dateEl.textContent = dateStr;
+    }
+}
+setTodayDate();
 </script>
 
 <!-- 底部Tab栏 -->
@@ -520,7 +533,7 @@ function showToast(message, duration = 2000) {
             <a href="calendar.html" class="tab-item">
                 <i class="fa fa-calendar"></i>
             </a>
-            <a href="profile.html" class="tab-item">
+            <a href="profile.html" class="tab-item active">
                 <i class="fa fa-user"></i>
             </a>
         </div>
