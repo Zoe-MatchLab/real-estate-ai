@@ -196,6 +196,9 @@ const Tools: React.FC = () => {
       
       {/* 标题栏 */}
       <div className="title-bar">
+        <button className="back-btn" onClick={() => navigate(-1)}>
+          <i className="fa fa-angle-left text-xl" />
+        </button>
         <div className="logo-section">
           <div className="logo-icon">
             <span>AI</span>

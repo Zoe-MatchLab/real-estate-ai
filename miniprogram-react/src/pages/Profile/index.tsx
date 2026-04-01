@@ -57,12 +57,10 @@ const Profile: React.FC = () => {
   return (
     <div className="profile-page">
       {/* 顶部导航 */}
-      <div className="profile-header">
-        <div className="header-left">
-          <button className="back-btn" onClick={() => navigate(-1)}>
-            <i className="fa fa-arrow-left text-lg" />
-          </button>
-        </div>
+      <div className="page-header">
+        <button className="back-btn" onClick={() => navigate(-1)}>
+          <i className="fa fa-angle-left text-xl" />
+        </button>
         <h1 className="page-title">我的</h1>
         <div className="header-actions">
           <button className="more-btn">

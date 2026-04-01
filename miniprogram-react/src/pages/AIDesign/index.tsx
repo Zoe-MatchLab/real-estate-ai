@@ -1,7 +1,10 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './index.css';
 
 const AIDesign: React.FC = () => {
+  const navigate = useNavigate();
+  
   const showToast = (message: string) => {
     const toast = document.createElement('div');
     toast.className = 'toast';
@@ -12,10 +15,20 @@ const AIDesign: React.FC = () => {
 
   return (
     <div className="ai-design-page">
-      {/* 顶部标题 */}
+      {/* 顶部导航 */}
       <div className="page-header">
+        <button className="back-btn" onClick={() => navigate(-1)}>
+          <i className="fa fa-angle-left text-xl" />
+        </button>
         <h1 className="page-title">AI设计工具</h1>
-        <p className="page-subtitle">一键生成专业物料</p>
+        <button className="more-btn">
+          <i className="fa fa-ellipsis-h text-lg" />
+        </button>
+      </div>
+      
+      {/* 页面副标题 */}
+      <div className="page-subtitle">
+        一键生成专业物料
       </div>
 
       {/* 设计工具分类 */}

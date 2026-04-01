@@ -90,6 +90,9 @@ const Calendar: React.FC = () => {
 
       {/* 标题栏 */}
       <div className="page-header">
+        <button className="back-btn" onClick={() => navigate(-1)}>
+          <i className="fa fa-angle-left text-xl" />
+        </button>
         <span className="page-title">内容日历</span>
         <div className="header-actions">
           <div className="notification-bell" onClick={showNotificationPanel}>
