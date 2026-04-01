@@ -578,11 +578,13 @@
             display: flex;
             border-bottom: 1px solid var(--color-border);
             flex-shrink: 0;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
-        
+
         .notify-tab {
-            flex: 1;
-            padding: 10px 0;
+            flex: 0 0 auto;
+            padding: 10px 16px;
             text-align: center;
             font-size: 14px;
             color: var(--color-text);
@@ -591,13 +593,14 @@
             cursor: pointer;
             position: relative;
             transition: color 0.2s ease;
+            white-space: nowrap;
         }
-        
+
         .notify-tab.active {
             color: var(--brand-primary);
             font-weight: 600;
         }
-        
+
         .notify-tab.active::after {
             content: '';
             position: absolute;
@@ -608,6 +611,16 @@
             height: 2px;
             background: var(--brand-primary);
             border-radius: 1px;
+        }
+
+        .notify-tab-badge {
+            position: absolute;
+            top: 6px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: var(--color-danger);
+            border-radius: 50%;
         }
         
         .notify-list {
@@ -833,10 +846,11 @@
                 </div>
             </div>
             <div class="notify-tabs">
-                <button class="notify-tab active" onclick="filterNotify('all', this)">全部</button>
+                <button class="notify-tab active" onclick="filterNotify('all', this)">全部<span class="notify-tab-badge"></span></button>
                 <button class="notify-tab" onclick="filterNotify('exploration', this)">探盘</button>
                 <button class="notify-tab" onclick="filterNotify('speech', this)">话术</button>
                 <button class="notify-tab" onclick="filterNotify('content', this)">内容</button>
+                <button class="notify-tab" onclick="filterNotify('building', this)">新盘</button>
             </div>
             <div class="notify-list" id="notifyList">
                 <!-- 通知项由JS生成 -->
@@ -861,9 +875,13 @@
         
         // 通知数据
         const notifications = [
-            { id: 1, task: '中海汇德里探盘任务', type: 'exploration', message: '2/4阶段进行中，请注意完成', time: '刚刚', isRead: false },
-            { id: 2, task: '万科城市之光话术训练', type: 'speech', message: '新任务已下发，请及时完成', time: '10分钟前', isRead: false },
-            { id: 3, task: '朋友圈文案生成', type: 'content', message: '等待探盘完成后执行', time: '1天前', isRead: true },
+            { id: 1, task: '中海汇德里探盘任务', type: 'exploration', message: '2/4阶段进行中，请注意完成', time: '刚刚', isRead: false, link: 'task-detail.html' },
+            { id: 2, task: '万科城市之光话术训练', type: 'speech', message: '新任务已下发，请及时完成', time: '10分钟前', isRead: false, link: 'speech-train.html' },
+            { id: 3, task: '金地壹号院新盘上线', type: 'building', message: '新盘已审核通过，可下发探盘任务', time: '30分钟前', isRead: false, link: 'tools.html' },
+            { id: 4, task: '探盘任务审核通过', type: 'exploration', message: '您的探盘成果已审核通过', time: '2小时前', isRead: true, link: 'task-list.html' },
+            { id: 5, task: '朋友圈文案已生成', type: 'content', message: '等待探盘完成后可发布', time: '1天前', isRead: true, link: 'calendar.html' },
+            { id: 6, task: '华润橡树湾话术训练', type: 'speech', message: '完成训练可提升产品力评分', time: '1天前', isRead: true, link: 'speech-train.html' },
+            { id: 7, task: '金地壹号院探盘任务', type: 'exploration', message: '新任务已下发，请及时处理', time: '2天前', isRead: true, link: 'task-detail.html' },
         ];
         
         // 渲染日期列表
@@ -919,12 +937,12 @@
         // 渲染通知列表
         function renderNotifications(filter = 'all') {
             const list = document.getElementById('notifyList');
-            const filtered = filter === 'all' 
-                ? notifications 
+            const filtered = filter === 'all'
+                ? notifications
                 : notifications.filter(n => n.type === filter);
-            
-            const typeNames = { exploration: '探盘', speech: '话术', content: '内容' };
-            
+
+            const typeNames = { exploration: '探盘', speech: '话术', content: '内容', building: '新盘' };
+
             list.innerHTML = filtered.map(n => `
                 <div class="notify-item ${n.isRead ? 'read' : ''}" onclick="clickNotify(${n.id})">
                     <div class="notify-dot"></div>
@@ -936,7 +954,7 @@
                 </div>
             `).join('');
         }
-        
+
         // 筛选通知
         function filterNotify(type, el) {
             document.querySelectorAll('.notify-tab').forEach(tab => {
@@ -945,24 +963,28 @@
             el.classList.add('active');
             renderNotifications(type);
         }
-        
+
         // 显示通知面板
         function showNotifyPanel() {
             document.getElementById('notifyOverlay').classList.add('show');
             renderNotifications();
         }
-        
+
         // 隐藏通知面板
         function hideNotifyPanel() {
             document.getElementById('notifyOverlay').classList.remove('show');
         }
-        
-        // 点击通知
+
+        // 点击通知 - 跳转到对应页面
         function clickNotify(id) {
             const notify = notifications.find(n => n.id === id);
-            if (notify) notify.isRead = true;
-            hideNotifyPanel();
-            showToast(`跳转到${notify.task}`);
+            if (notify) {
+                notify.isRead = true;
+                hideNotifyPanel();
+                if (notify.link) {
+                    window.location.href = notify.link;
+                }
+            }
         }
         
         // 清空全部
