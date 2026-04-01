@@ -34,7 +34,7 @@
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+
         html, body {
             font-family: var(--font-family);
             font-size: 14px;
@@ -43,7 +43,14 @@
             background: var(--color-bg);
             -webkit-font-smoothing: antialiased;
         }
-        
+
+        /* Focus 样式 - 可访问性 */
+        button:focus-visible,
+        a:focus-visible {
+            outline: 2px solid var(--brand-primary);
+            outline-offset: 2px;
+        }
+
         .page {
             min-height: 100vh;
             padding-bottom: calc(80px + env(safe-area-inset-bottom));
@@ -309,7 +316,35 @@
         
         .tab-item i { font-size: 20px; }
         .tab-item.active { background: rgba(250, 140, 22, 0.2); color: var(--brand-primary); }
-        
+
+        /* 日历视图入口按钮 */
+        .calendar-view-btn {
+            position: fixed;
+            right: var(--spacing-md);
+            bottom: calc(90px + env(safe-area-inset-bottom));
+            width: 48px;
+            height: 48px;
+            background: var(--brand-primary);
+            color: white;
+            border-radius: var(--radius-full);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(250, 140, 22, 0.4);
+            z-index: 1000;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all var(--transition-normal);
+        }
+
+        .calendar-view-btn:active {
+            transform: scale(0.95);
+        }
+
+        .calendar-view-btn i {
+            font-size: 20px;
+        }
+
         .toast {
             position: fixed;
             top: 50%;
@@ -357,7 +392,7 @@
             </div>
             
             <div id="taskList">
-                <div class="task-card status-progress" onclick="showToast('跳转到任务详情')">
+                <div class="task-card status-progress" onclick="location.href='task-detail.html'">
                     <div class="task-header">
                         <div class="task-title-area">
                             <span class="task-status progress">进行中</span>
@@ -386,8 +421,8 @@
                         <span class="task-step">阶段2/4</span>
                     </div>
                 </div>
-                
-                <div class="task-card status-pending" onclick="showToast('跳转到任务详情')">
+
+                <div class="task-card status-pending" onclick="location.href='task-detail.html'">
                     <div class="task-header">
                         <div class="task-title-area">
                             <span class="task-status pending">待执行</span>
@@ -406,8 +441,8 @@
                         <span class="task-time">截止：2026-04-05 18:00</span>
                     </div>
                 </div>
-                
-                <div class="task-card status-submitted" onclick="showToast('跳转到任务详情')">
+
+                <div class="task-card status-submitted" onclick="location.href='task-detail.html'">
                     <div class="task-header">
                         <div class="task-title-area">
                             <span class="task-status submitted">已提交</span>
@@ -447,6 +482,11 @@
             <i class="fa fa-user"></i>
         </a>
     </div>
+
+    <!-- 日历视图入口 -->
+    <a href="calendar.html" class="calendar-view-btn" aria-label="切换到日历视图">
+        <i class="fa fa-calendar"></i>
+    </a>
     
     <script>
         function switchTab(el, type) {
