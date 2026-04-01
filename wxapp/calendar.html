@@ -49,6 +49,13 @@
             background: var(--color-bg);
             -webkit-font-smoothing: antialiased;
         }
+
+        /* Focus 样式 - 可访问性 */
+        button:focus-visible,
+        a:focus-visible {
+            outline: 2px solid var(--brand-primary);
+            outline-offset: 2px;
+        }
         
         .page {
             display: flex;
@@ -147,7 +154,7 @@
             text-align: center;
             cursor: pointer;
             transition: all 0.2s ease;
-            border-bottom: 1px solid var(--color-bg);
+            border-bottom: 1px solid var(--color-border);
             position: relative;
         }
         
@@ -732,7 +739,7 @@
                 </div>
                 
                 <!-- 新房上线卡片 -->
-                <div class="task-card type-new" onclick="showToast('跳转到楼盘详情')">
+                <div class="task-card type-new" onclick="location.href='tools.html'">
                     <div class="task-header">
                         <div class="task-type">
                             <div class="type-icon new"><i class="fa fa-home"></i></div>
@@ -752,7 +759,7 @@
                 </div>
                 
                 <!-- 探盘任务卡片 -->
-                <div class="task-card type-house" onclick="showToast('跳转到任务详情')">
+                <div class="task-card type-house" onclick="location.href='task-detail.html'">
                     <div class="task-header">
                         <div class="task-type">
                             <span class="tag progress">进行中</span>
@@ -793,7 +800,7 @@
                 </div>
                 
                 <!-- 话术训练卡片 -->
-                <div class="task-card type-speech" onclick="showToast('跳转到话术训练')">
+                <div class="task-card type-speech" onclick="location.href='speech-train.html'">
                     <div class="task-header">
                         <div class="task-type">
                             <div class="type-icon speech"><i class="fa fa-comments"></i></div>
