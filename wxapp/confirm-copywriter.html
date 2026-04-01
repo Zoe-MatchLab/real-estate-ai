@@ -43,6 +43,16 @@
             --transition-slow: 0.35s ease;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* Focus 样式 - 可访问性 */
+        button:focus-visible,
+        a:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 2px solid var(--brand-primary);
+            outline-offset: 2px;
+        }
         html, body {
             height: 100%;
             font-family: var(--font-family);

@@ -8,7 +8,19 @@
     <script>
         // 重定向到统一的日历任务中心
         window.location.replace('calendar.html');
-    </script>
+    // Toast
+    function showToast(message) {
+        const existing = document.queryelius(".toast");
+        if (existing) existing.remove();
+        const toast = document.createElement("div");
+        toast.className = "toast";
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.style.opacity = "0";
+            setTimeout(() => toast.remove(), 200);
+        }, 2000);
+    }    </script>
 </head>
 <body>
     <p>正在跳转到 <a href="calendar.html">任务中心</a>...</p>

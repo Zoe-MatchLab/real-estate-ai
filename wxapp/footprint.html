@@ -6,62 +6,307 @@
     <title>我的足迹 - 房产AI助手</title>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
-        :root { --brand-primary: #FA8C16; --color-title: #1D2129; --color-sub: #86909C; --color-bg: #F7F8FA; --color-card: #FFFFFF; --spacing-md: 16px; --radius-xl: 16px; --shadow-sm: 0 1px 3px rgba(0,0,0,0.04); --font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; }
+        :root {
+            --brand-primary: #FA8C16;
+            --brand-primary-light: #FFF7E6;
+            --color-success: #00B42A;
+            --color-success-light: #E8FFEA;
+            --color-warning: #FF7D00;
+            --color-warning-light: #FFF7E6;
+            --color-info: #165DFF;
+            --color-info-light: #E8F3FF;
+            --color-purple: #722ED1;
+            --color-purple-light: #F7F0FF;
+            --color-title: #1D2129;
+            --color-text: #4E5969;
+            --color-sub: #86909C;
+            --color-border: #E5E6EB;
+            --color-bg: #F7F8FA;
+            --color-card: #FFFFFF;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+            --font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.25s ease;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { font-family: var(--font-family); font-size: 14px; line-height: 1.5; color: #4E5969; background: var(--color-bg); -webkit-font-smoothing: antialiased; }
-        body { padding-bottom: 80px; }
-        .header { background: white; padding: calc(12px + env(safe-area-inset-top)) var(--spacing-md) var(--spacing-md); display: flex; align-items: center; border-bottom: 1px solid #E5E6EB; }
-        .back-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: #4E5969; }
-        .header-title { flex: 1; font-size: 17px; font-weight: 600; color: var(--color-title); text-align: center; }
-        .content { padding: var(--spacing-md); }
-        .date-group { margin-bottom: var(--spacing-md); }
-        .date-title { font-size: 13px; color: var(--color-sub); margin-bottom: var(--spacing-sm); padding-left: 4px; }
-        .record-card { background: white; border-radius: var(--radius-xl); padding: var(--spacing-md); margin-bottom: var(--spacing-sm); box-shadow: var(--shadow-sm); display: flex; align-items: center; gap: var(--spacing-md); cursor: pointer; }
-        .record-icon { width: 44px; height: 44px; background: #FFF7E6; border-radius: var(--radius-xl); display: flex; align-items: center; justify-content: center; font-size: 20px; }
-        .record-info { flex: 1; }
-        .record-title { font-size: 14px; font-weight: 500; color: var(--color-title); margin-bottom: 2px; }
-        .record-time { font-size: 12px; color: var(--color-sub); }
-        .tab-bar { position: fixed; bottom: calc(16px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); background: rgba(29,33,41,0.96); backdrop-filter: blur(20px); border-radius: 28px; padding: 8px 20px; z-index: 9999; display: flex; gap: 4px; }
-        .tab-item { width: 44px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 18px; color: rgba(255,255,255,0.5); text-decoration: none; }
-        .tab-item i { font-size: 20px; }
-        .tab-item.active { background: rgba(250,140,22,0.2); color: var(--brand-primary); }
+
+        /* Focus 样式 - 可访问性 */
+        button:focus-visible,
+        a:focus-visible {
+            outline: 2px solid var(--brand-primary);
+            outline-offset: 2px;
+        }
+
+        html, body {
+            font-family: var(--font-family);
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--color-text);
+            background: var(--color-bg);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            padding-bottom: calc(100px + env(safe-area-inset-bottom);
+        }
+
+        /* 头部 */
+        .header {
+            background: var(--color-card);
+            padding: calc(12px + env(safe-area-inset-top)) var(--spacing-md) var(--spacing-md);
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .back-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text);
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .header-title {
+            flex: 1;
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--color-title);
+            text-align: center;
+        }
+
+        /* 内容区 */
+        .content {
+            padding: var(--spacing-md);
+        }
+
+        .date-group {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .date-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--color-title);
+            margin-bottom: var(--spacing-sm);
+            padding-left: var(--spacing-xs);
+        }
+
+        .record-card {
+            background: var(--color-card);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .record-card:active {
+            transform: scale(0.99);
+            box-shadow: var(--shadow-md);
+        }
+
+        .record-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--brand-primary-light);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .record-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .record-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-title);
+            margin-bottom: 2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .record-time {
+            font-size: 12px;
+            color: var(--color-sub);
+        }
+
+        /* TabBar */
+        .tab-bar {
+            position: fixed;
+            bottom: calc(16px + env(safe-area-inset-bottom);
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(29, 33, 41, 0.96);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-scrolling: blur(20px);
+            border-radius: 28px;
+            padding: 8px 20px;
+            z-index: 9999;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.24);
+            display: flex;
+            gap: 4px;
+        }
+
+        .tab-item {
+            width: 44px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 18px;
+            color: rgba(255,255,255,0.5);
+            text-decoration: none;
+            transition: all var(--transition-normal);
+        }
+
+        .tab-item i {
+            font-size: 20px;
+        }
+
+        .tab-item.active {
+            background: rgba(250, 140, 22, 0.2);
+            color: var(--brand-primary);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.75);
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--radius-lg);
+            z-index: 99999;
+            font-size: 14px;
+            animation: toastIn 0.3s ease forwards;
+            pointer-events: none;
+        }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <button class="back-btn" onclick="history.back()"><i class="fa fa-angle-left" style="font-size:22px"></i></button>
+        <button class="back-btn" onclick="history.back()" aria-label="返回">
+            <i class="fa fa-angle-left" style="font-size: 22px"></i>
+        </button>
         <span class="header-title">我的足迹</span>
     </div>
+
     <div class="content">
         <div class="date-group">
             <div class="date-title">今天</div>
-            <div class="record-card">
+            <div class="record-card" onclick="showToast('查看详情')">
                 <div class="record-icon">📋</div>
-                <div class="record-info"><div class="record-title">完成探盘任务 - 中海汇德里</div><div class="record-time">14:30</div></div>
+                <div class="record-info">
+                    <div class="record-title">完成探盘任务 - 中海汇德里</div>
+                    <div class="record-time">14:30</div>
+                </div>
             </div>
-            <div class="record-card">
-                <div class="record-icon" style="background:#F6FFED;">⚡</div>
-                <div class="record-info"><div class="record-title">完成话术训练 - 万科城市之光</div><div class="record-time">11:00</div></div>
+            <div class="record-card" onclick="showToast('查看详情')">
+                <div class="record-icon" style="background: var(--color-info-light);">🎤</div>
+                <div class="record-info">
+                    <div class="record-title">完成话术训练 - 议价谈判</div>
+                    <div class="record-time">10:15</div>
+                </div>
             </div>
         </div>
+
         <div class="date-group">
             <div class="date-title">昨天</div>
-            <div class="record-card">
-                <div class="record-icon" style="background:#F0F5FF;">📝</div>
-                <div class="record-info"><div class="record-title">查看文案 - 开盘文案模板</div><div class="record-time">15:20</div></div>
+            <div class="record-card" onclick="showToast('查看详情')">
+                <div class="record-icon" style="background: var(--color-success-light);">✨</div>
+                <div class="record-info">
+                    <div class="record-title">发布朋友圈文案</div>
+                    <div class="record-time">16:45</div>
+                </div>
             </div>
-            <div class="record-card">
-                <div class="record-icon" style="background:#FFF7E6;">🏠</div>
-                <div class="record-info"><div class="record-title">浏览楼盘 - 公园壹号</div><div class="record-time">10:00</div></div>
+            <div class="record-card" onclick="showToast('查看详情')">
+                <div class="record-icon" style="background: var(--color-purple-light);">📚</div>
+                <div class="record-info">
+                    <div class="record-title">学习课程 - 逼定技巧</div>
+                    <div class="record-time">15:20</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="date-group">
+            <div class="date-title">本周</div>
+            <div class="record-card" onclick="showToast('查看详情')">
+                <div class="record-icon">🏠</div>
+                <div class="record-info">
+                    <div class="record-title">收藏楼盘 - 万科翡翠公园</div>
+                    <div class="record-time">周一</div>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- TabBar -->
     <div class="tab-bar">
-        <a href="tools.html" class="tab-item"><i class="fa fa-rocket"></i></a>
-        <a href="ai-design.html" class="tab-item"><i class="fa fa-paint-brush"></i></a>
-        <a href="claw.html" class="tab-item"><i class="fa fa-commenting"></i></a>
-        <a href="calendar.html" class="tab-item"><i class="fa fa-calendar"></i></a>
-        <a href="profile.html" class="tab-item active"><i class="fa fa-user"></i></a>
+        <a href="tools.html" class="tab-item">
+            <i class="fa fa-rocket"></i>
+        </a>
+        <a href="ai-design.html" class="tab-item">
+            <i class="fa fa-paint-brush"></i>
+        </a>
+        <a href="claw.html" class="tab-item">
+            <i class="fa fa-commenting"></i>
+        </a>
+        <a href="calendar.html" class="tab-item">
+            <i class="fa fa-calendar"></i>
+        </a>
+        <a href="profile.html" class="tab-item active">
+            <i class="fa fa-user"></i>
+        </a>
     </div>
+
+    <script>
+        // Toast
+        function showToast(message) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 200);
+            }, 2000);
+        }
+    </script>
 </body>
 </html>

@@ -8,6 +8,16 @@
     <style>
         :root { --brand-primary: #FA8C16; --color-purple: #722ED1; --color-success: #00B42A; --color-title: #1D2129; --color-text: #4E5969; --color-sub: #86909C; --color-border: #E5E6EB; --color-bg: #F7F8FA; --color-card: #FFFFFF; --spacing-md: 16px; --spacing-lg: 24px; --radius-xl: 16px; --shadow-sm: 0 1px 3px rgba(0,0,0,0.04); --font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* Focus 样式 - 可访问性 */
+        button:focus-visible,
+        a:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 2px solid var(--brand-primary);
+            outline-offset: 2px;
+        }
         html, body { font-family: var(--font-family); font-size: 14px; line-height: 1.5; color: var(--color-text); background: var(--color-bg); -webkit-font-smoothing: antialiased; }
         body { padding-bottom: 80px; }
         .header { background: linear-gradient(135deg, var(--color-purple) 0%, #8B5CF6 100%); padding: calc(12px + env(safe-area-inset-top)) var(--spacing-md) var(--spacing-md); color: white; display: flex; align-items: center; gap: var(--spacing-md); }

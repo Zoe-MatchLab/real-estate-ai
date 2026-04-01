@@ -6,77 +6,350 @@
     <title>活动中心 - 房产AI助手</title>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
-        :root { --brand-primary: #FA8C16; --color-success: #00B42A; --color-title: #1D2129; --color-sub: #86909C; --color-bg: #F7F8FA; --color-card: #FFFFFF; --spacing-md: 16px; --radius-xl: 16px; --shadow-sm: 0 1px 3px rgba(0,0,0,0.04); --font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif; }
+        :root {
+            --brand-primary: #FA8C16;
+            --brand-primary-light: #FFF7E6;
+            --color-success: #00B42A;
+            --color-success-light: #E8FFEA;
+            --color-warning: #FF7D00;
+            --color-warning-light: #FFF7E6;
+            --color-danger: #FA5151;
+            --color-danger-light: #FFECE8;
+            --color-title: #1D2129;
+            --color-text: #4E5969;
+            --color-sub: #86909C;
+            --color-border: #E5E6EB;
+            --color-bg: #F7F8FA;
+            --color-card: #FFFFFF;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+            --font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.25s ease;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { font-family: var(--font-family); font-size: 14px; line-height: 1.5; color: #4E5969; background: var(--color-bg); -webkit-font-smoothing: antialiased; }
-        body { padding-bottom: 80px; }
-        .header { background: white; padding: calc(12px + env(safe-area-inset-top)) var(--spacing-md) var(--spacing-md); display: flex; align-items: center; border-bottom: 1px solid #E5E6EB; }
-        .back-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; color: #4E5969; }
-        .header-title { flex: 1; font-size: 17px; font-weight: 600; color: var(--color-title); text-align: center; }
-        .content { padding: var(--spacing-md); }
-        .activity-card { background: white; border-radius: var(--radius-xl); padding: var(--spacing-md); margin-bottom: var(--spacing-md); box-shadow: var(--shadow-sm); }
-        .activity-header { display: flex; gap: var(--spacing-md); margin-bottom: var(--spacing-md); }
-        .activity-icon { width: 56px; height: 56px; border-radius: var(--radius-xl); display: flex; align-items: center; justify-content: center; font-size: 28px; }
-        .activity-info { flex: 1; }
-        .activity-title { font-size: 15px; font-weight: 600; color: var(--color-title); margin-bottom: 4px; }
-        .activity-desc { font-size: 12px; color: var(--color-sub); margin-bottom: 8px; }
-        .activity-tag { display: inline-block; padding: 4px 10px; background: #FFF7E6; color: var(--brand-primary); border-radius: 4px; font-size: 11px; }
-        .activity-tag.done { background: #F6FFED; color: var(--color-success); }
-        .activity-btn { width: 100%; padding: 12px; border: none; border-radius: var(--radius-xl); font-size: 14px; font-weight: 500; cursor: pointer; }
-        .activity-btn.enable { background: var(--brand-primary); color: white; }
-        .activity-btn.done { background: #F6FFED; color: var(--color-success); }
-        .tab-bar { position: fixed; bottom: calc(16px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%); background: rgba(29,33,41,0.96); backdrop-filter: blur(20px); border-radius: 28px; padding: 8px 20px; z-index: 9999; display: flex; gap: 4px; }
-        .tab-item { width: 44px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 18px; color: rgba(255,255,255,0.5); text-decoration: none; }
-        .tab-item i { font-size: 20px; }
-        .tab-item.active { background: rgba(250,140,22,0.2); color: var(--brand-primary); }
+
+        /* Focus 样式 - 可访问性 */
+        button:focus-visible,
+        a:focus-visible {
+            outline: 2px solid var(--brand-primary);
+            outline-offset: 2px;
+        }
+
+        html, body {
+            font-family: var(--font-family);
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--color-text);
+            background: var(--color-bg);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            padding-bottom: calc(80px + env(safe-area-inset-bottom));
+        }
+
+        /* 头部 */
+        .header {
+            background: var(--color-card);
+            padding: calc(12px + env(safe-area-inset-top)) var(--spacing-md) var(--spacing-md);
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .back-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-text);
+            background: none;
+            border: none;
+            cursor: pointer;
+            transition: color var(--transition-fast);
+        }
+
+        .back-btn:active {
+            color: var(--brand-primary);
+        }
+
+        .header-title {
+            flex: 1;
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--color-title);
+            text-align: center;
+        }
+
+        /* 内容区 */
+        .content {
+            padding: var(--spacing-md);
+        }
+
+        /* 活动卡片 */
+        .activity-card {
+            background: var(--color-card);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .activity-header {
+            display: flex;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .activity-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .activity-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .activity-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-title);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .activity-desc {
+            font-size: 12px;
+            color: var(--color-sub);
+            margin-bottom: var(--spacing-sm);
+            line-height: 1.4;
+        }
+
+        .activity-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .activity-tag.processing {
+            background: var(--brand-primary-light);
+            color: var(--brand-primary);
+        }
+
+        .activity-tag.done {
+            background: var(--color-success-light);
+            color: var(--color-success);
+        }
+
+        .activity-tag.ended {
+            background: var(--color-bg);
+            color: var(--color-sub);
+        }
+
+        .activity-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .activity-btn:active {
+            transform: scale(0.98);
+        }
+
+        .activity-btn.enable {
+            background: var(--brand-primary);
+            color: white;
+        }
+
+        .activity-btn.enable:active {
+            background: var(--color-warning);
+        }
+
+        .activity-btn.done {
+            background: var(--color-success-light);
+            color: var(--color-success);
+        }
+
+        .activity-btn.disabled {
+            background: var(--color-bg);
+            color: var(--color-sub);
+            cursor: not-allowed;
+        }
+
+        /* TabBar */
+        .tab-bar {
+            position: fixed;
+            bottom: calc(16px + env(safe-area-inset-bottom));
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(29, 33, 41, 0.96);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-scrolling: blur(20px);
+            border-radius: 28px;
+            padding: 8px 20px;
+            z-index: 9999;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.24);
+            display: flex;
+            gap: 4px;
+        }
+
+        .tab-item {
+            width: 44px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 18px;
+            color: rgba(255,255,255,0.5);
+            text-decoration: none;
+            transition: all var(--transition-normal);
+        }
+
+        .tab-item i {
+            font-size: 20px;
+        }
+
+        .tab-item.active {
+            background: rgba(250, 140, 22, 0.2);
+            color: var(--brand-primary);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.75);
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--radius-lg);
+            z-index: 99999;
+            font-size: 14px;
+            animation: toastIn 0.3s ease forwards;
+            pointer-events: none;
+        }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <button class="back-btn" onclick="history.back()"><i class="fa fa-angle-left" style="font-size:22px"></i></button>
+        <button class="back-btn" onclick="history.back()" aria-label="返回">
+            <i class="fa fa-angle-left" style="font-size: 22px"></i>
+        </button>
         <span class="header-title">活动中心</span>
     </div>
+
     <div class="content">
+        <!-- 进行中的活动 -->
         <div class="activity-card">
             <div class="activity-header">
-                <div class="activity-icon" style="background:#FFF0F5;">🎁</div>
+                <div class="activity-icon" style="background: #FFF0F5;">🎁</div>
                 <div class="activity-info">
                     <div class="activity-title">邀请好友得算力</div>
                     <div class="activity-desc">每邀请1位好友注册，双方各得100算力</div>
-                    <span class="activity-tag">进行中</span>
+                    <span class="activity-tag processing">进行中</span>
                 </div>
             </div>
-            <button class="activity-btn enable">去邀请</button>
+            <button class="activity-btn enable" onclick="showToast('跳转到邀请页面')">
+                去邀请
+            </button>
         </div>
+
+        <!-- 已完成的活动 -->
         <div class="activity-card">
             <div class="activity-header">
-                <div class="activity-icon" style="background:#F0F5FF;">📅</div>
+                <div class="activity-icon" style="background: #F0F5FF;">📅</div>
                 <div class="activity-info">
                     <div class="activity-title">每日签到</div>
                     <div class="activity-desc">连续签到7天可获得惊喜算力礼包</div>
                     <span class="activity-tag done">已签到</span>
                 </div>
             </div>
-            <button class="activity-btn done">明日再来</button>
+            <button class="activity-btn done" onclick="showToast('明日再来')">
+                明日再来
+            </button>
         </div>
+
+        <!-- 已结束的活动 -->
         <div class="activity-card">
             <div class="activity-header">
-                <div class="activity-icon" style="background:#FFF7E6;">🏆</div>
+                <div class="activity-icon" style="background: #FFF7E6;">🏆</div>
                 <div class="activity-info">
                     <div class="activity-title">春日冲刺挑战赛</div>
                     <div class="activity-desc">3月业绩排名前10可获iPhone大奖</div>
-                    <span class="activity-tag done">已结束</span>
+                    <span class="activity-tag ended">已结束</span>
                 </div>
             </div>
-            <button class="activity-btn" style="background:#F7F8FA; color:#86909C;">查看排名</button>
+            <button class="activity-btn disabled" onclick="showToast('活动已结束')">
+                查看排名
+            </button>
         </div>
     </div>
+
+    <!-- TabBar -->
     <div class="tab-bar">
-        <a href="tools.html" class="tab-item"><i class="fa fa-rocket"></i></a>
-        <a href="ai-design.html" class="tab-item"><i class="fa fa-paint-brush"></i></a>
-        <a href="claw.html" class="tab-item"><i class="fa fa-commenting"></i></a>
-        <a href="calendar.html" class="tab-item"><i class="fa fa-calendar"></i></a>
-        <a href="profile.html" class="tab-item active"><i class="fa fa-user"></i></a>
+        <a href="tools.html" class="tab-item">
+            <i class="fa fa-rocket"></i>
+        </a>
+        <a href="ai-design.html" class="tab-item">
+            <i class="fa fa-paint-brush"></i>
+        </a>
+        <a href="claw.html" class="tab-item">
+            <i class="fa fa-commenting"></i>
+        </a>
+        <a href="calendar.html" class="tab-item">
+            <i class="fa fa-calendar"></i>
+        </a>
+        <a href="profile.html" class="tab-item active">
+            <i class="fa fa-user"></i>
+        </a>
     </div>
+
+    <script>
+        // Toast
+        function showToast(message) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 200);
+            }, 2000);
+        }
+    </script>
 </body>
 </html>
