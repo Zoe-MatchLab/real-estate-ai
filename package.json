@@ -4,8 +4,8 @@
   "description": "房产AI作业平台",
   "main": "index.js",
   "scripts": {
-    "start": "npx http-server ./proto -p 3000 -o",
-    "dev": "npx http-server ./proto -p 3000 -o"
+    "start": "npx http-server ./ -p 3000 -o",
+    "dev": "npx http-server ./ -p 3000 -o"
   },
   "keywords": [],
   "author": "",

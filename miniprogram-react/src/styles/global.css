@@ -1,0 +1,235 @@
+/* 全局样式 - rem 适配 */
+
+/* 重置样式 */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* 禁止字体缩放 */
+html {
+  -webkit-text-size-adjust: 100% !important;
+  text-size-adjust: 100% !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+}
+
+/* 基础字体大小 - 会被 rem.ts 动态设置 */
+html {
+  font-size: 37.5px; /* 默认 1rem = 37.5px */
+}
+
+body {
+  font-size: 14px; /* 14px = 0.373rem */
+  line-height: 1.5;
+  color: #333;
+  background-color: #f5f5f5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 页面容器 */
+.page-container {
+  min-height: 100vh;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 安全区适配 */
+.safe-area-bottom {
+  padding-bottom: calc(16px + env(safe-area-inset-bottom)) !important;
+}
+
+/* 底部标签栏安全区适配 */
+.tab-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: calc(56px + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+  background: white;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+  z-index: 999;
+}
+
+/* 统一按钮样式 */
+.btn {
+  border-radius: 8px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn:active {
+  transform: scale(0.95);
+  opacity: 0.8;
+}
+
+.btn-primary {
+  background: #fa8c16;
+  color: white;
+}
+
+.btn-primary:active {
+  background: #0e42d2;
+}
+
+.btn-secondary {
+  background: white;
+  color: #fa8c16;
+  border: 1px solid #fa8c16;
+}
+
+.btn-secondary:active {
+  background: #f0f5ff;
+}
+
+/* 统一卡片样式 */
+.card {
+  border-radius: 12px;
+  background: white;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
+}
+
+.card:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* 列表项点击效果 */
+.list-item:active {
+  background: #f5f5f5;
+}
+
+/* 加载状态 */
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  color: #999;
+}
+
+/* 空状态 */
+.empty-state {
+  padding: 60px 20px;
+  text-align: center;
+  color: #999;
+}
+
+.empty-state .icon {
+  font-size: 48px;
+  color: #ccc;
+  margin-bottom: 12px;
+}
+
+/* Toast提示 */
+.toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  z-index: 9999;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+/* 图片优化 */
+img {
+  -webkit-user-drag: none;
+  user-select: none;
+  max-width: 100%;
+}
+
+/* 防止双击缩放 */
+* {
+  touch-action: manipulation;
+}
+
+/* 滚动优化 */
+.scroll-view {
+  -webkit-overflow-scrolling: touch;
+  overflow-scrolling: touch;
+}
+
+/* 隐藏滚动条 */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* 主题色变量 - 与原始HTML保持一致 */
+:root {
+  --primary: #fa8c16;
+  --success: #00b42a;
+  --warning: #FF9D2B;
+  --danger: #FA5151;
+  --dark: #1d2129;
+  --gray-50: #f7f8fa;
+  --gray-100: #edeef2;
+  --gray-200: #d8d9dd;
+  --gray-300: #b4b5b9;
+  --gray-400: #86878B;
+  --gray-500: #4E5969;
+  --gray-600: #272E3B;
+  --gray-700: #1D2129;
+}
+
+/* 标签样式 */
+.tag {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.tag-danger {
+  background: #ffece8;
+  color: #f53f3f;
+}
+
+.tag-warning {
+  background: #fff7e8;
+  color: #ff7d00;
+}
+
+.tag-success {
+  background: #e8ffea;
+  color: #00b42a;
+}
+
+.tag-info {
+  background: #e8f3ff;
+  color: #fa8c16;
+}
+
+/* 进度条 */
+.progress-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: #f0f0f0;
+  overflow: hidden;
+}
+
+.progress-value {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, rgba(250, 140, 22, 0.9), #fa8c16);
+}

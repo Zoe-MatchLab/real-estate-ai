@@ -1,0 +1,546 @@
+.calendar-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #F7F8FA;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* 状态栏 */
+.status-bar {
+  height: 44px;
+  background: white;
+  flex-shrink: 0;
+}
+
+/* 标题栏 */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  height: 44px;
+  background: white;
+  border-bottom: 1px solid #f0f0f0;
+  flex-shrink: 0;
+}
+
+.page-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1d2129;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.notification-bell {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.notify-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: #ff4d4f;
+  color: white;
+  font-size: 12px;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-icons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* 主内容区 */
+.main-content {
+  flex: 1;
+  display: flex;
+  width: 100%;
+  min-height: 0;
+}
+
+/* 左侧日期列表 */
+.date-sidebar {
+  width: 80px;
+  background: white;
+  border-right: 1px solid #f0f0f0;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.date-item {
+  padding: 16px 8px;
+  border-bottom: 1px solid #f5f5f5;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.date-item.active {
+  background: #fff7e6;
+}
+
+.date-day {
+  font-size: 14px;
+  color: #4e5969;
+  margin-bottom: 4px;
+}
+
+.date-day.active {
+  color: #fa8c16;
+  font-weight: 500;
+}
+
+.date-weekday {
+  font-size: 12px;
+  color: #86909c;
+}
+
+.date-weekday.active {
+  color: #fa8c16;
+}
+
+/* 右侧任务列表 */
+.task-content {
+  flex: 1;
+  overflow-y: auto;
+  background: #f7f8fa;
+  padding: 12px;
+}
+
+/* 类型筛选 */
+.filter-chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  margin-bottom: 12px;
+}
+
+.filter-chip {
+  padding: 6px 12px;
+  background: #f0f0f0;
+  color: #4e5969;
+  border-radius: 16px;
+  font-size: 12px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-chip.active {
+  background: #fff7e6;
+  color: #fa8c16;
+  font-weight: 500;
+}
+
+.filter-chip.new-house {
+  background: #fff1f0;
+  color: #ff4d4f;
+}
+
+/* 任务卡片 */
+.task-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: all 0.2s;
+  border-left: 4px solid transparent;
+}
+
+.task-card:active {
+  transform: scale(0.98);
+}
+
+.task-card.new-house-card {
+  border-left-color: #ff4d4f;
+}
+
+/* 卡片头部 */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.card-type {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.type-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.type-icon.red {
+  background: #fff1f0;
+}
+
+.type-text {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.type-text.red {
+  color: #ff4d4f;
+}
+
+.type-text.purple {
+  color: #722ed1;
+}
+
+.card-time {
+  font-size: 12px;
+  color: #86909c;
+}
+
+.card-info {
+  flex: 1;
+}
+
+.status-tag {
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 500;
+  margin-right: 8px;
+}
+
+.status-tag.pending {
+  background: #fff7e6;
+  color: #fa8c16;
+}
+
+.status-tag.progress {
+  background: #e8f3ff;
+  color: #1890ff;
+}
+
+.status-tag.done {
+  background: #e8ffea;
+  color: #52c41a;
+}
+
+.card-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: #1d2129;
+  margin-bottom: 4px;
+}
+
+.card-description {
+  font-size: 12px;
+  color: #86909c;
+  margin-bottom: 8px;
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: #86909c;
+  margin-bottom: 12px;
+}
+
+.meta-separator {
+  margin: 0 8px;
+}
+
+.deadline {
+  color: #fa8c16;
+}
+
+.card-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.card-icon.blue {
+  width: 40px;
+  height: 40px;
+  background: #e6f7ff;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: #1890ff;
+}
+
+.card-icon.green {
+  width: 40px;
+  height: 40px;
+  background: #f6ffed;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #52c41a;
+}
+
+.progress-percent {
+  font-size: 12px;
+  font-weight: 500;
+  color: #fa8c16;
+}
+
+.progress-bar {
+  height: 6px;
+  background: #f0f0f0;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #fa8c16;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.card-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.action-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.action-btn.red {
+  background: #ff4d4f;
+  color: white;
+}
+
+.action-btn.green {
+  background: #52c41a;
+  color: white;
+}
+
+.action-btn.purple {
+  background: #722ed1;
+  color: white;
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+}
+
+/* 通知面板 */
+.notification-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.notification-overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.notification-panel {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 16px 16px 0 0;
+  max-height: 70vh;
+  z-index: 10000;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.notification-panel.show {
+  transform: translateY(0);
+}
+
+.notification-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.notification-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1d2129;
+}
+
+.notification-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.clear-btn {
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  color: #fa8c16;
+  cursor: pointer;
+}
+
+.notification-tabs {
+  display: flex;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.notification-tab {
+  flex: 1;
+  padding: 8px 16px;
+  font-size: 14px;
+  color: #4e5969;
+  border: none;
+  background: transparent;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.notification-tab.active {
+  color: #fa8c16;
+  border-bottom-color: #fa8c16;
+}
+
+.notification-list {
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.notification-item {
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.notification-item:active {
+  background: #f7f8fa;
+}
+
+.notification-item.read {
+  opacity: 0.6;
+}
+
+.notification-header-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.notification-dot {
+  width: 8px;
+  height: 8px;
+  background: #ff4d4f;
+  border-radius: 50%;
+}
+
+.notification-dot.read {
+  background: #b4b5b9;
+}
+
+.notification-task {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1d2129;
+  flex: 1;
+}
+
+.notification-type {
+  font-size: 12px;
+  color: #86909c;
+}
+
+.notification-message {
+  font-size: 14px;
+  color: #4e5969;
+  margin-bottom: 4px;
+}
+
+.notification-time {
+  font-size: 12px;
+  color: #86909c;
+}
+
+/* Toast 样式 */
+.toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
+  z-index: 99999;
+  font-size: 14px;
+  animation: fadeInOut 2s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  10% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  90% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+}

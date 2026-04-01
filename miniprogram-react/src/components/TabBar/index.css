@@ -1,0 +1,55 @@
+.tab-bar-container {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(29, 33, 41, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 26px;
+  padding: 8px 16px;
+  z-index: 9999;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.24);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tab-bar-inner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tab-bar-item {
+  width: 44px;
+  height: 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  color: rgba(255, 255, 255, 0.5);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.tab-bar-item i {
+  font-size: 18px;
+  margin-bottom: 2px;
+}
+
+.tab-bar-item .tab-bar-label {
+  font-size: 10px;
+  transform: scale(0.9);
+}
+
+.tab-bar-item.active {
+  background: rgba(250, 140, 22, 0.15);
+  color: #fa8c16;
+}
+
+/* 底部安全区适配 */
+@supports (padding-bottom: env(safe-area-inset-bottom)) {
+  .tab-bar-container {
+    bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+}

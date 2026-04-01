@@ -1,0 +1,162 @@
+.ai-design-page {
+  background-color: #F7F8FA;
+  min-height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* 顶部标题 */
+.page-header {
+  background: white;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.page-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #1d2129;
+  margin-bottom: 4px;
+}
+
+.page-subtitle {
+  font-size: 12px;
+  color: #86909c;
+}
+
+/* 设计工具分类 */
+.tools-container {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* 工具区块 */
+.tool-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #4e5969;
+  display: flex;
+  align-items: center;
+}
+
+/* 工具网格 */
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+/* 设计卡片 */
+.design-card {
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.design-card:active {
+  transform: scale(0.98);
+}
+
+/* 卡片图标 */
+.card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  font-size: 20px;
+}
+
+.card-icon.cyan {
+  background: linear-gradient(to bottom right, #22d3ee, #06b6d4);
+}
+
+.card-icon.blue {
+  background: linear-gradient(to bottom right, #60a5fa, #3b82f6);
+}
+
+.card-icon.purple {
+  background: linear-gradient(to bottom right, #a78bfa, #8b5cf6);
+}
+
+.card-icon.pink {
+  background: linear-gradient(to bottom right, #f9a8d4, #ec4899);
+}
+
+.card-icon.green {
+  background: linear-gradient(to bottom right, #86efac, #22c55e);
+}
+
+.card-icon.yellow {
+  background: linear-gradient(to bottom right, #fde68a, #eab308);
+}
+
+.card-icon.red {
+  background: linear-gradient(to bottom right, #fca5a5, #ef4444);
+}
+
+.card-icon.indigo {
+  background: linear-gradient(to bottom right, #818cf8, #4f46e5);
+}
+
+/* 卡片内容 */
+.card-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: #1d2129;
+  margin-bottom: 4px;
+}
+
+.card-description {
+  font-size: 12px;
+  color: #86909c;
+}
+
+/* Toast 样式 */
+.toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
+  z-index: 99999;
+  font-size: 14px;
+  animation: fadeInOut 2s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  10% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  90% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+}
