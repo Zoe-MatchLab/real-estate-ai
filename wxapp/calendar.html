@@ -584,7 +584,7 @@
             transform: translateX(-50%);
             background: rgba(29, 33, 41, 0.96);
             backdrop-filter: blur(20px);
-            -webkit-backdrop-scrolling: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-radius: 28px;
             padding: 8px 20px;
             z-index: 9999;
@@ -628,18 +628,225 @@
             from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
             to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
+
+        /* ========== 通知面板 ========== */
+        .notify-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 10000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .notify-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .notify-panel {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-height: 70vh;
+            background: var(--color-card);
+            border-radius: 20px 20px 0 0;
+            z-index: 10001;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .notify-panel.show {
+            transform: translateY(0);
+        }
+
+        .notify-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--color-border);
+            flex-shrink: 0;
+        }
+
+        .notify-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--color-title);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .notify-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .notify-clear {
+            font-size: 13px;
+            color: var(--color-sub);
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+
+        .notify-close {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-bg);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            color: var(--color-sub);
+            font-size: 16px;
+        }
+
+        .notify-tabs {
+            display: flex;
+            padding: var(--spacing-sm) var(--spacing-md);
+            gap: var(--spacing-xs);
+            border-bottom: 1px solid var(--color-border);
+            flex-shrink: 0;
+            overflow-x: auto;
+        }
+
+        .notify-tab {
+            flex: 0 0 auto;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--color-sub);
+            background: none;
+            border: none;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            white-space: nowrap;
+        }
+
+        .notify-tab.active {
+            background: var(--brand-primary);
+            color: white;
+        }
+
+        .notify-tab:active { transform: scale(0.95); }
+
+        .notify-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--spacing-sm) var(--spacing-md);
+        }
+
+        .notify-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--color-bg);
+            border-radius: var(--radius-xl);
+            margin-bottom: var(--spacing-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .notify-item:active {
+            transform: scale(0.98);
+            background: var(--color-border);
+        }
+
+        .notify-item.unread {
+            background: var(--brand-primary-light);
+        }
+
+        .notify-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-top: 6px;
+            flex-shrink: 0;
+        }
+
+        .notify-dot.unread { background: var(--color-danger); }
+        .notify-dot.read { background: var(--color-border); }
+
+        .notify-content { flex: 1; min-width: 0; }
+
+        .notify-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-title);
+            margin-bottom: 4px;
+        }
+
+        .notify-message {
+            font-size: 12px;
+            color: var(--color-text);
+            margin-bottom: 4px;
+            line-height: 1.4;
+        }
+
+        .notify-time {
+            font-size: 11px;
+            color: var(--color-sub);
+        }
+
+        .notify-arrow {
+            color: var(--color-sub);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        .notify-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 60px var(--spacing-md);
+            text-align: center;
+        }
+
+        .notify-empty-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--color-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--color-sub);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .notify-empty-text {
+            font-size: 14px;
+            color: var(--color-sub);
+        }
     </style>
 </head>
 <body>
     <div class="page">
         <!-- 标题栏 -->
         <div class="header">
-            <span class="header-title">任务中心</span>
+            <span class="header-title">内容日历</span>
             <div class="header-actions">
-                <a href="notify.html" class="header-action" aria-label="通知">
+                <button class="header-action" onclick="toggleNotifyPanel()" aria-label="通知">
                     <i class="fa fa-bell-o"></i>
                     <span class="notify-badge">3</span>
-                </a>
+                </button>
             </div>
         </div>
 
@@ -852,6 +1059,57 @@
         </div>
     </div>
 
+    <!-- 通知面板 -->
+    <div class="notify-overlay" id="notifyOverlay" onclick="toggleNotifyPanel()"></div>
+    <div class="notify-panel" id="notifyPanel">
+        <div class="notify-header">
+            <div class="notify-title">
+                <i class="fa fa-bell"></i> 通知
+            </div>
+            <div class="notify-actions">
+                <button class="notify-clear" onclick="clearAllNotifications()">清空全部</button>
+                <button class="notify-close" onclick="toggleNotifyPanel()">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+        </div>
+        <div class="notify-tabs">
+            <button class="notify-tab active" onclick="switchNotifyTab(this, 'all')">全部</button>
+            <button class="notify-tab" onclick="switchNotifyTab(this, 'exploration')">探盘</button>
+            <button class="notify-tab" onclick="switchNotifyTab(this, 'speech')">话术</button>
+            <button class="notify-tab" onclick="switchNotifyTab(this, 'content')">内容</button>
+        </div>
+        <div class="notify-list" id="notifyList">
+            <div class="notify-item unread" onclick="handleNotifyClick('exploration')">
+                <div class="notify-dot unread"></div>
+                <div class="notify-content">
+                    <div class="notify-name">中海汇德里探盘任务</div>
+                    <div class="notify-message">2/4阶段进行中，请注意完成</div>
+                    <div class="notify-time">刚刚</div>
+                </div>
+                <div class="notify-arrow"><i class="fa fa-chevron-right"></i></div>
+            </div>
+            <div class="notify-item" onclick="handleNotifyClick('speech')">
+                <div class="notify-dot read"></div>
+                <div class="notify-content">
+                    <div class="notify-name">万科城市之光话术训练</div>
+                    <div class="notify-message">新任务已下发，请及时完成</div>
+                    <div class="notify-time">10分钟前</div>
+                </div>
+                <div class="notify-arrow"><i class="fa fa-chevron-right"></i></div>
+            </div>
+            <div class="notify-item" onclick="handleNotifyClick('content')">
+                <div class="notify-dot read"></div>
+                <div class="notify-content">
+                    <div class="notify-name">朋友圈文案生成</div>
+                    <div class="notify-message">等待探盘完成后执行</div>
+                    <div class="notify-time">昨天</div>
+                </div>
+                <div class="notify-arrow"><i class="fa fa-chevron-right"></i></div>
+            </div>
+        </div>
+    </div>
+
     <!-- TabBar -->
     <div class="tab-bar-bottom">
         <a href="tools.html" class="tab-item-bottom">
@@ -959,6 +1217,72 @@
                 toast.style.opacity = '0';
                 setTimeout(() => toast.remove(), 200);
             }, 2000);
+        }
+
+        // ========== 通知面板 ==========
+        let currentNotifyTab = 'all';
+
+        function toggleNotifyPanel() {
+            const overlay = document.getElementById('notifyOverlay');
+            const panel = document.getElementById('notifyPanel');
+            
+            if (panel.classList.contains('show')) {
+                overlay.classList.remove('show');
+                panel.classList.remove('show');
+                document.body.style.overflow = '';
+            } else {
+                overlay.classList.add('show');
+                panel.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function switchNotifyTab(el, type) {
+            document.querySelectorAll('.notify-tab').forEach(tab => tab.classList.remove('active'));
+            el.classList.add('active');
+            currentNotifyTab = type;
+            
+            const items = document.querySelectorAll('.notify-item');
+            items.forEach(item => {
+                if (type === 'all') {
+                    item.style.display = 'flex';
+                } else {
+                    // 根据类型筛选（这里简化处理，实际应根据data-type筛选）
+                    item.style.display = 'flex';
+                }
+            });
+        }
+
+        function handleNotifyClick(type) {
+            // 标记为已读
+            event.currentTarget.classList.remove('unread');
+            event.currentTarget.querySelector('.notify-dot').classList.remove('unread');
+            event.currentTarget.querySelector('.notify-dot').classList.add('read');
+            
+            // 关闭面板
+            toggleNotifyPanel();
+            
+            // 跳转到对应页面
+            if (type === 'exploration') {
+                location.href = 'task-detail.html';
+            } else if (type === 'speech') {
+                location.href = 'speech-train.html';
+            } else if (type === 'content') {
+                showToast('内容发布功能即将上线');
+            }
+        }
+
+        function clearAllNotifications() {
+            const list = document.getElementById('notifyList');
+            list.innerHTML = `
+                <div class="notify-empty">
+                    <div class="notify-empty-icon"><i class="fa fa-bell-slash"></i></div>
+                    <div class="notify-empty-text">暂无通知</div>
+                </div>
+            `;
+            // 更新badge
+            const badge = document.querySelector('.notify-badge');
+            if (badge) badge.style.display = 'none';
         }
 
         // 初始化
