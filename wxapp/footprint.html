@@ -58,7 +58,16 @@
         }
 
         body {
-            padding-bottom: calc(100px + env(safe-area-inset-bottom);
+            padding-bottom: calc(100px + env(safe-area-inset-bottom));
+        }
+        
+        /* 无障碍：减少动画偏好 */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
 
         /* 头部 */
@@ -275,23 +284,23 @@
     </div>
 
     <!-- TabBar -->
-    <div class="tab-bar">
-        <a href="tools.html" class="tab-item">
-            <i class="fa fa-rocket"></i>
+    <nav class="tab-bar" role="navigation" aria-label="页面导航">
+        <a href="tools.html" class="tab-item" aria-label="服务工具">
+            <i class="fa fa-rocket" aria-hidden="true"></i>
         </a>
-        <a href="ai-design.html" class="tab-item">
-            <i class="fa fa-paint-brush"></i>
+        <a href="ai-design.html" class="tab-item" aria-label="AI设计">
+            <i class="fa fa-paint-brush" aria-hidden="true"></i>
         </a>
-        <a href="claw.html" class="tab-item">
-            <i class="fa fa-commenting"></i>
+        <a href="claw.html" class="tab-item" aria-label="智能助手">
+            <i class="fa fa-commenting" aria-hidden="true"></i>
         </a>
-        <a href="calendar.html" class="tab-item">
-            <i class="fa fa-calendar"></i>
+        <a href="calendar.html" class="tab-item" aria-label="任务日历">
+            <i class="fa fa-calendar" aria-hidden="true"></i>
         </a>
-        <a href="profile.html" class="tab-item active">
-            <i class="fa fa-user"></i>
+        <a href="profile.html" class="tab-item active" aria-label="个人中心">
+            <i class="fa fa-user" aria-hidden="true"></i>
         </a>
-    </div>
+    </nav>
 
     <script>
         // Toast
