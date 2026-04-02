@@ -18,6 +18,8 @@
             --color-warning-light: #FFF7E6;
             --color-info: #007AFF;
             --color-info-light: #E8F3FF;
+            --color-purple: #722ED1;
+            --color-purple-light: #F7F0FF;
             --color-title: #1D2129;
             --color-text: #4E5969;
             --color-sub: #86909C;
@@ -40,19 +42,11 @@
             --font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
             --transition-fast: 0.15s ease;
             --transition-normal: 0.25s ease;
-            --transition-slow: 0.35s ease;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* Focus 样式 - 可访问性 */
-        button:focus-visible,
-        a:focus-visible,
-        input:focus-visible,
-        select:focus-visible,
-        textarea:focus-visible {
-            outline: 2px solid var(--brand-primary);
-            outline-offset: 2px;
-        }
+        button:focus-visible, a:focus-visible, input:focus-visible { outline: 2px solid var(--brand-primary); outline-offset: 2px; }
+        
         html, body {
             height: 100%;
             font-family: var(--font-family);
@@ -62,75 +56,113 @@
             background: var(--color-bg);
             -webkit-font-smoothing: antialiased;
         }
-        .page {
-            min-height: 100vh;
-            padding-bottom: calc(80px + env(safe-area-inset-bottom));
-        }
+        
+        .page { min-height: 100vh; padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
+        
         /* 头部 */
         .header {
             background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
             padding: calc(44px + env(safe-area-inset-top)) var(--spacing-md) var(--spacing-md);
             color: white;
         }
+        
         .header-top {
             display: flex;
             align-items: center;
             gap: var(--spacing-md);
         }
+        
         .back-btn {
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center;
             background: rgba(255,255,255,0.2);
             border-radius: var(--radius-full);
-            cursor: pointer;
-            border: none;
-            color: white;
+            cursor: pointer; border: none; color: white;
         }
-        .header-title {
-            font-size: 17px;
-            font-weight: 600;
-            flex: 1;
-        }
-        .step-badge {
-            font-size: 11px;
-            padding: 2px 10px;
-            background: rgba(255,255,255,0.25);
-            border-radius: var(--radius-full);
-        }
-        /* 进度 */
-        .progress-bar {
-            display: flex;
-            gap: var(--spacing-sm);
-            margin-top: var(--spacing-md);
-        }
-        .progress-step {
-            flex: 1;
-            height: 4px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 2px;
-        }
-        .progress-step.completed {
-            background: rgba(255,255,255,0.8);
-        }
-        .progress-step.current::after {
-            content: '';
-            display: block;
-            height: 100%;
-            width: 50%;
-            background: white;
-            border-radius: 2px;
-            animation: progressAnim 2s ease-in-out infinite;
-        }
-        @keyframes progressAnim {
-            0%, 100% { width: 30%; }
-            50% { width: 70%; }
-        }
-        /* 说明 */
-        .info-banner {
+        
+        .header-title { font-size: 17px; font-weight: 600; flex: 1; }
+        .step-badge { font-size: 11px; padding: 2px 10px; background: rgba(255,255,255,0.25); border-radius: var(--radius-full); }
+        
+        /* 进度条 */
+        .progress-bar { display: flex; gap: var(--spacing-sm); margin-top: var(--spacing-md); }
+        .progress-step { flex: 1; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; }
+        .progress-step.completed { background: rgba(255,255,255,0.8); }
+        
+        /* 生成中状态 */
+        .generating-banner {
             margin: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: linear-gradient(135deg, var(--color-purple) 0%, #8B5CF6 100%);
+            border-radius: var(--radius-xl);
+            color: white;
+            display: none;
+        }
+        
+        .generating-banner.show { display: block; }
+        
+        .generating-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .generating-title {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-weight: 600;
+        }
+        
+        .generating-spinner {
+            width: 20px; height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .generating-progress {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .generating-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .generating-fill {
+            height: 100%;
+            background: white;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        
+        .generating-items {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .generating-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .generating-item i { width: 16px; }
+        
+        /* 提示横幅 */
+        .info-banner {
+            margin: 0 var(--spacing-md) var(--spacing-md);
             padding: var(--spacing-md);
             background: var(--color-info-light);
             border-radius: var(--radius-lg);
@@ -138,20 +170,52 @@
             align-items: flex-start;
             gap: var(--spacing-sm);
         }
-        .info-banner i {
-            color: var(--color-info);
-            font-size: 18px;
-            margin-top: 2px;
+        
+        .info-banner i { color: var(--color-info); font-size: 18px; margin-top: 2px; }
+        .info-banner-text { font-size: 13px; color: var(--color-info); line-height: 1.5; }
+        
+        /* 生成按钮区域 */
+        .generate-section {
+            padding: var(--spacing-md);
+            display: block;
         }
-        .info-banner-text {
-            font-size: 13px;
-            color: var(--color-info);
-            line-height: 1.5;
+        
+        .generate-section.hidden { display: none; }
+        
+        .generate-btn {
+            width: 100%;
+            padding: var(--spacing-lg);
+            background: linear-gradient(135deg, var(--color-purple) 0%, #8B5CF6 100%);
+            border: none;
+            border-radius: var(--radius-xl);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-sm);
+            box-shadow: 0 4px 16px rgba(114, 46, 209, 0.3);
+            transition: all var(--transition-normal);
         }
-        /* 文案卡片列表 */
-        .copywriter-list {
-            padding: 0 var(--spacing-md);
+        
+        .generate-btn:active { transform: scale(0.98); }
+        
+        .generate-btn i { font-size: 32px; }
+        .generate-btn-hint { font-size: 12px; opacity: 0.8; font-weight: normal; }
+        
+        .back-hint {
+            text-align: center;
+            margin-top: var(--spacing-md);
+            font-size: 12px;
+            color: var(--color-sub);
         }
+        
+        /* 文案列表 */
+        .copywriter-list { padding: 0 var(--spacing-md); display: none; }
+        .copywriter-list.show { display: block; }
+        
         .copywriter-card {
             background: white;
             border-radius: var(--radius-xl);
@@ -161,50 +225,34 @@
             border: 2px solid transparent;
             transition: all var(--transition-normal);
         }
-        .copywriter-card.selected {
-            border-color: var(--brand-primary);
-            box-shadow: 0 0 0 4px var(--brand-primary-light);
-        }
+        
+        .copywriter-card.selected { border-color: var(--brand-primary); box-shadow: 0 0 0 4px var(--brand-primary-light); }
+        
         .copywriter-header {
             display: flex;
             align-items: center;
             padding: var(--spacing-md);
             cursor: pointer;
         }
+        
         .radio-circle {
-            width: 22px;
-            height: 22px;
+            width: 22px; height: 22px;
             border: 2px solid var(--color-border);
             border-radius: 50%;
             margin-right: var(--spacing-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             transition: all var(--transition-fast);
             flex-shrink: 0;
         }
-        .copywriter-card.selected .radio-circle {
-            border-color: var(--brand-primary);
-            background: var(--brand-primary);
-        }
-        .radio-circle::after {
-            content: '';
-            width: 8px;
-            height: 8px;
-            background: white;
-            border-radius: 50%;
-            opacity: 0;
-            transition: opacity var(--transition-fast);
-        }
-        .copywriter-card.selected .radio-circle::after {
-            opacity: 1;
-        }
-        .copywriter-info {
-            flex: 1;
-        }
+        
+        .copywriter-card.selected .radio-circle { border-color: var(--brand-primary); background: var(--brand-primary); }
+        .radio-circle::after { content: ''; width: 8px; height: 8px; background: white; border-radius: 50%; opacity: 0; }
+        .copywriter-card.selected .radio-circle::after { opacity: 1; }
+        
+        .copywriter-info { flex: 1; }
+        
         .copywriter-platform {
-            display: inline-flex;
-            align-items: center;
+            display: inline-flex; align-items: center;
             padding: 2px 8px;
             background: #FFE7D6;
             color: var(--brand-primary);
@@ -212,24 +260,13 @@
             font-size: 11px;
             margin-bottom: var(--spacing-xs);
         }
-        .copywriter-title {
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--color-title);
-        }
-        .copywriter-meta {
-            font-size: 11px;
-            color: var(--color-sub);
-            margin-top: 2px;
-        }
-        /* 文案内容展开 */
-        .copywriter-content {
-            padding: 0 var(--spacing-md) var(--spacing-md);
-            display: none;
-        }
-        .copywriter-card.expanded .copywriter-content {
-            display: block;
-        }
+        
+        .copywriter-title { font-size: 14px; font-weight: 500; color: var(--color-title); }
+        .copywriter-meta { font-size: 11px; color: var(--color-sub); margin-top: 2px; }
+        
+        .copywriter-content { padding: 0 var(--spacing-md) var(--spacing-md); display: none; }
+        .copywriter-card.expanded .copywriter-content { display: block; }
+        
         .copywriter-text {
             background: var(--color-bg);
             padding: var(--spacing-md);
@@ -239,11 +276,13 @@
             color: var(--color-text);
             white-space: pre-wrap;
         }
+        
         .copywriter-actions {
             display: flex;
             gap: var(--spacing-sm);
             margin-top: var(--spacing-md);
         }
+        
         .action-btn {
             flex: 1;
             padding: var(--spacing-sm) var(--spacing-md);
@@ -253,40 +292,26 @@
             font-size: 13px;
             color: var(--color-text);
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             gap: var(--spacing-xs);
             transition: all var(--transition-fast);
         }
-        .action-btn:hover {
-            background: var(--color-bg);
-        }
-        .action-btn:active {
-            transform: scale(0.98);
-        }
-        .action-btn.primary {
-            background: var(--brand-primary);
-            border-color: var(--brand-primary);
-            color: white;
-        }
+        
+        .action-btn:active { transform: scale(0.98); }
+        .action-btn.primary { background: var(--brand-primary); border-color: var(--brand-primary); color: white; }
+        
         /* 底部操作 */
         .bottom-bar {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            bottom: 0; left: 0; right: 0;
             background: white;
             padding: var(--spacing-md);
             padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
             box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
         }
-        .bottom-hint {
-            font-size: 12px;
-            color: var(--color-sub);
-            text-align: center;
-            margin-bottom: var(--spacing-sm);
-        }
+        
+        .bottom-hint { font-size: 12px; color: var(--color-sub); text-align: center; margin-bottom: var(--spacing-sm); }
+        
         .confirm-btn {
             width: 100%;
             padding: var(--spacing-md);
@@ -298,26 +323,21 @@
             color: var(--color-sub);
             cursor: not-allowed;
             transition: all var(--transition-normal);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             gap: var(--spacing-sm);
         }
+        
         .confirm-btn.ready {
             background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
             color: white;
             cursor: pointer;
             box-shadow: 0 4px 16px rgba(250,140,22,0.3);
         }
-        .confirm-btn.ready:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(250,140,22,0.4);
-        }
+        
         /* Toast */
         .toast {
             position: fixed;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             background: rgba(0,0,0,0.75);
             color: white;
@@ -329,26 +349,18 @@
             pointer-events: none;
         }
         .toast.success { background: rgba(0,180,42,0.95); }
-        @keyframes toastIn {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        }
+        @keyframes toastIn { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+        
         /* 编辑弹窗 */
         .edit-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.5);
             z-index: 99998;
             display: none;
             align-items: flex-end;
             justify-content: center;
         }
-        .edit-modal.show {
-            display: flex;
-        }
+        .edit-modal.show { display: flex; }
         .edit-sheet {
             width: 100%;
             background: white;
@@ -358,68 +370,19 @@
             flex-direction: column;
         }
         .edit-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: flex; justify-content: space-between; align-items: center;
             padding: var(--spacing-md);
             border-bottom: 1px solid var(--color-border);
         }
-        .edit-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--color-title);
-        }
-        .edit-close {
-            width: 28px;
-            height: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--color-sub);
-            cursor: pointer;
-        }
-        .edit-content {
-            flex: 1;
-            padding: var(--spacing-md);
-            overflow-y: auto;
-        }
-        .edit-textarea {
-            width: 100%;
-            min-height: 200px;
-            padding: var(--spacing-md);
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-lg);
-            font-size: 14px;
-            line-height: 1.8;
-            resize: none;
-            outline: none;
-        }
-        .edit-textarea:focus {
-            border-color: var(--brand-primary);
-        }
-        .edit-footer {
-            padding: var(--spacing-md);
-            padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
-            display: flex;
-            gap: var(--spacing-sm);
-        }
-        .edit-btn {
-            flex: 1;
-            padding: var(--spacing-md);
-            border: none;
-            border-radius: var(--radius-lg);
-            font-size: 15px;
-            font-weight: 500;
-            cursor: pointer;
-        }
-        .edit-btn.cancel {
-            background: var(--color-bg);
-            color: var(--color-text);
-        }
-        .edit-btn.save {
-            background: var(--brand-primary);
-            color: white;
-        }
+        .edit-title { font-size: 16px; font-weight: 600; color: var(--color-title); }
+        .edit-close { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; color: var(--color-sub); cursor: pointer; }
+        .edit-content { flex: 1; padding: var(--spacing-md); overflow-y: auto; }
+        .edit-textarea { width: 100%; min-height: 200px; padding: var(--spacing-md); border: 1px solid var(--color-border); border-radius: var(--radius-lg); font-size: 14px; line-height: 1.8; resize: none; outline: none; }
+        .edit-textarea:focus { border-color: var(--brand-primary); }
+        .edit-footer { padding: var(--spacing-md); padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom)); display: flex; gap: var(--spacing-sm); }
+        .edit-btn { flex: 1; padding: var(--spacing-md); border: none; border-radius: var(--radius-lg); font-size: 15px; font-weight: 500; cursor: pointer; }
+        .edit-btn.cancel { background: var(--color-bg); color: var(--color-text); }
+        .edit-btn.save { background: var(--brand-primary); color: white; }
     </style>
 </head>
 <body>
@@ -431,34 +394,76 @@
                     <i class="fa fa-angle-left"></i>
                 </button>
                 <span class="header-title">阶段3：文案确认</span>
-                <span class="step-badge">3/4</span>
+                <span class="step-badge">3/5</span>
             </div>
             <div class="progress-bar">
                 <div class="progress-step completed"></div>
                 <div class="progress-step completed"></div>
-                <div class="progress-step current"></div>
+                <div class="progress-step completed"></div>
+                <div class="progress-step"></div>
                 <div class="progress-step"></div>
             </div>
         </div>
         
-        <!-- 说明 -->
-        <div class="info-banner">
+        <!-- 生成中状态 -->
+        <div class="generating-banner" id="generatingBanner">
+            <div class="generating-header">
+                <div class="generating-title">
+                    <div class="generating-spinner"></div>
+                    <span>正在生成文案和脚本...</span>
+                </div>
+                <div class="generating-progress" id="generatingProgress">45%</div>
+            </div>
+            <div class="generating-bar">
+                <div class="generating-fill" id="generatingFill" style="width: 45%;"></div>
+            </div>
+            <div class="generating-items">
+                <div class="generating-item">
+                    <i class="fa fa-check-circle" style="color: #00B42A;"></i>
+                    <span>小红书文案 生成完成</span>
+                </div>
+                <div class="generating-item">
+                    <i class="fa fa-check-circle" style="color: #00B42A;"></i>
+                    <span>朋友圈文案 生成完成</span>
+                </div>
+                <div class="generating-item">
+                    <i class="fa fa-spinner fa-spin"></i>
+                    <span>短视频脚本 生成中...</span>
+                </div>
+            </div>
+            <div class="back-hint" style="margin-top: 12px; color: rgba(255,255,255,0.8);">
+                <i class="fa fa-info-circle"></i> 可返回任务列表，后台持续运行
+            </div>
+        </div>
+        
+        <!-- 提示 -->
+        <div class="info-banner" id="infoBanner">
             <i class="fa fa-info-circle"></i>
             <div class="info-banner-text">
-                AI已根据您采集的探盘素材，生成多平台适配的推广文案。请确认或修改后使用。
+                点位采集已完成，点击下方按钮生成多平台适配的推广文案和短视频脚本。生成后可返回任务列表查看进度。
+            </div>
+        </div>
+        
+        <!-- 生成按钮 -->
+        <div class="generate-section" id="generateSection">
+            <button class="generate-btn" onclick="startGenerating()">
+                <i class="fa fa-magic"></i>
+                <span>生成文案和脚本</span>
+                <span class="generate-btn-hint">点击后后台执行，可返回任务列表</span>
+            </button>
+            <div class="back-hint">
+                <i class="fa fa-info-circle"></i> 生成过程中可返回任务列表，后台持续运行
             </div>
         </div>
         
         <!-- 文案列表 -->
-        <div class="copywriter-list">
+        <div class="copywriter-list" id="copywriterList">
             <!-- 小红书文案 -->
             <div class="copywriter-card selected" id="card1" onclick="selectCard(1)">
                 <div class="copywriter-header">
                     <div class="radio-circle"></div>
                     <div class="copywriter-info">
-                        <div class="copywriter-platform">
-                            <i class="fa fa-book"></i> 小红书
-                        </div>
+                        <div class="copywriter-platform"><i class="fa fa-book"></i> 小红书</div>
                         <div class="copywriter-title">万科城市之光 | 朝阳改善首选盘🔥</div>
                         <div class="copywriter-meta">约98字 · 适合首图：样板间照片</div>
                     </div>
@@ -531,36 +536,39 @@
                 </div>
             </div>
             
-            <!-- 公众号文案 -->
+            <!-- 短视频脚本 -->
             <div class="copywriter-card" id="card3" onclick="selectCard(3)">
                 <div class="copywriter-header">
                     <div class="radio-circle"></div>
                     <div class="copywriter-info">
-                        <div class="copywriter-platform" style="background: #E8F3FF; color: #165DFF;">
-                            <i class="fa fa-file-text-o"></i> 公众号
+                        <div class="copywriter-platform" style="background: #F7F0FF; color: #722ED1;">
+                            <i class="fa fa-video-camera"></i> 短视频脚本
                         </div>
-                        <div class="copywriter-title">万科城市之光：朝阳改善置业的理想之选</div>
-                        <div class="copywriter-meta">约300字 · 适合配图：全景图+样板间</div>
+                        <div class="copywriter-title">探盘讲解视频脚本</div>
+                        <div class="copywriter-meta">约60秒 · 共5个镜头</div>
                     </div>
                 </div>
                 <div class="copywriter-content">
-                    <div class="copywriter-text" id="text3">万科城市之光：朝阳改善置业的理想之选
+                    <div class="copywriter-text" id="text3">【镜头1：开场】0-5秒
+画面：楼盘大门全景
+台词：今天带大家探盘万科城市之光～
+配乐：轻快BGM
 
-区域价值
+【镜头2：区位】5-15秒
+画面：航拍区位图 + 地铁站
+台词：项目位于朝阳核心，双轨交汇，出行超方便！
 
-万科城市之光位于朝阳区望京核心板块，坐拥成熟的商业、教育、医疗配套。项目紧邻地铁14号线和15号线交汇站，出行便捷无忧。
+【镜头3：沙盘】15-30秒
+画面：沙盘全景 + 户型模型
+台词：主打98-140㎡改善户型，南北通透，采光优秀
 
-产品亮点
+【镜头4：样板间】30-50秒
+画面：样板间各房间视频
+台词：精装交付，品质感满满，智能家居加持
 
-项目主打98-140㎡改善型三四居产品，采用万科最新精装标准，涵盖中央空调、地暖、新风系统等豪宅配置。户型设计南北通透，采光通风俱佳。
-
-配套优势
-
-3公里范围内有凯德MALL、望京SOHO等商业综合体；周边多所优质学校；三甲医院环伺。真正实现生活零距离。
-
-投资价值
-
-随着望京板块价值持续攀升，万科城市之光凭借品牌、品质、配套三重优势，成为区域改善置业的首选。项目总价800万起，性价比极高。</div>
+【镜头5：结尾】50-60秒
+画面：项目效果图 + 联系方式
+台词：感兴趣的朋友评论区见，带看有优惠！</div>
                     <div class="copywriter-actions">
                         <button class="action-btn" onclick="event.stopPropagation(); editCopywriter(3)">
                             <i class="fa fa-edit"></i> 修改
@@ -578,10 +586,10 @@
         
         <!-- 底部操作 -->
         <div class="bottom-bar">
-            <div class="bottom-hint">请选择一个文案确认使用</div>
+            <div class="bottom-hint" id="bottomHint">请选择文案确认使用</div>
             <button class="confirm-btn ready" id="confirmBtn" onclick="goNext()">
                 <i class="fa fa-check-circle"></i>
-                <span>确认文案，进入成果生成</span>
+                <span>确认文案，进入生成封面</span>
             </button>
         </div>
     </div>
@@ -591,9 +599,7 @@
         <div class="edit-sheet">
             <div class="edit-header">
                 <span class="edit-title">编辑文案</span>
-                <div class="edit-close" onclick="closeEdit()">
-                    <i class="fa fa-times"></i>
-                </div>
+                <div class="edit-close" onclick="closeEdit()"><i class="fa fa-times"></i></div>
             </div>
             <div class="edit-content">
                 <textarea class="edit-textarea" id="editTextarea"></textarea>
@@ -608,11 +614,50 @@
     <script>
         let selectedCard = 1;
         let editingCard = null;
+        let isGenerated = false;
         const copywriters = {
-            1: document.getElementById('text1').textContent,
-            2: document.getElementById('text2').textContent,
-            3: document.getElementById('text3').textContent
+            1: document.getElementById('text1')?.textContent || '',
+            2: document.getElementById('text2')?.textContent || '',
+            3: document.getElementById('text3')?.textContent || ''
         };
+        
+        // 开始生成
+        function startGenerating() {
+            const banner = document.getElementById('generatingBanner');
+            const genSection = document.getElementById('generateSection');
+            const infoBanner = document.getElementById('infoBanner');
+            const copywriterList = document.getElementById('copywriterList');
+            const bottomHint = document.getElementById('bottomHint');
+            
+            // 显示生成中状态
+            banner.classList.add('show');
+            genSection.classList.add('hidden');
+            infoBanner.style.display = 'none';
+            
+            // 模拟生成进度
+            let progress = 0;
+            const fill = document.getElementById('generatingFill');
+            const progressText = document.getElementById('generatingProgress');
+            
+            const interval = setInterval(() => {
+                progress += 5;
+                fill.style.width = progress + '%';
+                progressText.textContent = progress + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        banner.classList.remove('show');
+                        copywriterList.classList.add('show');
+                        bottomHint.textContent = '已生成3个文案，请确认使用';
+                        isGenerated = true;
+                        // 默认展开第一个
+                        document.getElementById('card1').classList.add('expanded');
+                        showToast('文案生成完成！', 'success');
+                    }, 500);
+                }
+            }, 150);
+        }
         
         // 选中卡片
         function selectCard(index) {
@@ -626,15 +671,12 @@
         }
         
         // 展开/折叠
-        document.querySelectorAll('.copywriter-card').forEach((card, idx) => {
+        document.querySelectorAll('.copywriter-card').forEach((card) => {
             card.addEventListener('click', function(e) {
                 if (e.target.closest('.copywriter-actions')) return;
                 this.classList.toggle('expanded');
             });
         });
-        
-        // 默认展开第一个
-        document.getElementById('card1').classList.add('expanded');
         
         // 编辑文案
         function editCopywriter(index) {
@@ -662,7 +704,7 @@
         
         // 重新生成
         function regenerate(index) {
-            showToast('AI正在重新生成文案...');
+            showToast('AI正在重新生成...');
             setTimeout(() => {
                 showToast('新文案已生成', 'success');
             }, 1500);
@@ -671,20 +713,22 @@
         // 确认文案
         function confirmCopywriter(index) {
             selectCard(index);
-            document.getElementById('text' + index).parentElement.classList.add('confirmed');
             showToast('文案已确认！', 'success');
         }
         
         // 下一步
         function goNext() {
-            // 保存选择
+            if (!isGenerated) {
+                showToast('请先生成文案');
+                return;
+            }
             localStorage.setItem('task_confirmed_copywriter', JSON.stringify({
                 taskId: 'TASK001',
                 copywriterId: selectedCard,
                 text: copywriters[selectedCard],
                 time: new Date().toISOString()
             }));
-            window.location.href = 'submit-result.html?task=TASK001';
+            window.location.href = 'submit-result.html?task=TASK001&step=4a';
         }
         
         // 返回
@@ -696,12 +740,10 @@
         function showToast(message, type = '') {
             const existing = document.querySelector('.toast');
             if (existing) existing.remove();
-            
             const toast = document.createElement('div');
             toast.className = 'toast' + (type ? ' ' + type : '');
             toast.textContent = message;
             document.body.appendChild(toast);
-            
             setTimeout(() => toast.remove(), 2000);
         }
     </script>

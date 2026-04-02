@@ -468,6 +468,41 @@
         .progress-fill.speech { background: var(--color-purple); }
         .progress-fill.content { background: var(--color-success); }
         .progress-fill.new { background: var(--color-danger); }
+        
+        /* 生成中状态 */
+        .generating-status {
+            margin-top: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--color-purple-light);
+            border-radius: var(--radius-lg);
+            display: none;
+        }
+        
+        .generating-status.show { display: flex; align-items: center; gap: var(--spacing-sm); }
+        
+        .generating-spinner {
+            width: 16px; height: 16px;
+            border: 2px solid var(--color-purple);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            flex-shrink: 0;
+        }
+        
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .generating-info { flex: 1; }
+        
+        .generating-text {
+            font-size: 12px;
+            color: var(--color-purple);
+            font-weight: 500;
+        }
+        
+        .generating-progress {
+            font-size: 11px;
+            color: var(--color-sub);
+        }
 
         /* ========== 空状态 ========== */
         .empty-state {
@@ -679,10 +714,18 @@
                     <div class="task-progress">
                         <div class="progress-header">
                             <span class="progress-text">完成进度</span>
-                            <span class="progress-value">50%</span>
+                            <span class="progress-value">65%</span>
                         </div>
                         <div class="progress-bar">
-                            <div class="progress-fill house" style="width: 50%;"></div>
+                            <div class="progress-fill house" style="width: 65%;"></div>
+                        </div>
+                    </div>
+                    <!-- 生成中状态 -->
+                    <div class="generating-status show">
+                        <div class="generating-spinner"></div>
+                        <div class="generating-info">
+                            <div class="generating-text">阶段3 文案生成中 45%...</div>
+                            <div class="generating-progress">可返回任务列表，后台持续运行</div>
                         </div>
                     </div>
                 </div>

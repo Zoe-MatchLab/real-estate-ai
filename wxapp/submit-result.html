@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>阶段4：成果提交 - 房产AI助手</title>
+    <title>阶段4：成果生成 - 房产AI助手</title>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
         :root {
@@ -18,6 +18,8 @@
             --color-warning-light: #FFF7E6;
             --color-info: #007AFF;
             --color-info-light: #E8F3FF;
+            --color-purple: #722ED1;
+            --color-purple-light: #F7F0FF;
             --color-title: #1D2129;
             --color-text: #4E5969;
             --color-sub: #86909C;
@@ -40,19 +42,11 @@
             --font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
             --transition-fast: 0.15s ease;
             --transition-normal: 0.25s ease;
-            --transition-slow: 0.35s ease;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* Focus 样式 - 可访问性 */
-        button:focus-visible,
-        a:focus-visible,
-        input:focus-visible,
-        select:focus-visible,
-        textarea:focus-visible {
-            outline: 2px solid var(--brand-primary);
-            outline-offset: 2px;
-        }
+        button:focus-visible, a:focus-visible { outline: 2px solid var(--brand-primary); outline-offset: 2px; }
+        
         html, body {
             height: 100%;
             font-family: var(--font-family);
@@ -62,63 +56,266 @@
             background: var(--color-bg);
             -webkit-font-smoothing: antialiased;
         }
-        .page {
-            min-height: 100vh;
-            padding-bottom: calc(100px + env(safe-area-inset-bottom));
-        }
+        
+        .page { min-height: 100vh; padding-bottom: calc(120px + env(safe-area-inset-bottom)); }
+        
         /* 头部 */
         .header {
-            background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
+            background: linear-gradient(135deg, var(--color-purple) 0%, #8B5CF6 100%);
             padding: calc(44px + env(safe-area-inset-top)) var(--spacing-md) var(--spacing-md);
             color: white;
         }
-        .header-top {
+        
+        .header-top { display: flex; align-items: center; gap: var(--spacing-md); }
+        
+        .back-btn {
+            width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.2);
+            border-radius: var(--radius-full);
+            cursor: pointer; border: none; color: white;
+        }
+        
+        .header-title { font-size: 17px; font-weight: 600; flex: 1; }
+        .step-badge { font-size: 11px; padding: 2px 10px; background: rgba(255,255,255,0.25); border-radius: var(--radius-full); }
+        
+        /* 进度条 */
+        .progress-bar { display: flex; gap: var(--spacing-sm); margin-top: var(--spacing-md); }
+        .progress-step { flex: 1; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; }
+        .progress-step.completed { background: rgba(255,255,255,0.8); }
+        
+        /* 内容区域 */
+        .content { padding: var(--spacing-md); }
+        
+        /* 阶段标题 */
+        .section-header {
             display: flex;
             align-items: center;
-            gap: var(--spacing-md);
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
         }
-        .back-btn {
-            width: 32px;
-            height: 32px;
+        
+        .section-num {
+            width: 28px; height: 28px;
+            background: var(--color-purple);
+            color: white;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 13px; font-weight: 600;
+        }
+        
+        .section-title { font-size: 16px; font-weight: 600; color: var(--color-title); }
+        
+        /* 生成中状态 */
+        .generating-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            display: none;
+        }
+        
+        .generating-card.show { display: block; }
+        
+        .generating-icon {
+            width: 64px; height: 64px;
+            margin: 0 auto var(--spacing-md);
+            background: var(--color-purple-light);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        
+        .generating-icon i { font-size: 32px; color: var(--color-purple); }
+        
+        .generating-title { font-size: 16px; font-weight: 600; color: var(--color-title); margin-bottom: var(--spacing-xs); }
+        .generating-hint { font-size: 13px; color: var(--color-sub); margin-bottom: var(--spacing-md); }
+        
+        .generating-progress {
+            height: 8px;
+            background: var(--color-bg);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .generating-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--color-purple), #8B5CF6);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .generating-percent { font-size: 14px; font-weight: 600; color: var(--color-purple); margin-bottom: var(--spacing-md); }
+        
+        .generating-items {
+            text-align: left;
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md);
+        }
+        
+        .generating-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-xs) 0;
+            font-size: 13px;
+            color: var(--color-text);
+        }
+        
+        .generating-item i { width: 20px; color: var(--color-sub); }
+        .generating-item i.done { color: var(--color-success); }
+        
+        .generating-back-hint {
+            margin-top: var(--spacing-md);
+            padding: var(--spacing-sm);
+            background: var(--color-purple-light);
+            border-radius: var(--radius-lg);
+            font-size: 12px;
+            color: var(--color-purple);
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255,255,255,0.2);
-            border-radius: var(--radius-full);
-            cursor: pointer;
+            gap: var(--spacing-xs);
+        }
+        
+        /* 生成按钮 */
+        .generate-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .generate-btn {
+            width: 100%;
+            padding: var(--spacing-lg);
+            background: linear-gradient(135deg, var(--color-purple) 0%, #8B5CF6 100%);
             border: none;
+            border-radius: var(--radius-xl);
             color: white;
-        }
-        .header-title {
-            font-size: 17px;
+            font-size: 16px;
             font-weight: 600;
-            flex: 1;
-        }
-        .step-badge {
-            font-size: 11px;
-            padding: 2px 10px;
-            background: rgba(255,255,255,0.25);
-            border-radius: var(--radius-full);
-        }
-        /* 进度 */
-        .progress-bar {
+            cursor: pointer;
             display: flex;
+            flex-direction: column;
+            align-items: center;
             gap: var(--spacing-sm);
-            margin-top: var(--spacing-md);
+            box-shadow: 0 4px 16px rgba(114, 46, 209, 0.3);
+            transition: all var(--transition-normal);
         }
-        .progress-step {
-            flex: 1;
-            height: 4px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 2px;
-        }
-        .progress-step.completed {
-            background: rgba(255,255,255,0.8);
-        }
-        /* 内容区域 */
-        .content {
+        
+        .generate-btn:active { transform: scale(0.98); }
+        .generate-btn i { font-size: 32px; }
+        .generate-btn-hint { font-size: 12px; opacity: 0.8; font-weight: normal; }
+        
+        /* 成果预览卡片 */
+        .result-card {
+            background: white;
+            border-radius: var(--radius-xl);
             padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+            display: none;
         }
+        
+        .result-card.show { display: block; }
+        
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .result-title {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-title);
+        }
+        
+        .result-title i { color: var(--color-success); }
+        
+        .result-badge {
+            padding: 4px 10px;
+            background: var(--color-success-light);
+            color: var(--color-success);
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        /* 封面图预览 */
+        .cover-preview {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: var(--radius-lg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        .cover-preview i { font-size: 48px; margin-bottom: var(--spacing-sm); }
+        .cover-preview span { font-size: 14px; }
+        
+        .cover-actions { display: flex; gap: var(--spacing-sm); }
+        .cover-btn {
+            flex: 1;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            background: white;
+            font-size: 13px;
+            color: var(--color-text);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            gap: var(--spacing-xs);
+            transition: all var(--transition-fast);
+        }
+        
+        .cover-btn:active { transform: scale(0.98); }
+        
+        /* 视频预览 */
+        .video-preview {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background: #1a1a1a;
+            border-radius: var(--radius-lg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .video-preview i {
+            font-size: 48px;
+            margin-bottom: var(--spacing-sm);
+            color: rgba(255,255,255,0.8);
+        }
+        
+        .video-duration {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0,0,0,0.6);
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            font-size: 11px;
+        }
+        
         /* 任务摘要 */
         .task-summary {
             background: white;
@@ -127,221 +324,80 @@
             margin-bottom: var(--spacing-md);
             box-shadow: var(--shadow-sm);
         }
-        .summary-header {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            margin-bottom: var(--spacing-sm);
-        }
-        .summary-tag {
-            font-size: 10px;
-            padding: 2px 8px;
-            border-radius: var(--radius-sm);
-            background: var(--brand-primary-light);
-            color: var(--brand-primary);
-        }
-        .summary-title {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--color-title);
-        }
+        
+        .summary-header { display: flex; align-items: center; gap: var(--spacing-sm); margin-bottom: var(--spacing-md); }
+        .summary-tag { font-size: 10px; padding: 2px 8px; background: var(--brand-primary-light); color: var(--brand-primary); border-radius: var(--radius-sm); }
+        .summary-title { font-size: 15px; font-weight: 600; color: var(--color-title); }
+        
         .summary-steps {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: var(--spacing-sm);
-            margin-top: var(--spacing-md);
-        }
-        .step-item {
-            text-align: center;
-            padding: var(--spacing-sm);
-            background: var(--color-bg);
-            border-radius: var(--radius-lg);
-        }
-        .step-item.completed {
-            background: var(--color-success-light);
-        }
-        .step-icon {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: var(--color-border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto var(--spacing-xs);
-            font-size: 12px;
-            color: var(--color-sub);
-        }
-        .step-item.completed .step-icon {
-            background: var(--color-success);
-            color: white;
-        }
-        .step-label {
-            font-size: 11px;
-            color: var(--color-sub);
-        }
-        .step-item.completed .step-label {
-            color: var(--color-success);
-        }
-        /* 成果预览 */
-        .section-title {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--color-title);
-            margin-bottom: var(--spacing-sm);
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-        }
-        .section-title i {
-            color: var(--brand-primary);
-        }
-        /* 照片成果 */
-        .photo-section {
-            background: white;
-            border-radius: var(--radius-xl);
-            padding: var(--spacing-md);
-            margin-bottom: var(--spacing-md);
-            box-shadow: var(--shadow-sm);
-        }
-        .photo-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: var(--spacing-xs);
         }
-        .photo-item {
-            aspect-ratio: 1;
+        
+        .step-item {
+            text-align: center;
+            padding: var(--spacing-xs);
             background: var(--color-bg);
             border-radius: var(--radius-md);
-            overflow: hidden;
-            position: relative;
+            font-size: 10px;
         }
-        .photo-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .photo-placeholder {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: var(--color-sub);
-            font-size: 11px;
-        }
-        .photo-placeholder i {
-            font-size: 20px;
-            margin-bottom: var(--spacing-xs);
-        }
-        .photo-tag {
-            position: absolute;
-            bottom: 4px;
-            left: 4px;
-            font-size: 9px;
-            padding: 2px 6px;
-            background: rgba(0,0,0,0.5);
-            color: white;
-            border-radius: var(--radius-sm);
-        }
-        /* 照片统计 */
-        .photo-stats {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: var(--spacing-sm);
-            font-size: 12px;
+        
+        .step-item.completed { background: var(--color-success-light); }
+        .step-item.current { background: var(--color-purple-light); }
+        
+        .step-icon {
+            width: 20px; height: 20px;
+            background: var(--color-border);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto var(--spacing-xs);
+            font-size: 10px;
             color: var(--color-sub);
         }
-        .photo-count {
-            color: var(--color-success);
-        }
-        /* 文案成果 */
-        .copywriter-section {
-            background: white;
-            border-radius: var(--radius-xl);
-            padding: var(--spacing-md);
-            margin-bottom: var(--spacing-md);
-            box-shadow: var(--shadow-sm);
-        }
-        .copywriter-preview {
-            background: var(--color-bg);
-            padding: var(--spacing-md);
-            border-radius: var(--radius-lg);
-            font-size: 13px;
-            line-height: 1.7;
-            color: var(--color-text);
-            max-height: 150px;
-            overflow: hidden;
-            position: relative;
-        }
-        .copywriter-preview::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 40px;
-            background: linear-gradient(transparent, var(--color-bg));
-        }
-        .copywriter-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: var(--spacing-sm);
-        }
-        .copywriter-platform {
-            font-size: 12px;
-            color: var(--brand-primary);
-        }
-        .copywriter-action {
-            font-size: 12px;
-            color: var(--color-info);
-            cursor: pointer;
-        }
+        
+        .step-item.completed .step-icon { background: var(--color-success); color: white; }
+        .step-item.current .step-icon { background: var(--color-purple); color: white; }
+        
+        .step-label { color: var(--color-sub); }
+        .step-item.completed .step-label { color: var(--color-success); }
+        .step-item.current .step-label { color: var(--color-purple); }
+        
         /* 底部提交 */
         .bottom-bar {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
+            bottom: 0; left: 0; right: 0;
             background: white;
             padding: var(--spacing-md);
             padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
             box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
         }
+        
         .submit-btn {
             width: 100%;
             padding: var(--spacing-md);
-            background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
+            background: var(--color-border);
             border: none;
             border-radius: var(--radius-xl);
             font-size: 16px;
             font-weight: 600;
+            color: var(--color-sub);
+            cursor: not-allowed;
+            transition: all var(--transition-normal);
+            display: flex; align-items: center; justify-content: center;
+            gap: var(--spacing-sm);
+        }
+        
+        .submit-btn.ready {
+            background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
             color: white;
             cursor: pointer;
             box-shadow: 0 4px 16px rgba(250,140,22,0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--spacing-sm);
-            transition: all var(--transition-normal);
         }
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(250,140,22,0.4);
-        }
-        .submit-btn:active {
-            transform: translateY(0);
-        }
+        
         /* 确认弹窗 */
         .confirm-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.5);
             z-index: 99998;
             display: none;
@@ -349,9 +405,7 @@
             justify-content: center;
             padding: var(--spacing-lg);
         }
-        .confirm-modal.show {
-            display: flex;
-        }
+        .confirm-modal.show { display: flex; }
         .confirm-dialog {
             background: white;
             border-radius: var(--radius-xl);
@@ -359,60 +413,25 @@
             max-width: 320px;
             overflow: hidden;
         }
-        .confirm-header {
-            padding: var(--spacing-lg);
-            text-align: center;
-        }
+        .confirm-header { padding: var(--spacing-lg); text-align: center; }
         .confirm-icon {
-            width: 64px;
-            height: 64px;
+            width: 64px; height: 64px;
             background: var(--brand-primary-light);
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             margin: 0 auto var(--spacing-md);
         }
-        .confirm-icon i {
-            font-size: 32px;
-            color: var(--brand-primary);
-        }
-        .confirm-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--color-title);
-            margin-bottom: var(--spacing-xs);
-        }
-        .confirm-desc {
-            font-size: 13px;
-            color: var(--color-sub);
-        }
-        .confirm-footer {
-            display: flex;
-        }
-        .confirm-btn {
-            flex: 1;
-            padding: var(--spacing-md);
-            border: none;
-            font-size: 15px;
-            font-weight: 500;
-            cursor: pointer;
-        }
-        .confirm-btn.cancel {
-            background: var(--color-bg);
-            color: var(--color-text);
-        }
-        .confirm-btn.submit {
-            background: var(--brand-primary);
-            color: white;
-        }
+        .confirm-icon i { font-size: 32px; color: var(--brand-primary); }
+        .confirm-title { font-size: 18px; font-weight: 600; color: var(--color-title); margin-bottom: var(--spacing-xs); }
+        .confirm-desc { font-size: 13px; color: var(--color-sub); }
+        .confirm-footer { display: flex; }
+        .confirm-btn { flex: 1; padding: var(--spacing-md); border: none; font-size: 15px; font-weight: 500; cursor: pointer; }
+        .confirm-btn.cancel { background: var(--color-bg); color: var(--color-text); }
+        .confirm-btn.submit { background: var(--brand-primary); color: white; }
+        
         /* 成功动画 */
         .success-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             background: linear-gradient(135deg, var(--color-success) 0%, #00D255 100%);
             z-index: 99999;
             display: none;
@@ -421,35 +440,16 @@
             justify-content: center;
             color: white;
         }
-        .success-overlay.show {
-            display: flex;
-        }
-        .success-icon {
-            font-size: 80px;
-            margin-bottom: var(--spacing-lg);
-            animation: successPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        @keyframes successPop {
-            0% { transform: scale(0); opacity: 0; }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); opacity: 1; }
-        }
-        .success-title {
-            font-size: 24px;
-            font-weight: 600;
-            margin-bottom: var(--spacing-sm);
-        }
-        .success-desc {
-            font-size: 14px;
-            opacity: 0.9;
-            text-align: center;
-            padding: 0 var(--spacing-xl);
-        }
+        .success-overlay.show { display: flex; }
+        .success-icon { font-size: 80px; margin-bottom: var(--spacing-lg); animation: successPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes successPop { 0% { transform: scale(0); opacity: 0; } 50% { transform: scale(1.2); } 100% { transform: scale(1); opacity: 1; } }
+        .success-title { font-size: 24px; font-weight: 600; margin-bottom: var(--spacing-sm); }
+        .success-desc { font-size: 14px; opacity: 0.9; text-align: center; padding: 0 var(--spacing-xl); }
+        
         /* Toast */
         .toast {
             position: fixed;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
             background: rgba(0,0,0,0.75);
             color: white;
@@ -461,10 +461,7 @@
             pointer-events: none;
         }
         .toast.success { background: rgba(0,180,42,0.95); }
-        @keyframes toastIn {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        }
+        @keyframes toastIn { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
     </style>
 </head>
 <body>
@@ -475,14 +472,15 @@
                 <button class="back-btn" onclick="goBack()">
                     <i class="fa fa-angle-left"></i>
                 </button>
-                <span class="header-title">阶段4：成果生成</span>
-                <span class="step-badge">4/4</span>
+                <span class="header-title" id="headerTitle">阶段4a：生成封面图</span>
+                <span class="step-badge">4a/5</span>
             </div>
             <div class="progress-bar">
                 <div class="progress-step completed"></div>
                 <div class="progress-step completed"></div>
                 <div class="progress-step completed"></div>
-                <div class="progress-step completed"></div>
+                <div class="progress-step"></div>
+                <div class="progress-step"></div>
             </div>
         </div>
         
@@ -496,116 +494,144 @@
                 <div class="summary-steps">
                     <div class="step-item completed">
                         <div class="step-icon"><i class="fa fa-check"></i></div>
-                        <div class="step-label">定位打卡</div>
+                        <div class="step-label">定位</div>
                     </div>
                     <div class="step-item completed">
                         <div class="step-icon"><i class="fa fa-check"></i></div>
-                        <div class="step-label">点位采集</div>
+                        <div class="step-label">点位</div>
                     </div>
                     <div class="step-item completed">
                         <div class="step-icon"><i class="fa fa-check"></i></div>
-                        <div class="step-label">文案确认</div>
+                        <div class="step-label">文案</div>
+                    </div>
+                    <div class="step-item current">
+                        <div class="step-icon"><i class="fa fa-image"></i></div>
+                        <div class="step-label">封面</div>
                     </div>
                     <div class="step-item">
-                        <div class="step-icon"><i class="fa fa-spinner"></i></div>
-                        <div class="step-label">提交成果</div>
+                        <div class="step-icon"><i class="fa fa-video-camera"></i></div>
+                        <div class="step-label">视频</div>
                     </div>
                 </div>
             </div>
             
-            <!-- 照片成果 -->
-            <div class="photo-section">
-                <div class="section-title">
-                    <i class="fa fa-photo"></i>
-                    采集照片
+            <!-- 阶段4a：生成封面图 -->
+            <div id="stage4aSection">
+                <div class="section-header">
+                    <div class="section-num">1</div>
+                    <div class="section-title">生成封面图</div>
                 </div>
-                <div class="photo-grid">
-                    <div class="photo-item">
-                        <div class="photo-placeholder">
-                            <i class="fa fa-image"></i>
-                            照片1
-                        </div>
-                        <span class="photo-tag">大门</span>
+                
+                <!-- 生成按钮 -->
+                <div class="generate-card" id="coverGenerateCard">
+                    <button class="generate-btn" onclick="startGenerateCover()">
+                        <i class="fa fa-image"></i>
+                        <span>生成封面图</span>
+                        <span class="generate-btn-hint">点击后后台执行，可返回任务列表</span>
+                    </button>
+                </div>
+                
+                <!-- 生成中状态 -->
+                <div class="generating-card" id="coverGeneratingCard">
+                    <div class="generating-icon">
+                        <i class="fa fa-spinner fa-spin"></i>
                     </div>
-                    <div class="photo-item">
-                        <div class="photo-placeholder">
-                            <i class="fa fa-image"></i>
-                            照片2
-                        </div>
-                        <span class="photo-tag">沙盘</span>
+                    <div class="generating-title">正在生成封面图...</div>
+                    <div class="generating-hint">请稍候，可返回任务列表</div>
+                    <div class="generating-progress">
+                        <div class="generating-fill" id="coverProgressFill" style="width: 0%;"></div>
                     </div>
-                    <div class="photo-item">
-                        <div class="photo-placeholder">
-                            <i class="fa fa-image"></i>
-                            照片3
-                        </div>
-                        <span class="photo-tag">样板间</span>
-                    </div>
-                    <div class="photo-item">
-                        <div class="photo-placeholder">
-                            <i class="fa fa-image"></i>
-                            照片4
-                        </div>
-                        <span class="photo-tag">客厅</span>
-                    </div>
-                    <div class="photo-item">
-                        <div class="photo-placeholder">
-                            <i class="fa fa-image"></i>
-                            照片5
-                        </div>
-                        <span class="photo-tag">卧室</span>
-                    </div>
-                    <div class="photo-item">
-                        <div class="photo-placeholder">
-                            <i class="fa fa-image"></i>
-                            照片6
-                        </div>
-                        <span class="photo-tag">周边</span>
+                    <div class="generating-percent" id="coverProgressText">0%</div>
+                    <div class="generating-back-hint">
+                        <i class="fa fa-info-circle"></i>
+                        可返回任务列表，后台持续运行
                     </div>
                 </div>
-                <div class="photo-stats">
-                    <span>共 <span class="photo-count">6</span> 张照片</span>
-                    <span>4 个点位</span>
+                
+                <!-- 封面图预览 -->
+                <div class="result-card" id="coverResultCard">
+                    <div class="result-header">
+                        <div class="result-title">
+                            <i class="fa fa-check-circle"></i>
+                            封面图已生成
+                        </div>
+                        <div class="result-badge">已完成</div>
+                    </div>
+                    <div class="cover-preview">
+                        <i class="fa fa-image"></i>
+                        <span>万科城市之光封面</span>
+                    </div>
+                    <div class="cover-actions">
+                        <button class="cover-btn" onclick="showToast('重新生成中...')">
+                            <i class="fa fa-refresh"></i> 重新生成
+                        </button>
+                        <button class="cover-btn" onclick="proceedToVideo()">
+                            <i class="fa fa-arrow-right"></i> 生成视频
+                        </button>
+                    </div>
                 </div>
             </div>
             
-            <!-- 文案成果 -->
-            <div class="copywriter-section">
-                <div class="section-title">
-                    <i class="fa fa-file-text-o"></i>
-                    确认文案
+            <!-- 阶段4b：生成视频 -->
+            <div id="stage4bSection" style="display: none;">
+                <div class="section-header">
+                    <div class="section-num">2</div>
+                    <div class="section-title">生成视频</div>
                 </div>
-                <div class="copywriter-preview">
-                    今天去看了万科城市之光，必须分享给大家！
-
-🏠 位置：朝阳区望京核心区
-🚇 交通：双轨交汇，步行5分钟到地铁站
-
-✨ 亮点：
-• 南北通透三居，采光绝了
-• 智能精装交付，省心省力
-• 万科物业，品质保障
-• 周边商业、学校配套齐全
-
-💰 价格：总价800万起
-
-改善自住的首选，看完直接心动了！你们觉得怎么样？</div>
-                <div class="copywriter-footer">
-                    <span class="copywriter-platform">
-                        <i class="fa fa-book"></i> 小红书文案
-                    </span>
-                    <span class="copywriter-action" onclick="showToast('查看完整文案')">
-                        查看全文 <i class="fa fa-angle-right"></i>
-                    </span>
+                
+                <!-- 生成按钮 -->
+                <div class="generate-card" id="videoGenerateCard">
+                    <button class="generate-btn" onclick="startGenerateVideo()">
+                        <i class="fa fa-video-camera"></i>
+                        <span>生成短视频</span>
+                        <span class="generate-btn-hint">点击后后台执行，可返回任务列表</span>
+                    </button>
+                </div>
+                
+                <!-- 生成中状态 -->
+                <div class="generating-card" id="videoGeneratingCard">
+                    <div class="generating-icon">
+                        <i class="fa fa-spinner fa-spin"></i>
+                    </div>
+                    <div class="generating-title">正在生成短视频...</div>
+                    <div class="generating-hint">请稍候，可返回任务列表</div>
+                    <div class="generating-progress">
+                        <div class="generating-fill" id="videoProgressFill" style="width: 0%;"></div>
+                    </div>
+                    <div class="generating-percent" id="videoProgressText">0%</div>
+                    <div class="generating-back-hint">
+                        <i class="fa fa-info-circle"></i>
+                        可返回任务列表，后台持续运行
+                    </div>
+                </div>
+                
+                <!-- 视频预览 -->
+                <div class="result-card" id="videoResultCard">
+                    <div class="result-header">
+                        <div class="result-title">
+                            <i class="fa fa-check-circle"></i>
+                            视频已生成
+                        </div>
+                        <div class="result-badge">已完成</div>
+                    </div>
+                    <div class="video-preview">
+                        <i class="fa fa-play-circle"></i>
+                        <div class="video-duration">0:58</div>
+                    </div>
+                    <div style="margin-top: var(--spacing-md);">
+                        <button class="cover-btn" onclick="showToast('视频预览中...')" style="width: 100%;">
+                            <i class="fa fa-play"></i> 预览视频
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
         
         <!-- 底部提交 -->
         <div class="bottom-bar">
-            <button class="submit-btn" onclick="showConfirm()">
+            <button class="submit-btn" id="submitBtn" onclick="showConfirm()">
                 <i class="fa fa-paper-plane"></i>
-                <span>提交成果，等待审核</span>
+                <span>提交审核</span>
             </button>
         </div>
     </div>
@@ -637,8 +663,86 @@
     </div>
     
     <script>
+        let coverGenerated = false;
+        let videoGenerated = false;
+        
+        // 开始生成封面图
+        function startGenerateCover() {
+            const genCard = document.getElementById('coverGeneratingCard');
+            const btnCard = document.getElementById('coverGenerateCard');
+            
+            btnCard.style.display = 'none';
+            genCard.classList.add('show');
+            
+            let progress = 0;
+            const fill = document.getElementById('coverProgressFill');
+            const text = document.getElementById('coverProgressText');
+            
+            const interval = setInterval(() => {
+                progress += 2;
+                fill.style.width = progress + '%';
+                text.textContent = progress + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        genCard.classList.remove('show');
+                        document.getElementById('coverResultCard').classList.add('show');
+                        coverGenerated = true;
+                        showToast('封面图生成完成！', 'success');
+                    }, 500);
+                }
+            }, 100);
+        }
+        
+        // 进入视频生成阶段
+        function proceedToVideo() {
+            document.getElementById('stage4aSection').style.display = 'none';
+            document.getElementById('stage4bSection').style.display = 'block';
+            document.getElementById('headerTitle').textContent = '阶段4b：生成视频';
+            document.querySelector('.step-badge').textContent = '4b/5';
+            
+            // 更新任务摘要
+            document.querySelectorAll('.step-item')[3].className = 'step-item completed';
+            document.querySelectorAll('.step-item')[4].className = 'step-item current';
+        }
+        
+        // 开始生成视频
+        function startGenerateVideo() {
+            const genCard = document.getElementById('videoGeneratingCard');
+            const btnCard = document.getElementById('videoGenerateCard');
+            
+            btnCard.style.display = 'none';
+            genCard.classList.add('show');
+            
+            let progress = 0;
+            const fill = document.getElementById('videoProgressFill');
+            const text = document.getElementById('videoProgressText');
+            
+            const interval = setInterval(() => {
+                progress += 1;
+                fill.style.width = progress + '%';
+                text.textContent = progress + '%';
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        genCard.classList.remove('show');
+                        document.getElementById('videoResultCard').classList.add('show');
+                        videoGenerated = true;
+                        document.getElementById('submitBtn').classList.add('ready');
+                        showToast('视频生成完成！', 'success');
+                    }, 500);
+                }
+            }, 100);
+        }
+        
         // 显示确认弹窗
         function showConfirm() {
+            if (!coverGenerated || !videoGenerated) {
+                showToast('请先生成封面图和视频');
+                return;
+            }
             document.getElementById('confirmModal').classList.add('show');
         }
         
@@ -651,21 +755,18 @@
         function doSubmit() {
             closeConfirm();
             
-            // 显示成功动画
             const overlay = document.getElementById('successOverlay');
             overlay.classList.add('show');
             
-            // 保存提交状态
             localStorage.setItem('task_submitted', JSON.stringify({
                 taskId: 'TASK001',
                 submittedAt: new Date().toISOString(),
                 status: 'submitted'
             }));
             
-            // 3秒后跳转
             setTimeout(() => {
                 overlay.classList.remove('show');
-                window.location.href = 'task-list.html';
+                window.location.href = 'calendar.html';
             }, 3000);
         }
         
@@ -675,15 +776,13 @@
         }
         
         // Toast
-        function showToast(message) {
+        function showToast(message, type = '') {
             const existing = document.querySelector('.toast');
             if (existing) existing.remove();
-            
             const toast = document.createElement('div');
-            toast.className = 'toast success';
+            toast.className = 'toast' + (type ? ' ' + type : '');
             toast.textContent = message;
             document.body.appendChild(toast);
-            
             setTimeout(() => toast.remove(), 2000);
         }
     </script>
