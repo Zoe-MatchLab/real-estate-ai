@@ -41,12 +41,7 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* Focus 样式 - 可访问性 */
-        button:focus-visible,
-        a:focus-visible {
-            outline: 2px solid var(--brand-primary);
-            outline-offset: 2px;
-        }
+        button:focus-visible, a:focus-visible { outline: 2px solid var(--brand-primary); outline-offset: 2px; }
 
         html, body {
             font-family: var(--font-family);
@@ -57,22 +52,15 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        body {
-            padding-bottom: calc(100px + env(safe-area-inset-bottom));
-        }
-        
-        /* 无障碍：减少动画偏好 */
+        body { min-height: 100vh; }
+
         @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                animation-iteration-count: 1 !important;
-                transition-duration: 0.01ms !important;
-            }
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
         }
 
-        /* 头部 */
+        /* 头部导航栏 */
         .header {
-            background: var(--color-card);
+            background: white;
             padding: calc(12px + env(safe-area-inset-top)) var(--spacing-md) var(--spacing-md);
             display: flex;
             align-items: center;
@@ -85,10 +73,12 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--color-text);
-            background: none;
+            background: var(--color-bg);
             border: none;
+            border-radius: 50%;
             cursor: pointer;
+            color: var(--color-text);
+            text-decoration: none;
         }
 
         .header-title {
@@ -97,23 +87,18 @@
             font-weight: 600;
             color: var(--color-title);
             text-align: center;
+            margin: 0 36px;
         }
 
-        /* 内容区 */
-        .content {
-            padding: var(--spacing-md);
-        }
+        .page-content { min-height: calc(100vh - 60px); padding: var(--spacing-md); }
 
-        .date-group {
-            margin-bottom: var(--spacing-lg);
-        }
+        .date-group { margin-bottom: var(--spacing-lg); }
 
         .date-title {
             font-size: 13px;
             font-weight: 600;
             color: var(--color-title);
             margin-bottom: var(--spacing-sm);
-            padding-left: var(--spacing-xs);
         }
 
         .record-card {
@@ -129,10 +114,7 @@
             transition: all var(--transition-fast);
         }
 
-        .record-card:active {
-            transform: scale(0.99);
-            box-shadow: var(--shadow-md);
-        }
+        .record-card:active { transform: scale(0.99); box-shadow: var(--shadow-md); }
 
         .record-icon {
             width: 44px;
@@ -146,10 +128,7 @@
             flex-shrink: 0;
         }
 
-        .record-info {
-            flex: 1;
-            min-width: 0;
-        }
+        .record-info { flex: 1; min-width: 0; }
 
         .record-title {
             font-size: 14px;
@@ -161,50 +140,8 @@
             white-space: nowrap;
         }
 
-        .record-time {
-            font-size: 12px;
-            color: var(--color-sub);
-        }
+        .record-time { font-size: 12px; color: var(--color-sub); }
 
-        /* TabBar */
-        .tab-bar {
-            position: fixed;
-            bottom: calc(16px + env(safe-area-inset-bottom));
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(29, 33, 41, 0.96);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 28px;
-            padding: 8px 20px;
-            z-index: 9999;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.24);
-            display: flex;
-            gap: 4px;
-        }
-
-        .tab-item {
-            width: 44px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 18px;
-            color: rgba(255,255,255,0.5);
-            text-decoration: none;
-            transition: all var(--transition-normal);
-        }
-
-        .tab-item i {
-            font-size: 20px;
-        }
-
-        .tab-item.active {
-            background: rgba(250, 140, 22, 0.2);
-            color: var(--brand-primary);
-        }
-
-        /* Toast */
         .toast {
             position: fixed;
             top: 50%;
@@ -227,23 +164,14 @@
     </style>
 </head>
 <body>
-
-    <div class="header white">
+    <div class="header">
         <a href="javascript:history.back()" class="back-btn" aria-label="返回">
             <i class="fa fa-angle-left" style="font-size: 22px"></i>
         </a>
         <span class="header-title">我的足迹</span>
     </div>
+
     <div class="page-content">
-
-    <div class="header">
-        <button class="back-btn" onclick="history.back()" aria-label="返回">
-            <i class="fa fa-angle-left" style="font-size: 22px"></i>
-        </button>
-        <span class="header-title">我的足迹</span>
-    </div>
-
-    <div class="content">
         <div class="date-group">
             <div class="date-title">今天</div>
             <div class="record-card" onclick="showToast('查看详情')">
@@ -292,27 +220,7 @@
         </div>
     </div>
 
-    <!-- TabBar -->
-    <nav class="tab-bar" role="navigation" aria-label="页面导航">
-        <a href="tools.html" class="tab-item" aria-label="服务工具">
-            <i class="fa fa-rocket" aria-hidden="true"></i>
-        </a>
-        <a href="ai-design.html" class="tab-item" aria-label="AI设计">
-            <i class="fa fa-paint-brush" aria-hidden="true"></i>
-        </a>
-        <a href="claw.html" class="tab-item" aria-label="智能助手">
-            <i class="fa fa-commenting" aria-hidden="true"></i>
-        </a>
-        <a href="calendar.html" class="tab-item" aria-label="任务日历">
-            <i class="fa fa-calendar" aria-hidden="true"></i>
-        </a>
-        <a href="profile.html" class="tab-item active" aria-label="个人中心">
-            <i class="fa fa-user" aria-hidden="true"></i>
-        </a>
-    </nav>
-
     <script>
-        // Toast
         function showToast(message) {
             const existing = document.querySelector('.toast');
             if (existing) existing.remove();
@@ -320,10 +228,7 @@
             toast.className = 'toast';
             toast.textContent = message;
             document.body.appendChild(toast);
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 200);
-            }, 2000);
+            setTimeout(() => toast.remove(), 2000);
         }
     </script>
 </body>
