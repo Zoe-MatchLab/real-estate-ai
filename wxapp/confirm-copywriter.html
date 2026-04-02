@@ -351,6 +351,15 @@
         .toast.success { background: rgba(0,180,42,0.95); }
         @keyframes toastIn { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
         
+        /* 无障碍：减少动画偏好 */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+        
         /* 编辑弹窗 */
         .edit-modal {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -415,7 +424,7 @@
                 <div class="generating-progress" id="generatingProgress">45%</div>
             </div>
             <div class="generating-bar">
-                <div class="generating-fill" id="generatingFill" style="width: 45%;"></div>
+                <div class="generating-fill" id="generatingFill" style="width: 0%;"></div>
             </div>
             <div class="generating-items">
                 <div class="generating-item">

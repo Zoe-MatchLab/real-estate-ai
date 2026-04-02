@@ -462,6 +462,15 @@
         }
         .toast.success { background: rgba(0,180,42,0.95); }
         @keyframes toastIn { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+        
+        /* 无障碍：减少动画偏好 */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -523,7 +532,7 @@
                 </div>
                 
                 <!-- 生成按钮 -->
-                <div class="generate-card" id="coverGenerateCard">
+                <div class="generate-card" id="coverGenerateBtn">
                     <button class="generate-btn" onclick="startGenerateCover()">
                         <i class="fa fa-image"></i>
                         <span>生成封面图</span>
@@ -532,7 +541,7 @@
                 </div>
                 
                 <!-- 生成中状态 -->
-                <div class="generating-card" id="coverGeneratingCard">
+                <div class="generating-card" id="coverGeneratingStatus">
                     <div class="generating-icon">
                         <i class="fa fa-spinner fa-spin"></i>
                     </div>
@@ -710,7 +719,7 @@
         // 开始生成视频
         function startGenerateVideo() {
             const genCard = document.getElementById('videoGeneratingCard');
-            const btnCard = document.getElementById('videoGenerateCard');
+            const btnCard = document.getElementById('videoGenerateBtn');
             
             btnCard.style.display = 'none';
             genCard.classList.add('show');
