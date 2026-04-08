@@ -128,13 +128,25 @@
   justify-content: space-around;
   align-items: center;
   color: #999;
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
-.tabbar .active {
-  background: orange;
+.tabbar a {
+  color: #999;
+  text-decoration: none;
   padding: 8px 15px;
   border-radius: 20px;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.tabbar a.active {
+  background: #fa8c16;
   color: #fff;
+}
+
+.tabbar a:active {
+  opacity: 0.8;
 }
 
   </style>
@@ -258,9 +270,9 @@
 <!-- 底部 -->
 
 <div class="tabbar">
-  <div>首页</div>
-  <div>功能</div>
-  <div class="active">我的</div>
+  <a href="calendar.html" class="">首页</a>
+  <a href="tools.html" class="">功能</a>
+  <a href="my.html" class="active">我的</a>
 </div>
 
 </body>
