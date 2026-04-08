@@ -167,9 +167,11 @@
         }
 
         .type-tab[data-type="house"].active { background: var(--brand-primary); }
-        .type-tab[data-type="speech"].active { background: var(--color-purple); }
-        .type-tab[data-type="content"].active { background: var(--color-success); }
-        .type-tab[data-type="new"].active { background: var(--color-danger); }
+        .type-tab[data-type="train"].active { background: var(--color-purple); }
+        .type-tab[data-type="text"].active { background: var(--color-info); }
+        .type-tab[data-type="video"].active { background: var(--color-success); }
+        .type-tab[data-type="custom"].active { background: var(--color-warning); }
+        .type-tab[data-type="pending"].active { background: var(--color-sub); }
 
         /* 筛选栏（状态） */
         .filter-bar {
@@ -856,9 +858,11 @@
             <div class="type-tabs">
                 <button class="type-tab active" onclick="switchTab(this, 'all')">全部</button>
                 <button class="type-tab" data-type="house" onclick="switchTab(this, 'house')">探盘</button>
-                <button class="type-tab" data-type="speech" onclick="switchTab(this, 'speech')">话术</button>
-                <button class="type-tab" data-type="content" onclick="switchTab(this, 'content')">内容</button>
-                <button class="type-tab" data-type="new" onclick="switchTab(this, 'new')">新盘</button>
+                <button class="type-tab" data-type="train" onclick="switchTab(this, 'train')">训练</button>
+                <button class="type-tab" data-type="text" onclick="switchTab(this, 'text')">文案</button>
+                <button class="type-tab" data-type="video" onclick="switchTab(this, 'video')">视频</button>
+                <button class="type-tab" data-type="custom" onclick="switchTab(this, 'custom')">自定义</button>
+                <button class="type-tab" data-type="pending" onclick="switchTab(this, 'pending')">待下发</button>
             </div>
 
             <!-- 筛选栏（状态） -->
