@@ -338,25 +338,31 @@
             margin-top: var(--spacing-md);
         }
         
+        .copywriter-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
         .action-btn {
             flex: 1;
-            padding: var(--spacing-sm) var(--spacing-md);
+            padding: var(--spacing-sm) var(--spacing-xs);
             border: 1px solid var(--color-border);
             border-radius: var(--radius-lg);
             background: white;
-            font-size: 13px;
+            font-size: 12px;
             color: var(--color-text);
             cursor: pointer;
             display: flex; align-items: center; justify-content: center;
-            gap: var(--spacing-xs);
+            gap: 4px;
             transition: all var(--transition-fast);
+            white-space: nowrap;
         }
         .action-btn:active { transform: scale(0.98); }
         .action-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
         }
-        .action-btn.primary { background: var(--brand-primary); border-color: var(--brand-primary); color: white; }
+        .action-btn i { font-size: 12px; }
 
         /* 重新生成全部按钮 */
         .regenerate-all-section {
@@ -537,23 +543,25 @@
 
 #张江买房 #新房探盘 #中海汇德里</div>
                     <div class="copywriter-actions">
-                        <button class="action-btn" id="edit_xiaohongshu" onclick="editCopy('xiaohongshu')">
-                            <i class="fa fa-edit"></i> 编辑
-                        </button>
-                        <button class="action-btn" id="regen_xiaohongshu" onclick="regenerateCopy('xiaohongshu')">
-                            <i class="fa fa-refresh"></i> 重新生成
-                        </button>
                         <button class="action-btn" onclick="copyText('xiaohongshu')">
-                            <i class="fa fa-copy"></i> 复制
+                            <i class="fa fa-copy"></i>复制
+                        </button>
+                        <button class="action-btn" onclick="regenerateCopy('xiaohongshu')">
+                            <i class="fa fa-refresh"></i>重生
+                        </button>
+                        <button class="action-btn" onclick="editCopy('xiaohongshu')">
+                            <i class="fa fa-edit"></i>编辑
                         </button>
                     </div>
-                    <div class="copywriter-edit-actions" style="display:none; margin-top:8px;">
-                        <button class="action-btn primary" onclick="saveEdit('xiaohongshu')">
-                            <i class="fa fa-check"></i> 保存
-                        </button>
-                        <button class="action-btn" onclick="cancelEdit('xiaohongshu')">
-                            <i class="fa fa-times"></i> 取消
-                        </button>
+                    <div class="copywriter-edit-actions" style="display:none;">
+                        <div class="copywriter-actions">
+                            <button class="action-btn" onclick="cancelEdit('xiaohongshu')">
+                                <i class="fa fa-times"></i>取消
+                            </button>
+                            <button class="action-btn" onclick="saveEdit('xiaohongshu')" style="background:var(--brand-primary);border-color:var(--brand-primary);color:white;">
+                                <i class="fa fa-check"></i>保存
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -587,23 +595,25 @@
 
 感兴趣的购房者可私信或评论区留言~</div>
                     <div class="copywriter-actions">
-                        <button class="action-btn" id="edit_wechat" onclick="editCopy('wechat')">
-                            <i class="fa fa-edit"></i> 编辑
-                        </button>
-                        <button class="action-btn" id="regen_wechat" onclick="regenerateCopy('wechat')">
-                            <i class="fa fa-refresh"></i> 重新生成
-                        </button>
                         <button class="action-btn" onclick="copyText('wechat')">
-                            <i class="fa fa-copy"></i> 复制
+                            <i class="fa fa-copy"></i>复制
+                        </button>
+                        <button class="action-btn" onclick="regenerateCopy('wechat')">
+                            <i class="fa fa-refresh"></i>重生
+                        </button>
+                        <button class="action-btn" onclick="editCopy('wechat')">
+                            <i class="fa fa-edit"></i>编辑
                         </button>
                     </div>
-                    <div class="copywriter-edit-actions" style="display:none; margin-top:8px;">
-                        <button class="action-btn primary" onclick="saveEdit('wechat')">
-                            <i class="fa fa-check"></i> 保存
-                        </button>
-                        <button class="action-btn" onclick="cancelEdit('wechat')">
-                            <i class="fa fa-times"></i> 取消
-                        </button>
+                    <div class="copywriter-edit-actions" style="display:none;">
+                        <div class="copywriter-actions">
+                            <button class="action-btn" onclick="cancelEdit('wechat')">
+                                <i class="fa fa-times"></i>取消
+                            </button>
+                            <button class="action-btn" onclick="saveEdit('wechat')" style="background:var(--brand-primary);border-color:var(--brand-primary);color:white;">
+                                <i class="fa fa-check"></i>保存
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -641,23 +651,25 @@
 📍 镜头6（55-60秒）：结尾
 首付20%起，购房享3万抵8万优惠！关注我，带你看更多好房！</div>
                     <div class="copywriter-actions">
-                        <button class="action-btn" id="edit_video" onclick="editCopy('video')">
-                            <i class="fa fa-edit"></i> 编辑
-                        </button>
-                        <button class="action-btn" id="regen_video" onclick="regenerateCopy('video')">
-                            <i class="fa fa-refresh"></i> 重新生成
-                        </button>
                         <button class="action-btn" onclick="copyText('video')">
-                            <i class="fa fa-copy"></i> 复制
+                            <i class="fa fa-copy"></i>复制
+                        </button>
+                        <button class="action-btn" onclick="regenerateCopy('video')">
+                            <i class="fa fa-refresh"></i>重生
+                        </button>
+                        <button class="action-btn" onclick="editCopy('video')">
+                            <i class="fa fa-edit"></i>编辑
                         </button>
                     </div>
-                    <div class="copywriter-edit-actions" style="display:none; margin-top:8px;">
-                        <button class="action-btn primary" onclick="saveEdit('video')">
-                            <i class="fa fa-check"></i> 保存
-                        </button>
-                        <button class="action-btn" onclick="cancelEdit('video')">
-                            <i class="fa fa-times"></i> 取消
-                        </button>
+                    <div class="copywriter-edit-actions" style="display:none;">
+                        <div class="copywriter-actions">
+                            <button class="action-btn" onclick="cancelEdit('video')">
+                                <i class="fa fa-times"></i>取消
+                            </button>
+                            <button class="action-btn" onclick="saveEdit('video')" style="background:var(--brand-primary);border-color:var(--brand-primary);color:white;">
+                                <i class="fa fa-check"></i>保存
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -991,9 +1003,9 @@
             textarea.value = content;
             textarea.style.display = 'block';
             document.getElementById('content_' + type).style.display = 'none';
-            card.querySelector('.copywriter-edit-actions').style.display = 'flex';
-            card.querySelectorAll('.action-btn').forEach(btn => btn.style.display = 'none');
-            card.querySelector('#edit_' + type).style.display = 'flex';
+            // 隐藏操作按钮，显示编辑操作按钮
+            card.querySelectorAll('.copywriter-actions').forEach(el => el.style.display = 'none');
+            card.querySelector('.copywriter-edit-actions').style.display = 'block';
             textarea.focus();
         }
 
@@ -1012,8 +1024,8 @@
             originalContent[type] = newText;
             textarea.style.display = 'none';
             content.style.display = 'block';
+            card.querySelectorAll('.copywriter-actions').forEach(el => el.style.display = 'flex');
             card.querySelector('.copywriter-edit-actions').style.display = 'none';
-            card.querySelectorAll('.action-btn').forEach(btn => btn.style.display = 'flex');
             card.classList.remove('editing');
             showToast(PLATFORM_NAMES[type] + '文案已保存');
         }
@@ -1026,8 +1038,8 @@
             textarea.value = originalContent[type] || '';
             textarea.style.display = 'none';
             content.style.display = 'block';
+            card.querySelectorAll('.copywriter-actions').forEach(el => el.style.display = 'flex');
             card.querySelector('.copywriter-edit-actions').style.display = 'none';
-            card.querySelectorAll('.action-btn').forEach(btn => btn.style.display = 'flex');
             card.classList.remove('editing');
         }
 
