@@ -384,13 +384,14 @@
         };
 
         // 根据当前阶段计算各阶段状态
+        // step参数表示最后完成的阶段，完成后下一个阶段是active
         function calculateStages() {
             const current = taskData.currentStage;
             return [
                 { id: 1, name: '打卡', status: current >= 1 ? 'completed' : (current === 0 ? 'pending' : 'active'), time: current >= 1 ? '10:30:00' : '' },
-                { id: 2, name: '上传', status: current >= 2 ? 'completed' : (current === 1 ? 'active' : 'pending') },
-                { id: 3, name: '文案确认', status: current >= 3 ? 'completed' : (current === 2 ? 'active' : 'pending') },
-                { id: 4, name: '成果生成', status: current >= 4 ? 'completed' : (current === 3 ? 'active' : 'pending') }
+                { id: 2, name: '上传', status: current >= 2 ? (current > 2 ? 'completed' : 'active') : 'pending' },
+                { id: 3, name: '文案确认', status: current >= 3 ? (current > 3 ? 'completed' : 'active') : 'pending' },
+                { id: 4, name: '成果生成', status: current >= 4 ? 'completed' : (current >= 3 ? 'active' : 'pending') }
             ];
         }
 
