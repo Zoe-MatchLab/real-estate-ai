@@ -3,84 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>文案确认</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>阶段3：文案确认 - 房产AI助手</title>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#fa8c16',
-                        warning: '#FF9D2B',
-                        danger: '#FA5151',
-                        success: '#00B42A',
-                        gray: {
-                            50: '#F7F8FA',
-                            100: '#EDEEF2',
-                            200: '#D8D9DD',
-                            300: '#B4B5B9',
-                            400: '#86878B',
-                            500: '#4E5969',
-                            600: '#272E3B',
-                            700: '#1D2129',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
     <style>
-        body {
-            background-color: #F7F8FA;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        :root {
+            --brand-primary: #FA8C16;
+            --brand-primary-dark: #E67A0E;
+            --brand-primary-light: #FFF7E6;
+            --color-success: #00B42A;
+            --color-success-light: #F6FFED;
+            --color-danger: #FA5151;
+            --color-danger-light: #FFF1F0;
+            --color-warning: #FF7D00;
+            --color-warning-light: #FFF7E6;
+            --color-info: #007AFF;
+            --color-info-light: #E8F3FF;
+            --color-purple: #722ED1;
+            --color-purple-light: #F7F0FF;
+            --color-title: #1D2129;
+            --color-text: #4E5969;
+            --color-sub: #86909C;
+            --color-border: #E5E6EB;
+            --color-bg: #F7F8FA;
+            --color-card: #FFFFFF;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+            --font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.25s ease;
         }
-        .card-shadow {
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            font-family: var(--font-family);
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--color-text);
+            background: var(--color-bg);
+            -webkit-font-smoothing: antialiased;
         }
-        /* 头部导航 */
+        
+        .page { min-height: 100vh; padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+        
+        /* 头部 */
         .header {
-            background: linear-gradient(135deg, #fa8c16 0%, #FF9500 100%);
-            padding: 16px 16px 20px;
+            background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
+            padding: calc(44px + env(safe-area-inset-top)) var(--spacing-md) var(--spacing-md);
+            color: white;
         }
         .header-top {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 12px;
+            gap: var(--spacing-md);
         }
         .back-btn {
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center;
             background: rgba(255,255,255,0.2);
-            border: none;
-            border-radius: 9999px;
-            color: white;
-            cursor: pointer;
+            border-radius: var(--radius-full);
+            cursor: pointer; border: none; color: white;
         }
-        .back-btn:active {
-            background: rgba(255,255,255,0.3);
-        }
-        .back-btn i { font-size: 18px; }
-        .header-title {
-            font-size: 17px;
-            font-weight: 600;
-            color: white;
-        }
-        .step-badge {
-            font-size: 11px;
-            padding: 2px 10px;
-            background: rgba(255,255,255,0.25);
-            border-radius: 9999px;
-            color: white;
-        }
+        .header-title { font-size: 17px; font-weight: 600; flex: 1; text-align: center; }
+        .step-badge { font-size: 11px; padding: 2px 10px; background: rgba(255,255,255,0.25); border-radius: var(--radius-full); }
+
+        /* 阶段进度 */
         .header-stage-progress {
+            margin-top: 12px;
             padding: 10px 16px;
             background: rgba(255,255,255,0.15);
-            border-radius: 12px;
+            border-radius: var(--radius-lg);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -107,468 +110,574 @@
         .header-stage-progress .stage-line.inactive {
             background: rgba(255,255,255,0.25);
         }
-        .progress-bar {
-            height: 6px;
-            border-radius: 3px;
-            background: #f0f0f0;
-            overflow: hidden;
-        }
-        .progress-value {
-            height: 100%;
-            border-radius: 3px;
-            background: linear-gradient(90deg, #fa8c16, #ff7a45);
-        }
-        .tag {
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: 500;
-        }
-        .tag-warning {
-            background: #FFF7E8;
-            color: #FF7D00;
-        }
-        .tag-info {
-            background: #E8F3FF;
-            color: #165DFF;
-        }
-        .btn {
-            border-radius: 8px;
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
-        .btn:active {
-            transform: scale(0.95);
-            opacity: 0.8;
-        }
-        .btn-primary {
-            background: #fa8c16;
+
+        /* 生成中状态 */
+        .generating-banner {
+            margin: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: linear-gradient(135deg, var(--color-purple) 0%, #8B5CF6 100%);
+            border-radius: var(--radius-xl);
             color: white;
+            display: none;
         }
-        .btn-primary:active {
-            background: #d46b08;
-        }
-        .btn-outline {
-            background: white;
-            color: #fa8c16;
-            border: 1px solid #fa8c16;
-        }
-        .btn-outline:active {
-            background: #fff7e6;
-        }
-        .card {
-            border-radius: 12px;
-            background: white;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-        }
-        .content-box {
-            background: #FAFAFA;
-            border: 1px solid #F0F0F0;
-            border-radius: 8px;
-            padding: 12px;
-            min-height: 100px;
-            max-height: 200px;
-            overflow-y: auto;
-            white-space: pre-wrap;
-            word-break: break-all;
-        }
-        .edit-btn {
-            color: #fa8c16;
-            font-size: 14px;
-            padding: 4px 12px;
-            border: 1px solid #fa8c16;
-            border-radius: 6px;
-            background: transparent;
-        }
-        .edit-btn:hover {
-            background: #fff7e6;
-        }
-        .icon-btn {
-            width: 32px;
-            height: 32px;
+        .generating-banner.show { display: block; }
+        .generating-header {
             display: flex;
             align-items: center;
-            justify-content: center;
-            border-radius: 6px;
-            border: 1px solid #E5E6EB;
-            background: transparent;
-            color: #86909C;
-            cursor: pointer;
-            transition: all 0.2s;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-sm);
         }
-        .icon-btn:hover {
-            color: #fa8c16;
-            border-color: #fa8c16;
-            background: #fff7e6;
+        .generating-title {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-weight: 600;
         }
-        .icon-btn:active {
-            transform: scale(0.9);
-        }
-        .icon-btn.spinning {
+        .generating-spinner {
+            width: 20px; height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
             animation: spin 1s linear infinite;
-            color: #fa8c16;
         }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .generating-progress {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        .generating-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: var(--spacing-sm);
+        }
+        .generating-fill {
+            height: 100%;
+            background: white;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        .generating-items {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* 素材参考区 */
+        .material-hint {
+            margin: 0 var(--spacing-md) var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--color-info-light);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+        }
+        .material-hint i { color: var(--color-info); font-size: 18px; margin-top: 2px; }
+        .material-hint-text { font-size: 13px; color: var(--color-info); line-height: 1.5; }
+
+        /* 生成按钮区域 */
+        .generate-section {
+            padding: var(--spacing-md);
+        }
+        .generate-section.hidden { display: none; }
+        
+        .generate-btn {
+            width: 100%;
+            padding: var(--spacing-lg);
+            background: linear-gradient(135deg, var(--color-purple) 0%, #8B5CF6 100%);
+            border: none;
+            border-radius: var(--radius-xl);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-sm);
+            box-shadow: 0 4px 16px rgba(114, 46, 209, 0.3);
+            transition: all var(--transition-normal);
+        }
+        .generate-btn:active { transform: scale(0.98); }
+        .generate-btn i { font-size: 32px; }
+        .generate-btn-hint { font-size: 12px; opacity: 0.8; font-weight: normal; }
+
+        /* 文案列表 */
+        .copywriter-list { padding: 0 var(--spacing-md); display: none; }
+        .copywriter-list.show { display: block; }
+        
+        .copywriter-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            margin-bottom: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            border: 2px solid transparent;
+            transition: all var(--transition-normal);
+        }
+        .copywriter-card.selected { border-color: var(--brand-primary); box-shadow: 0 0 0 4px var(--brand-primary-light); }
+        
+        .copywriter-header {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-md);
+            cursor: pointer;
+        }
+        
+        .radio-circle {
+            width: 22px; height: 22px;
+            border: 2px solid var(--color-border);
+            border-radius: 50%;
+            margin-right: var(--spacing-md);
+            display: flex; align-items: center; justify-content: center;
+            transition: all var(--transition-fast);
+            flex-shrink: 0;
+        }
+        .copywriter-card.selected .radio-circle { border-color: var(--brand-primary); background: var(--brand-primary); }
+        .radio-circle::after { content: ''; width: 8px; height: 8px; background: white; border-radius: 50%; opacity: 0; }
+        .copywriter-card.selected .radio-circle::after { opacity: 1; }
+        
+        .copywriter-info { flex: 1; }
+        
+        .copywriter-platform {
+            display: inline-flex; align-items: center;
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            font-size: 11px;
+            margin-bottom: var(--spacing-xs);
+        }
+        .copywriter-platform.xiaohongshu { background: #FFE7D6; color: var(--brand-primary); }
+        .copywriter-platform.wechat { background: #E8FFEA; color: var(--color-success); }
+        .copywriter-platform.video { background: #E8F3FF; color: var(--color-info); }
+        
+        .copywriter-title { font-size: 14px; font-weight: 500; color: var(--color-title); }
+        .copywriter-meta { font-size: 11px; color: var(--color-sub); margin-top: 2px; }
+        
+        .copywriter-content { padding: 0 var(--spacing-md) var(--spacing-md); display: none; }
+        .copywriter-card.expanded .copywriter-content { display: block; }
+        
+        .copywriter-text {
+            background: var(--color-bg);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--color-text);
+            white-space: pre-wrap;
+        }
+        
+        .copywriter-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            background: white;
+            font-size: 13px;
+            color: var(--color-text);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            gap: var(--spacing-xs);
+            transition: all var(--transition-fast);
+        }
+        .action-btn:active { transform: scale(0.98); }
+        .action-btn.primary { background: var(--brand-primary); border-color: var(--brand-primary); color: white; }
+
+        /* 底部操作 */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: white;
+            padding: var(--spacing-md);
+            padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+        }
+        .bottom-hint { font-size: 12px; color: var(--color-sub); text-align: center; margin-bottom: var(--spacing-sm); }
+        
+        .confirm-btn {
+            width: 100%;
+            padding: var(--spacing-md);
+            background: var(--color-border);
+            border: none;
+            border-radius: var(--radius-xl);
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--color-sub);
+            cursor: not-allowed;
+            transition: all var(--transition-normal);
+            display: flex; align-items: center; justify-content: center;
+            gap: var(--spacing-sm);
+        }
+        .confirm-btn.ready {
+            background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(250,140,22,0.3);
+        }
+
+        /* Toast */
         .toast {
             position: fixed;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0,0,0,0.75);
             color: white;
-            padding: 12px 20px;
-            border-radius: 8px;
-            z-index: 9999;
-            animation: fadeIn 0.2s ease;
+            padding: 16px 32px;
+            border-radius: var(--radius-lg);
+            z-index: 99999;
+            font-size: 15px;
+            animation: toastIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            pointer-events: none;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
-            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-        }
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 9998;
-            display: none;
-        }
-        .modal-overlay.active {
-            display: block;
-        }
-        .modal {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 360px;
-            z-index: 9999;
-            display: none;
-        }
-        .modal.active {
-            display: block;
-        }
-        .modal textarea {
-            width: 100%;
-            border: 1px solid #E5E6EB;
-            border-radius: 8px;
-            padding: 12px;
-            resize: none;
-            font-size: 14px;
-            line-height: 1.6;
-            min-height: 150px;
-        }
-        .modal textarea:focus {
-            outline: none;
-            border-color: #fa8c16;
-        }
-        .safe-area-bottom {
-            padding-bottom: calc(16px + env(safe-area-inset-bottom));
-        }
-        .loading-spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        @keyframes toastIn {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
     </style>
 </head>
-<body class="pb-20">
-    <!-- 顶部导航 -->
-    <div class="header">
-        <div class="header-top">
-            <button class="back-btn" onclick="goBack()">
-                <i class="fa fa-angle-left"></i>
-            </button>
-            <span class="header-title">阶段3：文案确认</span>
-            <span class="step-badge">3/4</span>
-        </div>
-
-        <!-- 阶段进度（顶部） -->
-        <div class="header-stage-progress">
-            <span class="stage-dot completed">阶段1</span>
-            <div class="stage-line"></div>
-            <span class="stage-dot completed">阶段2</span>
-            <div class="stage-line"></div>
-            <span class="stage-dot active">阶段3</span>
-            <div class="stage-line inactive"></div>
-            <span class="stage-dot">阶段4</span>
-        </div>
-    </div>
-
-    <!-- 楼盘信息 -->
-    <div class="p-4">
-        <div class="flex items-center mb-3">
-            <i class="fa fa-home text-primary text-lg mr-2"></i>
-            <span id="houseName" class="font-bold text-lg text-gray-800">中海汇德里</span>
-        </div>
-        <div class="flex items-center mb-4">
-            <i class="fa fa-map-marker text-gray-400 mr-2"></i>
-            <span id="address" class="text-sm text-gray-500">浦东新区张江高科技园区</span>
-        </div>
-
-    </div>
-
-    <!-- 朋友圈文案 -->
-    <div class="px-4 mb-4">
-        <div class="card p-4">
-            <div class="flex items-center justify-between mb-3">
-                <div class="flex items-center">
-                    <i class="fa fa-file-text text-primary mr-2"></i>
-                    <span class="font-medium text-gray-800">朋友圈文案</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button class="icon-btn" onclick="handleRegenerate('content')" title="重新生成">
-                        <i class="fa fa-refresh" id="refreshContentIcon"></i>
-                    </button>
-                    <button class="edit-btn" onclick="openEditModal('content')">
-                        <i class="fa fa-edit mr-1"></i> 编辑
-                    </button>
-                </div>
-            </div>
-            <div id="scriptTitle" class="font-bold text-gray-800 mb-2">【中海汇德里·开盘预告】</div>
-            <div id="scriptContent" class="content-box text-sm text-gray-600 leading-relaxed">位于浦东张江核心地段，毗邻地铁站，周边商业配套完善。项目主推89㎡三房和109㎡四房，均价约6.5万/㎡。首付20%起，购房享3万抵8万优惠。金牌顾问一对一服务，看房专车接送。</div>
-        </div>
-    </div>
-
-    <!-- 视频脚本 -->
-    <div class="px-4 mb-4">
-        <div class="card p-4">
-            <div class="flex items-center justify-between mb-3">
-                <div class="flex items-center">
-                    <i class="fa fa-video-camera text-primary mr-2"></i>
-                    <span class="font-medium text-gray-800">视频脚本</span>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button class="icon-btn" onclick="handleRegenerate('videoScript')" title="重新生成">
-                        <i class="fa fa-refresh" id="refreshVideoIcon"></i>
-                    </button>
-                    <button class="edit-btn" onclick="openEditModal('videoScript')">
-                        <i class="fa fa-edit mr-1"></i> 编辑
-                    </button>
-                </div>
-            </div>
-            <div id="videoScript" class="content-box text-sm text-gray-600 leading-relaxed">镜头1: 楼盘大门全景
-镜头2: 区位地图展示
-镜头3: 沙盘讲解（整体规划）
-镜头4: 样板间参观（客厅、卧室、厨房）
-镜头5: 周边配套展示（地铁、商场、学校）
-镜头6: 户型优势总结
-镜头7: 优惠信息及联系方式</div>
-        </div>
-    </div>
-
-    <!-- 底部操作区 -->
-    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-4 safe-area-bottom">
-        <button id="confirmBtn" class="w-full btn btn-primary py-3" onclick="handleConfirm()">
-            <i class="fa fa-check mr-2"></i> 确认并提交
-        </button>
-    </div>
-
-    <!-- 编辑弹窗 -->
-    <div id="editModalOverlay" class="modal-overlay" onclick="closeEditModal()"></div>
-    <div id="editModal" class="modal">
-        <div class="p-4 border-b border-gray-100">
-            <div class="flex items-center justify-between">
-                <span id="modalTitle" class="font-medium text-gray-800">编辑内容</span>
-                <button class="text-gray-400" onclick="closeEditModal()">
-                    <i class="fa fa-times text-lg"></i>
+<body>
+    <div class="page">
+        <!-- 头部 -->
+        <div class="header">
+            <div class="header-top">
+                <button class="back-btn" onclick="goBack()">
+                    <i class="fa fa-angle-left"></i>
                 </button>
+                <span class="header-title">阶段3：文案确认</span>
+                <span class="step-badge">3/4</span>
+            </div>
+            <div class="header-stage-progress">
+                <span class="stage-dot completed">阶段1</span>
+                <div class="stage-line"></div>
+                <span class="stage-dot completed">阶段2</span>
+                <div class="stage-line"></div>
+                <span class="stage-dot active">阶段3</span>
+                <div class="stage-line inactive"></div>
+                <span class="stage-dot">阶段4</span>
             </div>
         </div>
-        <div class="p-4">
-            <textarea id="editTextarea" rows="8" placeholder="请输入内容..."></textarea>
-        </div>
-        <div class="p-4 border-t border-gray-100 flex gap-3">
-            <button class="flex-1 btn btn-outline py-2" onclick="closeEditModal()">取消</button>
-            <button class="flex-1 btn btn-primary py-2" onclick="saveEdit()">保存</button>
-        </div>
-    </div>
 
-    <!-- Loading遮罩 -->
-    <div id="loadingOverlay" class="fixed top-0 left-0 right-0 bottom-0 bg-black/50 z-50 flex items-center justify-center" style="display: none;">
-        <div class="bg-white rounded-xl p-6 text-center">
-            <div class="loading-spinner mx-auto mb-3" style="border-top-color: #fa8c16;"></div>
-            <p id="loadingText" class="text-gray-600 text-sm">正在重新生成...</p>
+        <!-- 生成中状态 -->
+        <div class="generating-banner" id="generatingBanner">
+            <div class="generating-header">
+                <div class="generating-title">
+                    <div class="generating-spinner"></div>
+                    <span>AI生成中</span>
+                </div>
+                <span class="generating-progress" id="generatingProgress">0%</span>
+            </div>
+            <div class="generating-bar">
+                <div class="generating-fill" id="generatingFill" style="width: 0%"></div>
+            </div>
+            <div class="generating-items">
+                <div id="genItem1"><i class="fa fa-circle-o"></i> 小红书文案生成中...</div>
+                <div id="genItem2"><i class="fa fa-circle-o"></i> 公众号文案生成中...</div>
+                <div id="genItem3"><i class="fa fa-circle-o"></i> 短视频脚本生成中...</div>
+            </div>
+        </div>
+
+        <!-- 素材参考提示 -->
+        <div class="material-hint">
+            <i class="fa fa-folder-open"></i>
+            <div class="material-hint-text">
+                基于阶段2上传的<span class="font-semibold">6个素材点位</span>进行AI生成，包括沙盘照片、样板间视频、区位配套等
+            </div>
+        </div>
+
+        <!-- 生成按钮 -->
+        <div class="generate-section" id="generateSection">
+            <button class="generate-btn" onclick="startGenerate()">
+                <i class="fa fa-magic"></i>
+                <span>一键生成三种文案</span>
+                <span class="generate-btn-hint">使用阶段2素材，生成小红书/公众号/短视频文案</span>
+            </button>
+        </div>
+
+        <!-- 文案列表 -->
+        <div class="copywriter-list" id="copywriterList">
+            <!-- 小红书文案 -->
+            <div class="copywriter-card" id="card_xiaohongshu" onclick="toggleCard('xiaohongshu')">
+                <div class="copywriter-header">
+                    <div class="radio-circle"></div>
+                    <div class="copywriter-info">
+                        <div class="copywriter-platform xiaohongshu">小红书</div>
+                        <div class="copywriter-title">中海汇德里 | 探盘日记</div>
+                        <div class="copywriter-meta">约200字 · 已生成</div>
+                    </div>
+                </div>
+                <div class="copywriter-content">
+                    <div class="copywriter-text" id="content_xiaohongshu">【探盘日记 | 中海汇德里】
+
+终于来打卡张江神盘了！🏠
+
+📍 位置：浦东张江高科技园区，地铁口500米
+🏗️ 产品：89㎡三房/109㎡四房
+💰 价格：均价6.5万/㎡，首付20%起
+
+✨ 亮点：
+• 毗邻地铁站，通勤超方便
+• 周边商业配套成熟
+• 金牌顾问一对一服务
+
+#张江买房 #新房探盘 #中海汇德里</div>
+                    <div class="copywriter-actions">
+                        <button class="action-btn" onclick="event.stopPropagation(); regenerateCopy('xiaohongshu')">
+                            <i class="fa fa-refresh"></i> 重新生成
+                        </button>
+                        <button class="action-btn primary" onclick="event.stopPropagation(); selectCopy('xiaohongshu')">
+                            <i class="fa fa-check"></i> 选用此版本
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 公众号文案 -->
+            <div class="copywriter-card" id="card_wechat" onclick="toggleCard('wechat')">
+                <div class="copywriter-header">
+                    <div class="radio-circle"></div>
+                    <div class="copywriter-info">
+                        <div class="copywriter-platform wechat">公众号</div>
+                        <div class="copywriter-title">【开盘预告】中海汇德里震撼来袭</div>
+                        <div class="copywriter-meta">约500字 · 已生成</div>
+                    </div>
+                </div>
+                <div class="copywriter-content">
+                    <div class="copywriter-text" id="content_wechat">【开盘预告 | 中海汇德里】
+
+位于浦东张江核心地段，中海汇德里项目今日正式开放预约！
+
+🎯 项目亮点：
+• 绝佳区位：紧邻地铁站，30分钟直达陆家嘴
+• 优质产品：89㎡三房、109㎡四房，满足不同家庭需求
+• 完善配套：商业、学校、医疗一应俱全
+
+💰 首发优惠：
+购房享3万抵8万专属优惠，首付20%起
+
+更有金牌顾问一对一服务，看房专车接送
+
+感兴趣的购房者可私信或评论区留言~</div>
+                    <div class="copywriter-actions">
+                        <button class="action-btn" onclick="event.stopPropagation(); regenerateCopy('wechat')">
+                            <i class="fa fa-refresh"></i> 重新生成
+                        </button>
+                        <button class="action-btn primary" onclick="event.stopPropagation(); selectCopy('wechat')">
+                            <i class="fa fa-check"></i> 选用此版本
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 短视频脚本 -->
+            <div class="copywriter-card" id="card_video" onclick="toggleCard('video')">
+                <div class="copywriter-header">
+                    <div class="radio-circle"></div>
+                    <div class="copywriter-info">
+                        <div class="copywriter-platform video">短视频</div>
+                        <div class="copywriter-title">中海汇德里 | 楼盘介绍脚本</div>
+                        <div class="copywriter-meta">约60秒 · 已生成</div>
+                    </div>
+                </div>
+                <div class="copywriter-content">
+                    <div class="copywriter-text" id="content_video">【中海汇德里 · 短视频脚本】
+
+📍 镜头1（0-5秒）：楼盘大门全景
+今天带大家探秘张江网红神盘——中海汇德里！
+
+📍 镜头2（5-15秒）：区位地图展示
+位于浦东张江核心地段，地铁口仅500米，30分钟直达陆家嘴。
+
+📍 镜头3（15-30秒）：沙盘讲解
+项目主推89㎡三房和109㎡四房，均价6.5万/㎡。
+
+📍 镜头4（30-45秒）：样板间参观
+走进样板间看看，客厅宽敞明亮，U型厨房太实用了！
+
+📍 镜头5（45-55秒）：配套展示
+周边商业、学校、医院一应俱全，生活超便利！
+
+📍 镜头6（55-60秒）：结尾
+首付20%起，购房享3万抵8万优惠！关注我，带你看更多好房！</div>
+                    <div class="copywriter-actions">
+                        <button class="action-btn" onclick="event.stopPropagation(); regenerateCopy('video')">
+                            <i class="fa fa-refresh"></i> 重新生成
+                        </button>
+                        <button class="action-btn primary" onclick="event.stopPropagation(); selectCopy('video')">
+                            <i class="fa fa-check"></i> 选用此版本
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部操作栏 -->
+        <div class="bottom-bar">
+            <div class="bottom-hint" id="bottomHint">请选择一种文案版本确认提交</div>
+            <button class="confirm-btn" id="confirmBtn" onclick="handleConfirm()">
+                <i class="fa fa-check"></i>
+                <span>确认并提交</span>
+            </button>
         </div>
     </div>
 
     <script>
-        // ===== URL参数解析 =====
-        function getQueryParam(name) {
-            const params = new URLSearchParams(window.location.search);
-            return params.get(name);
-        }
+        let selectedCopy = null;
+        let expandedCard = null;
+        let isGenerated = false;
 
-        // 模拟数据
-        const taskData = {
-            houseName: '中海汇德里',
-            address: '浦东新区张江高科技园区',
-            currentStage: parseInt(getQueryParam('step')) || 3,
-            taskId: getQueryParam('task') || 'TASK001',
-            script: {
-                title: '【中海汇德里·开盘预告】',
-                content: '位于浦东张江核心地段，毗邻地铁站，周边商业配套完善。项目主推89㎡三房和109㎡四房，均价约6.5万/㎡。首付20%起，购房享3万抵8万优惠。金牌顾问一对一服务，看房专车接送。',
-                videoScript: '镜头1: 楼盘大门全景\n镜头2: 区位地图展示\n镜头3: 沙盘讲解（整体规划）\n镜头4: 样板间参观（客厅、卧室、厨房）\n镜头5: 周边配套展示（地铁、商场、学校）\n镜头6: 户型优势总结\n镜头7: 优惠信息及联系方式'
-            }
-        };
-
-        let currentEditType = 'content';
-
-        // 初始化页面
-        function initPage() {
-            document.getElementById('houseName').textContent = taskData.houseName;
-            document.getElementById('address').textContent = taskData.address;
-            document.getElementById('scriptTitle').textContent = taskData.script.title;
-            document.getElementById('scriptContent').textContent = taskData.script.content;
-            document.getElementById('videoScript').textContent = taskData.script.videoScript;
-        }
-
-        // 返回上一页
         function goBack() {
             window.location.href = 'task-detail.html?step=2';
         }
 
-        // 打开编辑弹窗
-        function openEditModal(type) {
-            currentEditType = type;
-            const modal = document.getElementById('editModal');
-            const textarea = document.getElementById('editTextarea');
-            const titleEl = document.getElementById('modalTitle');
+        function startGenerate() {
+            const banner = document.getElementById('generatingBanner');
+            const genSection = document.getElementById('generateSection');
+            const list = document.getElementById('copywriterList');
+            const fill = document.getElementById('generatingFill');
+            const progress = document.getElementById('generatingProgress');
 
-            if (type === 'content') {
-                titleEl.textContent = '编辑朋友圈文案';
-                textarea.value = taskData.script.content;
-            } else if (type === 'videoScript') {
-                titleEl.textContent = '编辑视频脚本';
-                textarea.value = taskData.script.videoScript;
+            // 显示生成状态
+            banner.classList.add('show');
+            genSection.classList.add('hidden');
+
+            // 模拟生成进度
+            let prog = 0;
+            const items = ['genItem1', 'genItem2', 'genItem3'];
+            const intervals = [];
+
+            function updateItem(index, icon, text) {
+                const el = document.getElementById(items[index]);
+                el.innerHTML = `<i class="fa ${icon}"></i> ${text}`;
             }
 
-            modal.classList.add('active');
-            modal.style.display = 'block';
-            setTimeout(() => {
-                textarea.focus();
-            }, 100);
-        }
+            // 模拟生成过程
+            const progressInterval = setInterval(() => {
+                prog += Math.random() * 15;
+                if (prog > 100) prog = 100;
+                fill.style.width = prog + '%';
+                progress.textContent = Math.round(prog) + '%';
 
-        // 关闭编辑弹窗
-        function closeEditModal() {
-            const modal = document.getElementById('editModal');
-            modal.classList.remove('active');
-            setTimeout(() => {
-                modal.style.display = 'none';
+                if (prog >= 33) updateItem(0, 'fa-check-circle', '小红书文案 ✓');
+                if (prog >= 66) updateItem(1, 'fa-check-circle', '公众号文案 ✓');
+                if (prog >= 100) updateItem(2, 'fa-check-circle', '短视频脚本 ✓');
+
+                if (prog >= 100) {
+                    clearInterval(progressInterval);
+                    setTimeout(() => {
+                        banner.classList.remove('show');
+                        list.classList.add('show');
+                        isGenerated = true;
+                        showToast('三种文案已生成完毕');
+                    }, 500);
+                }
             }, 200);
         }
 
-        // 保存编辑
-        function saveEdit() {
-            const textarea = document.getElementById('editTextarea');
-            const newContent = textarea.value.trim();
+        function toggleCard(type) {
+            const card = document.getElementById('card_' + type);
+            const wasExpanded = card.classList.contains('expanded');
 
-            if (!newContent) {
-                showToast('内容不能为空');
-                return;
+            // 关闭所有卡片
+            document.querySelectorAll('.copywriter-card').forEach(c => {
+                c.classList.remove('expanded');
+            });
+
+            // 如果之前没打开，则打开
+            if (!wasExpanded) {
+                card.classList.add('expanded');
+                expandedCard = type;
+            } else {
+                expandedCard = null;
             }
-
-            if (currentEditType === 'content') {
-                taskData.script.content = newContent;
-                document.getElementById('scriptContent').textContent = newContent;
-            } else if (currentEditType === 'videoScript') {
-                taskData.script.videoScript = newContent;
-                document.getElementById('videoScript').textContent = newContent;
-            }
-
-            closeEditModal();
-            showToast('保存成功');
         }
 
-        // 要求重新生成
-        function handleRegenerate(type) {
-            const iconId = type === 'content' ? 'refreshContentIcon' : 'refreshVideoIcon';
-            const icon = document.getElementById(iconId);
-            icon.classList.add('spinning');
+        function selectCopy(type) {
+            // 取消所有选中
+            document.querySelectorAll('.copywriter-card').forEach(c => {
+                c.classList.remove('selected');
+            });
 
-            // 模拟重新生成过程
+            // 选中当前
+            const card = document.getElementById('card_' + type);
+            card.classList.add('selected');
+            selectedCopy = type;
+
+            // 更新底部按钮
+            updateConfirmBtn();
+            showToast('已选用' + getPlatformName(type) + '版本');
+        }
+
+        function getPlatformName(type) {
+            const names = {
+                'xiaohongshu': '小红书',
+                'wechat': '公众号',
+                'video': '短视频'
+            };
+            return names[type] || type;
+        }
+
+        function regenerateCopy(type) {
+            showToast('正在重新生成' + getPlatformName(type) + '文案...');
             setTimeout(() => {
-                icon.classList.remove('spinning');
-                showToast('已提交重新生成请求');
-
-                // 模拟更新内容
-                if (type === 'content') {
-                    taskData.script.content = '位于浦东张江核心地段，毗邻地铁站，周边商业配套完善。项目主推89㎡三房和109㎡四房，均价约6.5万/㎡。首付20%起，购房享3万抵8万优惠。金牌顾问一对一服务，看房专车接送。\n\n（内容已重新优化）';
-                    document.getElementById('scriptContent').textContent = taskData.script.content;
-                } else {
-                    taskData.script.videoScript = '镜头1: 楼盘大门全景（优化版）\n镜头2: 区位地图展示\n镜头3: 沙盘讲解（优化版）\n镜头4: 样板间参观（客厅、卧室、厨房）\n镜头5: 周边配套展示（地铁、商场、学校）\n镜头6: 户型优势总结\n镜头7: 优惠信息及联系方式（更新）';
-                    document.getElementById('videoScript').textContent = taskData.script.videoScript;
-                }
+                showToast(getPlatformName(type) + '文案已重新生成');
             }, 1500);
         }
 
-        // 确认并提交
+        function updateConfirmBtn() {
+            const btn = document.getElementById('confirmBtn');
+            const hint = document.getElementById('bottomHint');
+
+            if (selectedCopy) {
+                btn.classList.add('ready');
+                hint.textContent = '已选用：' + getPlatformName(selectedCopy);
+            } else {
+                btn.classList.remove('ready');
+                hint.textContent = '请选择一种文案版本确认提交';
+            }
+        }
+
         function handleConfirm() {
-            const content = document.getElementById('scriptContent').textContent;
-            const videoScript = document.getElementById('videoScript').textContent;
-
-            if (!content || content === '请编辑内容...') {
-                showToast('请先编辑朋友圈文案');
+            if (!selectedCopy) {
+                showToast('请先选择一种文案版本');
                 return;
             }
-
-            if (!videoScript || videoScript === '请编辑内容...') {
-                showToast('请先编辑视频脚本');
-                return;
-            }
-
-            // 显示loading
-            const overlay = document.getElementById('loadingOverlay');
-            const loadingText = document.getElementById('loadingText');
-            loadingText.textContent = '正在提交确认...';
-            overlay.style.display = 'flex';
-
-            // 模拟提交
+            showToast('确认提交' + getPlatformName(selectedCopy) + '文案');
             setTimeout(() => {
-                overlay.style.display = 'none';
-                showToast('确认成功');
-                // 跳转到结果生成页面
-                setTimeout(() => {
-                    window.location.href = 'result-generate.html?step=3';
-                }, 500);
-            }, 1500);
+                window.location.href = 'result-generate.html?step=3';
+            }, 1000);
         }
 
-        // Toast提示
-        function showToast(message) {
+        function showToast(msg) {
             const existing = document.querySelector('.toast');
             if (existing) existing.remove();
-
             const toast = document.createElement('div');
             toast.className = 'toast';
-            toast.textContent = message;
+            toast.textContent = msg;
             document.body.appendChild(toast);
-            setTimeout(() => {
-                toast.remove();
-            }, 2000);
+            setTimeout(() => toast.remove(), 2000);
         }
 
-        // 点击弹窗外部关闭
-        document.getElementById('editModalOverlay').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeEditModal();
+        // 页面加载时检查是否已生成
+        document.addEventListener('DOMContentLoaded', () => {
+            // 模拟已有生成结果的情况（用于调试）
+            // 如果URL有?generated=1参数，自动显示结果
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('generated') === '1') {
+                document.getElementById('generatingBanner').classList.remove('show');
+                document.getElementById('generateSection').classList.add('hidden');
+                document.getElementById('copywriterList').classList.add('show');
+                isGenerated = true;
             }
         });
-
-        // 页面加载完成
-        document.addEventListener('DOMContentLoaded', initPage);
     </script>
 </body>
 </html>
