@@ -741,30 +741,6 @@
             to { transform: rotate(360deg); }
         }
 
-        /* 输入提示 */
-        .input-hint {
-            font-size: 11px;
-            color: var(--color-sub);
-            padding: 4px 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .input-hint-item {
-            display: flex;
-            align-items: center;
-            gap: 2px;
-        }
-
-        .input-hint kbd {
-            background: var(--color-bg);
-            padding: 1px 4px;
-            border-radius: 3px;
-            font-size: 10px;
-            border: 1px solid var(--color-border);
-        }
-
         /* Toast */
         .toast {
             position: fixed;
@@ -887,7 +863,7 @@
                     <textarea 
                         class="input-field" 
                         id="inputField" 
-                        placeholder="输入您的问题..." 
+                        placeholder="" 
                         rows="1" 
                         oninput="autoResize(this); toggleSendBtn()"
                         aria-label="输入消息"
@@ -896,10 +872,6 @@
                 <button class="send-btn" id="sendBtn" onclick="sendMessage()" aria-label="发送消息" disabled>
                     <i class="fa fa-paper-plane"></i>
                 </button>
-            </div>
-            <div class="input-hint">
-                <span class="input-hint-item"><kbd>Enter</kbd> 发送</span>
-                <span class="input-hint-item"><kbd>Shift</kbd>+<kbd>Enter</kbd> 换行</span>
             </div>
         </div>
     </div>
