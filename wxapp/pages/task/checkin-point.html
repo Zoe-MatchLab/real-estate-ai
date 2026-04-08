@@ -964,9 +964,9 @@
                     name: '沙盘照片',
                     required: true,
                     types: ['photo'],
-                    status: 'pending',
-                    content: { photos: [], videos: [], text: '', audio: [], tags: [] },
-                    reviewResult: null
+                    status: 'approved',
+                    content: { photos: ['img_sandpan.jpg', 'img_sandpan2.jpg'], videos: [], text: '', audio: [], tags: [] },
+                    reviewResult: { approved: true }
                 },
                 {
                     id: 2,
@@ -974,7 +974,7 @@
                     required: true,
                     types: ['video'],
                     status: 'approved',
-                    content: { photos: [], videos: ['video1.mp4'], text: '', audio: [], tags: [] },
+                    content: { photos: [], videos: ['video_sample.mp4'], text: '', audio: [], tags: [] },
                     reviewResult: { approved: true }
                 },
                 {
@@ -982,9 +982,9 @@
                     name: '区位配套',
                     required: false,
                     types: ['photo', 'text'],
-                    status: 'rejected',
-                    content: { photos: ['img1.jpg'], videos: [], text: '地铁站500米，配套成熟', audio: [], tags: ['地铁', '商业'] },
-                    reviewResult: { approved: false, reason: '照片质量不佳', suggestion: '请重新拍摄并确保光线充足' }
+                    status: 'pending',
+                    content: { photos: [], videos: [], text: '', audio: [], tags: [] },
+                    reviewResult: null
                 },
                 {
                     id: 4,
@@ -992,7 +992,7 @@
                     required: false,
                     types: ['photo', 'video', 'text', 'audio', 'tag'],
                     status: 'reviewing',
-                    content: { photos: ['img2.jpg'], videos: [], text: '', audio: [], tags: [] },
+                    content: { photos: ['img_traffic.jpg'], videos: [], text: '', audio: [], tags: [] },
                     reviewResult: null
                 },
                 {
@@ -1000,18 +1000,18 @@
                     name: '销售说辞',
                     required: true,
                     types: ['audio', 'text'],
-                    status: 'uploading',
-                    content: { photos: [], videos: [], text: '', audio: ['audio1.m4a'], tags: [] },
-                    reviewResult: null
+                    status: 'approved',
+                    content: { photos: [], videos: [], text: '地铁500米，自驾方便', audio: ['audio_sales.m4a'], tags: ['地铁', '商业'] },
+                    reviewResult: { approved: true }
                 },
                 {
                     id: 6,
                     name: '园林景观',
                     required: false,
                     types: ['photo', 'video'],
-                    status: 'pending',
-                    content: { photos: [], videos: [], text: '', audio: [], tags: [] },
-                    reviewResult: null
+                    status: 'rejected',
+                    content: { photos: ['img_garden.jpg'], videos: [], text: '', audio: [], tags: [] },
+                    reviewResult: { approved: false, reason: '照片逆光严重', suggestion: '请在光线充足时重新拍摄' }
                 }
             ]
         };
