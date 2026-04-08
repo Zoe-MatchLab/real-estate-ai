@@ -313,6 +313,24 @@
             color: var(--color-text);
             white-space: pre-wrap;
         }
+        .copywriter-textarea {
+            display: none;
+            width: 100%;
+            background: var(--color-bg);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--color-text);
+            border: 2px solid var(--brand-primary);
+            resize: vertical;
+            min-height: 200px;
+            font-family: inherit;
+        }
+        .copywriter-card.editing .copywriter-text { display: block; }
+        .copywriter-card.editing .copywriter-textarea { display: none; }
+        .copywriter-card:not(.editing) .copywriter-text { display: block; }
+        .copywriter-card:not(.editing) .copywriter-textarea { display: none; }
         
         .copywriter-actions {
             display: flex;
@@ -503,7 +521,8 @@
                     <i class="fa fa-chevron-down copywriter-expand-icon"></i>
                 </div>
                 <div class="copywriter-content">
-                    <div class="copywriter-text" id="content_xiaohongshu">【探盘日记 | 中海汇德里】
+                    <div class="copywriter-text" id="content_xiaohongshu"></div>
+                    <textarea class="copywriter-textarea" id="textarea_xiaohongshu"></textarea>【探盘日记 | 中海汇德里】
 
 终于来打卡张江神盘了！🏠
 
@@ -518,14 +537,22 @@
 
 #张江买房 #新房探盘 #中海汇德里</div>
                     <div class="copywriter-actions">
+                        <button class="action-btn" id="edit_xiaohongshu" onclick="editCopy('xiaohongshu')">
+                            <i class="fa fa-edit"></i> 编辑
+                        </button>
                         <button class="action-btn" id="regen_xiaohongshu" onclick="regenerateCopy('xiaohongshu')">
                             <i class="fa fa-refresh"></i> 重新生成
                         </button>
-                        <button class="action-btn primary" onclick="selectCopy('xiaohongshu')">
-                            <i class="fa fa-check"></i> 选用此版本
-                        </button>
                         <button class="action-btn" onclick="copyText('xiaohongshu')">
                             <i class="fa fa-copy"></i> 复制
+                        </button>
+                    </div>
+                    <div class="copywriter-edit-actions" style="display:none; margin-top:8px;">
+                        <button class="action-btn primary" onclick="saveEdit('xiaohongshu')">
+                            <i class="fa fa-check"></i> 保存
+                        </button>
+                        <button class="action-btn" onclick="cancelEdit('xiaohongshu')">
+                            <i class="fa fa-times"></i> 取消
                         </button>
                     </div>
                 </div>
@@ -543,7 +570,8 @@
                     <i class="fa fa-chevron-down copywriter-expand-icon"></i>
                 </div>
                 <div class="copywriter-content">
-                    <div class="copywriter-text" id="content_wechat">【开盘预告 | 中海汇德里】
+                    <div class="copywriter-text" id="content_wechat"></div>
+                    <textarea class="copywriter-textarea" id="textarea_wechat"></textarea>【开盘预告 | 中海汇德里】
 
 位于浦东张江核心地段，中海汇德里项目今日正式开放预约！
 
@@ -559,14 +587,22 @@
 
 感兴趣的购房者可私信或评论区留言~</div>
                     <div class="copywriter-actions">
+                        <button class="action-btn" id="edit_wechat" onclick="editCopy('wechat')">
+                            <i class="fa fa-edit"></i> 编辑
+                        </button>
                         <button class="action-btn" id="regen_wechat" onclick="regenerateCopy('wechat')">
                             <i class="fa fa-refresh"></i> 重新生成
                         </button>
-                        <button class="action-btn primary" onclick="selectCopy('wechat')">
-                            <i class="fa fa-check"></i> 选用此版本
-                        </button>
                         <button class="action-btn" onclick="copyText('wechat')">
                             <i class="fa fa-copy"></i> 复制
+                        </button>
+                    </div>
+                    <div class="copywriter-edit-actions" style="display:none; margin-top:8px;">
+                        <button class="action-btn primary" onclick="saveEdit('wechat')">
+                            <i class="fa fa-check"></i> 保存
+                        </button>
+                        <button class="action-btn" onclick="cancelEdit('wechat')">
+                            <i class="fa fa-times"></i> 取消
                         </button>
                     </div>
                 </div>
@@ -584,7 +620,8 @@
                     <i class="fa fa-chevron-down copywriter-expand-icon"></i>
                 </div>
                 <div class="copywriter-content">
-                    <div class="copywriter-text" id="content_video">【中海汇德里 · 短视频脚本】
+                    <div class="copywriter-text" id="content_video"></div>
+                    <textarea class="copywriter-textarea" id="textarea_video"></textarea>【中海汇德里 · 短视频脚本】
 
 📍 镜头1（0-5秒）：楼盘大门全景
 今天带大家探秘张江网红神盘——中海汇德里！
@@ -604,14 +641,22 @@
 📍 镜头6（55-60秒）：结尾
 首付20%起，购房享3万抵8万优惠！关注我，带你看更多好房！</div>
                     <div class="copywriter-actions">
+                        <button class="action-btn" id="edit_video" onclick="editCopy('video')">
+                            <i class="fa fa-edit"></i> 编辑
+                        </button>
                         <button class="action-btn" id="regen_video" onclick="regenerateCopy('video')">
                             <i class="fa fa-refresh"></i> 重新生成
                         </button>
-                        <button class="action-btn primary" onclick="selectCopy('video')">
-                            <i class="fa fa-check"></i> 选用此版本
-                        </button>
                         <button class="action-btn" onclick="copyText('video')">
                             <i class="fa fa-copy"></i> 复制
+                        </button>
+                    </div>
+                    <div class="copywriter-edit-actions" style="display:none; margin-top:8px;">
+                        <button class="action-btn primary" onclick="saveEdit('video')">
+                            <i class="fa fa-check"></i> 保存
+                        </button>
+                        <button class="action-btn" onclick="cancelEdit('video')">
+                            <i class="fa fa-times"></i> 取消
                         </button>
                     </div>
                 </div>
@@ -650,6 +695,7 @@
         let isGenerated = false;
         let houseName = '';
         let materialCount = 0;
+        let originalContent = {};
 
         // 初始化
         function init() {
@@ -661,10 +707,19 @@
             // 更新页面数据
             document.getElementById('materialCount').textContent = materialCount;
             
+            // 填充示例文案内容
             PLATFORMS.forEach(type => {
                 const titleEl = document.getElementById('title_' + type);
                 if (titleEl) {
                     titleEl.textContent = houseName + ' | ' + getDefaultTitle(type);
+                }
+                const contentEl = document.getElementById('content_' + type);
+                const textareaEl = document.getElementById('textarea_' + type);
+                if (contentEl) {
+                    const text = getDefaultContent(type);
+                    contentEl.textContent = text;
+                    originalContent[type] = text;
+                    if (textareaEl) textareaEl.value = text;
                 }
             });
 
@@ -779,6 +834,60 @@
             isGenerated = true;
         }
 
+        function getDefaultContent(type) {
+            const contents = {
+                'xiaohongshu': `【探盘日记 | ${houseName}】
+
+终于来打卡张江神盘了！🏠
+
+📍 位置：浦东张江高科技园区，地铁口500米
+🏗️ 产品：89㎡三房/109㎡四房
+💰 价格：均价6.5万/㎡，首付20%起
+
+✨ 亮点：
+• 毗邻地铁站，通勤超方便
+• 周边商业配套成熟
+• 金牌顾问一对一服务
+
+#张江买房 #新房探盘 #${houseName}`,
+                'wechat': `【开盘预告 | ${houseName}】
+
+位于浦东张江核心地段，${houseName}项目今日正式开放预约！
+
+🎯 项目亮点：
+• 绝佳区位：紧邻地铁站，30分钟直达陆家嘴
+• 优质产品：89㎡三房、109㎡四房，满足不同家庭需求
+• 完善配套：商业、学校、医疗一应俱全
+
+💰 首发优惠：
+购房享3万抵8万专属优惠，首付20%起
+
+更有金牌顾问一对一服务，看房专车接送
+
+感兴趣的购房者可私信或评论区留言~`,
+                'video': `【${houseName} · 短视频脚本】
+
+📍 镜头1（0-5秒）：楼盘大门全景
+今天带大家探秘张江网红神盘——${houseName}！
+
+📍 镜头2（5-15秒）：区位地图展示
+位于浦东张江核心地段，地铁口仅500米，30分钟直达陆家嘴。
+
+📍 镜头3（15-30秒）：沙盘讲解
+项目主推89㎡三房和109㎡四房，均价6.5万/㎡。
+
+📍 镜头4（30-45秒）：样板间参观
+走进样板间看看，客厅宽敞明亮，U型厨房太实用了！
+
+📍 镜头5（45-55秒）：配套展示
+周边商业、学校、医院一应俱全，生活超便利！
+
+📍 镜头6（55-60秒）：结尾
+首付20%起，购房享3万抵8万优惠！关注我，带你看更多好房！`
+            };
+            return contents[type] || '';
+        }
+
         function toggleCard(type) {
             const card = document.getElementById('card_' + type);
             const wasExpanded = card.classList.contains('expanded');
@@ -872,6 +981,54 @@
             }).catch(() => {
                 showToast('复制失败，请手动选择复制');
             });
+        }
+
+        function editCopy(type) {
+            const card = document.getElementById('card_' + type);
+            card.classList.add('editing');
+            const textarea = document.getElementById('textarea_' + type);
+            const content = document.getElementById('content_' + type).textContent;
+            textarea.value = content;
+            textarea.style.display = 'block';
+            document.getElementById('content_' + type).style.display = 'none';
+            card.querySelector('.copywriter-edit-actions').style.display = 'flex';
+            card.querySelectorAll('.action-btn').forEach(btn => btn.style.display = 'none');
+            card.querySelector('#edit_' + type).style.display = 'flex';
+            textarea.focus();
+        }
+
+        function saveEdit(type) {
+            const card = document.getElementById('card_' + type);
+            const textarea = document.getElementById('textarea_' + type);
+            const content = document.getElementById('content_' + type);
+            const newText = textarea.value.trim();
+            
+            if (!newText) {
+                showToast('文案内容不能为空');
+                return;
+            }
+            
+            content.textContent = newText;
+            originalContent[type] = newText;
+            textarea.style.display = 'none';
+            content.style.display = 'block';
+            card.querySelector('.copywriter-edit-actions').style.display = 'none';
+            card.querySelectorAll('.action-btn').forEach(btn => btn.style.display = 'flex');
+            card.classList.remove('editing');
+            showToast(PLATFORM_NAMES[type] + '文案已保存');
+        }
+
+        function cancelEdit(type) {
+            const card = document.getElementById('card_' + type);
+            const textarea = document.getElementById('textarea_' + type);
+            const content = document.getElementById('content_' + type);
+            
+            textarea.value = originalContent[type] || '';
+            textarea.style.display = 'none';
+            content.style.display = 'block';
+            card.querySelector('.copywriter-edit-actions').style.display = 'none';
+            card.querySelectorAll('.action-btn').forEach(btn => btn.style.display = 'flex');
+            card.classList.remove('editing');
         }
 
         function updateConfirmBtn() {
