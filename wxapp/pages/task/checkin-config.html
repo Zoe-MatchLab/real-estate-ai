@@ -704,6 +704,121 @@
     .toast.show {
       opacity: 1;
     }
+    
+    /* 组织选择器 */
+    .org-dept {
+      border-bottom: 1px solid var(--color-border);
+    }
+    
+    .org-dept-header {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      background: var(--color-bg);
+      cursor: pointer;
+    }
+    
+    .org-dept-header:active {
+      background: var(--color-border);
+    }
+    
+    .dept-arrow {
+      font-size: 14px;
+      color: var(--color-sub);
+      margin-right: 8px;
+      transition: transform 0.2s;
+    }
+    
+    .org-dept.expanded .dept-arrow {
+      transform: rotate(90deg);
+    }
+    
+    .dept-icon {
+      font-size: 14px;
+      color: var(--brand-primary);
+      margin-right: 8px;
+    }
+    
+    .dept-name {
+      flex: 1;
+      font-size: 14px;
+      color: var(--color-title);
+    }
+    
+    .dept-count {
+      font-size: 12px;
+      color: var(--color-sub);
+    }
+    
+    .org-dept-members {
+      background: #fff;
+    }
+    
+    .org-member {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px 12px 40px;
+      border-bottom: 1px solid var(--color-bg);
+      cursor: pointer;
+    }
+    
+    .org-member:last-child {
+      border-bottom: none;
+    }
+    
+    .org-member:active {
+      background: var(--color-bg);
+    }
+    
+    .org-member.selected {
+      background: rgba(250, 140, 22, 0.08);
+    }
+    
+    .member-checkbox {
+      margin-right: 12px;
+      font-size: 16px;
+      color: var(--color-border);
+    }
+    
+    .org-member.selected .member-checkbox {
+      color: var(--brand-primary);
+    }
+    
+    .member-info {
+      flex: 1;
+    }
+    
+    .member-name {
+      font-size: 14px;
+      color: var(--color-title);
+    }
+    
+    .member-role {
+      font-size: 12px;
+      color: var(--color-sub);
+      margin-top: 2px;
+    }
+    
+    .modal-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      font-size: 12px;
+      background: var(--color-bg);
+      border-radius: 4px;
+      color: var(--color-text);
+    }
+    
+    .modal-tag .remove {
+      cursor: pointer;
+      color: var(--color-sub);
+      margin-left: 2px;
+    }
+    
+    .modal-tag .remove:hover {
+      color: var(--color-danger);
+    }
   </style>
 </head>
 
@@ -917,7 +1032,7 @@
     </div>
   </div>
 
-  <!-- 组织选择器弹窗（简化版） -->
+  <!-- 组织选择器弹窗 -->
   <div class="modal-overlay" id="orgModal">
     <div class="modal">
       <div class="modal-header">
@@ -926,34 +1041,117 @@
           <i class="fa fa-times"></i>
         </div>
       </div>
-      <div class="modal-body">
-        <div class="form-item">
-          <div class="form-label">搜索人员</div>
-          <input type="text" class="form-input" id="orgSearch" placeholder="输入姓名搜索">
+      <div class="modal-body" style="padding:0;">
+        <!-- 搜索框 -->
+        <div style="padding:12px 16px;border-bottom:1px solid var(--color-border);">
+          <div style="position:relative;">
+            <i class="fa fa-search" style="position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--color-sub);"></i>
+            <input type="text" id="orgSearch" placeholder="搜索成员" style="width:100%;padding:10px 10px 10px 36px;font-size:14px;border:1px solid var(--color-border);border-radius:8px;outline:none;box-sizing:border-box;">
+          </div>
         </div>
-        <div id="orgList">
-          <div class="selector-row" onclick="selectOrgUser('user1', '张三分店店长')">
-            <div class="selector-info">
-              <div class="selector-label">张三分店店长</div>
-              <div class="selector-count">张三分店</div>
+        
+        <!-- 已选标签 -->
+        <div id="selectedTagsInModal" style="padding:12px 16px;border-bottom:1px solid var(--color-border);display:none;">
+          <div style="font-size:12px;color:var(--color-sub);margin-bottom:8px;">已选 (<span id="selectedCountInModal">0</span>)</div>
+          <div id="selectedTagsList" style="display:flex;flex-wrap:wrap;gap:6px;"></div>
+        </div>
+        
+        <!-- 组织树 -->
+        <div id="orgTree" style="max-height:400px;overflow-y:auto;">
+          <!-- 部门节点 -->
+          <div class="org-dept" onclick="toggleDept(this)">
+            <div class="org-dept-header">
+              <i class="fa fa-angle-right dept-arrow"></i>
+              <i class="fa fa-folder dept-icon"></i>
+              <span class="dept-name">张三分店</span>
+              <span class="dept-count">3人</span>
+            </div>
+            <div class="org-dept-members" style="display:none;">
+              <div class="org-member" onclick="toggleMemberSelect('user1', '张三分店店长', this, event)">
+                <div class="member-checkbox">
+                  <i class="fa fa-square"></i>
+                </div>
+                <div class="member-info">
+                  <div class="member-name">张三分店店长</div>
+                  <div class="member-role">店长</div>
+                </div>
+              </div>
+              <div class="org-member" onclick="toggleMemberSelect('user2', '李四经纪人', this, event)">
+                <div class="member-checkbox">
+                  <i class="fa fa-square"></i>
+                </div>
+                <div class="member-info">
+                  <div class="member-name">李四经纪人</div>
+                  <div class="member-role">经纪人</div>
+                </div>
+              </div>
+              <div class="org-member" onclick="toggleMemberSelect('user3', '王五实习生', this, event)">
+                <div class="member-checkbox">
+                  <i class="fa fa-square"></i>
+                </div>
+                <div class="member-info">
+                  <div class="member-name">王五实习生</div>
+                  <div class="member-role">实习生</div>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="selector-row" onclick="selectOrgUser('user2', '李四经纪人')">
-            <div class="selector-info">
-              <div class="selector-label">李四经纪人</div>
-              <div class="selector-count">张三分店</div>
+          
+          <div class="org-dept" onclick="toggleDept(this)">
+            <div class="org-dept-header">
+              <i class="fa fa-angle-right dept-arrow"></i>
+              <i class="fa fa-folder dept-icon"></i>
+              <span class="dept-name">张三分店-2组</span>
+              <span class="dept-count">2人</span>
+            </div>
+            <div class="org-dept-members" style="display:none;">
+              <div class="org-member" onclick="toggleMemberSelect('user4', '赵六店长', this, event)">
+                <div class="member-checkbox">
+                  <i class="fa fa-square"></i>
+                </div>
+                <div class="member-info">
+                  <div class="member-name">赵六店长</div>
+                  <div class="member-role">店长</div>
+                </div>
+              </div>
+              <div class="org-member" onclick="toggleMemberSelect('user5', '钱七经纪人', this, event)">
+                <div class="member-checkbox">
+                  <i class="fa fa-square"></i>
+                </div>
+                <div class="member-info">
+                  <div class="member-name">钱七经纪人</div>
+                  <div class="member-role">经纪人</div>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="selector-row" onclick="selectOrgUser('user3', '王五实习生')">
-            <div class="selector-info">
-              <div class="selector-label">王五实习生</div>
-              <div class="selector-count">张三分店</div>
+          
+          <div class="org-dept" onclick="toggleDept(this)">
+            <div class="org-dept-header">
+              <i class="fa fa-angle-right dept-arrow"></i>
+              <i class="fa fa-folder dept-icon"></i>
+              <span class="dept-name">总公司</span>
+              <span class="dept-count">1人</span>
+            </div>
+            <div class="org-dept-members" style="display:none;">
+              <div class="org-member" onclick="toggleMemberSelect('user6', '管理员', this, event)">
+                <div class="member-checkbox">
+                  <i class="fa fa-square"></i>
+                </div>
+                <div class="member-info">
+                  <div class="member-name">管理员</div>
+                  <div class="member-role">超级管理员</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button class="modal-btn modal-btn-primary" onclick="closeOrgModal()">确认选择</button>
+        <div style="display:flex;gap:12px;">
+          <button style="flex:1;padding:14px;font-size:16px;border:none;border-radius:12px;background:var(--color-bg);color:var(--color-text);" onclick="closeOrgModal()">取消</button>
+          <button style="flex:1;padding:14px;font-size:16px;border:none;border-radius:12px;background:linear-gradient(135deg, var(--brand-primary), #FF9500);color:#fff;font-weight:600;" onclick="confirmOrgSelection()">确认 (<span id="confirmCount">0</span>)</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1293,20 +1491,124 @@ function closeOrgModal() {
   document.getElementById('orgSearch').value = '';
 }
 
-// 选择组织用户
-function selectOrgUser(userId, userName) {
-  if (currentOrgType === 'executor') {
-    if (!config.executorUsers.find(function(u) { return u.id === userId; })) {
-      config.executorUsers.push({ id: userId, name: userName });
-      updateExecutorTags();
-    }
+// 展开/收起部门
+function toggleDept(el) {
+  el.classList.toggle('expanded');
+  var members = el.querySelector('.org-dept-members');
+  if (el.classList.contains('expanded')) {
+    members.style.display = 'block';
   } else {
-    if (!config.notifyUsers.find(function(u) { return u.id === userId; })) {
-      config.notifyUsers.push({ id: userId, name: userName });
-      updateNotifyTags();
-    }
+    members.style.display = 'none';
   }
-  showToast('已添加：' + userName);
+}
+
+// 切换成员选中状态
+function toggleMemberSelect(userId, userName, el, event) {
+  event.stopPropagation();
+  
+  var userList = currentOrgType === 'executor' ? config.executorUsers : config.notifyUsers;
+  var existingIndex = userList.findIndex(function(u) { return u.id === userId; });
+  
+  if (existingIndex > -1) {
+    // 取消选中
+    userList.splice(existingIndex, 1);
+    el.classList.remove('selected');
+  } else {
+    // 选中
+    userList.push({ id: userId, name: userName });
+    el.classList.add('selected');
+  }
+  
+  updateModalSelectedTags();
+  document.getElementById('confirmCount').textContent = userList.length;
+}
+
+// 更新弹窗内已选标签
+function updateModalSelectedTags() {
+  var userList = currentOrgType === 'executor' ? config.executorUsers : config.notifyUsers;
+  var container = document.getElementById('selectedTagsList');
+  var wrapper = document.getElementById('selectedTagsInModal');
+  var countEl = document.getElementById('selectedCountInModal');
+  
+  if (userList.length === 0) {
+    wrapper.style.display = 'none';
+    return;
+  }
+  
+  wrapper.style.display = 'block';
+  countEl.textContent = userList.length;
+  
+  var html = '';
+  userList.forEach(function(user) {
+    html += '<span class="modal-tag">' + user.name + '<span class="remove" onclick="removeFromModal(\'' + user.id + '\', event)">×</span></span>';
+  });
+  container.innerHTML = html;
+  
+  // 同步更新列表中的选中状态
+  document.querySelectorAll('.org-member').forEach(function(el) {
+    el.classList.remove('selected');
+  });
+  userList.forEach(function(user) {
+    var member = document.querySelector('.org-member[onclick*="\'' + user.id + '\'"]');
+    if (member) {
+      member.classList.add('selected');
+    }
+  });
+}
+
+// 从弹窗中移除
+function removeFromModal(userId, event) {
+  event.stopPropagation();
+  var userList = currentOrgType === 'executor' ? config.executorUsers : config.notifyUsers;
+  var index = userList.findIndex(function(u) { return u.id === userId; });
+  if (index > -1) {
+    userList.splice(index, 1);
+  }
+  updateModalSelectedTags();
+  document.getElementById('confirmCount').textContent = userList.length;
+}
+
+// 确认组织选择
+function confirmOrgSelection() {
+  if (currentOrgType === 'executor') {
+    updateExecutorTags();
+  } else {
+    updateNotifyTags();
+  }
+  closeOrgModal();
+  showToast('已选择 ' + (currentOrgType === 'executor' ? config.executorUsers.length : config.notifyUsers.length) + ' 人');
+}
+
+// 打开组织选择器时初始化
+function openOrgSelector(type) {
+  currentOrgType = type;
+  document.getElementById('orgModalTitle').textContent = type === 'executor' ? '选择执行人员' : '选择通知人员';
+  
+  // 重置选中状态显示
+  document.querySelectorAll('.org-member').forEach(function(el) {
+    el.classList.remove('selected');
+  });
+  
+  // 根据已有选择更新选中状态
+  var userList = type === 'executor' ? config.executorUsers : config.notifyUsers;
+  userList.forEach(function(user) {
+    var member = document.querySelector('.org-member[onclick*="\'' + user.id + '\'"]');
+    if (member) {
+      member.classList.add('selected');
+    }
+  });
+  
+  updateModalSelectedTags();
+  document.getElementById('confirmCount').textContent = userList.length;
+  
+  // 默认展开第一个部门
+  var firstDept = document.querySelector('.org-dept');
+  if (firstDept) {
+    firstDept.classList.add('expanded');
+    firstDept.querySelector('.org-dept-members').style.display = 'block';
+  }
+  
+  document.getElementById('orgModal').classList.add('show');
 }
 
 // 更新执行人标签
