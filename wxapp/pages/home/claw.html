@@ -267,6 +267,21 @@
             margin-bottom: var(--spacing-lg);
             box-shadow: var(--shadow-md);
             border: 1px solid var(--color-border);
+            animation: welcomeSlideIn 0.5s ease-out;
+        }
+
+        @keyframes welcomeSlideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .welcome-card .message-avatar {
+            animation: welcomeAvatarPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes welcomeAvatarPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         .welcome-header {
@@ -431,21 +446,57 @@
             padding: 0 4px;
         }
 
+        /* AI 思考中指示器 */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: var(--spacing-md);
+            background: var(--color-card);
+            border-radius: var(--radius-xl);
+            border-bottom-left-radius: var(--radius-sm);
+            box-shadow: var(--shadow-sm);
+            width: fit-content;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--brand-primary);
+            border-radius: 50%;
+            animation: typingBounce 1.4s ease-in-out infinite;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-6px); opacity: 1; }
+        }
+
         /* 数据卡片 */
         .data-card {
-            background: var(--color-bg);
+            background: linear-gradient(135deg, var(--color-bg) 0%, #fff 100%);
             border-radius: var(--radius-lg);
             padding: var(--spacing-md);
             margin-top: var(--spacing-md);
+            border: 1px solid var(--color-border);
         }
 
         .data-card-title {
-            font-size: 12px;
-            color: var(--color-sub);
-            margin-bottom: var(--spacing-sm);
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--color-title);
+            margin-bottom: var(--spacing-md);
             display: flex;
             align-items: center;
             gap: var(--spacing-xs);
+        }
+
+        .data-card-title i {
+            color: var(--brand-primary);
         }
 
         .data-card-grid {
@@ -459,10 +510,17 @@
             border-radius: var(--radius-md);
             padding: var(--spacing-md);
             text-align: center;
+            border: 1px solid var(--color-border);
+            transition: all var(--transition-fast);
+        }
+
+        .data-card-item:active {
+            transform: scale(0.98);
+            border-color: var(--brand-primary);
         }
 
         .data-card-value {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 700;
             color: var(--color-title);
         }
@@ -472,33 +530,60 @@
         .data-card-value.purple { color: var(--color-purple); }
 
         .data-card-label {
-            font-size: 11px;
+            font-size: 12px;
             color: var(--color-sub);
-            margin-top: 2px;
+            margin-top: 4px;
         }
 
-        /* 快捷回复气泡 */
+        /* 快捷回复气泡 - 卡片式 */
         .quick-replies {
             display: flex;
-            flex-wrap: wrap;
-            gap: var(--spacing-xs);
+            flex-direction: column;
+            gap: var(--spacing-sm);
             margin-top: var(--spacing-md);
         }
 
         .quick-reply {
-            padding: 8px 16px;
-            background: var(--brand-primary-light);
-            border: 1px solid var(--brand-primary);
-            border-radius: var(--radius-full);
-            font-size: 13px;
-            color: var(--brand-primary);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md);
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            color: var(--color-text);
             cursor: pointer;
             transition: all var(--transition-fast);
+            text-align: left;
         }
 
         .quick-reply:active {
+            background: var(--brand-primary-light);
+            border-color: var(--brand-primary);
+            transform: scale(0.98);
+        }
+
+        .quick-reply-icon {
+            width: 32px;
+            height: 32px;
             background: var(--brand-primary);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
             color: white;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .quick-reply-text {
+            flex: 1;
+        }
+
+        .quick-reply-arrow {
+            color: var(--color-sub);
+            font-size: 12px;
         }
 
         /* ========== 底部输入区 ========== */
@@ -552,7 +637,7 @@
             max-height: 120px;
             padding: 10px 16px;
             background: var(--color-bg);
-            border: none;
+            border: 2px solid transparent;
             border-radius: var(--radius-full);
             font-family: var(--font-family);
             font-size: 15px;
@@ -560,6 +645,12 @@
             resize: none;
             outline: none;
             line-height: 1.4;
+            transition: all var(--transition-fast);
+        }
+
+        .input-field:focus {
+            border-color: var(--brand-primary);
+            background: var(--color-card);
         }
 
         .input-field::placeholder {
@@ -590,6 +681,19 @@
             background: var(--color-border);
             box-shadow: none;
             cursor: not-allowed;
+        }
+
+        .send-btn.loading {
+            pointer-events: none;
+        }
+
+        .send-btn.loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         /* Toast */
@@ -679,24 +783,38 @@
             <!-- AI 欢迎消息 -->
             <div class="message ai">
                 <div class="message-avatar ai">🦷</div>
-                <div class="message-bubble">
-                    你好！我是 Claw，您的智能房产助手 👋
-                    <br><br>
-                    我可以帮您：
-                    <br>
-                    • 📋 下达探盘任务
-                    <br>
-                    • 📊 查看数据报表
-                    <br>
-                    • ✍️ 生成推广文案
-                    <br>
-                    • 🏠 推荐优质房源
-                    <br><br>
-                    有什么可以帮您的吗？
+                <div class="message-content">
+                    <div class="message-bubble">
+                        你好！我是 Claw，您的智能房产助手 👋
+                        <br><br>
+                        我可以帮您：
+                        <br>
+                        • 📋 下达探盘任务
+                        <br>
+                        • 📊 查看数据报表
+                        <br>
+                        • ✍️ 生成推广文案
+                        <br>
+                        • 🏠 推荐优质房源
+                        <br><br>
+                        有什么可以帮您的吗？
+                    </div>
                     <div class="quick-replies">
-                        <button class="quick-reply" onclick="sendQuickReply('下达探盘任务')">下达探盘任务</button>
-                        <button class="quick-reply" onclick="sendQuickReply('查看业绩数据')">查看业绩数据</button>
-                        <button class="quick-reply" onclick="sendQuickReply('生成文案')">生成文案</button>
+                        <button class="quick-reply" onclick="sendQuickReply('下达探盘任务')">
+                            <span class="quick-reply-icon"><i class="fa fa-map-marker"></i></span>
+                            <span class="quick-reply-text">下达探盘任务</span>
+                            <span class="quick-reply-arrow"><i class="fa fa-angle-right"></i></span>
+                        </button>
+                        <button class="quick-reply" onclick="sendQuickReply('查看业绩数据')">
+                            <span class="quick-reply-icon"><i class="fa fa-bar-chart"></i></span>
+                            <span class="quick-reply-text">查看业绩数据</span>
+                            <span class="quick-reply-arrow"><i class="fa fa-angle-right"></i></span>
+                        </button>
+                        <button class="quick-reply" onclick="sendQuickReply('生成文案')">
+                            <span class="quick-reply-icon"><i class="fa fa-magic"></i></span>
+                            <span class="quick-reply-text">生成推广文案</span>
+                            <span class="quick-reply-arrow"><i class="fa fa-angle-right"></i></span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -836,14 +954,18 @@
         function sendQuickAction(action) {
             addMessage('user', action);
             
+            // 显示 AI 思考中
+            showTypingIndicator();
+            
             setTimeout(() => {
+                hideTypingIndicator();
                 const response = quickResponses[action];
                 if (response) {
                     addAIMessage(response.text, response.data);
                 } else {
                     addAIMessage(`好的，我将帮您：${action}`);
                 }
-            }, 600);
+            }, 1000);
         }
 
         // 发送快捷回复
@@ -862,10 +984,46 @@
             addMessage('user', text);
             input.value = '';
             autoResize(input);
+            
+            // 显示发送按钮 loading
+            const sendBtn = document.getElementById('sendBtn');
+            sendBtn.classList.add('loading');
+            sendBtn.innerHTML = '<i class="fa fa-spinner"></i>';
+            
+            // 显示 AI 思考中
+            showTypingIndicator();
 
             setTimeout(() => {
+                hideTypingIndicator();
+                sendBtn.classList.remove('loading');
+                sendBtn.innerHTML = '<i class="fa fa-paper-plane"></i>';
                 addAIMessage('收到！我正在处理您的请求...');
-            }, 800);
+            }, 1200);
+        }
+
+        // 显示思考中指示器
+        function showTypingIndicator() {
+            const chat = document.getElementById('chatArea');
+            const html = `
+                <div class="message ai" id="typingIndicator">
+                    <div class="message-avatar ai">🦷</div>
+                    <div class="typing-indicator">
+                        <span class="typing-dot"></span>
+                        <span class="typing-dot"></span>
+                        <span class="typing-dot"></span>
+                    </div>
+                </div>
+            `;
+            chat.insertAdjacentHTML('beforeend', html);
+            scrollToBottom();
+        }
+
+        // 隐藏思考中指示器
+        function hideTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            if (indicator) {
+                indicator.remove();
+            }
         }
 
         // 添加用户消息
