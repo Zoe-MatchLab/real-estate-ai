@@ -541,7 +541,7 @@
             <!-- 小红书文案 -->
             <div class="copywriter-card" id="card_xiaohongshu">
                 <div class="copywriter-header" onclick="toggleCard('xiaohongshu')">
-                    <input type="checkbox" class="copywriter-checkbox" id="check_xiaohongshu" onchange="selectCopy('xiaohongshu')">
+                    <input type="checkbox" class="copywriter-checkbox" id="check_xiaohongshu" onclick="event.stopPropagation(); selectCopy('xiaohongshu')">
                     <div class="copywriter-info">
                         <div class="copywriter-platform xiaohongshu">小红书</div>
                         <div class="copywriter-title" id="title_xiaohongshu">中海汇德里 | 探盘日记</div>
@@ -568,7 +568,7 @@
             <!-- 公众号文案 -->
             <div class="copywriter-card" id="card_wechat">
                 <div class="copywriter-header" onclick="toggleCard('wechat')">
-                    <input type="checkbox" class="copywriter-checkbox" id="check_wechat" onchange="selectCopy('wechat')">
+                    <input type="checkbox" class="copywriter-checkbox" id="check_wechat" onclick="event.stopPropagation(); selectCopy('wechat')">
                     <div class="copywriter-info">
                         <div class="copywriter-platform wechat">公众号</div>
                         <div class="copywriter-title" id="title_wechat">【开盘预告】中海汇德里震撼来袭</div>
@@ -595,7 +595,7 @@
             <!-- 短视频脚本 -->
             <div class="copywriter-card" id="card_video">
                 <div class="copywriter-header" onclick="toggleCard('video')">
-                    <input type="checkbox" class="copywriter-checkbox" id="check_video" onchange="selectCopy('video')">
+                    <input type="checkbox" class="copywriter-checkbox" id="check_video" onclick="event.stopPropagation(); selectCopy('video')">
                     <div class="copywriter-info">
                         <div class="copywriter-platform video">短视频</div>
                         <div class="copywriter-title" id="title_video">中海汇德里 | 楼盘介绍脚本</div>
