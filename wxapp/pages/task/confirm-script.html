@@ -313,47 +313,78 @@
             color: var(--color-text);
             white-space: pre-wrap;
         }
-        .copywriter-textarea {
+        /* 底部编辑弹窗 */
+        .edit-modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 99998;
             display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .edit-modal.show { display: flex; }
+        .edit-sheet {
             width: 100%;
-            background: var(--color-bg);
+            background: white;
+            border-radius: 16px 16px 0 0;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .edit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             padding: var(--spacing-md);
+            border-bottom: 1px solid var(--color-border);
+        }
+        .edit-title { font-size: 16px; font-weight: 600; color: var(--color-title); }
+        .edit-close {
+            width: 28px; height: 28px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--color-sub); cursor: pointer;
+        }
+        .edit-content {
+            flex: 1;
+            padding: var(--spacing-md);
+            overflow-y: auto;
+        }
+        .edit-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: var(--spacing-md);
+            border: 1px solid var(--color-border);
             border-radius: var(--radius-lg);
             font-size: 14px;
             line-height: 1.8;
-            color: var(--color-text);
-            border: 2px solid var(--brand-primary);
-            resize: vertical;
-            min-height: 150px;
+            resize: none;
+            outline: none;
             font-family: inherit;
         }
-
-        /* 编辑模式操作按钮 */
-        .copywriter-edit-btns {
+        .edit-textarea:focus { border-color: var(--brand-primary); }
+        .edit-footer {
+            padding: var(--spacing-md);
+            padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
             display: flex;
-            justify-content: center;
-            gap: var(--spacing-lg);
-            margin-top: var(--spacing-md);
+            gap: var(--spacing-sm);
         }
-        .edit-btn {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
+        .edit-action-btn {
+            flex: 1;
+            padding: var(--spacing-md);
             border: none;
-            font-size: 22px;
+            border-radius: var(--radius-lg);
+            font-size: 15px;
+            font-weight: 500;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.15s;
         }
-        .edit-btn:active { transform: scale(0.9); }
-        .edit-btn.cancel {
+        .edit-action-btn.cancel {
             background: var(--color-bg);
-            border: 2px solid var(--color-border);
+            color: var(--color-text);
         }
-        .edit-btn.confirm {
-            background: var(--brand-primary-light);
+        .edit-action-btn.save {
+            background: var(--brand-primary);
+            color: white;
         }
         
         .copywriter-actions {
@@ -552,7 +583,6 @@
                 </div>
                 <div class="copywriter-content">
                     <div class="copywriter-text" id="content_xiaohongshu"></div>
-                    <textarea class="copywriter-textarea" id="textarea_xiaohongshu"></textarea>
                     <div class="copywriter-actions">
                         <button class="action-btn" onclick="copyText('xiaohongshu')">
                             <i class="fa fa-copy"></i>复制
@@ -560,15 +590,9 @@
                         <button class="action-btn" onclick="regenerateCopy('xiaohongshu')">
                             <i class="fa fa-refresh"></i>重生
                         </button>
-                        <button class="action-btn" onclick="editCopy('xiaohongshu')">
+                        <button class="action-btn" onclick="openEditModal('xiaohongshu')">
                             <i class="fa fa-edit"></i>编辑
                         </button>
-                    </div>
-                    <div class="copywriter-edit-actions" style="display:none;">
-                        <div class="copywriter-edit-btns">
-                            <button class="edit-btn cancel" onclick="cancelEdit('xiaohongshu')">❌</button>
-                            <button class="edit-btn confirm" onclick="saveEdit('xiaohongshu')">✅</button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -586,7 +610,6 @@
                 </div>
                 <div class="copywriter-content">
                     <div class="copywriter-text" id="content_wechat"></div>
-                    <textarea class="copywriter-textarea" id="textarea_wechat"></textarea>
                     <div class="copywriter-actions">
                         <button class="action-btn" onclick="copyText('wechat')">
                             <i class="fa fa-copy"></i>复制
@@ -594,15 +617,9 @@
                         <button class="action-btn" onclick="regenerateCopy('wechat')">
                             <i class="fa fa-refresh"></i>重生
                         </button>
-                        <button class="action-btn" onclick="editCopy('wechat')">
+                        <button class="action-btn" onclick="openEditModal('wechat')">
                             <i class="fa fa-edit"></i>编辑
                         </button>
-                    </div>
-                    <div class="copywriter-edit-actions" style="display:none;">
-                        <div class="copywriter-edit-btns">
-                            <button class="edit-btn cancel" onclick="cancelEdit('wechat')">❌</button>
-                            <button class="edit-btn confirm" onclick="saveEdit('wechat')">✅</button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -620,7 +637,6 @@
                 </div>
                 <div class="copywriter-content">
                     <div class="copywriter-text" id="content_video"></div>
-                    <textarea class="copywriter-textarea" id="textarea_video"></textarea>
                     <div class="copywriter-actions">
                         <button class="action-btn" onclick="copyText('video')">
                             <i class="fa fa-copy"></i>复制
@@ -628,15 +644,9 @@
                         <button class="action-btn" onclick="regenerateCopy('video')">
                             <i class="fa fa-refresh"></i>重生
                         </button>
-                        <button class="action-btn" onclick="editCopy('video')">
+                        <button class="action-btn" onclick="openEditModal('video')">
                             <i class="fa fa-edit"></i>编辑
                         </button>
-                    </div>
-                    <div class="copywriter-edit-actions" style="display:none;">
-                        <div class="copywriter-edit-btns">
-                            <button class="edit-btn cancel" onclick="cancelEdit('video')">❌</button>
-                            <button class="edit-btn confirm" onclick="saveEdit('video')">✅</button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -657,6 +667,23 @@
                 <i class="fa fa-check"></i>
                 <span>确认并提交</span>
             </button>
+        </div>
+
+        <!-- 编辑弹窗 -->
+        <div class="edit-modal" id="editModal">
+            <div class="edit-sheet">
+                <div class="edit-header">
+                    <span class="edit-title">编辑文案</span>
+                    <div class="edit-close" onclick="closeEditModal()"><i class="fa fa-times"></i></div>
+                </div>
+                <div class="edit-content">
+                    <textarea class="edit-textarea" id="editTextarea"></textarea>
+                </div>
+                <div class="edit-footer">
+                    <button class="edit-action-btn cancel" onclick="closeEditModal()">取消</button>
+                    <button class="edit-action-btn save" onclick="saveEditModal()">保存</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -693,12 +720,10 @@
                     titleEl.textContent = houseName + ' | ' + getDefaultTitle(type);
                 }
                 const contentEl = document.getElementById('content_' + type);
-                const textareaEl = document.getElementById('textarea_' + type);
                 if (contentEl) {
                     const text = getDefaultContent(type);
                     contentEl.textContent = text;
                     originalContent[type] = text;
-                    if (textareaEl) textareaEl.value = text;
                 }
             });
 
@@ -1014,6 +1039,35 @@
             card.querySelectorAll('.copywriter-actions').forEach(el => el.style.display = 'flex');
             const editActions = card.querySelector('.copywriter-edit-actions');
             if (editActions) editActions.style.display = 'none';
+        }
+
+        // 底部弹窗编辑
+        let editingType = null;
+
+        function openEditModal(type) {
+            editingType = type;
+            const content = document.getElementById('content_' + type);
+            document.getElementById('editTextarea').value = content.textContent;
+            document.getElementById('editModal').classList.add('show');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('show');
+            editingType = null;
+        }
+
+        function saveEditModal() {
+            if (!editingType) return;
+            const newText = document.getElementById('editTextarea').value.trim();
+            if (!newText) {
+                showToast('文案内容不能为空');
+                return;
+            }
+            const content = document.getElementById('content_' + editingType);
+            content.textContent = newText;
+            originalContent[editingType] = newText;
+            closeEditModal();
+            showToast(PLATFORM_NAMES[editingType] + '文案已保存');
         }
 
         function updateConfirmBtn() {
