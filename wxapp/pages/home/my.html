@@ -98,7 +98,6 @@
       border-radius: 20px;
       font-size: 12px;
       font-weight: 500;
-      text-decoration: none;
     }
     
     .vip-card {
@@ -142,7 +141,6 @@
       border-radius: 20px;
       font-size: 12px;
       font-weight: 500;
-      text-decoration: none;
       display: flex;
       align-items: center;
       gap: 4px;
@@ -160,7 +158,6 @@
       align-items: center;
       padding: 14px 15px;
       border-bottom: 1px solid #F2F3F5;
-      text-decoration: none;
       color: #1D2129;
     }
     
@@ -228,21 +225,6 @@
     }
     
     /* TabBar胶囊样式 */
-    .tab-bar-bottom {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 60px;
-      background: #fff;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      padding-bottom: env(safe-area-inset-bottom);
-      box-shadow: 0 -1px 0 #E5E6EB;
-      z-index: 100;
-    }
-    
     .tab-bar-bottom {
       position: fixed;
       bottom: calc(16px + env(safe-area-inset-bottom));
@@ -319,7 +301,7 @@
     <div class="vip-renew" onclick="showToast()">
       立即续费
       <i class="fa fa-angle-right"></i>
-    </a>
+    </div>
   </div>
 
   <div class="list-card">
@@ -332,7 +314,7 @@
       </div>
       <span class="item-sub">签到有礼</span>
       <i class="fa fa-angle-right item-arrow"></i>
-    </a>
+    </div>
     <div class="list-item" onclick="showToast()">
       <div class="item-icon">
         <i class="fa fa-bolt"></i>
@@ -341,7 +323,7 @@
         <div class="item-title">算力</div>
       </div>
       <i class="fa fa-angle-right item-arrow"></i>
-    </a>
+    </div>
     <div class="list-item" onclick="showToast()">
       <div class="item-icon">
         <i class="fa fa-user-plus"></i>
@@ -350,7 +332,7 @@
         <div class="item-title">邀请</div>
       </div>
       <i class="fa fa-angle-right item-arrow"></i>
-    </a>
+    </div>
     <div class="list-item" onclick="showToast()">
       <div class="item-icon">
         <i class="fa fa-file-text-o"></i>
@@ -359,7 +341,7 @@
         <div class="item-title">训练记录</div>
       </div>
       <i class="fa fa-angle-right item-arrow"></i>
-    </a>
+    </div>
   </div>
 
   <div class="list-card">
@@ -371,7 +353,7 @@
         <div class="item-title">收藏</div>
       </div>
       <i class="fa fa-angle-right item-arrow"></i>
-    </a>
+    </div>
     <div class="list-item" onclick="showToast()">
       <div class="item-icon">
         <i class="fa fa-map-marker"></i>
@@ -380,7 +362,7 @@
         <div class="item-title">足迹</div>
       </div>
       <i class="fa fa-angle-right item-arrow"></i>
-    </a>
+    </div>
     <div class="list-item" onclick="showToast()">
       <div class="item-icon">
         <i class="fa fa-credit-card"></i>
@@ -389,7 +371,7 @@
         <div class="item-title">付费记录</div>
       </div>
       <i class="fa fa-angle-right item-arrow"></i>
-    </a>
+    </div>
     <div class="list-item" onclick="showToast()">
       <div class="item-icon">
         <i class="fa fa-gear"></i>
@@ -398,15 +380,13 @@
         <div class="item-title">设置</div>
       </div>
       <i class="fa fa-angle-right item-arrow"></i>
-    </a>
+    </div>
   </div>
 
 </div>
 
-<!-- Toast提示 -->
 <div class="toast" id="toast">未开放，敬请期待</div>
 
-<!-- TabBar胶囊 -->
 <nav class="tab-bar-bottom">
   <a href="calendar.html" class="tab-item-bottom">
     <i class="fa fa-home"></i>
@@ -426,13 +406,13 @@
 </nav>
 
 <script>
-  function showToast() {
-    var toast = document.getElementById('toast');
-    toast.classList.add('show');
-    setTimeout(function() {
-      toast.classList.remove('show');
-    }, 2000);
-  }
+function showToast() {
+  var toast = document.getElementById('toast');
+  toast.classList.add('show');
+  setTimeout(function() {
+    toast.classList.remove('show');
+  }, 2000);
+}
 </script>
 
 </body>
