@@ -338,9 +338,11 @@
         }
 
         .task-card.type-house::before { background: var(--brand-primary); }
-        .task-card.type-speech::before { background: var(--color-purple); }
-        .task-card.type-content::before { background: var(--color-success); }
-        .task-card.type-new::before { background: var(--color-danger); }
+        .task-card.type-train::before { background: var(--color-purple); }
+        .task-card.type-text::before { background: var(--color-info); }
+        .task-card.type-video::before { background: var(--color-success); }
+        .task-card.type-custom::before { background: var(--color-warning); }
+        .task-card.type-pending::before { background: var(--color-sub); }
 
         .task-header {
             display: flex;
@@ -366,9 +368,11 @@
         }
 
         .type-icon.house { background: var(--brand-primary-light); color: var(--brand-primary); }
-        .type-icon.speech { background: var(--color-purple-light); color: var(--color-purple); }
-        .type-icon.content { background: var(--color-success-light); color: var(--color-success); }
-        .type-icon.new { background: var(--color-danger-light); color: var(--color-danger); }
+        .type-icon.train { background: var(--color-purple-light); color: var(--color-purple); }
+        .type-icon.text { background: var(--color-info-light); color: var(--color-info); }
+        .type-icon.video { background: var(--color-success-light); color: var(--color-success); }
+        .type-icon.custom { background: var(--color-warning-light); color: var(--color-warning); }
+        .type-icon.pending { background: var(--color-bg); color: var(--color-sub); }
 
         .type-text {
             font-size: 12px;
@@ -376,9 +380,11 @@
         }
 
         .type-text.house { color: var(--brand-primary); }
-        .type-text.speech { color: var(--color-purple); }
-        .type-text.content { color: var(--color-success); }
-        .type-text.new { color: var(--color-danger); }
+        .type-text.train { color: var(--color-purple); }
+        .type-text.text { color: var(--color-info); }
+        .type-text.video { color: var(--color-success); }
+        .type-text.custom { color: var(--color-warning); }
+        .type-text.pending { color: var(--color-sub); }
 
         /* 执行人头像 */
         .executors {
@@ -467,9 +473,113 @@
         }
 
         .progress-fill.house { background: var(--brand-primary); }
-        .progress-fill.speech { background: var(--color-purple); }
-        .progress-fill.content { background: var(--color-success); }
-        .progress-fill.new { background: var(--color-danger); }
+        .progress-fill.train { background: var(--color-purple); }
+        .progress-fill.text { background: var(--color-info); }
+        .progress-fill.video { background: var(--color-success); }
+        .progress-fill.custom { background: var(--color-warning); }
+        .progress-fill.pending { background: var(--color-sub); }
+        
+        /* 多阶段进度组 */
+        .stage-group {
+            margin-top: var(--spacing-sm);
+            padding-top: var(--spacing-sm);
+            border-top: 1px solid var(--color-border);
+        }
+
+        .stage-group-label {
+            font-size: 11px;
+            color: var(--color-sub);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .stage-items {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .stage-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .stage-name {
+            font-size: 10px;
+            color: var(--color-sub);
+            text-align: center;
+        }
+
+        .stage-bar {
+            height: 4px;
+            background: var(--color-bg);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .stage-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .stage-fill.done { background: var(--color-success); }
+        .stage-fill.active { background: var(--brand-primary); }
+        .stage-fill.pending { background: var(--color-bg); }
+
+        .stage-group-row {
+            display: flex;
+            gap: var(--spacing-md);
+        }
+
+        .stage-group-row .stage-group {
+            flex: 1;
+            border-top: none;
+            padding-top: 0;
+            margin-top: 0;
+        }
+
+        /* 任务按钮 */
+        .task-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+            padding-top: var(--spacing-sm);
+            border-top: 1px solid var(--color-border);
+        }
+
+        .task-btn {
+            flex: 1;
+            padding: 8px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            border: none;
+            transition: all var(--transition-fast);
+        }
+
+        .task-btn:active { transform: scale(0.96); }
+
+        .task-btn-primary {
+            background: var(--brand-primary);
+            color: white;
+        }
+
+        .task-btn-secondary {
+            background: var(--color-bg);
+            color: var(--color-text);
+            border: 1px solid var(--color-border);
+        }
+
+        /* 任务发起人 */
+        .task-sponsor {
+            font-size: 11px;
+            color: var(--color-sub);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
         
         /* 生成中状态 */
         .generating-status {
@@ -906,139 +1016,358 @@
                 </div>
 
                 <!-- 探盘任务 - 进行中 -->
-                <div class="task-card type-house" onclick="location.href='task-detail.html'">
+                <div class="task-card type-house">
                     <div class="task-header">
                         <div class="task-type">
                             <span class="type-icon house"><i class="fa fa-map-marker"></i></span>
                             <span class="type-text house">探盘</span>
                         </div>
-                        <div class="executors">
-                            <span class="executor-avatar" title="张三">张</span>
-                            <span class="executor-avatar" title="李四">李</span>
-                        </div>
+                        <div class="task-sponsor"><i class="fa fa-user"></i> 张三(发起人)</div>
                         <span class="task-time warning">
                             <i class="fa fa-clock-o"></i> 今日18:00
                         </span>
                     </div>
                     <div class="task-title">中海汇德里新盘探盘</div>
-                    <div class="task-subtitle">共4个打卡点 · 已完成2个</div>
-                    <div class="task-progress">
-                        <div class="progress-header">
-                            <span class="progress-text">完成进度</span>
-                            <span class="progress-value">65%</span>
+                    
+                    <!-- 探盘进度(4阶段) + 训练进度(3阶段) -->
+                    <div class="stage-group-row">
+                        <div class="stage-group">
+                            <div class="stage-group-label">探盘进度</div>
+                            <div class="stage-items">
+                                <div class="stage-item">
+                                    <span class="stage-name">打卡</span>
+                                    <div class="stage-bar"><div class="stage-fill done" style="width: 100%;"></div></div>
+                                </div>
+                                <div class="stage-item">
+                                    <span class="stage-name">素材</span>
+                                    <div class="stage-bar"><div class="stage-fill active" style="width: 50%;"></div></div>
+                                </div>
+                                <div class="stage-item">
+                                    <span class="stage-name">文案</span>
+                                    <div class="stage-bar"><div class="stage-fill pending"></div></div>
+                                </div>
+                                <div class="stage-item">
+                                    <span class="stage-name">封面</span>
+                                    <div class="stage-bar"><div class="stage-fill pending"></div></div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill house" style="width: 65%;"></div>
+                        <div class="stage-group">
+                            <div class="stage-group-label">训练进度</div>
+                            <div class="stage-items">
+                                <div class="stage-item">
+                                    <span class="stage-name">阅读</span>
+                                    <div class="stage-bar"><div class="stage-fill done" style="width: 100%;"></div></div>
+                                </div>
+                                <div class="stage-item">
+                                    <span class="stage-name">开始</span>
+                                    <div class="stage-bar"><div class="stage-fill active" style="width: 30%;"></div></div>
+                                </div>
+                                <div class="stage-item">
+                                    <span class="stage-name">完成</span>
+                                    <div class="stage-bar"><div class="stage-fill pending"></div></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <!-- 生成中状态 -->
-                    <div class="generating-status show">
-                        <div class="generating-spinner"></div>
-                        <div class="generating-info">
-                            <div class="generating-text">阶段3 文案生成中 45%...</div>
-                            <div class="generating-progress">可返回任务列表，后台持续运行</div>
-                        </div>
+                    
+                    <div class="task-actions">
+                        <button class="task-btn task-btn-primary" onclick="location.href='task-detail.html'">进入任务</button>
+                        <button class="task-btn task-btn-secondary" onclick="location.href='speech-train.html'">开始训练</button>
                     </div>
                 </div>
 
-                <!-- 话术任务 - 待执行 -->
-                <div class="task-card type-speech" onclick="location.href='task-detail.html'">
+                <!-- 训练任务 - 待执行 -->
+                <div class="task-card type-train">
                     <div class="task-header">
                         <div class="task-type">
-                            <span class="type-icon speech"><i class="fa fa-microphone"></i></span>
-                            <span class="type-text speech">话术</span>
+                            <span class="type-icon train"><i class="fa fa-book"></i></span>
+                            <span class="type-text train">训练</span>
                         </div>
-                        <div class="executors">
-                            <span class="executor-avatar" title="王五">王</span>
-                        </div>
+                        <div class="task-sponsor"><i class="fa fa-user"></i> 李四(发起人)</div>
                         <span class="task-time">
                             <i class="fa fa-clock-o"></i> 明天 10:00
                         </span>
                     </div>
                     <div class="task-title">议价谈判话术练习</div>
-                    <div class="task-subtitle">约15分钟 · 5个场景</div>
+                    
+                    <!-- 训练进度(3阶段) -->
+                    <div class="stage-group">
+                        <div class="stage-items">
+                            <div class="stage-item">
+                                <span class="stage-name">阅读资料</span>
+                                <div class="stage-bar"><div class="stage-fill pending"></div></div>
+                            </div>
+                            <div class="stage-item">
+                                <span class="stage-name">开始训练</span>
+                                <div class="stage-bar"><div class="stage-fill pending"></div></div>
+                            </div>
+                            <div class="stage-item">
+                                <span class="stage-name">训练完成</span>
+                                <div class="stage-bar"><div class="stage-fill pending"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-actions">
+                        <button class="task-btn task-btn-primary" onclick="location.href='speech-train.html'">开始训练</button>
+                    </div>
                 </div>
 
-                <!-- 内容任务 - 已提交 -->
-                <div class="task-card type-content" onclick="location.href='task-detail.html'">
+                <!-- 文案任务 - 撰写中 -->
+                <div class="task-card type-text">
                     <div class="task-header">
                         <div class="task-type">
-                            <span class="type-icon content"><i class="fa fa-file-text-o"></i></span>
-                            <span class="type-text content">内容</span>
+                            <span class="type-icon text"><i class="fa fa-edit"></i></span>
+                            <span class="type-text text">文案</span>
                         </div>
-                        <div class="executors">
-                            <span class="executor-avatar" title="赵六">赵</span>
-                        </div>
+                        <div class="task-sponsor"><i class="fa fa-user"></i> 王五(发起人)</div>
                         <span class="task-time">
-                            <i class="fa fa-check-circle" style="color: var(--color-success);"></i> 已提交
+                            <i class="fa fa-clock-o"></i> 今日17:00
                         </span>
                     </div>
                     <div class="task-title">中海汇德里朋友圈文案</div>
-                    <div class="task-subtitle">待审核</div>
+                    
+                    <!-- 文案进度(4阶段) -->
+                    <div class="stage-group">
+                        <div class="stage-items">
+                            <div class="stage-item">
+                                <span class="stage-name">待撰写</span>
+                                <div class="stage-bar"><div class="stage-fill done" style="width: 100%;"></div></div>
+                            </div>
+                            <div class="stage-item">
+                                <span class="stage-name">撰写中</span>
+                                <div class="stage-bar"><div class="stage-fill active" style="width: 60%;"></div></div>
+                            </div>
+                            <div class="stage-item">
+                                <span class="stage-name">已提交</span>
+                                <div class="stage-bar"><div class="stage-fill pending"></div></div>
+                            </div>
+                            <div class="stage-item">
+                                <span class="stage-name">已通过</span>
+                                <div class="stage-bar"><div class="stage-fill pending"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-actions">
+                        <button class="task-btn task-btn-primary" onclick="location.href='confirm-copywriter.html'">继续撰写</button>
+                    </div>
                 </div>
 
-                <!-- 新盘任务 - 进行中 -->
-                <div class="task-card type-new" onclick="location.href='task-detail.html'">
+                <!-- 视频任务 - 待拍摄 -->
+                <div class="task-card type-video">
                     <div class="task-header">
                         <div class="task-type">
-                            <span class="type-icon new"><i class="fa fa-home"></i></span>
-                            <span class="type-text new">新盘</span>
+                            <span class="type-icon video"><i class="fa fa-video-camera"></i></span>
+                            <span class="type-text video">视频</span>
                         </div>
-                        <div class="executors">
-                            <span class="executor-avatar" title="孙七">孙</span>
-                            <span class="executor-avatar" title="周八">周</span>
-                        </div>
+                        <div class="task-sponsor"><i class="fa fa-user"></i> 赵六(发起人)</div>
                         <span class="task-time">
-                            <i class="fa fa-clock-o"></i> 4月5日
+                            <i class="fa fa-clock-o"></i> 明日12:00
                         </span>
                     </div>
-                    <div class="task-title">万科翡翠公园新盘上线</div>
-                    <div class="task-subtitle">准备上线物料</div>
-                    <div class="task-progress">
-                        <div class="progress-header">
-                            <span class="progress-text">完成进度</span>
-                            <span class="progress-value">30%</span>
+                    <div class="task-title">中海汇德里楼盘介绍视频</div>
+                    
+                    <!-- 视频进度(4阶段) -->
+                    <div class="stage-group">
+                        <div class="stage-items">
+                            <div class="stage-item">
+                                <span class="stage-name">待拍摄</span>
+                                <div class="stage-bar"><div class="stage-fill pending"></div></div>
+                            </div>
+                            <div class="stage-item">
+                                <span class="stage-name">剪辑中</span>
+                                <div class="stage-bar"><div class="stage-fill pending"></div></div>
+                            </div>
+                            <div class="stage-item">
+                                <span class="stage-name">待审核</span>
+                                <div class="stage-bar"><div class="stage-fill pending"></div></div>
+                            </div>
+                            <div class="stage-item">
+                                <span class="stage-name">已完成</span>
+                                <div class="stage-bar"><div class="stage-fill pending"></div></div>
+                            </div>
                         </div>
-                        <div class="progress-bar">
-                            <div class="progress-fill new" style="width: 30%;"></div>
-                        </div>
+                    </div>
+                    
+                    <div class="task-actions">
+                        <button class="task-btn task-btn-primary" onclick="location.href='submit-result.html'">去拍摄</button>
                     </div>
                 </div>
 
-                <!-- 探盘任务 - 待执行 -->
-                <div class="task-card type-house" onclick="location.href='task-detail.html'">
+                <!-- 自定义任务 - 进行中 -->
+                <div class="task-card type-custom">
+                    <div class="task-header">
+                        <div class="task-type">
+                            <span class="type-icon custom"><i class="fa fa-star"></i></span>
+                            <span class="type-text custom">自定义</span>
+                        </div>
+                        <span class="task-time">
+                            <i class="fa fa-clock-o"></i> 4月10日
+                        </span>
+                    </div>
+                    <div class="task-title">整理客户跟进记录</div>
+                    
+                    <!-- 自定义任务状态 -->
+                    <div class="stage-group">
+                        <div class="progress-header">
+                            <span class="progress-text">任务状态</span>
+                            <span class="progress-value" style="color: var(--color-warning);">进行中 40%</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill custom" style="width: 40%;"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-actions">
+                        <button class="task-btn task-btn-primary">去完成</button>
+                    </div>
+                </div>
+
+                <!-- 待下发任务 -->
+                <div class="task-card type-pending">
+                    <div class="task-header">
+                        <div class="task-type">
+                            <span class="type-icon pending"><i class="fa fa-hourglass-half"></i></span>
+                            <span class="type-text pending">待下发</span>
+                        </div>
+                        <div class="task-sponsor"><i class="fa fa-user"></i> 管理员</div>
+                        <span class="task-time">
+                            <i class="fa fa-clock-o"></i> 4月15日
+                        </span>
+                    </div>
+                    <div class="task-title">万科翡翠公园探盘任务</div>
+                    
+                    <!-- 待下发说明 -->
+                    <div class="stage-group">
+                        <div style="font-size: 12px; color: var(--color-sub); padding: 8px; background: var(--color-bg); border-radius: var(--radius-md);">
+                            <i class="fa fa-info-circle"></i> 该任务将由管理员下发，请等待...
+                        </div>
+                    </div>
+                    
+                    <div class="task-actions">
+                        <button class="task-btn task-btn-secondary" onclick="location.href='task-distribute.html'">提醒下发</button>
+                    </div>
+                <!-- 探盘任务 - 待开始 -->
+                <div class="task-card type-house">
                     <div class="task-header">
                         <div class="task-type">
                             <span class="type-icon house"><i class="fa fa-map-marker"></i></span>
                             <span class="type-text house">探盘</span>
                         </div>
-                        <div class="executors">
-                            <span class="executor-avatar" title="吴九">吴</span>
-                        </div>
+                        <div class="task-sponsor"><i class="fa fa-user"></i> 吴九(发起人)</div>
                         <span class="task-time">
                             <i class="fa fa-clock-o"></i> 明天 14:00
                         </span>
                     </div>
                     <div class="task-title">保利天汇新盘探盘</div>
-                    <div class="task-subtitle">共6个打卡点</div>
+                    
+                    <div class="stage-group-row">
+                        <div class="stage-group">
+                            <div class="stage-group-label">探盘进度</div>
+                            <div class="stage-items">
+                                <div class="stage-item">
+                                    <span class="stage-name">打卡</span>
+                                    <div class="stage-bar"><div class="stage-fill pending"></div></div>
+                                </div>
+                                <div class="stage-item">
+                                    <span class="stage-name">素材</span>
+                                    <div class="stage-bar"><div class="stage-fill pending"></div></div>
+                                </div>
+                                <div class="stage-item">
+                                    <span class="stage-name">文案</span>
+                                    <div class="stage-bar"><div class="stage-fill pending"></div></div>
+                                </div>
+                                <div class="stage-item">
+                                    <span class="stage-name">封面</span>
+                                    <div class="stage-bar"><div class="stage-fill pending"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stage-group">
+                            <div class="stage-group-label">训练进度</div>
+                            <div class="stage-items">
+                                <div class="stage-item">
+                                    <span class="stage-name">阅读</span>
+                                    <div class="stage-bar"><div class="stage-fill pending"></div></div>
+                                </div>
+                                <div class="stage-item">
+                                    <span class="stage-name">开始</span>
+                                    <div class="stage-bar"><div class="stage-fill pending"></div></div>
+                                </div>
+                                <div class="stage-item">
+                                    <span class="stage-name">完成</span>
+                                    <div class="stage-bar"><div class="stage-fill pending"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-actions">
+                        <button class="task-btn task-btn-primary" onclick="location.href='task-detail.html'">进入任务</button>
+                        <button class="task-btn task-btn-secondary" onclick="location.href='speech-train.html'">开始训练</button>
+                    </div>
                 </div>
 
                 <!-- 探盘任务 - 已完成 -->
-                <div class="task-card type-house" onclick="location.href='task-detail.html'">
+                <div class="task-card type-house">
                     <div class="task-header">
                         <div class="task-type">
                             <span class="type-icon house"><i class="fa fa-map-marker"></i></span>
                             <span class="type-text house">探盘</span>
                         </div>
-                        <div class="executors">
-                            <span class="executor-avatar" title="郑十">郑</span>
-                        </div>
-                        <span class="task-time">
-                            <i class="fa fa-check-circle" style="color: var(--color-success);"></i> 已完成
+                        <div class="task-sponsor"><i class="fa fa-user"></i> 郑十(发起人)</div>
+                        <span class="task-time" style="color: var(--color-success);">
+                            <i class="fa fa-check-circle"></i> 已完成
                         </span>
                     </div>
                     <div class="task-title">公园壹号探盘任务</div>
-                    <div class="task-subtitle">4个打卡点全部完成</div>
+                    
+                    <div class="stage-group-row">
+                        <div class="stage-group">
+                            <div class="stage-group-label">探盘进度</div>
+                            <div class="stage-items">
+                                <div class="stage-item">
+                                    <span class="stage-name">打卡</span>
+                                    <div class="stage-bar"><div class="stage-fill done"></div></div>
+                                </div>
+                                <div class="stage-item">
+                                    <span class="stage-name">素材</span>
+                                    <div class="stage-bar"><div class="stage-fill done"></div></div>
+                                </div>
+                                <div class="stage-item">
+                                    <span class="stage-name">文案</span>
+                                    <div class="stage-bar"><div class="stage-fill done"></div></div>
+                                </div>
+                                <div class="stage-item">
+                                    <span class="stage-name">封面</span>
+                                    <div class="stage-bar"><div class="stage-fill done"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="stage-group">
+                            <div class="stage-group-label">训练进度</div>
+                            <div class="stage-items">
+                                <div class="stage-item">
+                                    <span class="stage-name">阅读</span>
+                                    <div class="stage-bar"><div class="stage-fill done"></div></div>
+                                </div>
+                                <div class="stage-item">
+                                    <span class="stage-name">开始</span>
+                                    <div class="stage-bar"><div class="stage-fill done"></div></div>
+                                </div>
+                                <div class="stage-item">
+                                    <span class="stage-name">完成</span>
+                                    <div class="stage-bar"><div class="stage-fill done"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="task-actions">
+                        <button class="task-btn task-btn-primary" onclick="location.href='task-detail.html'">查看报告</button>
+                    </div>
                 </div>
 
                 <!-- 空状态（默认隐藏） -->
