@@ -105,21 +105,27 @@
         }
         /* 阶段进度（头部内） */
         .header-stage-progress {
+            margin-top: 12px;
+            padding: 10px 16px;
+            background: rgba(255,255,255,0.15);
+            border-radius: var(--radius-lg);
+        }
+        .header-stage-progress .stage-row {
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-top: 12px;
-            padding: 8px 16px;
-            background: rgba(255,255,255,0.15);
-            border-radius: var(--radius-lg);
         }
         .header-stage-progress .stage-dot {
             font-size: 11px;
             color: rgba(255,255,255,0.6);
+            white-space: nowrap;
         }
         .header-stage-progress .stage-dot.active {
             color: white;
             font-weight: 600;
+        }
+        .header-stage-progress .stage-dot.completed {
+            color: rgba(255,255,255,0.8);
         }
         .header-stage-progress .stage-line {
             width: 24px;
@@ -130,6 +136,31 @@
         }
         .header-stage-progress .stage-line.inactive {
             background: rgba(255,255,255,0.2);
+        }
+        /* 完成进度条 */
+        .header-progress-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 8px;
+            gap: 8px;
+        }
+        .header-progress-bar .bar-track {
+            width: 80px;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .header-progress-bar .bar-fill {
+            height: 100%;
+            background: white;
+            border-radius: 2px;
+            transition: width 0.3s;
+        }
+        .header-progress-bar .bar-text {
+            font-size: 11px;
+            color: rgba(255,255,255,0.8);
         }
         /* 任务信息 */
         .task-info {
@@ -453,13 +484,22 @@
 
             <!-- 阶段进度（顶部） -->
             <div class="header-stage-progress">
-                <span class="stage-dot active">阶段1</span>
-                <div class="stage-line"></div>
-                <span class="stage-dot">阶段2</span>
-                <div class="stage-line inactive"></div>
-                <span class="stage-dot">阶段3</span>
-                <div class="stage-line inactive"></div>
-                <span class="stage-dot">阶段4</span>
+                <div class="stage-row">
+                    <span class="stage-dot active">阶段1</span>
+                    <div class="stage-line inactive"></div>
+                    <span class="stage-dot">阶段2</span>
+                    <div class="stage-line inactive"></div>
+                    <span class="stage-dot">阶段3</span>
+                    <div class="stage-line inactive"></div>
+                    <span class="stage-dot">阶段4</span>
+                </div>
+                <div class="header-progress-bar">
+                    <span class="bar-text">完成进度</span>
+                    <div class="bar-track">
+                        <div class="bar-fill" style="width: 0%"></div>
+                    </div>
+                    <span class="bar-text">0/4</span>
+                </div>
             </div>
         </div>
         

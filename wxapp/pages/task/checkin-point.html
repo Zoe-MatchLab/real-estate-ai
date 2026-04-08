@@ -154,17 +154,20 @@
 
         /* ===== 阶段进度（导航栏内） ===== */
         .nav-stage-progress {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 8px 16px;
+            padding: 10px 16px;
             margin: 8px 16px 0;
             background: var(--color-bg);
             border-radius: var(--radius-lg);
         }
+        .nav-stage-progress .stage-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         .nav-stage-progress .stage-dot {
             font-size: 11px;
             color: var(--color-sub);
+            white-space: nowrap;
         }
         .nav-stage-progress .stage-dot.active {
             color: var(--brand-primary);
@@ -184,6 +187,31 @@
         }
         .nav-stage-progress .stage-line.inactive {
             background: var(--color-border);
+        }
+        /* 完成进度条 */
+        .nav-progress-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 8px;
+            gap: 8px;
+        }
+        .nav-progress-bar .bar-track {
+            width: 80px;
+            height: 4px;
+            background: var(--color-border);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+        .nav-progress-bar .bar-fill {
+            height: 100%;
+            background: var(--brand-primary);
+            border-radius: 2px;
+            transition: width 0.3s;
+        }
+        .nav-progress-bar .bar-text {
+            font-size: 11px;
+            color: var(--color-sub);
         }
 
         /* ===== 阶段进度（备用） ===== */
@@ -939,13 +967,22 @@
 
             <!-- 阶段进度（顶部导航栏内） -->
             <div class="nav-stage-progress">
-                <span class="stage-dot">阶段1</span>
-                <div class="stage-line completed"></div>
-                <span class="stage-dot active">阶段2</span>
-                <div class="stage-line inactive"></div>
-                <span class="stage-dot">阶段3</span>
-                <div class="stage-line inactive"></div>
-                <span class="stage-dot">阶段4</span>
+                <div class="stage-row">
+                    <span class="stage-dot">阶段1</span>
+                    <div class="stage-line completed"></div>
+                    <span class="stage-dot active">阶段2</span>
+                    <div class="stage-line inactive"></div>
+                    <span class="stage-dot">阶段3</span>
+                    <div class="stage-line inactive"></div>
+                    <span class="stage-dot">阶段4</span>
+                </div>
+                <div class="nav-progress-bar">
+                    <span class="bar-text">完成进度</span>
+                    <div class="bar-track">
+                        <div class="bar-fill" style="width: 50%"></div>
+                    </div>
+                    <span class="bar-text">2/4</span>
+                </div>
             </div>
         </div>
 
