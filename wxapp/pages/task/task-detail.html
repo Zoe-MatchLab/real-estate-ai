@@ -224,76 +224,79 @@
         }
         .stage-card:active {
             transform: translateY(1px);
-            box-shadow: var(--shadow-sm);
+            box-shadow: 0 1px 6px rgba(0,0,0,0.08);
             opacity: 0.9;
         }
         .stage-card:last-child { margin-bottom: 0; }
 
-        /* 阶段头部：图标 + 名称 + 状态 */
-        .stage-header {
+        /* 阶段行：图标 + 名称 + 描述 + 操作 */
+        .stage-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 4px;
+            gap: 8px;
         }
         .stage-title {
             display: flex;
             align-items: center;
-            gap: var(--spacing-sm);
+            gap: 6px;
+            flex-shrink: 0;
         }
         .stage-badge {
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
-            color: var(--color-title);
+            color: #1D2129;
         }
         .stage-status-icon {
-            font-size: 16px;
+            font-size: 15px;
             line-height: 1;
         }
+        .stage-desc {
+            font-size: 12px;
+            color: #86909C;
+            flex: 1;
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .stage-desc.success { color: #00B42A; }
         .stage-action {
             display: flex;
             align-items: center;
             gap: 4px;
             font-size: 13px;
-            color: var(--brand-primary);
+            color: #fa8c16;
+            flex-shrink: 0;
         }
         .stage-action i { font-size: 12px; }
-        .stage-action.gray { color: var(--color-sub); }
+        .stage-action.gray { color: #86909C; }
 
-        /* 阶段详情行 */
-        .stage-detail {
-            padding-left: 24px;
-            font-size: 12px;
-            color: var(--color-sub);
-            margin-bottom: var(--spacing-sm);
-        }
-        .stage-detail.success { color: var(--color-success); }
-
-        /* 阶段操作按钮（右侧） */
+        /* 阶段操作按钮（右侧图标按钮） */
         .stage-action-btn {
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            gap: 4px;
-            padding: 4px 12px;
-            background: var(--brand-primary-light);
-            color: var(--brand-primary);
-            border-radius: var(--radius-full);
-            font-size: 12px;
-            font-weight: 500;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: #FFF7E6;
+            color: #fa8c16;
+            border-radius: 50%;
             border: none;
             cursor: pointer;
             transition: all 0.15s;
-            white-space: nowrap;
+            flex-shrink: 0;
         }
         .stage-action-btn:active {
-            background: var(--color-warning-light);
-            transform: scale(0.96);
+            background: #FFE7CC;
+            transform: scale(0.9);
         }
+        .stage-action-btn i { font-size: 11px; }
 
         /* 阶段状态色调 */
-        .stage-card.completed { border-left: 3px solid var(--color-success); }
-        .stage-card.active { border-left: 3px solid var(--brand-primary); }
-        .stage-card.pending { border-left: 3px solid var(--color-border); }
+        .stage-card.completed { border-left: 3px solid #00B42A; }
+        .stage-card.active { border-left: 3px solid #fa8c16; }
+        .stage-card.pending { border-left: 3px solid #E5E6EB; }
 
         /* Toast */
         .toast {
@@ -304,7 +307,7 @@
             background: rgba(0,0,0,0.75);
             color: white;
             padding: 12px 24px;
-            border-radius: var(--radius-lg);
+            border-radius: 12px;
             z-index: 99999;
             font-size: 14px;
             animation: toastIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
@@ -314,10 +317,6 @@
             0% { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
             100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
-
-        /* 点击反馈 */
-        .stage-card.completed .stage-header,
-        .stage-card.active .stage-header { cursor: pointer; }
     </style>
 </head>
 <body>
@@ -467,27 +466,27 @@
                 const card = document.createElement('div');
                 card.className = `stage-card ${getStageCardClass(stage.status)}`;
 
-                let detailHtml = '';
                 let actionHtml = '';
-
+                let descHtml = '';
 
                 if (stage.status === 'completed') {
-                    // 不同阶段完成显示不同信息 + 右侧操作按钮
+                    // 已完成阶段：状态+描述在左，操作按钮在右
+                    const icon = getStageStatusIcon(stage.status);
                     if (stage.id === 1) {
-                        detailHtml = `<div class="stage-detail success">✅ 已签到 ${stage.time || '10:30:00'}</div>`;
-                        actionHtml = `<button class="stage-action-btn" onclick="event.stopPropagation(); goCheckin()"><i class="fa fa-refresh"></i> 重新打卡</button>`;
+                        descHtml = `<span class="stage-desc success">${icon} 已签到 ${stage.time || '10:30:00'}</span>`;
+                        actionHtml = `<button class="stage-action-btn" onclick="event.stopPropagation(); goCheckin()"><i class="fa fa-refresh"></i></button>`;
                     } else if (stage.id === 2) {
-                        detailHtml = `<div class="stage-detail success">✅ 已上传 4个点位</div>`;
-                        actionHtml = `<button class="stage-action-btn" onclick="event.stopPropagation(); goUpload()"><i class="fa fa-refresh"></i> 重新上传</button>`;
+                        descHtml = `<span class="stage-desc success">${icon} 已上传 4个点位</span>`;
+                        actionHtml = `<button class="stage-action-btn" onclick="event.stopPropagation(); goUpload()"><i class="fa fa-refresh"></i></button>`;
                     } else if (stage.id === 3) {
-                        detailHtml = `<div class="stage-detail success">✅ 文案已确认</div>`;
-                        actionHtml = `<button class="stage-action-btn" onclick="event.stopPropagation(); goConfirm()"><i class="fa fa-edit"></i> 修改内容</button>`;
+                        descHtml = `<span class="stage-desc success">${icon} 文案已确认</span>`;
+                        actionHtml = `<button class="stage-action-btn" onclick="event.stopPropagation(); goConfirm()"><i class="fa fa-edit"></i></button>`;
                     } else if (stage.id === 4) {
-                        detailHtml = `<div class="stage-detail success">✅ 封面图+视频已生成</div>`;
-                        actionHtml = `<button class="stage-action-btn" onclick="event.stopPropagation(); goResult()"><i class="fa fa-eye"></i> 查看成果</button>`;
+                        descHtml = `<span class="stage-desc success">${icon} 封面图+视频已生成</span>`;
+                        actionHtml = `<button class="stage-action-btn" onclick="event.stopPropagation(); goResult()"><i class="fa fa-eye"></i></button>`;
                     }
                 } else if (stage.status === 'active') {
-                    // 进行中阶段显示不同信息
+                    // 进行中阶段
                     if (stage.id === 1) {
                         actionHtml = `<div class="stage-action" onclick="event.stopPropagation(); goCheckin()">去打卡 <i class="fa fa-angle-right"></i></div>`;
                     } else if (stage.id === 2) {
@@ -498,42 +497,28 @@
                         actionHtml = `<div class="stage-action" onclick="event.stopPropagation(); goResult()">查看成果 <i class="fa fa-angle-right"></i></div>`;
                     }
                 } else if (stage.id === 1) {
-                    // 阶段1待打卡
-                    detailHtml = `<div class="stage-detail">请到达楼盘现场进行定位打卡</div>`;
+                    descHtml = `<span class="stage-desc">请到达楼盘现场进行定位打卡</span>`;
                     actionHtml = `<div class="stage-action" onclick="event.stopPropagation(); goCheckin()">去打卡 <i class="fa fa-angle-right"></i></div>`;
                 } else if (stage.id === 2) {
-                    // 阶段2需要阶段1完成后才能上传
-                    if (stage.status === 'pending') {
-                        actionHtml = `<div class="stage-action gray"><i class="fa fa-lock"></i> 需完成阶段1</div>`;
-                        detailHtml = `<div class="stage-detail">请先完成定位打卡</div>`;
-                    }
+                    descHtml = `<span class="stage-desc">请先完成定位打卡</span>`;
+                    actionHtml = `<div class="stage-action gray"><i class="fa fa-lock"></i> 需完成阶段1</div>`;
                 } else if (stage.id === 3) {
-                    // 阶段3需要阶段2完成后才能查看
-                    if (stage.status === 'pending') {
-                        actionHtml = `<div class="stage-action gray"><i class="fa fa-lock"></i> 需完成阶段2</div>`;
-                        detailHtml = `<div class="stage-detail">请先完成素材上传</div>`;
-                    } else {
-                        actionHtml = `<div class="stage-action" onclick="event.stopPropagation(); goConfirm()">查看详情 <i class="fa fa-angle-right"></i></div>`;
-                    }
+                    descHtml = `<span class="stage-desc">请先完成素材上传</span>`;
+                    actionHtml = `<div class="stage-action gray"><i class="fa fa-lock"></i> 需完成阶段2</div>`;
                 } else if (stage.id === 4) {
-                    // 阶段4需要阶段3完成后才能查看
-                    if (stage.status === 'pending') {
-                        actionHtml = `<div class="stage-action gray"><i class="fa fa-lock"></i> 需完成阶段3</div>`;
-                        detailHtml = `<div class="stage-detail">请先确认文案脚本</div>`;
-                    } else {
-                        actionHtml = `<div class="stage-action" onclick="event.stopPropagation(); goResult()">查看成果 <i class="fa fa-angle-right"></i></div>`;
-                    }
+                    descHtml = `<span class="stage-desc">请先确认文案脚本</span>`;
+                    actionHtml = `<div class="stage-action gray"><i class="fa fa-lock"></i> 需完成阶段3</div>`;
                 }
 
                 card.innerHTML = `
-                    <div class="stage-header">
+                    <div class="stage-row">
                         <div class="stage-title">
                             <span class="stage-status-icon">${getStageStatusIcon(stage.status)}</span>
                             <span class="stage-badge">【阶段${stage.id}】${stage.name}</span>
                         </div>
+                        ${descHtml}
                         ${actionHtml}
                     </div>
-                    ${detailHtml}
                 `;
 
                 // 点击卡片跳转（仅对 active 阶段生效）
