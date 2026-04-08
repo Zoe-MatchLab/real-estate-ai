@@ -38,6 +38,75 @@
         .card-shadow {
             box-shadow: 0 2px 12px rgba(0,0,0,0.06);
         }
+        /* 头部导航 */
+        .header {
+            background: linear-gradient(135deg, #fa8c16 0%, #FF9500 100%);
+            padding: 16px 16px 20px;
+        }
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .back-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 9999px;
+            color: white;
+            cursor: pointer;
+        }
+        .back-btn:active {
+            background: rgba(255,255,255,0.3);
+        }
+        .back-btn i { font-size: 18px; }
+        .header-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: white;
+        }
+        .step-badge {
+            font-size: 11px;
+            padding: 2px 10px;
+            background: rgba(255,255,255,0.25);
+            border-radius: 9999px;
+            color: white;
+        }
+        .header-stage-progress {
+            padding: 10px 16px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-stage-progress .stage-dot {
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+            white-space: nowrap;
+        }
+        .header-stage-progress .stage-dot.active {
+            color: white;
+            font-weight: 600;
+        }
+        .header-stage-progress .stage-dot.completed {
+            color: rgba(255,255,255,0.9);
+        }
+        .header-stage-progress .stage-line {
+            width: 28px;
+            height: 2px;
+            background: rgba(255,255,255,0.5);
+            margin: 0 6px;
+            border-radius: 1px;
+        }
+        .header-stage-progress .stage-line.inactive {
+            background: rgba(255,255,255,0.25);
+        }
         .progress-bar {
             height: 6px;
             border-radius: 3px;
@@ -216,13 +285,24 @@
 </head>
 <body class="pb-20">
     <!-- 顶部导航 -->
-    <div class="bg-white sticky top-0 z-40">
-        <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-            <button class="text-gray-700 btn" onclick="goBack()">
-                <i class="fa fa-angle-left text-xl"></i>
+    <div class="header">
+        <div class="header-top">
+            <button class="back-btn" onclick="goBack()">
+                <i class="fa fa-angle-left"></i>
             </button>
-            <h1 class="font-medium text-gray-700">文案确认</h1>
-            <button class="text-primary btn font-medium" onclick="handleConfirm()">确认</button>
+            <span class="header-title">阶段3：文案确认</span>
+            <span class="step-badge">3/4</span>
+        </div>
+
+        <!-- 阶段进度（顶部） -->
+        <div class="header-stage-progress">
+            <span class="stage-dot completed">阶段1</span>
+            <div class="stage-line"></div>
+            <span class="stage-dot completed">阶段2</span>
+            <div class="stage-line"></div>
+            <span class="stage-dot active">阶段3</span>
+            <div class="stage-line inactive"></div>
+            <span class="stage-dot">阶段4</span>
         </div>
     </div>
 

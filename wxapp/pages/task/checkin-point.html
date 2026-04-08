@@ -66,42 +66,76 @@
         }
 
         /* ===== 顶部导航栏 ===== */
-        .nav-bar {
-            background: var(--color-card);
-            padding: calc(12px + env(safe-area-inset-top)) var(--spacing-md) 12px;
+        .header {
+            background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
+            padding: calc(12px + env(safe-area-inset-top)) var(--spacing-md) 16px;
+        }
+        .header-top {
             display: flex;
             align-items: center;
-            gap: var(--spacing-md);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid var(--color-border);
+            justify-content: space-between;
+            margin-bottom: 12px;
         }
-        .nav-back {
+        .back-btn {
             width: 32px;
             height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
+            background: rgba(255,255,255,0.2);
             border: none;
-            background: none;
-            color: var(--color-title);
             border-radius: var(--radius-full);
-            transition: background var(--transition-fast);
+            color: white;
+            cursor: pointer;
         }
-        .nav-back:hover { background: var(--color-bg); }
-        .nav-back i { font-size: 20px; }
-        .nav-title {
+        .back-btn:active {
+            background: rgba(255,255,255,0.3);
+        }
+        .back-btn i { font-size: 18px; }
+        .header-title {
             font-size: 17px;
             font-weight: 600;
-            color: var(--color-title);
-            flex: 1;
+            color: white;
             text-align: center;
         }
-        .nav-save {
-            padding: 6px 14px;
-            background: var(--brand-primary-light);
+        .step-badge {
+            font-size: 11px;
+            padding: 2px 10px;
+            background: rgba(255,255,255,0.25);
+            border-radius: var(--radius-full);
+            color: white;
+        }
+        /* 阶段进度（头部内） */
+        .header-stage-progress {
+            padding: 10px 16px;
+            background: rgba(255,255,255,0.15);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-stage-progress .stage-dot {
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+            white-space: nowrap;
+        }
+        .header-stage-progress .stage-dot.active {
+            color: white;
+            font-weight: 600;
+        }
+        .header-stage-progress .stage-dot.completed {
+            color: rgba(255,255,255,0.9);
+        }
+        .header-stage-progress .stage-line {
+            width: 28px;
+            height: 2px;
+            background: rgba(255,255,255,0.5);
+            margin: 0 6px;
+            border-radius: 1px;
+        }
+        .header-stage-progress .stage-line.inactive {
+            background: rgba(255,255,255,0.25);
+        }
             color: var(--brand-primary);
             border: none;
             border-radius: var(--radius-full);
@@ -931,17 +965,19 @@
 <body>
     <div class="page" id="app">
         <!-- 顶部导航栏 -->
-        <div class="nav-bar">
-            <button class="nav-back" onclick="goBack()" aria-label="返回">
-                <i class="fa fa-angle-left"></i>
-            </button>
-            <div class="nav-title" id="navTitle">素材上传</div>
-            <button class="nav-save" onclick="saveDraft()">保存</button>
+        <div class="header">
+            <div class="header-top">
+                <button class="back-btn" onclick="goBack()">
+                    <i class="fa fa-angle-left"></i>
+                </button>
+                <span class="header-title">阶段2：素材上传</span>
+                <span class="step-badge">2/4</span>
+            </div>
 
-            <!-- 阶段进度（顶部导航栏内） -->
-            <div class="nav-stage-progress">
-                <span class="stage-dot">阶段1</span>
-                <div class="stage-line completed"></div>
+            <!-- 阶段进度（顶部） -->
+            <div class="header-stage-progress">
+                <span class="stage-dot completed">阶段1</span>
+                <div class="stage-line"></div>
                 <span class="stage-dot active">阶段2</span>
                 <div class="stage-line inactive"></div>
                 <span class="stage-dot">阶段3</span>
