@@ -154,6 +154,30 @@
       gap: 2px;
     }
     
+    .time-filter {
+      display: flex;
+      gap: 4px;
+    }
+    
+    .time-filter-btn {
+      padding: 4px 10px;
+      font-size: 12px;
+      color: var(--color-sub);
+      background: var(--color-bg);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+    }
+    
+    .time-filter-btn.active {
+      color: #fff;
+      background: var(--brand-primary);
+    }
+    
+    .time-filter-btn:active {
+      opacity: 0.8;
+    }
+    
     /* 任务指标 */
     .task-stats {
       display: flex;
@@ -466,16 +490,32 @@
     </div>
   </div>
 
-  <!-- 今日作业概览 -->
+  <!-- 会员卡 -->
+  <div class="vip-card">
+    <div class="vip-info">
+      <div class="vip-level">
+        <i class="fa fa-diamond"></i>
+        <span>白银会员</span>
+      </div>
+      <div class="vip-expire">15天后到期</div>
+    </div>
+    <div class="vip-renew" onclick="showToast()">
+      立即续费
+      <i class="fa fa-angle-right"></i>
+    </div>
+  </div>
+
+  <!-- 作业概览 -->
   <div class="overview-card">
     <div class="overview-header">
       <div class="overview-title">
         <i class="fa fa-clipboard"></i>
-        今日作业概览
+        作业概览
       </div>
-      <div class="overview-more" onclick="showToast()">
-        查看详情
-        <i class="fa fa-angle-right"></i>
+      <div class="time-filter">
+        <span class="time-filter-btn active" onclick="setTimeFilter('today', this)">今日</span>
+        <span class="time-filter-btn" onclick="setTimeFilter('week', this)">本周</span>
+        <span class="time-filter-btn" onclick="setTimeFilter('month', this)">本月</span>
       </div>
     </div>
     
@@ -517,21 +557,6 @@
     <div class="alert-row" onclick="showToast()">
       <i class="fa fa-exclamation-triangle"></i>
       2 条数据异常待处理
-    </div>
-  </div>
-
-  <!-- 会员卡 -->
-  <div class="vip-card">
-    <div class="vip-info">
-      <div class="vip-level">
-        <i class="fa fa-diamond"></i>
-        <span>白银会员</span>
-      </div>
-      <div class="vip-expire">15天后到期</div>
-    </div>
-    <div class="vip-renew" onclick="showToast()">
-      立即续费
-      <i class="fa fa-angle-right"></i>
     </div>
   </div>
 
@@ -641,12 +666,38 @@
 </nav>
 
 <script>
+var currentTimeFilter = 'today';
+
 function showToast() {
   var toast = document.getElementById('toast');
   toast.classList.add('show');
   setTimeout(function() {
     toast.classList.remove('show');
   }, 2000);
+}
+
+function setTimeFilter(period, el) {
+  // 更新按钮状态
+  document.querySelectorAll('.time-filter-btn').forEach(function(btn) {
+    btn.classList.remove('active');
+  });
+  el.classList.add('active');
+  
+  currentTimeFilter = period;
+  
+  // TODO: 根据period请求不同时间范围的数据
+  // today: 今日数据
+  // week: 本周数据
+  // month: 本月数据
+  console.log('切换到：' + period);
+  
+  // 示例：显示提示
+  var periodNames = {
+    'today': '今日',
+    'week': '本周',
+    'month': '本月'
+  };
+  // 可以在这里触发数据更新
 }
 </script>
 
