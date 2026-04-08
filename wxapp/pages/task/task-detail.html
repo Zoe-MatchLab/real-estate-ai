@@ -31,866 +31,488 @@
         }
     </script>
     <style>
-        body {
-            background-color: #F7F8FA;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        :root {
+            --brand-primary: #FA8C16;
+            --brand-primary-dark: #E67A0E;
+            --brand-primary-light: #FFF7E6;
+            --color-success: #00B42A;
+            --color-success-light: #E8FFEA;
+            --color-warning: #FF7D00;
+            --color-warning-light: #FFF7E6;
+            --color-danger: #FA5151;
+            --color-danger-light: #FFECE8;
+            --color-title: #1D2129;
+            --color-text: #4E5969;
+            --color-sub: #86909C;
+            --color-border: #E5E6EB;
+            --color-bg: #F7F8FA;
+            --color-card: #FFFFFF;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+            --font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
         }
-        .card-shadow {
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            font-family: var(--font-family);
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--color-text);
+            background: var(--color-bg);
+            -webkit-font-smoothing: antialiased;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
         }
-        .point-item {
-            border-left: 3px solid #E5E6EB;
-            padding-left: 16px;
-            margin-bottom: 16px;
+
+        /* ===== 页面容器 ===== */
+        .page {
+            min-height: 100vh;
+            padding-bottom: calc(32px + env(safe-area-inset-bottom));
+            background: var(--color-bg);
         }
-        .point-item.completed {
-            border-left-color: #00B42A;
-        }
-        .point-item.required {
-            border-left-color: #FA5151;
-        }
-        .upload-btn {
-            border: 2px dashed #D8D9DD;
-            border-radius: 8px;
-            height: 80px;
+
+        /* ===== 顶部导航栏 ===== */
+        .nav-bar {
+            background: var(--color-card);
+            padding: calc(12px + env(safe-area-inset-top)) var(--spacing-md) 12px;
             display: flex;
-            flex: 1;
-            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-md);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .nav-back {
+            width: 32px;
+            height: 32px;
+            display: flex;
             align-items: center;
             justify-content: center;
-            color: #86878B;
+            background: var(--color-bg);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            color: var(--color-title);
+            border: none;
+            transition: background 0.15s;
         }
-        .progress-bar {
-            height: 6px;
-            border-radius: 3px;
-            background: #f0f0f0;
-            overflow: hidden;
+        .nav-back:hover { background: var(--color-border); }
+        .nav-back:active { background: var(--color-border); transform: scale(0.95); }
+        .nav-title {
+            flex: 1;
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--color-title);
+            text-align: center;
+        }
+        .nav-more {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-sub);
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        /* ===== 楼盘信息区 ===== */
+        .house-info {
+            background: var(--color-card);
+            padding: var(--spacing-lg) var(--spacing-md);
+        }
+        .house-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--color-title);
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        .house-name .icon { color: var(--brand-primary); }
+        .house-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .house-meta-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: 13px;
+            color: var(--color-text);
+        }
+        .house-meta-item i { color: var(--brand-primary); width: 16px; text-align: center; }
+        .house-meta-item.danger i { color: var(--color-danger); }
+        .house-meta-item.danger { color: var(--color-danger); }
+
+        /* ===== 总进度条 ===== */
+        .progress-section {
+            padding: var(--spacing-md);
+            background: var(--color-card);
+            border-top: 1px solid var(--color-border);
+        }
+        .progress-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-sm);
+        }
+        .progress-label {
+            font-size: 13px;
+            color: var(--color-sub);
         }
         .progress-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--brand-primary);
+        }
+        .progress-track {
+            height: 6px;
+            background: var(--color-bg);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-fill {
             height: 100%;
-            border-radius: 3px;
-            background: linear-gradient(90deg, #fa8c16, #ff7a45);
+            border-radius: var(--radius-full);
+            background: linear-gradient(90deg, var(--brand-primary) 0%, #FF9500 100%);
+            transition: width 0.4s ease;
         }
-        .tag {
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: 500;
-        }
-        .tag-danger {
-            background: #FFECE8;
-            color: #FA5151;
-        }
-        .tag-warning {
-            background: #FFF7E8;
-            color: #FF7D00;
-        }
-        .tag-success {
-            background: #E8FFEA;
-            color: #00B42A;
-        }
-        .tag-info {
-            background: #E8F3FF;
-            color: #165DFF;
-        }
-/* 微信小程序全局优化样式 */
-
-/* 1. 禁止字体缩放 */
-body {
-    -webkit-text-size-adjust: 100% !important;
-    text-size-adjust: 100% !important;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-}
-
-/* 2. 安全区适配 */
-.safe-area-bottom {
-    padding-bottom: calc(16px + env(safe-area-inset-bottom)) !important;
-}
-
-.page-container {
-    min-height: calc(100vh - env(safe-area-inset-bottom));
-    padding-bottom: env(safe-area-inset-bottom);
-}
-
-/* 3. 底部标签栏安全区适配 */
-.tab-bar {
-    position: fixed;
-    bottom: 16px;
-    left: 50%;
-    transform: translateX(-50%);
-    height: 56px;
-    background: rgba(29, 33, 41, 0.95);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: 28px;
-    padding: 0 12px;
-    z-index: 9999;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.24);
-    border: 1px solid rgba(255,255,255,0.1);
-}
-
-.tab-bar-inner {
+        .progress-steps {
             display: flex;
-            align-items: center;
-            height: 100%;
-            width: 100%;
+            justify-content: space-between;
+            margin-top: 6px;
         }
-
-
-
-
-
-/* 4. 统一按钮样式 */
-.btn {
-    border-radius: 8px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    position: relative;
-    overflow: hidden;
-}
-
-.btn:active {
-    transform: scale(0.95);
-    opacity: 0.8;
-}
-
-.btn-primary {
-    background: #fa8c16;
-    color: white;
-}
-
-.btn-primary:active {
-    background: #d46b08;
-}
-
-.btn-secondary {
-    background: white;
-    color: #fa8c16;
-    border: 1px solid #fa8c16;
-}
-
-.btn-secondary:active {
-    background: #fff7e6;
-}
-
-/* 5. 统一卡片样式 */
-.card {
-    border-radius: 12px;
-    background: white;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-    transition: all 0.2s ease;
-}
-
-.card:active {
-    transform: translateY(1px);
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.08);
-}
-
-/* 6. 列表项点击效果 */
-.list-item:active {
-    background: #f5f5f5;
-}
-
-/* 7. 加载状态 */
-.loading {
-    display: flex;
-            flex: 1;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    color: #999;
-}
-
-/* 8. 空状态 */
-.empty-state {
-    padding: 60px 20px;
-    text-align: center;
-    color: #999;
-}
-
-.empty-state .icon {
-    font-size: 48px;
-    color: #ccc;
-    margin-bottom: 12px;
-}
-
-/* 9. Toast提示 */
-.toast {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    padding: 12px 20px;
-    border-radius: 8px;
-    z-index: 9999;
-    animation: fadeIn 0.2s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
-    to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-}
-
-/* 10. 图片优化 */
-img {
-    -webkit-user-drag: none;
-    user-select: none;
-    max-width: 100%;
-}
-
-/* 11. 防止双击缩放 */
-* {
-    touch-action: manipulation;
-}
-
-/* 12. 滚动优化 */
-.scroll-view {
-    -webkit-overflow-scrolling: touch;
-    overflow-scrolling: touch;
-}
-
-        /* 底部Tab栏 - 胶囊悬浮 */
-        .tab-bar {
-            position: fixed;
-            bottom: 16px;
-            left: 50%;
-            transform: translateX(-50%);
-            height: 52px;
-            background: rgba(29, 33, 41, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 26px;
-            padding: 0 16px;
-            z-index: 9999;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.24);
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .tab-bar-inner {
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            height: 100%;
-            width: 100%;
-        }
-        .tab-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 4px 12px;
-            transition: all 0.2s;
-            color: rgba(255,255,255,0.5);
-            border-radius: 16px;
-        }
-        .tab-item.active {
-            color: #fa8c16;
-        }
-        .tab-item.active::after {
-            content: '';
-            position: absolute;
-            top: 6px;
-            width: 4px;
-            height: 4px;
-            background: #fa8c16;
+        .progress-step-dot {
+            width: 8px;
+            height: 8px;
             border-radius: 50%;
+            background: var(--color-border);
+            transition: all 0.3s;
         }
-        .tab-item i {
-            font-size: 20px;
+        .progress-step-dot.completed { background: var(--color-success); }
+        .progress-step-dot.active { background: var(--brand-primary); transform: scale(1.3); }
+
+        /* ===== 阶段列表 ===== */
+        .stage-list {
+            padding: var(--spacing-md);
+        }
+        .stage-card {
+            background: var(--color-card);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .stage-card:active {
+            transform: translateY(1px);
+            box-shadow: var(--shadow-sm);
+            opacity: 0.9;
+        }
+        .stage-card:last-child { margin-bottom: 0; }
+
+        /* 阶段头部：图标 + 名称 + 状态 */
+        .stage-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+        .stage-title {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        .stage-badge {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--color-title);
+        }
+        .stage-status-icon {
+            font-size: 16px;
+            line-height: 1;
+        }
+        .stage-action {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            color: var(--brand-primary);
+        }
+        .stage-action i { font-size: 12px; }
+        .stage-action.gray { color: var(--color-sub); }
+
+        /* 阶段详情行 */
+        .stage-detail {
+            padding-left: 24px;
+            font-size: 12px;
+            color: var(--color-sub);
+            margin-bottom: var(--spacing-sm);
+        }
+        .stage-detail.success { color: var(--color-success); }
+
+        /* 重新打卡按钮 */
+        .recheckin-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: var(--brand-primary-light);
+            color: var(--brand-primary);
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s;
+            margin-left: 24px;
+        }
+        .recheckin-btn:active {
+            background: var(--color-warning-light);
+            transform: scale(0.96);
         }
 
+        /* 阶段状态色调 */
+        .stage-card.completed { border-left: 3px solid var(--color-success); }
+        .stage-card.active { border-left: 3px solid var(--brand-primary); }
+        .stage-card.pending { border-left: 3px solid var(--color-border); }
 
-        /* 底部Tab栏 */
-        .tab-bar {
+        /* Toast */
+        .toast {
             position: fixed;
-            bottom: 16px;
+            top: 50%;
             left: 50%;
-            transform: translateX(-50%);
-            background: rgba(29, 33, 41, 0.95);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 26px;
-            padding: 8px 16px;
-            z-index: 9999;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.24);
-            border: 1px solid rgba(255,255,255,0.1);
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.75);
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--radius-lg);
+            z-index: 99999;
+            font-size: 14px;
+            animation: toastIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            pointer-events: none;
         }
-        .tab-bar-inner {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        @keyframes toastIn {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
-        .tab-item {
-            width: 44px;
-            height: 36px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 18px;
-            color: rgba(255,255,255,0.5);
-            transition: all 0.2s;
-        }
-        .tab-item i {
-            font-size: 18px;
-        }
-        .tab-item.active {
-            background: rgba(250, 140, 22, 0.15);
-            color: #fa8c16;
-        }
+
+        /* 点击反馈 */
+        .stage-card.completed .stage-header,
+        .stage-card.active .stage-header { cursor: pointer; }
     </style>
 </head>
-<body class="pb-24 page-container">
-    <!-- 顶部导航 -->
-    <div class="bg-white sticky top-0 z-40">
-        <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-            <button class="text-gray-700 btn" onclick="history.back()">
-                <i class="fa fa-angle-left text-xl"></i>
+<body>
+    <div class="page">
+        <!-- 顶部导航栏 -->
+        <div class="nav-bar">
+            <button class="nav-back" onclick="goBack()">
+                <i class="fa fa-angle-left text-lg"></i>
             </button>
-            <h1 class="font-medium text-gray-700">探盘任务详情</h1>
-            <button class="text-gray-500 btn">
-                <i class="fa fa-ellipsis-v"></i>
-            </button>
-        </div>
-
-        <!-- 进度条 -->
-        <div class="px-4 py-3">
-            <div class="flex justify-between items-center mb-2">
-                <span class="text-sm text-gray-600">完成进度</span>
-                <span class="text-sm font-medium text-primary">3/4 (75%)</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-value" style="width: 75%"></div>
-            </div>
-            <p class="text-xs text-gray-500 mt-2">完成要求:100%点位完成即可提交 | 还需完成1个必填点位</p>
-        </div>
-    </div>
-
-    <!-- 任务基本信息 -->
-    <div class="p-4">
-        <div class="bg-white rounded-xl p-4 card-shadow">
-            <div class="flex justify-between items-start mb-3">
-                <h2 class="text-lg font-bold">中海汇德里3月探盘任务</h2>
-                <span class="tag tag-warning">进行中</span>
-            </div>
-            <div class="space-y-2 text-sm text-gray-600">
-                <div class="flex items-center">
-                    <i class="fa fa-map-marker text-primary w-4"></i>
-                    <span class="ml-2">上海市浦东新区花木街道</span>
-                </div>
-                <div class="flex items-center">
-                    <i class="fa fa-clock-o text-primary w-4"></i>
-                    <span class="ml-2">截止时间:2026-03-28 18:00</span>
-                    <span class="ml-2 text-danger">(剩余6小时)</span>
-                </div>
-                <div class="flex items-center">
-                    <i class="fa fa-gift text-primary w-4"></i>
-                    <span class="ml-2">奖励:50积分 + 20成长值</span>
-                </div>
-                <div class="flex items-center">
-                    <i class="fa fa-info-circle text-primary w-4"></i>
-                    <span class="ml-2">政策有效期:2026-03-26 ~ 2026-04-30</span>
-                </div>
-            </div>
-            <div class="mt-3 p-3 bg-blue-50 rounded-lg">
-                <div class="flex items-start">
-                    <i class="fa fa-location-arrow text-primary mt-1 mr-2"></i>
-                    <div>
-                        <p class="text-sm text-blue-700 font-medium">当前位置校验:<span class="text-success">已在打卡范围内(距离560米)</span></p>
-                        <p class="text-xs text-blue-600 mt-1">默认打卡范围1000米,当前定位符合要求</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 四阶段执行进度 -->
-    <div class="px-4 mb-4">
-        <div class="bg-white rounded-xl p-4 card-shadow">
-            <div class="flex items-center justify-between mb-4">
-                <span class="font-medium text-gray-800">执行进度</span>
-                <span class="text-sm text-primary">2/4 阶段</span>
-            </div>
-
-            <!-- 进度条 -->
-            <div class="h-2 bg-gray-200 rounded-full mb-4 overflow-hidden">
-                <div class="h-full bg-primary rounded-full" style="width: 50%"></div>
-            </div>
-
-            <!-- 阶段列表 -->
-            <div class="space-y-3">
-                <!-- 阶段1:定位打卡 -->
-                <div class="stage-item">
-                    <div class="flex items-center justify-between py-2">
-                        <div class="flex items-center">
-                            <span class="text-green-500 mr-2">✅</span>
-                            <span class="text-sm font-medium text-gray-700">阶段1:定位打卡</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs text-green-500">已完成</span>
-                            <button class="text-xs px-2 py-1 bg-primary text-white rounded" onclick="location.href='checkin-location.html'">重新打卡</button>
-                        </div>
-                    </div>
-                    <div class="pl-6 text-xs text-gray-500">到达现场,已签到 10:30:00</div>
-                </div>
-
-                <!-- 阶段2:采集执行 -->
-                <div class="stage-item">
-                    <div class="flex items-center justify-between py-2">
-                        <div class="flex items-center">
-                            <span class="text-orange-500 mr-2">🔄</span>
-                            <span class="text-sm font-medium text-gray-700">阶段2:采集执行</span>
-                        </div>
-                        <span class="text-xs text-orange-500">进行中</span>
-                    </div>
-                    <div class="pl-6 space-y-2">
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-600">必填:沙盘照片 (0/1)</span>
-                            <button class="text-primary point-add-btn" data-type="photo" data-name="沙盘照片">📷 添加</button>
-                        </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-600">必填:样板间视频 (0/1)</span>
-                            <button class="text-primary point-add-btn" data-type="video" data-name="样板间视频">🎬 添加</button>
-                        </div>
-                        <div class="flex items-center justify-between text-xs">
-                            <span class="text-gray-600">选填:周边配套 (0/3)</span>
-                            <button class="text-primary point-add-btn" data-type="photo" data-name="周边配套">➕ 添加</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 阶段3:文案确认 -->
-                <div class="stage-item opacity-50">
-                    <div class="flex items-center justify-between py-2">
-                        <div class="flex items-center">
-                            <span class="text-gray-400 mr-2">⬜</span>
-                            <span class="text-sm font-medium text-gray-500">阶段3:文案确认</span>
-                        </div>
-                        <span class="text-xs text-gray-400">待执行</span>
-                    </div>
-                    <div class="pl-6 text-xs text-gray-400">后台生成中...</div>
-                </div>
-
-                <!-- 阶段4:成果生成 -->
-                <div class="stage-item opacity-50">
-                    <div class="flex items-center justify-between py-2">
-                        <div class="flex items-center">
-                            <span class="text-gray-400 mr-2">⬜</span>
-                            <span class="text-sm font-medium text-gray-500">阶段4:成果生成</span>
-                        </div>
-                        <span class="text-xs text-gray-400">待执行</span>
-                    </div>
-                    <div class="pl-6 text-xs text-gray-400">--</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 政策说明 -->
-    <div class="px-4 mb-4">
-        <div class="bg-white rounded-xl p-4 card-shadow">
-            <div class="flex items-center mb-2">
-                <i class="fa fa-bullhorn text-warning mr-2"></i>
-                <h3 class="font-medium">项目政策说明</h3>
-            </div>
-            <p class="text-sm text-gray-600 leading-relaxed">
-                本月购房可享3万抵8万优惠,首付最低20%,合作银行利率4.1%。返点政策:高层3%,别墅2.5%,7天内签约额外奖励1%。
-            </p>
-        </div>
-    </div>
-
-    <!-- 点位列表 -->
-    <div class="px-4">
-        <h3 class="font-medium mb-3">打卡点位列表 <span class="text-xs text-gray-500">(共4个点位,3个必填)</span></h3>
-
-        <!-- 点位1:已完成 -->
-        <div class="point-item completed">
-            <div class="flex justify-between items-center mb-2">
-                <div class="flex items-center">
-                    <span class="font-medium">1. 沙盘拍照</span>
-                    <span class="tag tag-danger ml-2">必填</span>
-                    <span class="tag tag-success ml-2">已完成</span>
-                </div>
-                <span class="text-xs text-gray-500">范围:1000米</span>
-            </div>
-            <p class="text-sm text-gray-600 mb-2">采集要求:拍照≥3张,包含整体沙盘、主推楼栋、优惠信息公示牌</p>
-            <div class="flex flex-wrap gap-2 mb-2">
-                <span class="text-xs bg-gray-100 px-2 py-1 rounded">拍照</span>
-                <span class="text-xs bg-gray-100 px-2 py-1 rounded">文字备注</span>
-                <span class="text-xs bg-green-50 px-2 py-1 rounded text-green-600">AI初审通过</span>
-            </div>
-            <!-- 已上传照片 -->
-            <div class="grid grid-cols-3 gap-2 mb-2">
-                <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                    <img src="https://picsum.photos/200/200?random=1" class="w-full h-full object-cover">
-                </div>
-                <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                    <img src="https://picsum.photos/200/200?random=2" class="w-full h-full object-cover">
-                </div>
-                <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                    <img src="https://picsum.photos/200/200?random=3" class="w-full h-full object-cover">
-                </div>
-            </div>
-            <textarea class="w-full border border-gray-200 rounded-lg p-2 text-sm" rows="2" placeholder="填写备注信息">整体沙盘展示清晰,主推1、3、5号楼,优惠信息公示在入口处。</textarea>
-        </div>
-
-        <!-- 点位2:已完成 -->
-        <div class="point-item completed">
-            <div class="flex justify-between items-center mb-2">
-                <div class="flex items-center">
-                    <span class="font-medium">2. 样板间视频拍摄</span>
-                    <span class="tag tag-danger ml-2">必填</span>
-                    <span class="tag tag-success ml-2">已完成</span>
-                </div>
-                <span class="text-xs text-gray-500">范围:800米</span>
-            </div>
-            <p class="text-sm text-gray-600 mb-2">采集要求:视频≥15秒,包含户型讲解、主要功能空间展示、语音讲解卖点</p>
-            <div class="flex flex-wrap gap-2 mb-2">
-                <span class="text-xs bg-gray-100 px-2 py-1 rounded">视频</span>
-                <span class="text-xs bg-gray-100 px-2 py-1 rounded">语音</span>
-                <span class="text-xs bg-green-50 px-2 py-1 rounded text-green-600">AI初审通过</span>
-            </div>
-            <!-- 已上传视频 -->
-            <div class="bg-gray-100 rounded-lg h-40 flex items-center justify-center mb-2">
-                <div class="text-center">
-                    <i class="fa fa-play-circle-o text-3xl text-primary mb-2"></i>
-                    <p class="text-sm text-gray-500">1080P · 00:18 · 已上传</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- 点位3:进行中 -->
-        <div class="point-item required">
-            <div class="flex justify-between items-center mb-2">
-                <div class="flex items-center">
-                    <span class="font-medium">3. 区位图拍照</span>
-                    <span class="tag tag-danger ml-2">必填</span>
-                    <span class="tag tag-warning ml-2">待完成</span>
-                </div>
-                <span class="text-xs text-gray-500">范围:1000米</span>
-            </div>
-            <p class="text-sm text-gray-600 mb-2">采集要求:拍照≥1张,清晰展示交通、配套、学校、医院等信息</p>
-            <div class="flex flex-wrap gap-2 mb-2">
-                <span class="text-xs bg-gray-100 px-2 py-1 rounded">拍照</span>
-                <span class="text-xs bg-blue-50 px-2 py-1 rounded text-blue-600">待AI审核</span>
-            </div>
-            <!-- 上传区域 -->
-            <div class="grid grid-cols-3 gap-2 mb-2">
-                <div class="upload-btn" onclick="showToast('打开相机拍照')">
-                    <i class="fa fa-camera text-lg mb-1"></i>
-                    <span class="text-xs">添加照片</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- 点位4:可选 -->
-        <div class="point-item">
-            <div class="flex justify-between items-center mb-2">
-                <div class="flex items-center">
-                    <span class="font-medium">4. 周边配套调研</span>
-                    <span class="tag tag-warning ml-2">可选</span>
-                    <span class="tag tag-warning ml-2">待完成</span>
-                </div>
-                <span class="text-xs text-gray-500">范围:2000米</span>
-            </div>
-            <p class="text-sm text-gray-600 mb-2">采集要求:拍照+文字说明+标签,包含3公里内主要配套</p>
-            <div class="flex flex-wrap gap-2 mb-2">
-                <span class="text-xs bg-gray-100 px-2 py-1 rounded">拍照</span>
-                <span class="text-xs bg-gray-100 px-2 py-1 rounded">文字备注</span>
-                <span class="text-xs bg-gray-100 px-2 py-1 rounded">标签</span>
-                <span class="text-xs bg-blue-50 px-2 py-1 rounded text-blue-600">人工抽检</span>
-            </div>
-            <!-- 上传区域 -->
-            <div class="grid grid-cols-3 gap-2 mb-2">
-                <div class="upload-btn" onclick="showToast('打开相机拍照')">
-                    <i class="fa fa-camera text-lg mb-1"></i>
-                    <span class="text-xs">添加照片</span>
-                </div>
-            </div>
-            <textarea class="w-full border border-gray-200 rounded-lg p-2 text-sm" rows="2" placeholder="填写配套调研说明"></textarea>
-            <div class="mt-2">
-                <div class="flex flex-wrap gap-2">
-                    <span class="text-xs bg-blue-50 px-2 py-1 rounded text-blue-600">
-                        <i class="fa fa-plus mr-1"></i> 添加标签
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 异常报备按钮 -->
-    <div class="px-4 mt-4">
-        <button class="w-full border border-warning text-warning py-3 rounded-lg font-medium" onclick="showToast('打开异常报备页面')">
-            <i class="fa fa-exclamation-circle mr-2"></i> 点位异常报备
-        </button>
-        <p class="text-xs text-gray-500 mt-2 text-center">如遇到点位无法到达、楼盘不让进入等情况,请点击报备</p>
-    </div>
-
-    <!-- 底部操作栏 - 未提交状态 -->
-    <div id="submitSection" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-3 safe-area-bottom">
-        <div class="flex gap-3">
-            <button class="flex-1 btn btn-secondary py-3" onclick="showToast('已保存草稿')">
-                <i class="fa fa-save mr-2"></i> 保存草稿
-            </button>
-            <button class="flex-1 btn btn-primary py-3 opacity-50" disabled>
-                <i class="fa fa-paper-plane mr-2"></i> 提交报告
+            <h1 class="nav-title">探盘任务详情</h1>
+            <button class="nav-more">
+                <i class="fa fa-ellipsis-v text-lg"></i>
             </button>
         </div>
-        <p class="text-xs text-gray-500 mt-2 text-center">
-            <i class="fa fa-info-circle mr-1"></i> 还需完成1个必填点位才可提交
-        </p>
-    </div>
 
-    <!-- 提交成功后物料生成进度 - 默认隐藏 -->
-    <div id="materialProgressSection" class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-4 safe-area-bottom hidden">
-        <div class="text-center mb-3">
-            <div class="w-12 h-12 bg-green-50 rounded-full flex items-center justify-center text-success text-2xl mx-auto mb-2">
-                <i class="fa fa-check-circle"></i>
+        <!-- 楼盘信息区 -->
+        <div class="house-info">
+            <div class="house-name">
+                <span class="icon">🏠</span>
+                <span id="houseName"></span>
             </div>
-            <h3 class="font-medium">提交成功!</h3>
-            <p class="text-xs text-gray-500 mt-1">系统正在自动生成营销物料,请稍候</p>
-        </div>
-
-        <div class="space-y-3 mb-3">
-            <div>
-                <div class="flex justify-between items-center mb-1">
-                    <div class="flex items-center">
-                        <span class="text-sm">文案生成</span>
-                        <span class="tag tag-success ml-2">已完成</span>
-                    </div>
-                    <span class="text-xs text-success">100%</span>
+            <div class="house-meta">
+                <div class="house-meta-item">
+                    <i class="fa fa-map-marker"></i>
+                    <span id="houseAddress"></span>
                 </div>
-                <div class="progress-bar">
-                    <div class="progress-value bg-success" style="width: 100%"></div>
-                </div>
-            </div>
-            <div>
-                <div class="flex justify-between items-center mb-1">
-                    <div class="flex items-center">
-                        <span class="text-sm">封面图生成</span>
-                        <span class="tag tag-success ml-2">已完成</span>
-                    </div>
-                    <span class="text-xs text-success">100%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-value bg-success" style="width: 100%"></div>
-                </div>
-            </div>
-            <div>
-                <div class="flex justify-between items-center mb-1">
-                    <div class="flex items-center">
-                        <span class="text-sm">短视频生成</span>
-                        <span class="tag tag-warning ml-2">生成中</span>
-                    </div>
-                    <span class="text-xs text-warning">65%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-value bg-warning" style="width: 65%"></div>
-                </div>
-            </div>
-            <div>
-                <div class="flex justify-between items-center mb-1">
-                    <div class="flex items-center">
-                        <span class="text-sm">训练题生成</span>
-                        <span class="tag tag-gray ml-2">待生成</span>
-                    </div>
-                    <span class="text-xs text-gray-500">0%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-value bg-gray-300" style="width: 0%"></div>
+                <div class="house-meta-item danger">
+                    <i class="fa fa-clock-o"></i>
+                    <span id="houseDeadline"></span>
                 </div>
             </div>
         </div>
 
-        <p class="text-xs text-gray-500 text-center mb-3">预计剩余时间:8分钟,完成后会推送通知给你</p>
-
-        <div class="flex gap-3">
-            <button class="flex-1 btn btn-secondary py-2" onclick="window.location.href='task-list.html'">
-                返回任务列表
-            </button>
-            <button class="flex-1 btn btn-primary py-2" onclick="showToast('已开启后台生成,可离开本页面')">
-                后台生成
-            </button>
+        <!-- 总进度条 -->
+        <div class="progress-section">
+            <div class="progress-header">
+                <span class="progress-label">完成进度</span>
+                <span class="progress-value" id="progressText"></span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-steps" id="progressSteps"></div>
         </div>
+
+        <!-- 阶段入口列表 -->
+        <div class="stage-list" id="stageList"></div>
     </div>
 
     <script>
-        // 全局工具函数
-        function showToast(message, duration = 2000) {
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.textContent = message;
-            document.body.appendChild(toast);
-            setTimeout(() => {
-                toast.remove();
-            }, duration);
-        }
-
-        // 检查提交状态
-        function checkSubmitStatus() {
-            const requiredPoints = document.querySelectorAll('.point-item.required');
-            let completedCount = 0;
-            requiredPoints.forEach(point => {
-                if (point.classList.contains('completed')) {
-                    completedCount++;
-                }
-            });
-            const submitBtn = document.querySelector('.btn-primary');
-            const submitTip = document.querySelector('p.text-center');
-
-            if (completedCount === requiredPoints.length) {
-                submitBtn.classList.remove('opacity-50');
-                submitBtn.disabled = false;
-                submitTip.innerHTML = '<i class="fa fa-check-circle text-success mr-1"></i> 所有必填点位已完成,可以提交';
-            }
-        }
-
-        // 获取URL参数
-        function getQueryParam(name) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);
-        }
-
-        // 页面加载完成后检查
-        document.addEventListener('DOMContentLoaded', () => {
-            checkSubmitStatus();
-
-            // 判断是否为只读模式
-            const isReadonly = getQueryParam('readonly') === '1';
-            if (isReadonly) {
-                // 禁用所有输入框和文本域
-                document.querySelectorAll('input, textarea').forEach(el => {
-                    el.disabled = true;
-                    el.placeholder = '只读模式,不可编辑';
-                });
-
-                // 禁用所有上传按钮
-                document.querySelectorAll('.upload-btn').forEach(el => {
-                    el.style.opacity = '0.5';
-                    el.style.pointerEvents = 'none';
-                });
-
-                // 隐藏提交区域和异常报备按钮
-                document.getElementById('submitSection').style.display = 'none';
-                document.querySelector('button:has(i.fa-exclamation-circle)').parentElement.style.display = 'none';
-
-                // 隐藏所有操作按钮
-                document.querySelectorAll('.btn, button:not([disabled])').forEach(el => {
-                    if (el.textContent.includes('保存') || el.textContent.includes('提交') || el.textContent.includes('添加') || el.textContent.includes('报备')) {
-                        el.style.display = 'none';
-                    }
-                });
-
-                // 顶部显示只读提示
-                const toast = document.createElement('div');
-                toast.className = 'toast';
-                toast.textContent = '只读模式,内容不可编辑';
-                document.body.appendChild(toast);
-                setTimeout(() => {
-                    toast.remove();
-                }, 3000);
-            }
-        });
-        
-        // 模拟点位完成
-        setTimeout(() => {
-            document.querySelector('.point-item.required').classList.add('completed');
-            document.querySelector('.point-item.required .tag-warning').textContent = '已完成';
-            document.querySelector('.point-item.required .tag-warning').classList.replace('tag-warning', 'tag-success');
-            checkSubmitStatus();
-        }, 3000);
-        
-        // ===== 四阶段流程相关 =====
-        
-        // 模拟点位数据
-        window.pointData = {
-            stage2: {
-                required: [
-                    { name: '沙盘照片', type: 'photo', current: 0, total: 1 },
-                    { name: '样板间视频', type: 'video', current: 0, total: 1 }
-                ],
-                optional: [
-                    { name: '周边配套', type: 'photo', current: 0, total: 3 }
-                ]
-            }
+        // ===== 模拟数据 =====
+        const taskData = {
+            houseName: '中海汇德里',
+            address: '浦东新区张江高科技园区',
+            deadline: '2026-04-08 18:00',
+            currentStage: 2,
+            stages: [
+                { id: 1, name: '打卡', status: 'completed', time: '10:30:00' },
+                { id: 2, name: '上传', status: 'active' },
+                { id: 3, name: '文案确认', status: 'pending' },
+                { id: 4, name: '成果生成', status: 'pending' }
+            ]
         };
-        
-        // 添加点位素材
-        function addPoint(type, name) {
-            let point = window.pointData.stage2.required.find(p => p.name === name);
-            if (!point) {
-                point = window.pointData.stage2.optional.find(p => p.name === name);
-            }
-            if (point && point.current < point.total) {
-                point.current++;
-                updatePointUI();
-                checkSubmitEnabled();
-                showToast('已添加' + name);
-            }
-        }
-        
-        // 更新点位UI显示
-        function updatePointUI() {
-            const stage2Section = document.querySelector('.stage-item:nth-child(2)');
-            if (!stage2Section) return;
-            const buttons = stage2Section.querySelectorAll('.point-add-btn');
-            buttons.forEach(btn => {
-                const name = btn.dataset.name;
-                const point = window.pointData.stage2.required.find(p => p.name === name)
-                    || window.pointData.stage2.optional.find(p => p.name === name);
-                if (point) {
-                    btn.textContent = point.current + '/' + point.total;
-                    if (point.current >= point.total) {
-                        btn.classList.add('text-green-500');
-                        btn.classList.remove('text-primary');
-                    }
-                }
-            });
-        }
-        
-        // 检查是否满足提交条件
-        function checkSubmitEnabled() {
-            const required = window.pointData.stage2.required;
-            const allCompleted = required.every(p => p.current >= p.total);
-            const submitBtn = document.getElementById('submitBtn');
-            if (submitBtn) {
-                if (allCompleted) {
-                    submitBtn.disabled = false;
-                    submitBtn.classList.remove('bg-gray-300', 'cursor-not-allowed');
-                    submitBtn.classList.add('bg-primary', 'cursor-pointer');
-                } else {
-                    submitBtn.disabled = true;
-                    submitBtn.classList.add('bg-gray-300', 'cursor-not-allowed');
-                    submitBtn.classList.remove('bg-primary', 'cursor-pointer');
-                }
-            }
-        }
-        
-        // 提交任务
-        function submitTask() {
-            const required = window.pointData.stage2.required;
-            const allCompleted = required.every(p => p.current >= p.total);
-            
-            if (!allCompleted) {
-                showToast('请完成所有必填项');
-                return;
-            }
-            
-            showToast('提交成功，等待审核');
-        }
-        
-        // 绑定点位添加按钮事件
-        document.querySelectorAll('.point-add-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const type = this.dataset.type;
-                const name = this.dataset.name;
-                addPoint(type, name);
-            });
-        });
-        
-        // 初始化提交按钮状态
-        checkSubmitEnabled();
-    </script>
 
- </body>
+        // ===== 工具函数 =====
+        function showToast(msg) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const t = document.createElement('div');
+            t.className = 'toast';
+            t.textContent = msg;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 2000);
+        }
+
+        function formatDeadline(deadline) {
+            const d = new Date(deadline);
+            const month = d.getMonth() + 1;
+            const day = d.getDate();
+            const hours = d.getHours().toString().padStart(2, '0');
+            const minutes = d.getMinutes().toString().padStart(2, '0');
+            return `${month}月${day}日 ${hours}:${minutes}截止`;
+        }
+
+        function getStageStatusIcon(status) {
+            if (status === 'completed') return '✅';
+            if (status === 'active') return '🔄';
+            return '⬜';
+        }
+
+        function getStageCardClass(status) {
+            if (status === 'completed') return 'completed';
+            if (status === 'active') return 'active';
+            return 'pending';
+        }
+
+        function getCompletedCount() {
+            return taskData.stages.filter(s => s.status === 'completed').length;
+        }
+
+        // ===== 渲染函数 =====
+        function renderHouseInfo() {
+            document.getElementById('houseName').textContent = taskData.houseName;
+            document.getElementById('houseAddress').textContent = taskData.address;
+            document.getElementById('houseDeadline').textContent = formatDeadline(taskData.deadline);
+        }
+
+        function renderProgress() {
+            const total = taskData.stages.length;
+            const completed = getCompletedCount();
+            const percent = Math.round((completed / total) * 100);
+
+            document.getElementById('progressText').textContent = `${completed}/${total} (${percent}%)`;
+            document.getElementById('progressFill').style.width = percent + '%';
+
+            const stepsEl = document.getElementById('progressSteps');
+            stepsEl.innerHTML = '';
+            taskData.stages.forEach((stage, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'progress-step-dot';
+                if (stage.status === 'completed') dot.classList.add('completed');
+                else if (stage.status === 'active') dot.classList.add('active');
+                stepsEl.appendChild(dot);
+            });
+        }
+
+        function renderStages() {
+            const container = document.getElementById('stageList');
+            container.innerHTML = '';
+
+            taskData.stages.forEach(stage => {
+                const card = document.createElement('div');
+                card.className = `stage-card ${getStageCardClass(stage.status)}`;
+
+                let detailHtml = '';
+                let actionHtml = '';
+                let recheckinBtn = '';
+
+                if (stage.status === 'completed') {
+                    detailHtml = `<div class="stage-detail success">到达现场，已签到 ${stage.time || ''}</div>`;
+                    recheckinBtn = `<button class="recheckin-btn" onclick="event.stopPropagation(); goCheckin()"><i class="fa fa-map-marker"></i> 重新打卡</button>`;
+                } else if (stage.status === 'active') {
+                    actionHtml = `<div class="stage-action" onclick="event.stopPropagation(); goUpload()">进入上传 <i class="fa fa-angle-right"></i></div>`;
+                } else if (stage.id === 3) {
+                    actionHtml = `<div class="stage-action" onclick="event.stopPropagation(); goConfirm()">查看详情 <i class="fa fa-angle-right"></i></div>`;
+                } else {
+                    actionHtml = `<div class="stage-action gray">--</div>`;
+                }
+
+                card.innerHTML = `
+                    <div class="stage-header">
+                        <div class="stage-title">
+                            <span class="stage-status-icon">${getStageStatusIcon(stage.status)}</span>
+                            <span class="stage-badge">【阶段${stage.id}】${stage.name}</span>
+                        </div>
+                        ${actionHtml}
+                    </div>
+                    ${detailHtml}
+                    ${recheckinBtn}
+                `;
+
+                // 点击卡片跳转（仅对 active 阶段生效）
+                if (stage.status === 'active') {
+                    card.addEventListener('click', () => goUpload());
+                }
+
+                container.appendChild(card);
+            });
+        }
+
+        // ===== 跳转函数 =====
+        function goBack() {
+            window.location.href = 'calendar.html';
+        }
+
+        function goCheckin() {
+            window.location.href = 'checkin-location.html';
+        }
+
+        function goUpload() {
+            window.location.href = 'checkin-point.html';
+        }
+
+        function goConfirm() {
+            window.location.href = 'confirm-script.html';
+        }
+
+        // ===== 初始化 =====
+        function init() {
+            renderHouseInfo();
+            renderProgress();
+            renderStages();
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
 </html>

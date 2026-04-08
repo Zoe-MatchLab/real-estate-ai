@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>成果预览 - 房产AI助手</title>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --brand-primary: #FA8C16;
+            --brand-primary-dark: #E67A0E;
+            --brand-primary-light: #FFF7E6;
+            --color-success: #00B42A;
+            --color-success-light: #F6FFED;
+            --color-danger: #FA5151;
+            --color-danger-light: #FFF1F0;
+            --color-warning: #FF7D00;
+            --color-warning-light: #FFF7E6;
+            --color-info: #007AFF;
+            --color-info-light: #E8F3FF;
+            --color-title: #1D2129;
+            --color-text: #4E5969;
+            --color-sub: #86909C;
+            --color-border: #E5E6EB;
+            --color-bg: #F7F8FA;
+            --color-card: #FFFFFF;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+            --font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.25s ease;
+            --transition-slow: 0.35s ease;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        button:focus-visible,
+        a:focus-visible {
+            outline: 2px solid var(--brand-primary);
+            outline-offset: 2px;
+        }
+        html, body {
+            height: 100%;
+            font-family: var(--font-family);
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--color-text);
+            background: var(--color-bg);
+            -webkit-font-smoothing: antialiased;
+        }
+        .page {
+            min-height: 100vh;
+            padding-bottom: calc(100px + env(safe-area-inset-bottom));
+        }
+        /* 头部 */
+        .header {
+            background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
+            padding: calc(44px + env(safe-area-inset-top)) var(--spacing-md) var(--spacing-md);
+            color: white;
+        }
+        .header-top {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        .back-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.2);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border: none;
+            color: white;
+        }
+        .back-btn:hover { background: rgba(255,255,255,0.3); }
+        .header-title {
+            font-size: 17px;
+            font-weight: 600;
+            flex: 1;
+        }
+        .step-badge {
+            font-size: 11px;
+            padding: 2px 10px;
+            background: rgba(255,255,255,0.25);
+            border-radius: var(--radius-full);
+        }
+        /* 进度条 */
+        .progress-bar {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
+        .progress-step {
+            flex: 1;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 2px;
+        }
+        .progress-step.completed {
+            background: rgba(255,255,255,0.8);
+        }
+        /* 任务信息 */
+        .task-info {
+            background: white;
+            margin: var(--spacing-md);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+        }
+        .task-house-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--brand-primary-light);
+            border-radius: var(--radius-xl);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto var(--spacing-md);
+        }
+        .task-house-icon i {
+            font-size: 28px;
+            color: var(--brand-primary);
+        }
+        .task-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--color-title);
+            margin-bottom: var(--spacing-xs);
+        }
+        .task-address {
+            font-size: 12px;
+            color: var(--color-sub);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+            margin-bottom: var(--spacing-md);
+        }
+        .progress-text {
+            font-size: 13px;
+            color: var(--color-success);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+        }
+        .progress-text::before,
+        .progress-text::after {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 1px;
+            background: var(--color-border);
+        }
+        /* 成果卡片 */
+        .result-section {
+            margin: 0 var(--spacing-md) var(--spacing-md);
+        }
+        .result-label {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-title);
+            margin-bottom: var(--spacing-md);
+        }
+        .result-label i {
+            color: var(--brand-primary);
+        }
+        /* 封面图卡片 */
+        .cover-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--spacing-sm);
+        }
+        .cover-image-wrap {
+            position: relative;
+            cursor: pointer;
+        }
+        .cover-image {
+            width: 100%;
+            display: block;
+            transition: transform var(--transition-normal);
+        }
+        .cover-image-wrap:active .cover-image {
+            transform: scale(0.98);
+        }
+        .cover-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background var(--transition-fast);
+        }
+        .cover-image-wrap:active .cover-overlay {
+            background: rgba(0,0,0,0.2);
+        }
+        .cover-zoom-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(0,0,0,0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+        }
+        .cover-image-wrap:hover .cover-zoom-icon {
+            opacity: 1;
+        }
+        .cover-actions {
+            padding: var(--spacing-md);
+            display: flex;
+            justify-content: flex-end;
+        }
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--brand-primary-light);
+            border: none;
+            border-radius: var(--radius-full);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--brand-primary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        .action-btn:active {
+            transform: scale(0.95);
+            background: #FFE4C4;
+        }
+        .action-btn i {
+            font-size: 14px;
+        }
+        /* 视频卡片 */
+        .video-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            margin-bottom: var(--spacing-sm);
+        }
+        .video-wrap {
+            position: relative;
+            background: #000;
+        }
+        .video-player {
+            width: 100%;
+            display: block;
+            max-height: 300px;
+            object-fit: contain;
+        }
+        .video-placeholder {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255,255,255,0.5);
+        }
+        .video-placeholder i {
+            font-size: 48px;
+            margin-bottom: var(--spacing-sm);
+        }
+        .video-placeholder-text {
+            font-size: 13px;
+        }
+        .play-btn-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 64px;
+            height: 64px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+        }
+        .play-btn-overlay:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+        .play-btn-overlay i {
+            font-size: 24px;
+            color: var(--color-title);
+            margin-left: 4px;
+        }
+        .video-actions {
+            padding: var(--spacing-md);
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--spacing-sm);
+        }
+        .action-btn.outline {
+            background: transparent;
+            border: 1px solid var(--brand-primary);
+            color: var(--brand-primary);
+        }
+        .action-btn.outline:active {
+            background: var(--brand-primary-light);
+        }
+        /* 完成状态 */
+        .complete-banner {
+            margin: var(--spacing-md);
+            padding: var(--spacing-lg);
+            background: linear-gradient(135deg, var(--color-success) 0%, #00D255 100%);
+            border-radius: var(--radius-xl);
+            color: white;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(0,180,42,0.3);
+        }
+        .complete-icon {
+            font-size: 48px;
+            margin-bottom: var(--spacing-sm);
+        }
+        .complete-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+        .complete-sub {
+            font-size: 13px;
+            opacity: 0.85;
+        }
+        /* 底部操作 */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: var(--spacing-md);
+            padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+        }
+        .back-btn-large {
+            width: 100%;
+            padding: var(--spacing-md);
+            background: var(--brand-primary);
+            border: none;
+            border-radius: var(--radius-xl);
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            box-shadow: 0 4px 16px rgba(250,140,22,0.3);
+        }
+        .back-btn-large:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(250,140,22,0.4);
+        }
+        .back-btn-large:active {
+            transform: translateY(0);
+        }
+        /* 图片预览全屏弹窗 */
+        .image-preview-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 99998;
+            display: none;
+            flex-direction: column;
+            opacity: 0;
+            transition: opacity var(--transition-normal);
+        }
+        .image-preview-modal.show {
+            display: flex;
+            opacity: 1;
+        }
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md);
+            padding-top: calc(var(--spacing-md) + env(safe-area-inset-top));
+            color: white;
+        }
+        .preview-close {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background var(--transition-fast);
+            border: none;
+            color: white;
+        }
+        .preview-close:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .preview-title-text {
+            font-size: 15px;
+            font-weight: 500;
+        }
+        .preview-body {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-md);
+            overflow: auto;
+        }
+        .preview-img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: var(--radius-lg);
+            transition: transform var(--transition-normal);
+            transform-origin: center center;
+        }
+        .preview-footer {
+            padding: var(--spacing-lg);
+            display: flex;
+            gap: var(--spacing-md);
+        }
+        .preview-footer-btn {
+            flex: 1;
+            padding: var(--spacing-md);
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            transition: all var(--transition-fast);
+        }
+        .preview-footer-btn.download {
+            background: var(--brand-primary);
+            color: white;
+        }
+        .preview-footer-btn.cancel {
+            background: rgba(255,255,255,0.15);
+            color: white;
+        }
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.75);
+            color: white;
+            padding: 16px 32px;
+            border-radius: var(--radius-lg);
+            z-index: 99999;
+            font-size: 15px;
+            animation: toastIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            pointer-events: none;
+        }
+        .toast.success { background: rgba(0,180,42,0.95); }
+        .toast.error { background: rgba(250,81,81,0.95); }
+        .toast.info { background: rgba(0,122,255,0.95); }
+        @keyframes toastIn {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- 头部 -->
+        <div class="header">
+            <div class="header-top">
+                <button class="back-btn" onclick="goBack()">
+                    <i class="fa fa-angle-left"></i>
+                </button>
+                <span class="header-title">成果预览</span>
+                <span class="step-badge">4/4</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-step completed"></div>
+                <div class="progress-step completed"></div>
+                <div class="progress-step completed"></div>
+                <div class="progress-step completed"></div>
+            </div>
+        </div>
+
+        <!-- 任务信息 -->
+        <div class="task-info">
+            <div class="task-house-icon">
+                <i class="fa fa-home"></i>
+            </div>
+            <div class="task-name" id="houseName">中海汇德里</div>
+            <div class="task-address">
+                <i class="fa fa-map-marker"></i>
+                <span id="address">浦东新区张江高科技园区</span>
+            </div>
+            <div class="progress-text">
+                <i class="fa fa-check-circle"></i>
+                4/4 已完成
+            </div>
+        </div>
+
+        <!-- 封面图 -->
+        <div class="result-section">
+            <div class="result-label">
+                <i class="fa fa-image"></i>
+                封面图
+            </div>
+            <div class="cover-card">
+                <div class="cover-image-wrap" onclick="previewImage()">
+                    <img class="cover-image" id="coverImg" src="" alt="封面图">
+                    <div class="cover-overlay">
+                        <div class="cover-zoom-icon">
+                            <i class="fa fa-search-plus"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="cover-actions">
+                    <button class="action-btn" onclick="downloadCover()">
+                        <i class="fa fa-download"></i>
+                        下载
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 宣传视频 -->
+        <div class="result-section">
+            <div class="result-label">
+                <i class="fa fa-video-camera"></i>
+                宣传视频
+            </div>
+            <div class="video-card">
+                <div class="video-wrap">
+                    <div class="video-placeholder" id="videoPlaceholder">
+                        <i class="fa fa-film"></i>
+                        <div class="video-placeholder-text">视频加载中...</div>
+                    </div>
+                    <video class="video-player" id="videoPlayer" style="display:none;" controls playsinline></video>
+                    <div class="play-btn-overlay" id="playBtn" onclick="toggleVideo()">
+                        <i class="fa fa-play"></i>
+                    </div>
+                </div>
+                <div class="video-actions">
+                    <button class="action-btn outline" onclick="downloadVideo()">
+                        <i class="fa fa-download"></i>
+                        下载
+                    </button>
+                    <button class="action-btn" onclick="shareVideo()">
+                        <i class="fa fa-share-alt"></i>
+                        分享
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 完成提示 -->
+        <div class="complete-banner">
+            <div class="complete-icon">
+                <i class="fa fa-check-circle"></i>
+            </div>
+            <div class="complete-title">任务全部完成！</div>
+            <div class="complete-sub">封面图和宣传视频已生成，可下载或分享</div>
+        </div>
+
+        <!-- 底部返回 -->
+        <div class="bottom-bar">
+            <button class="back-btn-large" onclick="goToCalendar()">
+                <i class="fa fa-calendar"></i>
+                返回任务列表
+            </button>
+        </div>
+    </div>
+
+    <!-- 图片预览弹窗 -->
+    <div class="image-preview-modal" id="imagePreviewModal">
+        <div class="preview-header">
+            <button class="preview-close" onclick="closeImagePreview()">
+                <i class="fa fa-times"></i>
+            </button>
+            <span class="preview-title-text">封面图预览</span>
+            <div style="width: 32px;"></div>
+        </div>
+        <div class="preview-body">
+            <img class="preview-img" id="previewImg" src="" alt="预览">
+        </div>
+        <div class="preview-footer">
+            <button class="preview-footer-btn cancel" onclick="closeImagePreview()">关闭</button>
+            <button class="preview-footer-btn download" onclick="downloadCoverFromPreview()">
+                <i class="fa fa-download"></i>
+                下载封面
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // 任务数据
+        const taskData = {
+            houseName: '中海汇德里',
+            address: '浦东新区张江高科技园区',
+            currentStage: 4,
+            result: {
+                coverImage: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=400&fit=crop',
+                videoUrl: '',
+                coverDownloadUrl: '',
+                videoDownloadUrl: ''
+            }
+        };
+
+        // 初始化
+        function init() {
+            document.getElementById('houseName').textContent = taskData.houseName;
+            document.getElementById('address').textContent = taskData.address;
+            document.getElementById('coverImg').src = taskData.result.coverImage;
+            document.getElementById('previewImg').src = taskData.result.coverImage;
+
+            // 视频处理
+            const videoUrl = taskData.result.videoUrl;
+            if (videoUrl) {
+                document.getElementById('videoPlaceholder').style.display = 'none';
+                const videoPlayer = document.getElementById('videoPlayer');
+                videoPlayer.style.display = 'block';
+                videoPlayer.src = videoUrl;
+                document.getElementById('playBtn').style.display = 'flex';
+            } else {
+                document.getElementById('videoPlaceholder').style.display = 'flex';
+                document.getElementById('playBtn').style.display = 'none';
+            }
+        }
+
+        // 预览封面图（全屏）
+        function previewImage() {
+            const modal = document.getElementById('imagePreviewModal');
+            const previewImg = document.getElementById('previewImg');
+            const img = document.getElementById('coverImg');
+
+            // 初始化缩放
+            previewImg.style.transform = 'scale(1)';
+            previewImg.dataset.scale = '1';
+
+            modal.classList.add('show');
+        }
+
+        // 关闭图片预览
+        function closeImagePreview() {
+            document.getElementById('imagePreviewModal').classList.remove('show');
+        }
+
+        // 双指缩放图片预览
+        (function() {
+            let initialDistance = 0;
+            let initialScale = 1;
+
+            document.getElementById('imagePreviewModal').addEventListener('touchstart', function(e) {
+                if (e.touches.length === 2) {
+                    initialDistance = getDistance(e.touches[0], e.touches[1]);
+                    const img = document.getElementById('previewImg');
+                    initialScale = parseFloat(img.dataset.scale) || 1;
+                }
+            });
+
+            document.getElementById('imagePreviewModal').addEventListener('touchmove', function(e) {
+                if (e.touches.length === 2) {
+                    e.preventDefault();
+                    const currentDistance = getDistance(e.touches[0], e.touches[1]);
+                    const scale = initialScale * (currentDistance / initialDistance);
+                    const img = document.getElementById('previewImg');
+                    const clampedScale = Math.min(Math.max(scale, 0.5), 3);
+                    img.style.transform = 'scale(' + clampedScale + ')';
+                    img.dataset.scale = clampedScale;
+                }
+            });
+        })();
+
+        function getDistance(touch1, touch2) {
+            return Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
+        }
+
+        // 下载封面图
+        function downloadCover() {
+            const imgSrc = taskData.result.coverImage;
+            if (!imgSrc) {
+                showToast('封面图暂不可用', 'error');
+                return;
+            }
+
+            showToast('正在下载封面图...', 'info');
+
+            // 模拟下载（实际项目中调用微信 downloadAPI）
+            const link = document.createElement('a');
+            link.href = imgSrc;
+            link.download = taskData.houseName + '_封面图.jpg';
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            setTimeout(() => {
+                showToast('封面图下载成功', 'success');
+            }, 1000);
+        }
+
+        // 从预览弹窗下载封面
+        function downloadCoverFromPreview() {
+            downloadCover();
+        }
+
+        // 播放/暂停视频
+        function toggleVideo() {
+            const video = document.getElementById('videoPlayer');
+            const playBtn = document.getElementById('playBtn');
+
+            if (video.paused) {
+                video.play();
+                playBtn.querySelector('i').className = 'fa fa-pause';
+            } else {
+                video.pause();
+                playBtn.querySelector('i').className = 'fa fa-play';
+            }
+        }
+
+        // 下载视频
+        function downloadVideo() {
+            const videoUrl = taskData.result.videoUrl;
+            if (!videoUrl) {
+                showToast('视频暂不可用', 'error');
+                return;
+            }
+
+            showToast('正在下载视频...', 'info');
+
+            const link = document.createElement('a');
+            link.href = videoUrl;
+            link.download = taskData.houseName + '_宣传视频.mp4';
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            setTimeout(() => {
+                showToast('视频下载成功', 'success');
+            }, 1000);
+        }
+
+        // 分享视频
+        function shareVideo() {
+            // 实际项目中调用微信分享 API
+            if (typeof wx !== 'undefined' && wx.ready) {
+                wx.updateAppMessageShareData({
+                    title: taskData.houseName + ' - 楼盘宣传',
+                    desc: '查看楼盘封面图和宣传视频',
+                    link: window.location.href,
+                    imgUrl: taskData.result.coverImage,
+                    success: function() {
+                        showToast('分享已准备好', 'success');
+                    },
+                    fail: function() {
+                        showToast('分享失败，请稍后重试', 'error');
+                    }
+                });
+            } else {
+                // 非微信环境提示
+                showToast('请在微信中使用分享功能', 'info');
+            }
+        }
+
+        // 返回上一页
+        function goBack() {
+            window.location.href = 'task-detail.html?task=TASK001&step=4';
+        }
+
+        // 返回任务列表
+        function goToCalendar() {
+            window.location.href = 'calendar.html';
+        }
+
+        // Toast 提示
+        function showToast(message, type = '') {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'toast' + (type ? ' ' + type : '');
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.remove(), 2500);
+        }
+
+        // 点击弹窗背景关闭
+        document.getElementById('imagePreviewModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeImagePreview();
+            }
+        });
+
+        init();
+    </script>
+</body>
+</html>
