@@ -8,6 +8,17 @@
   <style>
     :root {
       --transition-normal: 0.25s ease;
+      --brand-primary: #FA8C16;
+      --brand-primary-dark: #E67A0E;
+      --color-success: #00B42A;
+      --color-warning: #FF7D00;
+      --color-danger: #FA5151;
+      --color-info: #007AFF;
+      --color-title: #1D2129;
+      --color-text: #4E5969;
+      --color-sub: #86909C;
+      --color-border: #E5E6EB;
+      --color-bg: #F7F8FA;
     }
     
     * {
@@ -19,7 +30,7 @@
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
       background: #f5f5f5;
-      color: #1D2129;
+      color: var(--color-title);
       font-size: 14px;
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
@@ -29,6 +40,7 @@
       padding-bottom: 70px;
     }
     
+    /* 顶部 */
     .header {
       background: linear-gradient(180deg, #f7d9a7 0%, #f5f5f5 100%);
       padding: 12px 15px 15px;
@@ -46,16 +58,17 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #1D2129;
+      color: var(--color-title);
       text-decoration: none;
     }
     
     .nav-title {
       font-weight: 600;
       font-size: 17px;
-      color: #1D2129;
+      color: var(--color-title);
     }
     
+    /* 用户信息 */
     .user {
       display: flex;
       align-items: center;
@@ -80,7 +93,7 @@
     .username {
       font-size: 18px;
       font-weight: 600;
-      color: #1D2129;
+      color: var(--color-title);
       display: flex;
       align-items: center;
       gap: 6px;
@@ -88,7 +101,7 @@
     
     .user-tag {
       font-size: 11px;
-      background: linear-gradient(135deg, #FA8C16, #FF9500);
+      background: linear-gradient(135deg, var(--brand-primary), #FF9500);
       color: #fff;
       padding: 2px 8px;
       border-radius: 10px;
@@ -96,7 +109,7 @@
     }
     
     .vip-btn {
-      background: linear-gradient(135deg, #FA8C16, #FF9500);
+      background: linear-gradient(135deg, var(--brand-primary), #FF9500);
       color: #fff;
       padding: 6px 12px;
       border-radius: 20px;
@@ -104,6 +117,162 @@
       font-weight: 500;
     }
     
+    /* 今日作业概览卡片 */
+    .overview-card {
+      background: #fff;
+      margin: 0 15px;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+    
+    .overview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    
+    .overview-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-title);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .overview-title i {
+      color: var(--brand-primary);
+    }
+    
+    .overview-more {
+      font-size: 12px;
+      color: var(--color-sub);
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    
+    /* 任务指标 */
+    .task-stats {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    
+    .stat-item {
+      flex: 1;
+      text-align: center;
+      padding: 12px 8px;
+      background: var(--color-bg);
+      border-radius: 8px;
+    }
+    
+    .stat-num {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--color-title);
+      line-height: 1.2;
+    }
+    
+    .stat-num.highlight {
+      color: var(--brand-primary);
+    }
+    
+    .stat-label {
+      font-size: 12px;
+      color: var(--color-sub);
+      margin-top: 4px;
+    }
+    
+    /* 话术评分 */
+    .score-section {
+      padding: 12px;
+      background: linear-gradient(135deg, #FFF7E6, #FFF2E6);
+      border-radius: 8px;
+      margin-bottom: 12px;
+    }
+    
+    .score-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    
+    .score-label {
+      font-size: 13px;
+      color: var(--color-text);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .score-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--brand-primary);
+    }
+    
+    .score-trend {
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+    
+    .score-trend.up {
+      color: var(--color-success);
+      background: rgba(0, 180, 42, 0.1);
+    }
+    
+    .score-trend.down {
+      color: var(--color-danger);
+      background: rgba(250, 81, 81, 0.1);
+    }
+    
+    .score-bar {
+      height: 6px;
+      background: #E5E6EB;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    
+    .score-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--brand-primary), #FF9500);
+      border-radius: 3px;
+      transition: width var(--transition-normal);
+    }
+    
+    .score-desc {
+      font-size: 11px;
+      color: var(--color-sub);
+      margin-top: 6px;
+    }
+    
+    /* 数据异常 */
+    .alert-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 12px;
+      background: rgba(250, 81, 81, 0.08);
+      border-radius: 6px;
+      color: var(--color-danger);
+      font-size: 13px;
+    }
+    
+    .alert-row i {
+      font-size: 14px;
+    }
+    
+    .alert-row:active {
+      background: rgba(250, 81, 81, 0.12);
+    }
+    
+    /* 会员卡 */
     .vip-card {
       background: linear-gradient(135deg, #1D2129, #2D3748);
       color: #fff;
@@ -139,7 +308,7 @@
     }
     
     .vip-renew {
-      background: linear-gradient(135deg, #FA8C16, #FF9500);
+      background: linear-gradient(135deg, var(--brand-primary), #FF9500);
       color: #fff;
       padding: 8px 14px;
       border-radius: 20px;
@@ -150,6 +319,7 @@
       gap: 4px;
     }
     
+    /* 列表卡片 */
     .list-card {
       background: #fff;
       margin: 0 15px 10px;
@@ -162,7 +332,7 @@
       align-items: center;
       padding: 14px 15px;
       border-bottom: 1px solid #F2F3F5;
-      color: #1D2129;
+      color: var(--color-title);
     }
     
     .list-item:last-child {
@@ -183,7 +353,7 @@
     
     .item-icon i {
       font-size: 16px;
-      color: #FA8C16;
+      color: var(--brand-primary);
     }
     
     .item-content {
@@ -192,13 +362,13 @@
     
     .item-title {
       font-size: 15px;
-      color: #1D2129;
+      color: var(--color-title);
       font-weight: 500;
     }
     
     .item-sub {
       font-size: 12px;
-      color: #86909C;
+      color: var(--color-sub);
       margin-right: 8px;
     }
     
@@ -263,7 +433,7 @@
     
     .tab-item-bottom.active {
       background: rgba(250, 140, 22, 0.2);
-      color: #FA8C16;
+      color: var(--brand-primary);
     }
   </style>
 </head>
@@ -271,6 +441,7 @@
 <body>
 <div class="container">
 
+  <!-- 顶部导航 -->
   <div class="header">
     <div class="nav">
       <a href="calendar.html" class="nav-btn">
@@ -282,6 +453,7 @@
       </a>
     </div>
 
+    <!-- 用户信息 -->
     <div class="user">
       <img class="avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Ccircle cx='30' cy='30' r='30' fill='%23E5E6EB'/%3E%3Ccircle cx='30' cy='22' r='10' fill='%23C9CDD4'/%3E%3Cellipse cx='30' cy='50' rx='18' ry='14' fill='%23C9CDD4'/%3E%3C/svg%3E" alt="头像"/>
       <div class="user-info">
@@ -294,6 +466,61 @@
     </div>
   </div>
 
+  <!-- 今日作业概览 -->
+  <div class="overview-card">
+    <div class="overview-header">
+      <div class="overview-title">
+        <i class="fa fa-clipboard"></i>
+        今日作业概览
+      </div>
+      <div class="overview-more" onclick="showToast()">
+        查看详情
+        <i class="fa fa-angle-right"></i>
+      </div>
+    </div>
+    
+    <!-- 任务指标 -->
+    <div class="task-stats">
+      <div class="stat-item">
+        <div class="stat-num">5</div>
+        <div class="stat-label">总任务</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num highlight">3/5</div>
+        <div class="stat-label">已完成</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">60%</div>
+        <div class="stat-label">完成率</div>
+      </div>
+    </div>
+    
+    <!-- 话术评分 -->
+    <div class="score-section" onclick="showToast()">
+      <div class="score-header">
+        <div class="score-label">
+          <i class="fa fa-star" style="color:#FFD700;"></i>
+          话术评分
+        </div>
+        <div>
+          <span class="score-value">85</span>
+          <span class="score-trend up">↑+5</span>
+        </div>
+      </div>
+      <div class="score-bar">
+        <div class="score-bar-fill" style="width: 85%;"></div>
+      </div>
+      <div class="score-desc">较上周提升</div>
+    </div>
+    
+    <!-- 数据异常 -->
+    <div class="alert-row" onclick="showToast()">
+      <i class="fa fa-exclamation-triangle"></i>
+      2 条数据异常待处理
+    </div>
+  </div>
+
+  <!-- 会员卡 -->
   <div class="vip-card">
     <div class="vip-info">
       <div class="vip-level">
@@ -308,6 +535,7 @@
     </div>
   </div>
 
+  <!-- 第一组：作业相关 -->
   <div class="list-card">
     <div class="list-item" onclick="showToast()">
       <div class="item-icon">
@@ -348,6 +576,7 @@
     </div>
   </div>
 
+  <!-- 第二组：内容与设置 -->
   <div class="list-card">
     <div class="list-item" onclick="showToast()">
       <div class="item-icon">
@@ -389,8 +618,10 @@
 
 </div>
 
+<!-- Toast提示 -->
 <div class="toast" id="toast">未开放，敬请期待</div>
 
+<!-- TabBar胶囊 -->
 <nav class="tab-bar-bottom">
   <a href="tools.html" class="tab-item-bottom">
     <i class="fa fa-rocket"></i>
