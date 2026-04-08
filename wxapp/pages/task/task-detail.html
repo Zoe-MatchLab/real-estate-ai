@@ -379,7 +379,7 @@
             houseName: '中海汇德里',
             address: '浦东新区张江高科技园区',
             deadline: '2026-04-08 18:00',
-            currentStage: parseInt(getQueryParam('step')) || 1,
+            currentStage: parseInt(getQueryParam('step')) || 0,  // 0=初始状态,1=阶段1完成,2=阶段2完成...
             taskId: getQueryParam('task') || 'TASK001'
         };
 
@@ -387,7 +387,7 @@
         function calculateStages() {
             const current = taskData.currentStage;
             return [
-                { id: 1, name: '打卡', status: current >= 1 ? 'completed' : 'pending', time: current >= 1 ? '10:30:00' : '' },
+                { id: 1, name: '打卡', status: current >= 1 ? 'completed' : (current === 0 ? 'pending' : 'active'), time: current >= 1 ? '10:30:00' : '' },
                 { id: 2, name: '上传', status: current >= 2 ? (current > 2 ? 'completed' : 'active') : 'pending' },
                 { id: 3, name: '文案确认', status: current >= 3 ? (current > 3 ? 'completed' : 'active') : 'pending' },
                 { id: 4, name: '成果生成', status: current >= 4 ? 'completed' : 'pending' }
