@@ -272,9 +272,12 @@
                     <i class="fa fa-search-plus text-white text-2xl opacity-0 hover:opacity-100 transition-opacity"></i>
                 </div>
             </div>
-            <div class="flex justify-end">
+            <div class="flex justify-end gap-2">
                 <button class="btn btn-secondary py-2 px-4 text-sm" onclick="downloadCoverImage()">
                     <i class="fa fa-download mr-1"></i> 下载
+                </button>
+                <button class="btn btn-secondary py-2 px-4 text-sm" onclick="openContentLibrary('cover')">
+                    <i class="fa fa-folder-open mr-1"></i> 内容库
                 </button>
             </div>
         </div>
@@ -303,6 +306,9 @@
             <div class="flex justify-end gap-2">
                 <button class="btn btn-secondary py-2 px-4 text-sm" onclick="downloadVideo()">
                     <i class="fa fa-download mr-1"></i> 下载
+                </button>
+                <button class="btn btn-secondary py-2 px-4 text-sm" onclick="openContentLibrary('video')">
+                    <i class="fa fa-folder-open mr-1"></i> 内容库
                 </button>
                 <button class="btn btn-primary py-2 px-4 text-sm" onclick="shareVideo()">
                     <i class="fa fa-share mr-1"></i> 分享
@@ -512,6 +518,17 @@
             }
         }
 
+        // 打开内容库
+        function openContentLibrary(type) {
+            // 显示内容库弹窗
+            const modal = document.getElementById('contentLibraryModal');
+            if (modal) {
+                modal.classList.add('show');
+            } else {
+                showToast('内容库功能开发中');
+            }
+        }
+
         // 返回任务列表
         function goBackToList() {
             window.location.href = 'task-detail.html?step=4';
@@ -565,6 +582,31 @@
         video.addEventListener('error', function() {
             showToast('视频加载失败,请重试');
         });
+
+        // 内容库弹窗
+        document.body.insertAdjacentHTML('beforeend', `
+            <div id="contentLibraryModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center" onclick="if(event.target===this)closeContentLibrary()">
+                <div class="bg-white rounded-xl w-11/12 max-w-md max-h-screen overflow-auto">
+                    <div class="flex items-center justify-between p-4 border-b">
+                        <h3 class="font-semibold">选择内容</h3>
+                        <button onclick="closeContentLibrary()" class="text-gray-400 hover:text-gray-600">
+                            <i class="fa fa-times text-lg"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-center text-gray-500 py-8">内容库功能开发中</p>
+                    </div>
+                </div>
+            </div>
+        `);
+
+        function closeContentLibrary() {
+            const modal = document.getElementById('contentLibraryModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
     </script>
 </body>
 </html>
