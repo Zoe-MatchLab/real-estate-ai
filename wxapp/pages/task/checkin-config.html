@@ -954,14 +954,55 @@
   <div class="toast" id="toast"></div>
 
 <script>
-// 配置数据
+// 配置数据 - 默认5个打卡点
 var config = {
   checkinEnabled: true,
   checkinRange: 100,
   executorUsers: [],
   notifyUsers: [],
   deadline: '2026-04-15T18:00',
-  points: []
+  points: [
+    {
+      id: 'point_001',
+      name: '沙盘照片',
+      desc: '拍摄沙盘全景照片，清晰展示项目名称和整体规划',
+      types: ['photo'],
+      required: true,
+      minCount: 1
+    },
+    {
+      id: 'point_002',
+      name: '样板间视频',
+      desc: '录制样板间整体环境和装修细节，时长不少于30秒',
+      types: ['video'],
+      required: true,
+      minCount: 1
+    },
+    {
+      id: 'point_003',
+      name: '区位配套',
+      desc: '拍摄周边交通、商业、教育等配套设施',
+      types: ['photo', 'text'],
+      required: false,
+      minCount: 2
+    },
+    {
+      id: 'point_004',
+      name: '销售说辞',
+      desc: '录制销售讲解语音或填写文字说辞',
+      types: ['audio', 'text'],
+      required: false,
+      minCount: 1
+    },
+    {
+      id: 'point_005',
+      name: '园林景观',
+      desc: '拍摄小区园林绿化、景观设计等',
+      types: ['photo', 'video'],
+      required: false,
+      minCount: 1
+    }
+  ]
 };
 
 var currentOrgType = 'executor';
