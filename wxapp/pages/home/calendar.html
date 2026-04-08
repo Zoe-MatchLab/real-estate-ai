@@ -1072,7 +1072,7 @@
                     </div>
                     
                     <div class="task-actions">
-                        <button class="task-btn task-btn-primary" onclick="location.href='task-detail.html'">进入任务</button>
+                        <button class="task-btn task-btn-primary" onclick="location.href='../task/task-detail.html'">进入任务</button>
                         <button class="task-btn task-btn-secondary" onclick="location.href='speech-train.html'">开始训练</button>
                     </div>
                 </div>
@@ -1151,7 +1151,7 @@
                     </div>
                     
                     <div class="task-actions">
-                        <button class="task-btn task-btn-primary" onclick="location.href='confirm-copywriter.html'">继续撰写</button>
+                        <button class="task-btn task-btn-primary" onclick="location.href='../result/confirm-copywriter.html'">继续撰写</button>
                     </div>
                 </div>
 
@@ -1192,7 +1192,7 @@
                     </div>
                     
                     <div class="task-actions">
-                        <button class="task-btn task-btn-primary" onclick="location.href='submit-result.html'">去拍摄</button>
+                        <button class="task-btn task-btn-primary" onclick="location.href='../result/submit-result.html'">去拍摄</button>
                     </div>
                 </div>
 
@@ -1247,8 +1247,10 @@
                     </div>
                     
                     <div class="task-actions">
-                        <button class="task-btn task-btn-secondary" onclick="location.href='task-distribute.html'">提醒下发</button>
+                        <button class="task-btn task-btn-secondary" onclick="location.href='../task/task-distribute.html'">提醒下发</button>
                     </div>
+                </div>
+
                 <!-- 探盘任务 - 待开始 -->
                 <div class="task-card type-house">
                     <div class="task-header">
@@ -1305,7 +1307,7 @@
                     </div>
                     
                     <div class="task-actions">
-                        <button class="task-btn task-btn-primary" onclick="location.href='task-detail.html'">进入任务</button>
+                        <button class="task-btn task-btn-primary" onclick="location.href='../task/task-detail.html'">进入任务</button>
                         <button class="task-btn task-btn-secondary" onclick="location.href='speech-train.html'">开始训练</button>
                     </div>
                 </div>
@@ -1366,7 +1368,7 @@
                     </div>
                     
                     <div class="task-actions">
-                        <button class="task-btn task-btn-primary" onclick="location.href='task-detail.html'">查看报告</button>
+                        <button class="task-btn task-btn-primary" onclick="location.href='../task/task-detail.html'">查看报告</button>
                     </div>
                 </div>
 
@@ -1383,7 +1385,7 @@
                         <button class="empty-btn secondary" onclick="showToast('刷新')">
                             <i class="fa fa-refresh"></i> 刷新
                         </button>
-                        <button class="empty-btn primary" onclick="location.href='task-create.html'">
+                        <button class="empty-btn primary" onclick="location.href='../task/task-create.html'">
                             <i class="fa fa-plus"></i> 新建任务
                         </button>
                     </div>
@@ -1408,35 +1410,56 @@
         </div>
         <div class="notify-tabs">
             <button class="notify-tab active" onclick="switchNotifyTab(this, 'all')">全部</button>
-            <button class="notify-tab" onclick="switchNotifyTab(this, 'exploration')">探盘</button>
-            <button class="notify-tab" onclick="switchNotifyTab(this, 'speech')">话术</button>
-            <button class="notify-tab" onclick="switchNotifyTab(this, 'content')">内容</button>
+            <button class="notify-tab" onclick="switchNotifyTab(this, 'house')">探盘</button>
+            <button class="notify-tab" onclick="switchNotifyTab(this, 'train')">训练</button>
+            <button class="notify-tab" onclick="switchNotifyTab(this, 'text')">文案</button>
+            <button class="notify-tab" onclick="switchNotifyTab(this, 'video')">视频</button>
+            <button class="notify-tab" onclick="switchNotifyTab(this, 'custom')">自定义</button>
+            <button class="notify-tab" onclick="switchNotifyTab(this, 'pending')">待下发</button>
         </div>
         <div class="notify-list" id="notifyList">
-            <div class="notify-item unread" onclick="handleNotifyClick('exploration')">
+            <div class="notify-item unread" data-type="house" onclick="handleNotifyClick('house')">
                 <div class="notify-dot unread"></div>
                 <div class="notify-content">
                     <div class="notify-name">中海汇德里探盘任务</div>
-                    <div class="notify-message">2/4阶段进行中，请注意完成</div>
+                    <div class="notify-message">探盘任务待执行</div>
                     <div class="notify-time">刚刚</div>
                 </div>
                 <div class="notify-arrow"><i class="fa fa-chevron-right"></i></div>
             </div>
-            <div class="notify-item" onclick="handleNotifyClick('speech')">
+            <div class="notify-item" data-type="train" onclick="handleNotifyClick('train')">
                 <div class="notify-dot read"></div>
                 <div class="notify-content">
-                    <div class="notify-name">万科城市之光话术训练</div>
-                    <div class="notify-message">新任务已下发，请及时完成</div>
+                    <div class="notify-name">议价谈判话术练习</div>
+                    <div class="notify-message">训练任务待执行</div>
                     <div class="notify-time">10分钟前</div>
                 </div>
                 <div class="notify-arrow"><i class="fa fa-chevron-right"></i></div>
             </div>
-            <div class="notify-item" onclick="handleNotifyClick('content')">
+            <div class="notify-item" data-type="text" onclick="handleNotifyClick('text')">
                 <div class="notify-dot read"></div>
                 <div class="notify-content">
                     <div class="notify-name">朋友圈文案生成</div>
-                    <div class="notify-message">等待探盘完成后执行</div>
+                    <div class="notify-message">文案任务待执行</div>
                     <div class="notify-time">昨天</div>
+                </div>
+                <div class="notify-arrow"><i class="fa fa-chevron-right"></i></div>
+            </div>
+            <div class="notify-item" data-type="video" onclick="handleNotifyClick('video')">
+                <div class="notify-dot read"></div>
+                <div class="notify-content">
+                    <div class="notify-name">楼盘介绍视频制作</div>
+                    <div class="notify-message">视频任务待执行</div>
+                    <div class="notify-time">昨天</div>
+                </div>
+                <div class="notify-arrow"><i class="fa fa-chevron-right"></i></div>
+            </div>
+            <div class="notify-item" data-type="pending" onclick="handleNotifyClick('pending')">
+                <div class="notify-dot read"></div>
+                <div class="notify-content">
+                    <div class="notify-name">万科翡翠公园探盘任务</div>
+                    <div class="notify-message">待下发任务已到达</div>
+                    <div class="notify-time">1小时前</div>
                 </div>
                 <div class="notify-arrow"><i class="fa fa-chevron-right"></i></div>
             </div>
@@ -1580,8 +1603,8 @@
                 if (type === 'all') {
                     item.style.display = 'flex';
                 } else {
-                    // 根据类型筛选（这里简化处理，实际应根据data-type筛选）
-                    item.style.display = 'flex';
+                    const itemType = item.getAttribute('data-type');
+                    item.style.display = itemType === type ? 'flex' : 'none';
                 }
             });
         }
@@ -1596,12 +1619,20 @@
             toggleNotifyPanel();
             
             // 跳转到对应页面
-            if (type === 'exploration') {
-                location.href = 'task-detail.html';
-            } else if (type === 'speech') {
+            if (type === 'house') {
+                location.href = '../task/task-detail.html';
+            } else if (type === 'train') {
                 location.href = 'speech-train.html';
-            } else if (type === 'content') {
-                showToast('内容发布功能即将上线');
+            } else if (type === 'text') {
+                location.href = '../result/confirm-copywriter.html';
+            } else if (type === 'video') {
+                location.href = '../result/submit-result.html';
+            } else if (type === 'custom') {
+                location.href = '../task/task-create.html';
+            } else if (type === 'pending') {
+                location.href = '../task/task-distribute.html';
+            } else {
+                showToast('功能即将上线');
             }
         }
 
