@@ -248,8 +248,9 @@
             background: var(--color-card);
             border-radius: var(--radius-xl);
             padding: var(--spacing-lg);
-            margin-bottom: var(--spacing-md);
-            box-shadow: var(--shadow-sm);
+            margin-bottom: var(--spacing-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--color-border);
         }
 
         .welcome-header {
@@ -318,6 +319,7 @@
             justify-content: center;
             background: var(--color-card);
             border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
         }
 
         .suggest-text {
@@ -331,10 +333,11 @@
             font-size: 14px;
         }
 
-        /* 消息气泡 */
+        /* ========== 消息气泡 - 上下布局 ========== */
         .message {
             display: flex;
-            margin-bottom: var(--spacing-md);
+            flex-direction: column;
+            margin-bottom: var(--spacing-lg);
             animation: fadeInUp 0.3s ease;
         }
 
@@ -343,8 +346,14 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        /* AI 消息 - 左对齐 */
+        .message.ai {
+            align-items: flex-start;
+        }
+
+        /* 用户消息 - 右对齐 */
         .message.user {
-            justify-content: flex-end;
+            align-items: flex-end;
         }
 
         .message-avatar {
@@ -355,13 +364,7 @@
             align-items: center;
             justify-content: center;
             font-size: 18px;
-            flex-shrink: 0;
-            margin-right: var(--spacing-sm);
-        }
-
-        .message.user .message-avatar {
-            margin-right: 0;
-            margin-left: var(--spacing-sm);
+            margin-bottom: var(--spacing-xs);
         }
 
         .message-avatar.ai {
@@ -370,12 +373,21 @@
         }
 
         .message-avatar.user {
-            background: var(--color-bg);
-            color: var(--color-sub);
+            background: var(--brand-primary);
+            color: white;
+        }
+
+        .message-content {
+            display: flex;
+            flex-direction: column;
+            max-width: 85%;
+        }
+
+        .message.user .message-content {
+            align-items: flex-end;
         }
 
         .message-bubble {
-            max-width: 78%;
             padding: var(--spacing-md);
             border-radius: var(--radius-xl);
             font-size: 14px;
@@ -385,14 +397,14 @@
         .message.ai .message-bubble {
             background: var(--color-card);
             color: var(--color-text);
-            border-top-left-radius: var(--radius-sm);
+            border-bottom-left-radius: var(--radius-sm);
             box-shadow: var(--shadow-sm);
         }
 
         .message.user .message-bubble {
             background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
             color: white;
-            border-top-right-radius: var(--radius-sm);
+            border-bottom-right-radius: var(--radius-sm);
             box-shadow: 0 4px 12px rgba(250, 140, 22, 0.25);
         }
 
@@ -400,11 +412,7 @@
             font-size: 11px;
             color: var(--color-sub);
             margin-top: var(--spacing-xs);
-            padding: 0 var(--spacing-sm);
-        }
-
-        .message.user .message-time {
-            text-align: right;
+            padding: 0 4px;
         }
 
         /* 数据卡片 */
@@ -848,7 +856,7 @@
                     <div class="message-avatar ${role}" aria-hidden="true">
                         ${role === 'ai' ? '🦷' : '👤'}
                     </div>
-                    <div>
+                    <div class="message-content">
                         <div class="message-bubble">${escapeHtml(text)}</div>
                         <div class="message-time">${time}</div>
                     </div>
@@ -886,7 +894,7 @@
             const html = `
                 <div class="message ai">
                     <div class="message-avatar ai" aria-hidden="true">🦷</div>
-                    <div>
+                    <div class="message-content">
                         <div class="message-bubble">
                             ${text}
                             ${dataHtml}
