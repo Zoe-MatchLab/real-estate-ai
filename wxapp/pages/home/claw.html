@@ -283,12 +283,11 @@
 
         /* 欢迎卡片 */
         .welcome-card {
-            background: var(--color-card);
+            background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
             border-radius: var(--radius-xl);
             padding: var(--spacing-lg);
-            margin-bottom: var(--spacing-lg);
-            box-shadow: var(--shadow-md);
-            border: 1px solid var(--color-border);
+            margin-bottom: var(--spacing-md);
+            box-shadow: 0 4px 20px rgba(250, 140, 22, 0.3);
             animation: welcomeSlideIn 0.5s ease-out;
         }
 
@@ -297,13 +296,23 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .welcome-card .message-avatar {
+        .welcome-card .welcome-avatar {
+            background: rgba(255,255,255,0.2);
             animation: welcomeAvatarPulse 2s ease-in-out infinite;
         }
 
         @keyframes welcomeAvatarPulse {
             0%, 100% { transform: scale(1); }
             50% { transform: scale(1.05); }
+        }
+
+
+        .welcome-card .welcome-title {
+            color: white;
+        }
+
+        .welcome-card .welcome-desc {
+            color: rgba(255,255,255,0.9);
         }
 
         .welcome-header {
@@ -838,46 +847,6 @@
                         <i class="fa fa-angle-right suggest-arrow"></i>
                     </div>
                 </div>
-            </div>
-
-            <!-- AI 欢迎消息 -->
-            <div class="message ai">
-                <div class="message-avatar ai">🦷</div>
-                <div class="message-content">
-                    <div class="message-bubble">
-                        你好！我是 Claw，您的智能房产助手 👋
-                        <br><br>
-                        我可以帮您：
-                        <br>
-                        • 📋 下达探盘任务
-                        <br>
-                        • 📊 查看数据报表
-                        <br>
-                        • ✍️ 生成推广文案
-                        <br>
-                        • 🏠 推荐优质房源
-                        <br><br>
-                        有什么可以帮您的吗？
-                    </div>
-                    <div class="quick-replies">
-                        <button class="quick-reply" onclick="sendQuickReply('下达探盘任务')">
-                            <span class="quick-reply-icon"><i class="fa fa-map-marker"></i></span>
-                            <span class="quick-reply-text">下达探盘任务</span>
-                            <span class="quick-reply-arrow"><i class="fa fa-angle-right"></i></span>
-                        </button>
-                        <button class="quick-reply" onclick="sendQuickReply('查看业绩数据')">
-                            <span class="quick-reply-icon"><i class="fa fa-bar-chart"></i></span>
-                            <span class="quick-reply-text">查看业绩数据</span>
-                            <span class="quick-reply-arrow"><i class="fa fa-angle-right"></i></span>
-                        </button>
-                        <button class="quick-reply" onclick="sendQuickReply('生成文案')">
-                            <span class="quick-reply-icon"><i class="fa fa-magic"></i></span>
-                            <span class="quick-reply-text">生成推广文案</span>
-                            <span class="quick-reply-arrow"><i class="fa fa-angle-right"></i></span>
-                        </button>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- 快捷指令区 -->
