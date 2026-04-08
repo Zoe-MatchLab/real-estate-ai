@@ -471,26 +471,57 @@
                 let recheckinBtn = '';
 
                 if (stage.status === 'completed') {
-                    detailHtml = `<div class="stage-detail success">到达现场，已签到 ${stage.time || ''}</div>`;
-                    recheckinBtn = `<button class="recheckin-btn" onclick="event.stopPropagation(); goCheckin()"><i class="fa fa-map-marker"></i> 重新打卡</button>`;
+                    // 不同阶段完成显示不同信息
+                    if (stage.id === 1) {
+                        detailHtml = `<div class="stage-detail success">✅ 已签到 ${stage.time || '10:30:00'}</div>`;
+                        recheckinBtn = `<button class="recheckin-btn" onclick="event.stopPropagation(); goCheckin()"><i class="fa fa-map-marker"></i> 重新打卡</button>`;
+                    } else if (stage.id === 2) {
+                        detailHtml = `<div class="stage-detail success">✅ 已上传 4个点位</div>`;
+                        recheckinBtn = `<button class="recheckin-btn" onclick="event.stopPropagation(); goUpload()"><i class="fa fa-upload"></i> 重新上传</button>`;
+                    } else if (stage.id === 3) {
+                        detailHtml = `<div class="stage-detail success">✅ 文案已确认</div>`;
+                        recheckinBtn = `<button class="recheckin-btn" onclick="event.stopPropagation(); goConfirm()"><i class="fa fa-edit"></i> 修改内容</button>`;
+                    } else if (stage.id === 4) {
+                        detailHtml = `<div class="stage-detail success">✅ 封面图+视频已生成</div>`;
+                        recheckinBtn = `<button class="recheckin-btn" onclick="event.stopPropagation(); goResult()"><i class="fa fa-eye"></i> 查看成果</button>`;
+                    }
                 } else if (stage.status === 'active') {
-                    actionHtml = `<div class="stage-action" onclick="event.stopPropagation(); goUpload()">进入上传 <i class="fa fa-angle-right"></i></div>`;
+                    // 进行中阶段显示不同信息
+                    if (stage.id === 1) {
+                        actionHtml = `<div class="stage-action" onclick="event.stopPropagation(); goCheckin()">去打卡 <i class="fa fa-angle-right"></i></div>`;
+                    } else if (stage.id === 2) {
+                        actionHtml = `<div class="stage-action" onclick="event.stopPropagation(); goUpload()">进入上传 <i class="fa fa-angle-right"></i></div>`;
+                    } else if (stage.id === 3) {
+                        actionHtml = `<div class="stage-action" onclick="event.stopPropagation(); goConfirm()">去确认 <i class="fa fa-angle-right"></i></div>`;
+                    } else if (stage.id === 4) {
+                        actionHtml = `<div class="stage-action" onclick="event.stopPropagation(); goResult()">查看成果 <i class="fa fa-angle-right"></i></div>`;
+                    }
+                } else if (stage.id === 1) {
+                    // 阶段1待打卡
+                    detailHtml = `<div class="stage-detail">请到达楼盘现场进行定位打卡</div>`;
+                    actionHtml = `<div class="stage-action" onclick="event.stopPropagation(); goCheckin()">去打卡 <i class="fa fa-angle-right"></i></div>`;
+                } else if (stage.id === 2) {
+                    // 阶段2需要阶段1完成后才能上传
+                    if (stage.status === 'pending') {
+                        actionHtml = `<div class="stage-action gray"><i class="fa fa-lock"></i> 需完成阶段1</div>`;
+                        detailHtml = `<div class="stage-detail">请先完成定位打卡</div>`;
+                    }
                 } else if (stage.id === 3) {
                     // 阶段3需要阶段2完成后才能查看
                     if (stage.status === 'pending') {
-                        actionHtml = `<div class="stage-action gray"><i class="fa fa-lock"></i> 待完成</div>`;
+                        actionHtml = `<div class="stage-action gray"><i class="fa fa-lock"></i> 需完成阶段2</div>`;
+                        detailHtml = `<div class="stage-detail">请先完成素材上传</div>`;
                     } else {
                         actionHtml = `<div class="stage-action" onclick="event.stopPropagation(); goConfirm()">查看详情 <i class="fa fa-angle-right"></i></div>`;
                     }
                 } else if (stage.id === 4) {
                     // 阶段4需要阶段3完成后才能查看
                     if (stage.status === 'pending') {
-                        actionHtml = `<div class="stage-action gray"><i class="fa fa-lock"></i> 待完成</div>`;
+                        actionHtml = `<div class="stage-action gray"><i class="fa fa-lock"></i> 需完成阶段3</div>`;
+                        detailHtml = `<div class="stage-detail">请先确认文案脚本</div>`;
                     } else {
                         actionHtml = `<div class="stage-action" onclick="event.stopPropagation(); goResult()">查看成果 <i class="fa fa-angle-right"></i></div>`;
                     }
-                } else {
-                    actionHtml = `<div class="stage-action gray">--</div>`;
                 }
 
                 card.innerHTML = `
