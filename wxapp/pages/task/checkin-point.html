@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>阶段2：点位打卡 - 房产AI助手</title>
+    <title>素材上传 - 房产AI助手</title>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
         :root {
@@ -11,12 +11,12 @@
             --brand-primary-dark: #E67A0E;
             --brand-primary-light: #FFF7E6;
             --color-success: #00B42A;
-            --color-success-light: #F6FFED;
+            --color-success-light: #E8FFEA;
             --color-danger: #FA5151;
-            --color-danger-light: #FFF1F0;
+            --color-danger-light: #FFECE8;
             --color-warning: #FF7D00;
             --color-warning-light: #FFF7E6;
-            --color-info: #007AFF;
+            --color-info: #165DFF;
             --color-info-light: #E8F3FF;
             --color-title: #1D2129;
             --color-text: #4E5969;
@@ -40,19 +40,15 @@
             --font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
             --transition-fast: 0.15s ease;
             --transition-normal: 0.25s ease;
-            --transition-slow: 0.35s ease;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* Focus 样式 - 可访问性 */
         button:focus-visible,
-        a:focus-visible,
-        input:focus-visible,
-        select:focus-visible,
-        textarea:focus-visible {
+        a:focus-visible {
             outline: 2px solid var(--brand-primary);
             outline-offset: 2px;
         }
+
         html, body {
             height: 100%;
             font-family: var(--font-family);
@@ -61,280 +57,609 @@
             color: var(--color-text);
             background: var(--color-bg);
             -webkit-font-smoothing: antialiased;
+            -webkit-text-size-adjust: 100%;
         }
+
         .page {
             min-height: 100vh;
             padding-bottom: calc(80px + env(safe-area-inset-bottom));
         }
-        /* 头部 */
-        .header {
-            background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
-            padding: calc(44px + env(safe-area-inset-top)) var(--spacing-md) var(--spacing-md);
-            color: white;
-        }
-        .header-top {
+
+        /* ===== 顶部导航栏 ===== */
+        .nav-bar {
+            background: var(--color-card);
+            padding: calc(12px + env(safe-area-inset-top)) var(--spacing-md) 12px;
             display: flex;
             align-items: center;
             gap: var(--spacing-md);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--color-border);
         }
-        .back-btn {
+        .nav-back {
             width: 32px;
             height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255,255,255,0.2);
-            border-radius: var(--radius-full);
             cursor: pointer;
-            transition: all var(--transition-fast);
             border: none;
-            color: white;
+            background: none;
+            color: var(--color-title);
+            border-radius: var(--radius-full);
+            transition: background var(--transition-fast);
         }
-        .header-title {
+        .nav-back:hover { background: var(--color-bg); }
+        .nav-back i { font-size: 20px; }
+        .nav-title {
             font-size: 17px;
             font-weight: 600;
+            color: var(--color-title);
             flex: 1;
+            text-align: center;
         }
-        .step-badge {
-            font-size: 11px;
-            padding: 2px 10px;
-            background: rgba(255,255,255,0.25);
+        .nav-save {
+            padding: 6px 14px;
+            background: var(--brand-primary-light);
+            color: var(--brand-primary);
+            border: none;
+            border-radius: var(--radius-full);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        .nav-save:active {
+            background: var(--brand-primary);
+            color: white;
+        }
+
+        /* ===== 任务信息条 ===== */
+        .house-info-bar {
+            background: var(--color-card);
+            padding: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            border-bottom: 1px solid var(--color-border);
+            flex-wrap: wrap;
+        }
+        .house-name {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-title);
+        }
+        .house-name i { color: var(--brand-primary); }
+        .info-divider {
+            width: 1px;
+            height: 16px;
+            background: var(--color-border);
+        }
+        .info-chip {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: var(--color-sub);
+            padding: 2px 8px;
+            background: var(--color-bg);
             border-radius: var(--radius-full);
         }
-        /* 进度指示 */
-        .progress-bar {
-            display: flex;
-            gap: var(--spacing-sm);
-            margin-top: var(--spacing-md);
-        }
-        .progress-step {
-            flex: 1;
-            height: 4px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 2px;
-            position: relative;
-            overflow: hidden;
-        }
-        .progress-step.completed {
-            background: rgba(255,255,255,0.8);
-        }
-        .progress-step.current::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            height: 100%;
-            width: 50%;
-            background: white;
-            border-radius: 2px;
-            animation: progressAnim 2s ease-in-out infinite;
-        }
-        @keyframes progressAnim {
-            0%, 100% { width: 30%; }
-            50% { width: 70%; }
-        }
-        /* 点位列表 */
+        .info-chip strong { color: var(--color-success); }
+        .info-chip.warning strong { color: var(--color-warning); }
+
+        /* ===== 点位列表 ===== */
         .point-list {
             padding: var(--spacing-md);
         }
+
+        /* ===== 点位卡片 ===== */
         .point-card {
-            background: white;
+            background: var(--color-card);
             border-radius: var(--radius-xl);
             margin-bottom: var(--spacing-md);
             box-shadow: var(--shadow-sm);
             overflow: hidden;
-            transition: all var(--transition-normal);
+            border: 1px solid var(--color-border);
         }
-        .point-card:active {
-            transform: scale(0.98);
-        }
-        .point-card.completed {
-            opacity: 0.7;
-        }
+
+        /* 卡片头部 */
         .point-header {
             display: flex;
             align-items: center;
             padding: var(--spacing-md);
             cursor: pointer;
+            user-select: none;
+            gap: var(--spacing-sm);
         }
-        .point-index {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
+        .point-header:active { background: var(--color-bg); }
+        .point-expand-icon {
+            width: 20px;
+            height: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
-            font-weight: 600;
-            margin-right: var(--spacing-md);
-            background: var(--color-info-light);
-            color: var(--color-info);
-        }
-        .point-card.completed .point-index {
-            background: var(--color-success-light);
-            color: var(--color-success);
-        }
-        .point-info {
-            flex: 1;
-        }
-        .point-name {
-            font-size: 15px;
-            font-weight: 500;
-            color: var(--color-title);
-            margin-bottom: 2px;
-        }
-        .point-desc {
-            font-size: 12px;
             color: var(--color-sub);
+            transition: transform var(--transition-fast);
+            flex-shrink: 0;
         }
-        .point-status {
-            font-size: 12px;
-            padding: 4px 10px;
+        .point-card.expanded .point-expand-icon {
+            transform: rotate(90deg);
+        }
+        .point-required-tag {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 7px;
             border-radius: var(--radius-full);
+            flex-shrink: 0;
         }
-        .point-status.pending {
+        .point-required-tag.required {
             background: var(--color-warning-light);
             color: var(--color-warning);
         }
-        .point-status.done {
-            background: var(--color-success-light);
-            color: var(--color-success);
-        }
-        .point-arrow {
+        .point-required-tag.optional {
+            background: var(--color-bg);
             color: var(--color-sub);
-            margin-left: var(--spacing-sm);
-            transition: transform var(--transition-fast);
         }
-        .point-card.expanded .point-arrow {
-            transform: rotate(180deg);
+        .point-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-title);
+            flex: 1;
         }
-        /* 点位详情展开 */
-        .point-detail {
-            padding: 0 var(--spacing-md) var(--spacing-md);
+        .point-count {
+            font-size: 12px;
+            color: var(--color-sub);
+            flex-shrink: 0;
+        }
+        .point-type-icons {
+            display: flex;
+            gap: 2px;
+            font-size: 12px;
+            color: var(--color-sub);
+            flex-shrink: 0;
+        }
+        .point-status-badge {
+            font-size: 13px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* ===== 卡片内容（展开态） ===== */
+        .point-body {
             display: none;
+            padding: 0 var(--spacing-md) var(--spacing-md);
+            border-top: 1px solid var(--color-border);
         }
-        .point-card.expanded .point-detail {
+        .point-card.expanded .point-body {
             display: block;
         }
-        /* 媒体采集按钮 */
-        .media-buttons {
+
+        /* 内容预览区 */
+        .content-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md) 0;
+        }
+        .preview-thumb {
+            position: relative;
+            width: 76px;
+            height: 76px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            background: var(--color-bg);
+            flex-shrink: 0;
+        }
+        .preview-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .preview-thumb.video::after {
+            content: attr(data-duration);
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            font-size: 10px;
+            color: white;
+            background: rgba(0,0,0,0.6);
+            padding: 1px 5px;
+            border-radius: 3px;
+        }
+        .preview-thumb .play-icon {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            background: rgba(0,0,0,0.3);
+        }
+        .preview-thumb .del-btn {
+            position: absolute;
+            top: 3px;
+            right: 3px;
+            width: 18px;
+            height: 18px;
+            background: rgba(0,0,0,0.55);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .preview-text {
+            width: 100%;
+            background: var(--color-bg);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: 13px;
+            color: var(--color-text);
+            line-height: 1.6;
+            max-height: 80px;
+            overflow: hidden;
+            position: relative;
+        }
+        .preview-text.expanded {
+            max-height: none;
+        }
+        .preview-text-toggle {
+            color: var(--color-info);
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 4px;
+            display: inline-block;
+        }
+        .preview-audio {
+            width: 100%;
+            background: var(--color-bg);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-sm) var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        .audio-play-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--brand-primary);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .audio-wave {
+            flex: 1;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+        .audio-bar {
+            width: 3px;
+            background: var(--brand-primary);
+            border-radius: 2px;
+            opacity: 0.6;
+        }
+        .audio-duration {
+            font-size: 12px;
+            color: var(--color-sub);
+            flex-shrink: 0;
+        }
+        .audio-del-btn {
+            color: var(--color-danger);
+            font-size: 14px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .preview-tag-cloud {
+            width: 100%;
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+        }
+        .tag-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: var(--color-info-light);
+            color: var(--color-info);
+            border-radius: var(--radius-full);
+            font-size: 12px;
+        }
+        .tag-item .del-btn {
+            font-size: 10px;
+            cursor: pointer;
+            color: var(--color-info);
+        }
+
+        /* 操作按钮区 */
+        .action-buttons {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: var(--spacing-sm);
-            margin-bottom: var(--spacing-md);
+            padding: var(--spacing-sm) 0;
         }
-        .media-btn {
+        .action-btn {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: var(--spacing-md);
+            gap: 4px;
+            padding: var(--spacing-md) var(--spacing-sm);
             background: var(--color-bg);
+            border: 1.5px solid var(--color-border);
             border-radius: var(--radius-lg);
             cursor: pointer;
             transition: all var(--transition-fast);
-            border: 2px solid transparent;
+            font-size: 0;
+            min-height: 64px;
         }
-        .media-btn:hover {
-            background: var(--color-info-light);
-            border-color: var(--color-info);
+        .action-btn:active {
+            transform: scale(0.96);
+            background: var(--brand-primary-light);
+            border-color: var(--brand-primary);
         }
-        .media-btn:active {
-            transform: scale(0.95);
+        .action-btn i {
+            font-size: 22px;
+            color: var(--color-text);
         }
-        .media-btn.has-media {
+        .action-btn span {
+            font-size: 11px;
+            color: var(--color-sub);
+            margin-top: 2px;
+        }
+        .action-btn.has-content {
             border-color: var(--color-success);
             background: var(--color-success-light);
         }
-        .media-btn i {
-            font-size: 24px;
-            margin-bottom: var(--spacing-xs);
-            color: var(--color-info);
+        .action-btn.has-content i { color: var(--color-success); }
+        .action-btn.has-content span { color: var(--color-success); }
+
+        /* 文字输入区 */
+        .text-input-area {
+            display: none;
+            padding: var(--spacing-sm) 0;
         }
-        .media-btn.has-media i {
-            color: var(--color-success);
-        }
-        .media-btn span {
+        .text-input-area.show { display: block; }
+        .text-input-label {
             font-size: 12px;
             color: var(--color-sub);
+            margin-bottom: var(--spacing-xs);
         }
-        .media-btn.has-media span {
-            color: var(--color-success);
-        }
-        /* 文本备注 */
-        .remark-input {
+        .text-input {
             width: 100%;
-            padding: var(--spacing-md);
-            border: 1px solid var(--color-border);
+            padding: var(--spacing-sm) var(--spacing-md);
+            border: 1.5px solid var(--color-border);
             border-radius: var(--radius-lg);
             font-size: 14px;
             resize: none;
             outline: none;
+            font-family: inherit;
             transition: border-color var(--transition-fast);
+            background: var(--color-card);
         }
-        .remark-input:focus {
-            border-color: var(--color-info);
-        }
-        .remark-input::placeholder {
+        .text-input:focus { border-color: var(--brand-primary); }
+        .text-input-count {
+            text-align: right;
+            font-size: 11px;
             color: var(--color-sub);
+            margin-top: 4px;
         }
-        /* 提交按钮 */
-        .submit-btn {
-            width: 100%;
-            padding: var(--spacing-md);
-            background: var(--color-border);
-            border: none;
-            border-radius: var(--radius-xl);
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--color-sub);
-            cursor: not-allowed;
-            margin-top: var(--spacing-md);
-            transition: all var(--transition-normal);
+
+        /* 标签选择区 */
+        .tag-input-area {
+            display: none;
+            padding: var(--spacing-sm) 0;
         }
-        .submit-btn.ready {
-            background: linear-gradient(135deg, var(--color-success) 0%, #00D255 100%);
-            color: white;
+        .tag-input-area.show { display: block; }
+        .tag-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+        .tag-option {
+            padding: 4px 12px;
+            border-radius: var(--radius-full);
+            font-size: 12px;
             cursor: pointer;
-            box-shadow: 0 4px 16px rgba(0,180,42,0.3);
+            border: 1.5px solid var(--color-border);
+            background: var(--color-card);
+            color: var(--color-text);
+            transition: all var(--transition-fast);
         }
-        /* 底部进度 */
-        .bottom-progress {
+        .tag-option:active,
+        .tag-option.selected {
+            background: var(--color-info-light);
+            border-color: var(--color-info);
+            color: var(--color-info);
+        }
+        .tag-custom-input {
+            display: flex;
+            gap: var(--spacing-sm);
+            align-items: center;
+        }
+        .tag-custom-input input {
+            flex: 1;
+            padding: 6px 12px;
+            border: 1.5px solid var(--color-border);
+            border-radius: var(--radius-full);
+            font-size: 13px;
+            outline: none;
+            background: var(--color-card);
+        }
+        .tag-custom-input input:focus { border-color: var(--brand-primary); }
+        .tag-add-btn {
+            padding: 6px 14px;
+            background: var(--brand-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        /* 审核状态区 */
+        .review-status {
+            margin-top: var(--spacing-md);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-lg);
+            font-size: 13px;
+        }
+
+        /* pending */
+        .review-status.pending {
+            background: var(--color-bg);
+            color: var(--color-sub);
+            text-align: center;
+        }
+
+        /* uploading */
+        .review-status.uploading {
+            background: var(--color-info-light);
+            color: var(--color-info);
+        }
+        .upload-progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(22,93,255,0.15);
+            border-radius: 3px;
+            margin-top: var(--spacing-sm);
+            overflow: hidden;
+        }
+        .upload-progress-fill {
+            height: 100%;
+            background: var(--color-info);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        /* reviewing */
+        .review-status.reviewing {
+            background: var(--brand-primary-light);
+            color: var(--brand-primary);
+        }
+        .review-progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(250,140,22,0.15);
+            border-radius: 3px;
+            margin-top: var(--spacing-sm);
+            overflow: hidden;
+        }
+        .review-progress-fill {
+            height: 100%;
+            background: var(--brand-primary);
+            border-radius: 3px;
+            animation: reviewingPulse 2s ease-in-out infinite;
+        }
+        @keyframes reviewingPulse {
+            0%, 100% { width: 30%; }
+            50% { width: 85%; }
+        }
+        .review-ai-tip {
+            font-size: 12px;
+            color: var(--brand-primary-dark);
+            margin-top: var(--spacing-sm);
+            opacity: 0.8;
+        }
+
+        /* approved */
+        .review-status.approved {
+            background: var(--color-success-light);
+            color: var(--color-success);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        .review-status.approved .status-icon {
+            font-size: 18px;
+        }
+
+        /* rejected */
+        .review-status.rejected {
+            background: var(--color-danger-light);
+            color: var(--color-danger);
+        }
+        .reject-reason {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .reject-suggestion {
+            font-size: 12px;
+            opacity: 0.85;
+            color: var(--color-text);
+        }
+
+        /* ===== 底部操作栏 ===== */
+        .bottom-bar {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: white;
+            background: var(--color-card);
             padding: var(--spacing-md);
             padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
-            box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+            border-top: 1px solid var(--color-border);
+            z-index: 100;
+        }
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: var(--radius-xl);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-normal);
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            gap: var(--spacing-sm);
         }
-        .progress-text {
-            font-size: 13px;
-            color: var(--color-sub);
-        }
-        .progress-text strong {
-            color: var(--color-success);
-        }
-        .next-btn {
-            padding: var(--spacing-sm) var(--spacing-lg);
+        .submit-btn.disabled {
             background: var(--color-border);
-            border: none;
-            border-radius: var(--radius-full);
-            font-size: 13px;
             color: var(--color-sub);
             cursor: not-allowed;
-            transition: all var(--transition-fast);
         }
-        .next-btn.ready {
-            background: var(--brand-primary);
+        .submit-btn.ready {
+            background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
             color: white;
-            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(250,140,22,0.35);
         }
-        /* Toast */
+        .submit-btn.ready:active {
+            transform: scale(0.98);
+        }
+        .submit-btn .spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* ===== Toast ===== */
         .toast {
             position: fixed;
             top: 50%;
@@ -342,278 +667,281 @@
             transform: translate(-50%, -50%);
             background: rgba(0,0,0,0.75);
             color: white;
-            padding: 16px 32px;
-            border-radius: var(--radius-lg);
+            padding: 14px 28px;
+            border-radius: var(--radius-xl);
             z-index: 99999;
-            font-size: 15px;
+            font-size: 14px;
             animation: toastIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
             pointer-events: none;
+            max-width: 80vw;
+            text-align: center;
         }
         @keyframes toastIn {
             0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
             100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
-        /* 拍照预览弹窗 */
-        .preview-modal {
+
+        /* ===== 确认弹窗 ===== */
+        .modal-overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.9);
-            z-index: 99998;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 9999;
             display: none;
-            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-md);
         }
-        .preview-modal.show {
+        .modal-overlay.show { display: flex; }
+        .modal-box {
+            background: var(--color-card);
+            border-radius: var(--radius-xl);
+            width: 100%;
+            max-width: 340px;
+            overflow: hidden;
+            animation: modalIn 0.25s ease forwards;
+        }
+        @keyframes modalIn {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        .modal-header {
+            text-align: center;
+            padding: var(--spacing-lg) var(--spacing-md) var(--spacing-md);
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--color-title);
+        }
+        .modal-body {
+            padding: 0 var(--spacing-md) var(--spacing-md);
+            font-size: 13px;
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+        .modal-stat {
             display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--color-border);
         }
-        .preview-header {
+        .modal-stat:last-child { border-bottom: none; }
+        .modal-stat-label { color: var(--color-sub); }
+        .modal-stat-value { font-weight: 600; color: var(--color-title); }
+        .modal-footer {
+            display: flex;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md);
+            border-top: 1px solid var(--color-border);
+        }
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: var(--radius-lg);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all var(--transition-fast);
+        }
+        .modal-btn.cancel {
+            background: var(--color-bg);
+            color: var(--color-text);
+        }
+        .modal-btn.confirm {
+            background: var(--brand-primary);
+            color: white;
+        }
+        .modal-btn:active { transform: scale(0.97); }
+
+        /* ===== 文字输入弹窗 ===== */
+        .text-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 9998;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .text-modal.show { display: flex; }
+        .text-modal-box {
+            background: var(--color-card);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            width: 100%;
+            max-width: 500px;
+            padding: var(--spacing-md);
+            padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
+            animation: slideUp 0.25s ease forwards;
+        }
+        @keyframes slideUp {
+            0% { transform: translateY(100%); }
+            100% { transform: translateY(0); }
+        }
+        .text-modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: var(--spacing-md);
-            color: white;
-        }
-        .preview-close {
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255,255,255,0.2);
-            border-radius: 50%;
-            cursor: pointer;
-        }
-        .preview-title {
-            font-size: 15px;
-        }
-        .preview-content {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: var(--spacing-md);
-        }
-        .preview-image {
-            max-width: 100%;
-            max-height: 100%;
-            border-radius: var(--radius-lg);
-        }
-        .preview-placeholder {
-            color: rgba(255,255,255,0.5);
-            text-align: center;
-        }
-        .preview-placeholder i {
-            font-size: 64px;
             margin-bottom: var(--spacing-md);
         }
-        .preview-actions {
-            padding: var(--spacing-lg);
+        .text-modal-title { font-size: 16px; font-weight: 600; color: var(--color-title); }
+        .text-modal-close {
+            width: 28px;
+            height: 28px;
             display: flex;
-            gap: var(--spacing-md);
-        }
-        .preview-btn {
-            flex: 1;
-            padding: var(--spacing-md);
+            align-items: center;
+            justify-content: center;
+            background: var(--color-bg);
             border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            color: var(--color-text);
+        }
+        .text-modal textarea {
+            width: 100%;
+            padding: var(--spacing-md);
+            border: 1.5px solid var(--color-border);
             border-radius: var(--radius-lg);
-            font-size: 15px;
-            font-weight: 500;
+            font-size: 14px;
+            resize: none;
+            outline: none;
+            font-family: inherit;
+            height: 160px;
+            background: var(--color-bg);
+        }
+        .text-modal textarea:focus { border-color: var(--brand-primary); }
+        .text-modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
+        .text-modal-save {
+            padding: 8px 20px;
+            background: var(--brand-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-full);
+            font-size: 14px;
             cursor: pointer;
         }
-        .preview-btn.cancel {
-            background: rgba(255,255,255,0.2);
-            color: white;
+
+        /* ===== 图片预览 ===== */
+        .img-preview-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.9);
+            z-index: 9998;
+            display: none;
+            align-items: center;
+            justify-content: center;
         }
-        .preview-btn.confirm {
-            background: var(--color-success);
+        .img-preview-overlay.show { display: flex; }
+        .img-preview-overlay img {
+            max-width: 95vw;
+            max-height: 95vh;
+            border-radius: var(--radius-lg);
+        }
+        .img-preview-close {
+            position: absolute;
+            top: calc(12px + env(safe-area-inset-top));
+            right: var(--spacing-md);
+            width: 36px;
+            height: 36px;
+            background: rgba(255,255,255,0.15);
+            border: none;
+            border-radius: 50%;
             color: white;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
     </style>
 </head>
 <body>
-    <div class="page">
-        <!-- 头部 -->
-        <div class="header">
-            <div class="header-top">
-                <button class="back-btn" onclick="goBack()">
-                    <i class="fa fa-angle-left"></i>
-                </button>
-                <span class="header-title">阶段2：点位打卡</span>
-                <span class="step-badge">2/4</span>
+    <div class="page" id="app">
+        <!-- 顶部导航栏 -->
+        <div class="nav-bar">
+            <button class="nav-back" onclick="goBack()" aria-label="返回">
+                <i class="fa fa-angle-left"></i>
+            </button>
+            <div class="nav-title" id="navTitle">素材上传</div>
+            <button class="nav-save" onclick="saveDraft()">保存</button>
+        </div>
+
+        <!-- 任务信息条 -->
+        <div class="house-info-bar" id="houseInfoBar">
+            <div class="house-name">
+                <i class="fa fa-home"></i>
+                <span id="houseName">中海汇德里</span>
             </div>
-            <div class="progress-bar">
-                <div class="progress-step completed"></div>
-                <div class="progress-step current"></div>
-                <div class="progress-step"></div>
-                <div class="progress-step"></div>
+            <div class="info-divider"></div>
+            <div class="info-chip">
+                <i class="fa fa-check-circle"></i>
+                已完成 <strong id="completedCount">0</strong>/<span id="totalCount">0</span> 点位
+            </div>
+            <div class="info-divider"></div>
+            <div class="info-chip" id="requiredChip">
+                必填 <strong id="requiredPass">0</strong>/<span id="requiredTotal">0</span> 通过
             </div>
         </div>
-        
+
         <!-- 点位列表 -->
-        <div class="point-list">
-            <!-- 点位1 -->
-            <div class="point-card" id="point1">
-                <div class="point-header" onclick="togglePoint(1)">
-                    <div class="point-index">
-                        <i class="fa fa-check" id="point1Icon"></i>
-                    </div>
-                    <div class="point-info">
-                        <div class="point-name">楼盘大门</div>
-                        <div class="point-desc">拍摄楼盘整体外观，不少于3张</div>
-                    </div>
-                    <span class="point-status pending" id="point1Status">待完成</span>
-                    <i class="fa fa-angle-down point-arrow"></i>
-                </div>
-                <div class="point-detail">
-                    <div class="media-buttons">
-                        <div class="media-btn" id="photo1Btn" onclick="takePhoto(1)">
-                            <i class="fa fa-camera"></i>
-                            <span>拍照(<span id="photo1Count">0</span>/3)</span>
-                        </div>
-                        <div class="media-btn" onclick="takeVideo(1)">
-                            <i class="fa fa-video-camera"></i>
-                            <span>视频(0/1)</span>
-                        </div>
-                        <div class="media-btn" onclick="recordAudio(1)">
-                            <i class="fa fa-microphone"></i>
-                            <span>录音(0/1)</span>
-                        </div>
-                    </div>
-                    <textarea class="remark-input" placeholder="添加备注说明（选填）" rows="2" id="remark1"></textarea>
-                    <button class="submit-btn" id="submit1Btn" onclick="submitPoint(1)">提交点位</button>
-                </div>
-            </div>
-            
-            <!-- 点位2 -->
-            <div class="point-card" id="point2">
-                <div class="point-header" onclick="togglePoint(2)">
-                    <div class="point-index" id="point2Index">2</div>
-                    <div class="point-info">
-                        <div class="point-name">沙盘区</div>
-                        <div class="point-desc">拍摄整体沙盘+细节，不少于3张</div>
-                    </div>
-                    <span class="point-status pending" id="point2Status">待完成</span>
-                    <i class="fa fa-angle-down point-arrow"></i>
-                </div>
-                <div class="point-detail">
-                    <div class="media-buttons">
-                        <div class="media-btn" id="photo2Btn" onclick="takePhoto(2)">
-                            <i class="fa fa-camera"></i>
-                            <span>拍照(<span id="photo2Count">0</span>/3)</span>
-                        </div>
-                        <div class="media-btn" onclick="takeVideo(2)">
-                            <i class="fa fa-video-camera"></i>
-                            <span>视频(0/1)</span>
-                        </div>
-                        <div class="media-btn" onclick="recordAudio(2)">
-                            <i class="fa fa-microphone"></i>
-                            <span>录音(0/1)</span>
-                        </div>
-                    </div>
-                    <textarea class="remark-input" placeholder="添加备注说明（选填）" rows="2" id="remark2"></textarea>
-                    <button class="submit-btn" id="submit2Btn" onclick="submitPoint(2)">提交点位</button>
-                </div>
-            </div>
-            
-            <!-- 点位3 -->
-            <div class="point-card" id="point3">
-                <div class="point-header" onclick="togglePoint(3)">
-                    <div class="point-index" id="point3Index">3</div>
-                    <div class="point-info">
-                        <div class="point-name">样板间A</div>
-                        <div class="point-desc">拍摄客厅+卧室+卫生间，不少于5张</div>
-                    </div>
-                    <span class="point-status pending" id="point3Status">待完成</span>
-                    <i class="fa fa-angle-down point-arrow"></i>
-                </div>
-                <div class="point-detail">
-                    <div class="media-buttons">
-                        <div class="media-btn" id="photo3Btn" onclick="takePhoto(3)">
-                            <i class="fa fa-camera"></i>
-                            <span>拍照(<span id="photo3Count">0</span>/5)</span>
-                        </div>
-                        <div class="media-btn" onclick="takeVideo(3)">
-                            <i class="fa fa-video-camera"></i>
-                            <span>视频(0/1)</span>
-                        </div>
-                        <div class="media-btn" onclick="recordAudio(3)">
-                            <i class="fa fa-microphone"></i>
-                            <span>录音(0/1)</span>
-                        </div>
-                    </div>
-                    <textarea class="remark-input" placeholder="添加备注说明（选填）" rows="2" id="remark3"></textarea>
-                    <button class="submit-btn" id="submit3Btn" onclick="submitPoint(3)">提交点位</button>
-                </div>
-            </div>
-            
-            <!-- 点位4 -->
-            <div class="point-card" id="point4">
-                <div class="point-header" onclick="togglePoint(4)">
-                    <div class="point-index" id="point4Index">4</div>
-                    <div class="point-info">
-                        <div class="point-name">周边配套</div>
-                        <div class="point-desc">拍摄交通/商业/学校等配套，不少于2张</div>
-                    </div>
-                    <span class="point-status pending" id="point4Status">待完成</span>
-                    <i class="fa fa-angle-down point-arrow"></i>
-                </div>
-                <div class="point-detail">
-                    <div class="media-buttons">
-                        <div class="media-btn" id="photo4Btn" onclick="takePhoto(4)">
-                            <i class="fa fa-camera"></i>
-                            <span>拍照(<span id="photo4Count">0</span>/2)</span>
-                        </div>
-                        <div class="media-btn" onclick="takeVideo(4)">
-                            <i class="fa fa-video-camera"></i>
-                            <span>视频(0/1)</span>
-                        </div>
-                        <div class="media-btn" onclick="recordAudio(4)">
-                            <i class="fa fa-microphone"></i>
-                            <span>录音(0/1)</span>
-                        </div>
-                    </div>
-                    <textarea class="remark-input" placeholder="添加备注说明（选填）" rows="2" id="remark4"></textarea>
-                    <button class="submit-btn" id="submit4Btn" onclick="submitPoint(4)">提交点位</button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- 底部进度 -->
-        <div class="bottom-progress">
-            <div class="progress-text">
-                <strong id="completedCount">0</strong>/4 点位完成
-            </div>
-            <button class="next-btn" id="nextBtn" onclick="goNext()">
-                下一步：文案确认
-                <i class="fa fa-angle-right"></i>
+        <div class="point-list" id="pointList"></div>
+
+        <!-- 底部操作栏 -->
+        <div class="bottom-bar">
+            <button class="submit-btn disabled" id="submitBtn" onclick="showSubmitModal()">
+                <span id="submitBtnText">请先完成必填点位</span>
             </button>
         </div>
     </div>
-    
-    <!-- 拍照预览弹窗 -->
-    <div class="preview-modal" id="previewModal">
-        <div class="preview-header">
-            <div class="preview-close" onclick="closePreview()">
-                <i class="fa fa-times"></i>
+
+    <!-- 确认提交弹窗 -->
+    <div class="modal-overlay" id="submitModal">
+        <div class="modal-box">
+            <div class="modal-header">确认提交</div>
+            <div class="modal-body">
+                <p style="margin-bottom:12px;color:var(--color-sub);font-size:13px;">确定要提交审核吗？</p>
+                <div class="modal-stat">
+                    <span class="modal-stat-label">已完成点位</span>
+                    <span class="modal-stat-value" id="modalCompleted">0/0</span>
+                </div>
+                <div class="modal-stat">
+                    <span class="modal-stat-label">必填通过</span>
+                    <span class="modal-stat-value" id="modalRequired">0/0</span>
+                </div>
             </div>
-            <div class="preview-title" id="previewTitle">拍照预览</div>
-            <div style="width: 32px;"></div>
-        </div>
-        <div class="preview-content">
-            <div class="preview-placeholder" id="previewPlaceholder">
-                <i class="fa fa-camera"></i>
-                <div>点击下方按钮模拟拍照</div>
+            <div class="modal-footer">
+                <button class="modal-btn cancel" onclick="closeSubmitModal()">取消</button>
+                <button class="modal-btn confirm" onclick="confirmSubmit()">确认提交</button>
             </div>
-            <img class="preview-image" id="previewImage" style="display: none;" />
-        </div>
-        <div class="preview-actions">
-            <button class="preview-btn cancel" onclick="closePreview()">取消</button>
-            <button class="preview-btn confirm" onclick="confirmPhoto()">确认</button>
         </div>
     </div>
-    
+
+    <!-- 文字输入弹窗 -->
+    <div class="text-modal" id="textModal">
+        <div class="text-modal-box">
+            <div class="text-modal-header">
+                <div class="text-modal-title" id="textModalTitle">文字备注</div>
+                <button class="text-modal-close" onclick="closeTextModal()">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <textarea id="textModalInput" placeholder="请输入文字内容..." maxlength="500"></textarea>
+            <div class="text-modal-footer">
+                <button class="text-modal-save" onclick="saveTextInput()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 图片预览 -->
+    <div class="img-preview-overlay" id="imgPreviewOverlay" onclick="closeImgPreview()">
+        <button class="img-preview-close"><i class="fa fa-times"></i></button>
+        <img id="imgPreviewImg" src="" alt="预览" />
+    </div>
+
     <script>
         // ===== URL参数解析 =====
         function getQueryParam(name) {
@@ -622,201 +950,919 @@
         }
 
         const taskId = getQueryParam('task') || 'TASK001';
+        const currentStep = parseInt(getQueryParam('step') || '2');
 
-        // 点位数据
-        const points = {
-            1: { photos: [], videos: [], audios: [], remark: '', status: 'pending' },
-            2: { photos: [], videos: [], audios: [], remark: '', status: 'pending' },
-            3: { photos: [], videos: [], audios: [], remark: '', status: 'pending' },
-            4: { photos: [], videos: [], audios: [], remark: '', status: 'pending' }
-        };
-        
-        let currentPoint = null;
-        let expandedPoint = null;
-        
-        // 切换点位展开
-        function togglePoint(index) {
-            const card = document.getElementById('point' + index);
-            if (expandedPoint === index) {
-                card.classList.remove('expanded');
-                expandedPoint = null;
-            } else {
-                // 收起其他
-                if (expandedPoint) {
-                    document.getElementById('point' + expandedPoint).classList.remove('expanded');
+        // ===== 模拟数据 =====
+        const taskData = {
+            taskId: 'TASK001',
+            houseName: '中海汇德里',
+            address: '浦东新区张江高科技园区',
+            currentStage: 2,
+            points: [
+                {
+                    id: 1,
+                    name: '沙盘照片',
+                    required: true,
+                    types: ['photo'],
+                    status: 'pending',
+                    content: { photos: [], videos: [], text: '', audio: [], tags: [] },
+                    reviewResult: null
+                },
+                {
+                    id: 2,
+                    name: '样板间视频',
+                    required: true,
+                    types: ['video'],
+                    status: 'approved',
+                    content: { photos: [], videos: ['video1.mp4'], text: '', audio: [], tags: [] },
+                    reviewResult: { approved: true }
+                },
+                {
+                    id: 3,
+                    name: '区位配套',
+                    required: false,
+                    types: ['photo', 'text'],
+                    status: 'rejected',
+                    content: { photos: ['img1.jpg'], videos: [], text: '地铁站500米，配套成熟', audio: [], tags: ['地铁', '商业'] },
+                    reviewResult: { approved: false, reason: '照片质量不佳', suggestion: '请重新拍摄并确保光线充足' }
+                },
+                {
+                    id: 4,
+                    name: '周边交通',
+                    required: false,
+                    types: ['photo', 'video', 'text', 'audio', 'tag'],
+                    status: 'reviewing',
+                    content: { photos: ['img2.jpg'], videos: [], text: '', audio: [], tags: [] },
+                    reviewResult: null
+                },
+                {
+                    id: 5,
+                    name: '销售说辞',
+                    required: true,
+                    types: ['audio', 'text'],
+                    status: 'uploading',
+                    content: { photos: [], videos: [], text: '', audio: ['audio1.m4a'], tags: [] },
+                    reviewResult: null
+                },
+                {
+                    id: 6,
+                    name: '园林景观',
+                    required: false,
+                    types: ['photo', 'video'],
+                    status: 'pending',
+                    content: { photos: [], videos: [], text: '', audio: [], tags: [] },
+                    reviewResult: null
                 }
-                card.classList.add('expanded');
-                expandedPoint = index;
+            ]
+        };
+
+        // ===== 状态映射 =====
+        const STATUS_CONFIG = {
+            pending:   { label: '待上传',  icon: '',        cls: '' },
+            uploading: { label: '上传中',  icon: '🔄',      cls: 'uploading' },
+            reviewing: { label: 'AI审核中', icon: '🔍',     cls: 'reviewing' },
+            approved: { label: '审核通过', icon: '✅',      cls: 'approved' },
+            rejected: { label: '审核失败', icon: '⚠️',      cls: 'rejected' }
+        };
+
+        // ===== 类型图标映射 =====
+        const TYPE_CONFIG = {
+            photo: { icon: '📷', label: '拍照' },
+            video: { icon: '🎬', label: '视频' },
+            text:  { icon: '📝', label: '文字' },
+            audio: { icon: '🎤', label: '语音' },
+            tag:   { icon: '🏷️', label: '标签' }
+        };
+
+        // ===== 预设标签选项 =====
+        const PRESET_TAGS = ['地铁', '商业', '学校', '医院', '公园', '银行', '餐饮', '超市'];
+
+        // ===== 当前展开的卡片 =====
+        let expandedCardId = null;
+        let currentEditPointId = null;
+        let textModalCallback = null;
+
+        // ===== 初始化 =====
+        function init() {
+            document.getElementById('houseName').textContent = taskData.houseName;
+            document.getElementById('navTitle').textContent = taskData.houseName + ' · 素材上传';
+            renderPointList();
+            updateOverallProgress();
+        }
+
+        // ===== 渲染点位列表 =====
+        function renderPointList() {
+            const container = document.getElementById('pointList');
+            container.innerHTML = taskData.points.map(point => buildPointCard(point)).join('');
+        }
+
+        function buildPointCard(point) {
+            const cfg = STATUS_CONFIG[point.status] || STATUS_CONFIG.pending;
+            const typeIcons = point.types.map(t => TYPE_CONFIG[t] ? TYPE_CONFIG[t].icon : '').join(' ');
+            const contentCount = getContentCount(point);
+            const totalRequired = point.types.length;
+            const isExpanded = expandedCardId === point.id ? 'expanded' : '';
+
+            return `
+            <div class="point-card ${isExpanded}" id="card_${point.id}" data-id="${point.id}">
+                <!-- 头部 -->
+                <div class="point-header" onclick="toggleCard(${point.id})" role="button" aria-expanded="${isExpanded !== ''}" aria-label="展开${point.name}">
+                    <div class="point-expand-icon">
+                        <i class="fa fa-angle-right"></i>
+                    </div>
+                    <span class="point-required-tag ${point.required ? 'required' : 'optional'}">
+                        ${point.required ? '必填' : '选填'}
+                    </span>
+                    <span class="point-name">${point.name}</span>
+                    <span class="point-count">${contentCount}/${totalRequired}</span>
+                    <span class="point-type-icons" title="${point.types.map(t => TYPE_CONFIG[t]?.label || t).join('/')}">
+                        ${typeIcons}
+                    </span>
+                    <span class="point-status-badge">
+                        ${cfg.icon}
+                    </span>
+                </div>
+
+                <!-- 卡片内容 -->
+                <div class="point-body" id="body_${point.id}">
+                    <!-- 内容预览 -->
+                    ${buildContentPreview(point)}
+
+                    <!-- 操作按钮 -->
+                    <div class="action-buttons">
+                        ${buildActionButtons(point)}
+                    </div>
+
+                    <!-- 文字输入区 -->
+                    ${point.types.includes('text') ? `
+                    <div class="text-input-area ${point.content.text ? 'show' : ''}" id="textArea_${point.id}">
+                        <div class="text-input-label">文字备注</div>
+                        <textarea class="text-input" id="textInput_${point.id}" rows="3"
+                            placeholder="请输入文字内容..."
+                            oninput="onTextChange(${point.id}, this.value)">${point.content.text || ''}</textarea>
+                        <div class="text-input-count"><span id="textCount_${point.id}">${(point.content.text || '').length}</span>/500</div>
+                    </div>
+                    ` : ''}
+
+                    <!-- 标签选择区 -->
+                    ${point.types.includes('tag') ? `
+                    <div class="tag-input-area ${point.content.tags.length ? 'show' : ''}" id="tagArea_${point.id}">
+                        <div class="tag-options">
+                            ${PRESET_TAGS.map(tag => `
+                                <span class="tag-option ${(point.content.tags || []).includes(tag) ? 'selected' : ''}"
+                                    onclick="toggleTag(${point.id}, '${tag}', this)">${tag}</span>
+                            `).join('')}
+                        </div>
+                        <div class="tag-custom-input">
+                            <input type="text" id="customTagInput_${point.id}" placeholder="自定义标签" maxlength="10" />
+                            <button class="tag-add-btn" onclick="addCustomTag(${point.id})">添加</button>
+                        </div>
+                    </div>
+                    ` : ''}
+
+                    <!-- 审核状态 -->
+                    ${buildReviewStatus(point)}
+                </div>
+            </div>`;
+        }
+
+        function getContentCount(point) {
+            const c = point.content;
+            let count = 0;
+            if (point.types.includes('photo')) count += (c.photos || []).length;
+            if (point.types.includes('video')) count += (c.videos || []).length;
+            if (point.types.includes('text') && c.text) count++;
+            if (point.types.includes('audio')) count += (c.audio || []).length;
+            if (point.types.includes('tag')) count += (c.tags || []).length;
+            return count;
+        }
+
+        function getTypeLabel(type) {
+            return TYPE_CONFIG[type]?.label || type;
+        }
+
+        function getTypeIcon(type) {
+            return TYPE_CONFIG[type]?.icon || '';
+        }
+
+        function getActionIcon(type) {
+            const map = {
+                photo: 'fa-camera',
+                video: 'fa-video-camera',
+                text:  'fa-edit',
+                audio: 'fa-microphone',
+                tag:   'fa-tag'
+            };
+            return map[type] || 'fa-file';
+        }
+
+        // ===== 构建内容预览 =====
+        function buildContentPreview(point) {
+            const c = point.content;
+            let html = '<div class="content-preview">';
+
+            // 图片预览
+            if (c.photos && c.photos.length > 0) {
+                c.photos.forEach((photo, idx) => {
+                    html += `
+                    <div class="preview-thumb" onclick="previewImg('${photo}', ${point.id}, ${idx})">
+                        <img src="https://picsum.photos/seed/${photo}/150/150" alt="照片${idx + 1}" />
+                        <button class="del-btn" onclick="event.stopPropagation(); delMedia(${point.id}, 'photo', ${idx})">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>`;
+                });
+            }
+
+            // 视频预览
+            if (c.videos && c.videos.length > 0) {
+                c.videos.forEach((video, idx) => {
+                    html += `
+                    <div class="preview-thumb video" data-duration="0:32" onclick="playVideo('${video}', ${point.id})">
+                        <img src="https://picsum.photos/seed/${video}/150/150" alt="视频${idx + 1}" />
+                        <div class="play-icon"><i class="fa fa-play"></i></div>
+                        <button class="del-btn" onclick="event.stopPropagation(); delMedia(${point.id}, 'video', ${idx})">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    </div>`;
+                });
+            }
+
+            // 文字预览
+            if (c.text) {
+                const short = c.text.length > 100;
+                html += `
+                <div class="preview-text ${short ? '' : 'expanded'}" id="previewText_${point.id}">
+                    ${escapeHtml(c.text)}
+                    ${short ? `<span class="preview-text-toggle" onclick="toggleTextPreview(${point.id}, this)">展开</span>` : ''}
+                </div>`;
+            }
+
+            // 语音预览
+            if (c.audio && c.audio.length > 0) {
+                c.audio.forEach((audio, idx) => {
+                    html += `
+                    <div class="preview-audio">
+                        <button class="audio-play-btn" onclick="playAudio('${audio}')">
+                            <i class="fa fa-play"></i>
+                        </button>
+                        <div class="audio-wave">
+                            ${Array.from({length: 24}, (_, i) => {
+                                const h = 8 + Math.sin(i * 0.8) * 10 + Math.random() * 6;
+                                return `<div class="audio-bar" style="height:${h}px"></div>`;
+                            }).join('')}
+                        </div>
+                        <span class="audio-duration">0:${String(25 + idx * 13).padStart(2,'0')}</span>
+                        <span class="audio-del-btn" onclick="delMedia(${point.id}, 'audio', ${idx})">
+                            <i class="fa fa-trash-o"></i>
+                        </span>
+                    </div>`;
+                });
+            }
+
+            // 标签预览
+            if (c.tags && c.tags.length > 0) {
+                html += '<div class="preview-tag-cloud">';
+                c.tags.forEach(tag => {
+                    html += `
+                    <div class="tag-item">
+                        <i class="fa fa-tag"></i> ${escapeHtml(tag)}
+                        <span class="del-btn" onclick="removeTag(${point.id}, '${escapeHtml(tag)}')">
+                            <i class="fa fa-times"></i>
+                        </span>
+                    </div>`;
+                });
+                html += '</div>';
+            }
+
+            html += '</div>';
+            return html;
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // ===== 构建操作按钮 =====
+        function buildActionButtons(point) {
+            return point.types.map(type => {
+                const icon = getActionIcon(type);
+                const label = getTypeLabel(type);
+                const hasContent = hasTypeContent(point, type);
+                const cls = hasContent ? 'has-content' : '';
+                const limits = getLimits(point.id, type);
+                const limitText = limits ? ` (${getTypeContentCount(point, type)}${limits.min ? '/' + limits.max : ''})` : '';
+                return `
+                <button class="action-btn ${cls}" onclick="handleAction(${point.id}, '${type}')"
+                    aria-label="${label}">
+                    <i class="fa ${icon}"></i>
+                    <span>${label}${limitText}</span>
+                </button>`;
+            }).join('');
+        }
+
+        function hasTypeContent(point, type) {
+            const c = point.content;
+            if (type === 'photo') return (c.photos || []).length > 0;
+            if (type === 'video') return (c.videos || []).length > 0;
+            if (type === 'text') return !!c.text;
+            if (type === 'audio') return (c.audio || []).length > 0;
+            if (type === 'tag') return (c.tags || []).length > 0;
+            return false;
+        }
+
+        function getTypeContentCount(point, type) {
+            const c = point.content;
+            if (type === 'photo') return (c.photos || []).length;
+            if (type === 'video') return (c.videos || []).length;
+            if (type === 'text') return c.text ? 1 : 0;
+            if (type === 'audio') return (c.audio || []).length;
+            if (type === 'tag') return (c.tags || []).length;
+            return 0;
+        }
+
+        function getLimits(pointId, type) {
+            // 模拟配置限制
+            const configs = {
+                1: { photo: { min: 1, max: 5 } },
+                2: { video: { min: 1, max: 2 } },
+                3: { photo: { min: 1, max: 8 }, text: { min: 1, max: 1 } },
+                4: { photo: { min: 0, max: 10 }, video: { min: 0, max: 3 }, text: { min: 0, max: 1 }, audio: { min: 0, max: 2 }, tag: { min: 0, max: 5 } },
+                5: { audio: { min: 1, max: 2 }, text: { min: 1, max: 1 } },
+                6: { photo: { min: 0, max: 10 }, video: { min: 0, max: 3 } }
+            };
+            return configs[pointId]?.[type] || null;
+        }
+
+        // ===== 构建审核状态区 =====
+        function buildReviewStatus(point) {
+            const cfg = STATUS_CONFIG[point.status] || STATUS_CONFIG.pending;
+
+            if (point.status === 'pending') {
+                return `
+                <div class="review-status pending" aria-live="polite">
+                    <i class="fa fa-info-circle"></i>&nbsp;请上传${point.name}相关素材
+                </div>`;
+            }
+
+            if (point.status === 'uploading') {
+                return `
+                <div class="review-status uploading" aria-live="polite">
+                    <div><i class="fa fa-spinner fa-spin"></i>&nbsp;上传中... ${point.uploadProgress || 0}%</div>
+                    <div class="upload-progress-bar">
+                        <div class="upload-progress-fill" style="width: ${point.uploadProgress || 0}%"></div>
+                    </div>
+                </div>`;
+            }
+
+            if (point.status === 'reviewing') {
+                const result = point.reviewResult || {};
+                return `
+                <div class="review-status reviewing" aria-live="polite">
+                    <div><i class="fa fa-search"></i>&nbsp;AI审核中...</div>
+                    <div class="review-progress-bar">
+                        <div class="review-progress-fill"></div>
+                    </div>
+                    ${result.suggestion ? `<div class="review-ai-tip"><i class="fa fa-lightbulb-o"></i>&nbsp;建议：${escapeHtml(result.suggestion)}</div>` : ''}
+                </div>`;
+            }
+
+            if (point.status === 'approved') {
+                return `
+                <div class="review-status approved" aria-live="polite">
+                    <span class="status-icon">✅</span>
+                    <span>审核通过</span>
+                </div>`;
+            }
+
+            if (point.status === 'rejected') {
+                const result = point.reviewResult || {};
+                return `
+                <div class="review-status rejected" aria-live="polite">
+                    <div class="reject-reason"><span>⚠️</span>&nbsp;审核未通过</div>
+                    ${result.reason ? `<div class="reject-suggestion"><strong>原因：</strong>${escapeHtml(result.reason)}</div>` : ''}
+                    ${result.suggestion ? `<div class="reject-suggestion"><strong>建议：</strong>${escapeHtml(result.suggestion)}</div>` : ''}
+                </div>`;
+            }
+
+            return '';
+        }
+
+        // ===== 切换卡片展开/收起 =====
+        function toggleCard(pointId) {
+            if (expandedCardId === pointId) {
+                expandedCardId = null;
+            } else {
+                expandedCardId = pointId;
+            }
+            // 手风琴模式
+            document.querySelectorAll('.point-card').forEach(card => {
+                const id = parseInt(card.dataset.id);
+                if (id === expandedCardId) {
+                    card.classList.add('expanded');
+                } else {
+                    card.classList.remove('expanded');
+                }
+            });
+        }
+
+        // ===== 处理操作按钮点击 =====
+        function handleAction(pointId, type) {
+            currentEditPointId = pointId;
+            const point = taskData.points.find(p => p.id === pointId);
+            if (!point) return;
+
+            switch(type) {
+                case 'photo':
+                    simulatePhotoUpload(pointId);
+                    break;
+                case 'video':
+                    simulateVideoUpload(pointId);
+                    break;
+                case 'text':
+                    showTextModal(pointId);
+                    break;
+                case 'audio':
+                    simulateAudioUpload(pointId);
+                    break;
+                case 'tag':
+                    toggleTagArea(pointId);
+                    break;
             }
         }
-        
-        // 拍照
-        function takePhoto(pointId) {
-            currentPoint = pointId;
-            // 模拟拍照
-            const photoCount = points[pointId].photos.length;
-            const maxPhotos = pointId === 3 ? 5 : pointId === 1 || pointId === 2 ? 3 : 2;
-            
-            if (photoCount >= maxPhotos) {
-                showToast('拍照数量已达上限');
+
+        // ===== 模拟上传操作 =====
+        function simulatePhotoUpload(pointId) {
+            const point = taskData.points.find(p => p.id === pointId);
+            if (!point.types.includes('photo')) return;
+
+            const limits = getLimits(pointId, 'photo');
+            const current = (point.content.photos || []).length;
+            if (limits && current >= limits.max) {
+                showToast('照片数量已达上限');
                 return;
             }
-            
-            // 显示预览弹窗
-            document.getElementById('previewModal').classList.add('show');
-            document.getElementById('previewTitle').textContent = '点位' + pointId + ' - 拍照 ' + (photoCount + 1);
+
+            // 模拟添加照片
+            const newPhoto = `photo_${Date.now()}.jpg`;
+            point.content.photos = point.content.photos || [];
+            point.content.photos.push(newPhoto);
+
+            // 模拟上传进度
+            simulateUpload(pointId, newPhoto);
         }
-        
-        // 视频
-        function takeVideo(pointId) {
-            currentPoint = pointId;
-            if (points[pointId].videos.length >= 1) {
+
+        function simulateVideoUpload(pointId) {
+            const point = taskData.points.find(p => p.id === pointId);
+            if (!point.types.includes('video')) return;
+
+            const limits = getLimits(pointId, 'video');
+            const current = (point.content.videos || []).length;
+            if (limits && current >= limits.max) {
                 showToast('视频数量已达上限');
                 return;
             }
-            showToast('视频录制功能开发中', 'info');
+
+            const newVideo = `video_${Date.now()}.mp4`;
+            point.content.videos = point.content.videos || [];
+            point.content.videos.push(newVideo);
+            simulateUpload(pointId, newVideo);
         }
-        
-        // 录音
-        function recordAudio(pointId) {
-            currentPoint = pointId;
-            if (points[pointId].audios.length >= 1) {
-                showToast('录音数量已达上限');
+
+        function simulateAudioUpload(pointId) {
+            const point = taskData.points.find(p => p.id === pointId);
+            if (!point.types.includes('audio')) return;
+
+            const limits = getLimits(pointId, 'audio');
+            const current = (point.content.audio || []).length;
+            if (limits && current >= limits.max) {
+                showToast('语音数量已达上限');
                 return;
             }
-            showToast('录音功能开发中', 'info');
+
+            const newAudio = `audio_${Date.now()}.m4a`;
+            point.content.audio = point.content.audio || [];
+            point.content.audio.push(newAudio);
+            simulateUpload(pointId, newAudio);
         }
-        
-        // 关闭预览
-        function closePreview() {
-            document.getElementById('previewModal').classList.remove('show');
-            document.getElementById('previewImage').style.display = 'none';
-            document.getElementById('previewPlaceholder').style.display = 'block';
-            currentPoint = null;
-        }
-        
-        // 确认拍照
-        function confirmPhoto() {
-            if (currentPoint) {
-                points[currentPoint].photos.push('photo_' + Date.now() + '.jpg');
-                updatePointUI(currentPoint);
-            }
-            closePreview();
-        }
-        
-        // 更新点位UI
-        function updatePointUI(pointId) {
-            const data = points[pointId];
-            const photoBtn = document.getElementById('photo' + pointId + 'Btn');
-            const photoCount = document.getElementById('photo' + pointId + 'Count');
-            const submitBtn = document.getElementById('submit' + pointId + 'Btn');
-            const statusEl = document.getElementById('point' + pointId + 'Status');
-            const card = document.getElementById('point' + pointId);
-            const indexEl = document.getElementById('point' + pointId + 'Icon') || document.getElementById('point' + pointId + 'Index');
-            
-            // 更新照片计数
-            const maxPhotos = pointId === 3 ? 5 : pointId === 1 || pointId === 2 ? 3 : 2;
-            photoCount.textContent = data.photos.length;
-            
-            // 更新按钮状态
-            if (data.photos.length > 0) {
-                photoBtn.classList.add('has-media');
-            }
-            
-            // 更新提交按钮
-            if (data.photos.length > 0) {
-                submitBtn.classList.add('ready');
-                submitBtn.textContent = '提交点位';
-            }
-            
-            // 更新整体进度
+
+        function simulateUpload(pointId, fileName) {
+            const point = taskData.points.find(p => p.id === pointId);
+            point.status = 'uploading';
+            point.uploadProgress = 0;
+
+            // 刷新卡片显示
+            refreshCard(pointId);
+
+            // 模拟上传进度
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 20 + 10;
+                if (progress >= 100) {
+                    progress = 100;
+                    point.uploadProgress = 100;
+                    clearInterval(interval);
+
+                    // 上传完成，进入审核
+                    setTimeout(() => {
+                        startReview(pointId);
+                    }, 300);
+                }
+                point.uploadProgress = Math.min(Math.round(progress), 99);
+                updateCardBody(pointId);
+            }, 300);
+
             updateOverallProgress();
         }
-        
-        // 提交点位
-        function submitPoint(pointId) {
-            const data = points[pointId];
-            const maxPhotos = pointId === 3 ? 5 : pointId === 1 || pointId === 2 ? 3 : 2;
-            
-            if (data.photos.length < 1) {
-                showToast('请至少拍摄1张照片');
-                return;
+
+        function startReview(pointId) {
+            const point = taskData.points.find(p => p.id === pointId);
+            point.status = 'reviewing';
+            point.uploadProgress = 0;
+            refreshCard(pointId);
+
+            // 模拟 AI 审核（3-8秒后返回结果）
+            const delay = 3000 + Math.random() * 5000;
+            setTimeout(() => {
+                const passed = Math.random() > 0.3; // 70% 通过率
+                if (passed) {
+                    point.status = 'approved';
+                    point.reviewResult = { approved: true };
+                    showToast(`✅ ${point.name} 审核通过！`, 'success');
+                } else {
+                    point.status = 'rejected';
+                    const reasons = [
+                        { reason: '照片清晰度不足', suggestion: '请在光线充足的环境下重新拍摄' },
+                        { reason: '未拍摄到楼盘标识', suggestion: '请确保画面中包含楼盘名称标识' },
+                        { reason: '视频抖动严重', suggestion: '建议使用稳定器或固定手机拍摄' },
+                        { reason: '内容与点位不相关', suggestion: '请上传与该点位相关的内容' }
+                    ];
+                    const r = reasons[Math.floor(Math.random() * reasons.length)];
+                    point.reviewResult = { approved: false, ...r };
+                    showToast(`⚠️ ${point.name} 审核未通过`, 'error');
+                }
+                refreshCard(pointId);
+                updateOverallProgress();
+            }, delay);
+        }
+
+        // ===== 文字输入 =====
+        function showTextModal(pointId) {
+            const point = taskData.points.find(p => p.id === pointId);
+            const modal = document.getElementById('textModal');
+            const input = document.getElementById('textModalInput');
+            const title = document.getElementById('textModalTitle');
+
+            title.textContent = point.name + ' · 文字';
+            input.value = point.content.text || '';
+            currentEditPointId = pointId;
+
+            modal.classList.add('show');
+            setTimeout(() => input.focus(), 300);
+        }
+
+        function closeTextModal() {
+            document.getElementById('textModal').classList.remove('show');
+        }
+
+        function saveTextInput() {
+            const input = document.getElementById('textModalInput');
+            const text = input.value.trim();
+
+            if (currentEditPointId) {
+                const point = taskData.points.find(p => p.id === currentEditPointId);
+                if (point) {
+                    point.content.text = text;
+                    refreshCard(currentEditPointId);
+                    updateOverallProgress();
+
+                    // 文字内容直接触发审核
+                    if (text && point.status === 'pending') {
+                        startReview(currentEditPointId);
+                    }
+                }
             }
-            
-            // 更新状态
-            data.status = 'completed';
-            
-            // 更新UI
-            const card = document.getElementById('point' + pointId);
-            const statusEl = document.getElementById('point' + pointId + 'Status');
-            const indexEl = document.getElementById('point' + pointId + 'Icon') || document.getElementById('point' + pointId + 'Index');
-            
-            card.classList.add('completed');
-            card.classList.remove('expanded');
-            statusEl.className = 'point-status done';
-            statusEl.textContent = '已完成';
-            
-            if (indexEl.tagName === 'I') {
-                indexEl.className = 'fa fa-check';
+            closeTextModal();
+        }
+
+        function onTextChange(pointId, value) {
+            const point = taskData.points.find(p => p.id === pointId);
+            if (point) {
+                point.content.text = value;
+                document.getElementById('textCount_' + pointId).textContent = value.length;
+            }
+        }
+
+        function toggleTagArea(pointId) {
+            const area = document.getElementById('tagArea_' + pointId);
+            if (area) {
+                area.classList.toggle('show');
+            }
+        }
+
+        function toggleTag(pointId, tag, el) {
+            const point = taskData.points.find(p => p.id === pointId);
+            if (!point) return;
+
+            point.content.tags = point.content.tags || [];
+            const idx = point.content.tags.indexOf(tag);
+            if (idx >= 0) {
+                point.content.tags.splice(idx, 1);
+                el.classList.remove('selected');
             } else {
-                indexEl.innerHTML = '<i class="fa fa-check"></i>';
+                const limits = getLimits(pointId, 'tag');
+                if (limits && point.content.tags.length >= limits.max) {
+                    showToast(`标签最多${limits.max}个`);
+                    return;
+                }
+                point.content.tags.push(tag);
+                el.classList.add('selected');
             }
-            
-            // 收起展开状态
-            expandedPoint = null;
-            
-            // 保存数据
-            localStorage.setItem('task_checkin_points', JSON.stringify(points));
-            
-            showToast('点位' + pointId + ' 提交成功！', 'success');
-            
-            // 更新整体进度
+            refreshCard(pointId);
             updateOverallProgress();
         }
-        
-        // 更新整体进度
+
+        function addCustomTag(pointId) {
+            const input = document.getElementById('customTagInput_' + pointId);
+            const tag = input.value.trim();
+            if (!tag) return;
+
+            const point = taskData.points.find(p => p.id === pointId);
+            if (!point) return;
+
+            const limits = getLimits(pointId, 'tag');
+            if (limits && (point.content.tags || []).length >= limits.max) {
+                showToast(`标签最多${limits.max}个`);
+                return;
+            }
+
+            if (!(point.content.tags || []).includes(tag)) {
+                point.content.tags = point.content.tags || [];
+                point.content.tags.push(tag);
+                refreshCard(pointId);
+                updateOverallProgress();
+            }
+            input.value = '';
+        }
+
+        function removeTag(pointId, tag) {
+            const point = taskData.points.find(p => p.id === pointId);
+            if (!point) return;
+
+            const tags = point.content.tags || [];
+            const idx = tags.indexOf(tag);
+            if (idx >= 0) {
+                tags.splice(idx, 1);
+                refreshCard(pointId);
+                updateOverallProgress();
+            }
+        }
+
+        // ===== 媒体操作 =====
+        function delMedia(pointId, type, idx) {
+            const point = taskData.points.find(p => p.id === pointId);
+            if (!point) return;
+
+            if (type === 'photo') point.content.photos.splice(idx, 1);
+            if (type === 'video') point.content.videos.splice(idx, 1);
+            if (type === 'audio') point.content.audio.splice(idx, 1);
+
+            // 如果删光了，重置为pending
+            const hasContent = getContentCount(point) > 0;
+            if (!hasContent && point.status !== 'pending') {
+                point.status = 'pending';
+                point.reviewResult = null;
+            }
+
+            refreshCard(pointId);
+            updateOverallProgress();
+        }
+
+        function previewImg(src, pointId, idx) {
+            const img = document.getElementById('imgPreviewImg');
+            img.src = `https://picsum.photos/seed/${src}/600/600`;
+            document.getElementById('imgPreviewOverlay').classList.add('show');
+        }
+
+        function closeImgPreview() {
+            document.getElementById('imgPreviewOverlay').classList.remove('show');
+        }
+
+        function playVideo(src, pointId) {
+            showToast('视频播放功能开发中');
+        }
+
+        function playAudio(src) {
+            showToast('音频播放功能开发中');
+        }
+
+        function toggleTextPreview(pointId, el) {
+            const textEl = document.getElementById('previewText_' + pointId);
+            if (textEl.classList.contains('expanded')) {
+                textEl.classList.remove('expanded');
+                el.textContent = '展开';
+            } else {
+                textEl.classList.add('expanded');
+                el.textContent = '收起';
+            }
+        }
+
+        // ===== 刷新单个卡片 =====
+        function refreshCard(pointId) {
+            const point = taskData.points.find(p => p.id === pointId);
+            if (!point) return;
+
+            const card = document.getElementById('card_' + pointId);
+            if (!card) return;
+
+            const newCardHtml = buildPointCard(point);
+            const temp = document.createElement('div');
+            temp.innerHTML = newCardHtml;
+
+            // 保留展开状态
+            const wasExpanded = card.classList.contains('expanded');
+
+            card.replaceWith(temp.firstElementChild);
+
+            if (wasExpanded) {
+                const newCard = document.getElementById('card_' + pointId);
+                if (newCard) {
+                    newCard.classList.add('expanded');
+                    expandedCardId = pointId;
+                }
+            }
+        }
+
+        function updateCardBody(pointId) {
+            const point = taskData.points.find(p => p.id === pointId);
+            if (!point) return;
+
+            const body = document.getElementById('body_' + pointId);
+            if (!body) return;
+
+            // 只更新审核状态区，避免重绘整个卡片导致输入内容丢失
+            const oldTextArea = document.getElementById(`textArea_${pointId}`);
+            const oldTagArea = document.getElementById(`tagArea_${pointId}`);
+
+            body.innerHTML =
+                buildContentPreview(point) +
+                `<div class="action-buttons">${buildActionButtons(point)}</div>` +
+                (point.types.includes('text') ? `
+                <div class="text-input-area ${point.content.text ? 'show' : ''}" id="textArea_${pointId}">
+                    <div class="text-input-label">文字备注</div>
+                    <textarea class="text-input" id="textInput_${pointId}" rows="3"
+                        placeholder="请输入文字内容..."
+                        oninput="onTextChange(${point.id}, this.value)">${point.content.text || ''}</textarea>
+                    <div class="text-input-count"><span id="textCount_${point.id}">${(point.content.text || '').length}</span>/500</div>
+                </div>` : '') +
+                (point.types.includes('tag') ? `
+                <div class="tag-input-area ${(point.content.tags || []).length ? 'show' : ''}" id="tagArea_${pointId}">
+                    <div class="tag-options">
+                        ${PRESET_TAGS.map(tag => `
+                            <span class="tag-option ${(point.content.tags || []).includes(tag) ? 'selected' : ''}"
+                                onclick="toggleTag(${point.id}, '${tag}', this)">${tag}</span>
+                        `).join('')}
+                    </div>
+                    <div class="tag-custom-input">
+                        <input type="text" id="customTagInput_${point.id}" placeholder="自定义标签" maxlength="10" />
+                        <button class="tag-add-btn" onclick="addCustomTag(${point.id})">添加</button>
+                    </div>
+                </div>` : '') +
+                buildReviewStatus(point);
+        }
+
+        // ===== 更新整体进度 =====
         function updateOverallProgress() {
-            const completed = Object.values(points).filter(p => p.status === 'completed').length;
+            const total = taskData.points.length;
+            const completed = taskData.points.filter(p => {
+                return p.types.some(t => hasTypeContent(p, t));
+            }).length;
+
+            const requiredPoints = taskData.points.filter(p => p.required);
+            const requiredApproved = requiredPoints.filter(p => p.status === 'approved').length;
+            const requiredTotal = requiredPoints.length;
+
             document.getElementById('completedCount').textContent = completed;
-            
-            const nextBtn = document.getElementById('nextBtn');
-            if (completed >= 1) {
-                nextBtn.classList.add('ready');
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('requiredPass').textContent = requiredApproved;
+            document.getElementById('requiredTotal').textContent = requiredTotal;
+
+            // 必填项进度颜色
+            const chip = document.getElementById('requiredChip');
+            if (requiredApproved < requiredTotal) {
+                chip.classList.add('warning');
             } else {
-                nextBtn.classList.remove('ready');
+                chip.classList.remove('warning');
+            }
+
+            // 更新提交按钮状态
+            const allRequiredApproved = requiredPoints.every(p => p.status === 'approved');
+            const btn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('submitBtnText');
+
+            if (allRequiredApproved) {
+                btn.className = 'submit-btn ready';
+                btnText.textContent = '提交审核';
+            } else if (requiredPoints.some(p => p.status === 'reviewing' || p.status === 'uploading')) {
+                btn.className = 'submit-btn disabled';
+                btnText.textContent = '等待审核完成';
+            } else if (requiredPoints.some(p => p.status === 'rejected')) {
+                btn.className = 'submit-btn disabled';
+                btnText.textContent = '请修改失败内容后再提交';
+            } else {
+                btn.className = 'submit-btn disabled';
+                btnText.textContent = '请先完成必填点位';
             }
         }
-        
-        // 下一步
-        function goNext() {
-            const completed = Object.values(points).filter(p => p.status === 'completed').length;
-            if (completed < 1) {
-                showToast('请至少完成1个点位');
+
+        // ===== 提交相关 =====
+        function showSubmitModal() {
+            const allRequiredApproved = taskData.points.filter(p => p.required).every(p => p.status === 'approved');
+            if (!allRequiredApproved) {
+                const rejected = taskData.points.filter(p => p.required && p.status === 'rejected');
+                if (rejected.length > 0) {
+                    showToast('存在必填点位审核失败，请先修改', 'error');
+                } else {
+                    showToast('请先完成所有必填点位', 'error');
+                }
                 return;
             }
-            window.location.href = `confirm-script.html?task=${taskId}`;
+
+            const completed = taskData.points.filter(p =>
+                p.types.some(t => hasTypeContent(p, t))
+            ).length;
+            const requiredApproved = taskData.points.filter(p => p.required && p.status === 'approved').length;
+            const requiredTotal = taskData.points.filter(p => p.required).length;
+
+            document.getElementById('modalCompleted').textContent = `${completed}/${taskData.points.length}`;
+            document.getElementById('modalRequired').textContent = `${requiredApproved}/${requiredTotal}`;
+            document.getElementById('submitModal').classList.add('show');
         }
-        
-        // 返回
+
+        function closeSubmitModal() {
+            document.getElementById('submitModal').classList.remove('show');
+        }
+
+        function confirmSubmit() {
+            closeSubmitModal();
+
+            const btn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('submitBtnText');
+            btn.className = 'submit-btn disabled';
+            btnText.innerHTML = '<div class="spinner"></div>&nbsp;提交中...';
+            btn.disabled = true;
+
+            // 模拟提交
+            setTimeout(() => {
+                showToast('提交审核成功！', 'success');
+                setTimeout(() => {
+                    window.location.href = `confirm-script.html?task=${taskId}&step=2`;
+                }, 1500);
+            }, 1500);
+        }
+
+        // ===== 保存草稿 =====
+        function saveDraft() {
+            // 保存到 localStorage
+            localStorage.setItem(`draft_${taskId}_step2`, JSON.stringify(taskData));
+            showToast('草稿已保存', 'success');
+        }
+
+        // ===== 返回 =====
         function goBack() {
-            window.location.href = `task-detail.html?task=${taskId}&step=2`;
+            // 有内容修改时提示保存
+            const hasContent = taskData.points.some(p =>
+                p.types.some(t => hasTypeContent(p, t))
+            );
+            if (hasContent) {
+                if (confirm('当前有未保存的内容，是否保存草稿？')) {
+                    saveDraft();
+                }
+            }
+            window.location.href = `task-detail.html?task=${taskId}&step=1`;
         }
-        
-        // Toast
+
+        // ===== Toast =====
         function showToast(message, type = '') {
             const existing = document.querySelector('.toast');
             if (existing) existing.remove();
-            
+
             const toast = document.createElement('div');
-            toast.className = 'toast' + (type ? ' ' + type : '');
+            toast.className = 'toast';
             toast.textContent = message;
             document.body.appendChild(toast);
-            
-            setTimeout(() => toast.remove(), 2000);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s';
+                setTimeout(() => toast.remove(), 300);
+            }, 2000);
         }
-        
-        // 初始化
-        updateOverallProgress();
+
+        // ===== 启动 =====
+        init();
     </script>
 </body>
 </html>
