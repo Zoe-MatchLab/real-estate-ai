@@ -152,7 +152,7 @@
     <!-- 顶部导航 -->
     <div class="bg-white sticky top-0 z-40">
         <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
-            <button class="text-gray-700 btn" onclick="history.back()">
+            <button class="text-gray-700 btn" onclick="goBackToList()">
                 <i class="fa fa-angle-left text-xl"></i>
             </button>
             <h1 class="font-medium text-gray-700">成果预览</h1>
@@ -443,7 +443,7 @@
 
         // 返回任务列表
         function goBackToList() {
-            window.location.href = 'task-detail.html';
+            window.location.href = 'task-detail.html?step=4';
         }
 
         // 初始化页面数据

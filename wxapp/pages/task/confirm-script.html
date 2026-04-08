@@ -339,7 +339,7 @@
 
         // 返回上一页
         function goBack() {
-            window.location.href = 'task-detail.html';
+            window.location.href = 'task-detail.html?step=2';
         }
 
         // 打开编辑弹窗
@@ -440,7 +440,7 @@
                 showToast('确认成功');
                 // 跳转到结果生成页面
                 setTimeout(() => {
-                    window.location.href = 'result-generate.html';
+                    window.location.href = 'result-generate.html?step=3';
                 }, 500);
             }, 1500);
         }
