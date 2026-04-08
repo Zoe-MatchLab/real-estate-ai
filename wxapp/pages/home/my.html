@@ -1,279 +1,392 @@
 <!DOCTYPE html>
-
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>我的</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>我的 - 房产AI助手</title>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
   <style>
-    body {
+    * {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue";
-      background: #f5f5f5;
+      padding: 0;
+      box-sizing: border-box;
     }
-
-
-.container {
-  padding-bottom: 70px;
-}
-
-/* 顶部 */
-.header {
-  background: linear-gradient(#f7d9a7, #f5f5f5);
-  padding: 15px;
-}
-
-.nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.nav-title {
-  font-weight: bold;
-  font-size: 16px;
-}
-
-/* 用户信息 */
-.user {
-  display: flex;
-  align-items: center;
-  margin-top: 15px;
-}
-
-.avatar {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: #ddd;
-}
-
-.user-info {
-  margin-left: 10px;
-  flex: 1;
-}
-
-.username {
-  font-size: 16px;
-  font-weight: bold;
-}
-
-.vip-btn {
-  background: orange;
-  color: #fff;
-  padding: 6px 10px;
-  border-radius: 20px;
-  font-size: 12px;
-}
-
-/* 会员卡 */
-.vip-card {
-  background: #222;
-  color: #fff;
-  margin: 15px;
-  border-radius: 10px;
-  padding: 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.vip-card .btn {
-  background: orange;
-  padding: 6px 12px;
-  border-radius: 20px;
-}
-
-/* 列表 */
-.list {
-  background: #fff;
-  margin: 10px 15px;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  border-bottom: 1px solid #eee;
-}
-
-.item:last-child {
-  border-bottom: none;
-}
-
-.left {
-  display: flex;
-  align-items: center;
-}
-
-.icon {
-  width: 20px;
-  height: 20px;
-  background: orange;
-  border-radius: 5px;
-  margin-right: 10px;
-}
-
-/* 底部导航 */
-.tabbar {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  height: 60px;
-  background: #222;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  color: #999;
-  padding-bottom: env(safe-area-inset-bottom);
-}
-
-.tabbar a {
-  color: #999;
-  text-decoration: none;
-  padding: 8px 15px;
-  border-radius: 20px;
-  font-size: 14px;
-  transition: all 0.2s;
-}
-
-.tabbar a.active {
-  background: #fa8c16;
-  color: #fff;
-}
-
-.tabbar a:active {
-  opacity: 0.8;
-}
-
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: #f5f5f5;
+      color: #1D2129;
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+    
+    .container {
+      padding-bottom: 70px;
+    }
+    
+    .header {
+      background: linear-gradient(180deg, #f7d9a7 0%, #f5f5f5 100%);
+      padding: 12px 15px 15px;
+    }
+    
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .nav-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1D2129;
+      text-decoration: none;
+    }
+    
+    .nav-title {
+      font-weight: 600;
+      font-size: 17px;
+      color: #1D2129;
+    }
+    
+    .user {
+      display: flex;
+      align-items: center;
+      margin-top: 12px;
+      padding: 0 5px;
+    }
+    
+    .avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #E5E6EB;
+      border: 2px solid #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .user-info {
+      margin-left: 12px;
+      flex: 1;
+    }
+    
+    .username {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1D2129;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .user-tag {
+      font-size: 11px;
+      background: linear-gradient(135deg, #FA8C16, #FF9500);
+      color: #fff;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: normal;
+    }
+    
+    .vip-btn {
+      background: linear-gradient(135deg, #FA8C16, #FF9500);
+      color: #fff;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      text-decoration: none;
+    }
+    
+    .vip-card {
+      background: linear-gradient(135deg, #1D2129, #2D3748);
+      color: #fff;
+      margin: 15px;
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .vip-info {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    
+    .vip-level {
+      font-size: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    
+    .vip-level i {
+      color: #FFD700;
+    }
+    
+    .vip-expire {
+      font-size: 12px;
+      color: #86909C;
+    }
+    
+    .vip-renew {
+      background: linear-gradient(135deg, #FA8C16, #FF9500);
+      color: #fff;
+      padding: 8px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    .list-card {
+      background: #fff;
+      margin: 0 15px 10px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    
+    .list-item {
+      display: flex;
+      align-items: center;
+      padding: 14px 15px;
+      border-bottom: 1px solid #F2F3F5;
+      text-decoration: none;
+      color: #1D2129;
+    }
+    
+    .list-item:last-child {
+      border-bottom: none;
+    }
+    
+    .item-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #FFF7E6, #FFF2E6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+    
+    .item-icon i {
+      font-size: 16px;
+      color: #FA8C16;
+    }
+    
+    .item-content {
+      flex: 1;
+    }
+    
+    .item-title {
+      font-size: 15px;
+      color: #1D2129;
+      font-weight: 500;
+    }
+    
+    .item-sub {
+      font-size: 12px;
+      color: #86909C;
+      margin-right: 8px;
+    }
+    
+    .item-arrow {
+      color: #C9CDD4;
+      font-size: 14px;
+    }
+    
+    .tabbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      background: #fff;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding-bottom: env(safe-area-inset-bottom);
+      box-shadow: 0 -1px 0 #E5E6EB;
+      z-index: 100;
+    }
+    
+    .tabbar a {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      color: #86909C;
+      text-decoration: none;
+      padding: 8px 0;
+      font-size: 10px;
+    }
+    
+    .tabbar a i {
+      font-size: 20px;
+    }
+    
+    .tabbar a.active {
+      color: #FA8C16;
+    }
   </style>
 </head>
 
 <body>
 <div class="container">
 
-  <!-- 顶部 -->
-
   <div class="header">
     <div class="nav">
-      <div>←</div>
-      <div class="nav-title">我的</div>
-      <div>...</div>
+      <a href="calendar.html" class="nav-btn">
+        <i class="fa fa-angle-left" style="font-size:24px;"></i>
+      </a>
+      <span class="nav-title">我的</span>
+      <a href="settings.html" class="nav-btn">
+        <i class="fa fa-ellipsis-h" style="font-size:20px;"></i>
+      </a>
     </div>
 
-```
-<!-- 用户 -->
-<div class="user">
-  <div class="avatar"></div>
-  <div class="user-info">
-    <div class="username">陈佳佳 ✏️</div>
+    <div class="user">
+      <img class="avatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Ccircle cx='30' cy='30' r='30' fill='%23E5E6EB'/%3E%3Ccircle cx='30' cy='22' r='10' fill='%23C9CDD4'/%3E%3Cellipse cx='30' cy='50' rx='18' ry='14' fill='%23C9CDD4'/%3E%3C/svg%3E" alt="头像"/>
+      <div class="user-info">
+        <div class="username">
+          陈佳佳
+          <span class="user-tag">经纪人</span>
+        </div>
+      </div>
+      <a href="vip.html" class="vip-btn">会员兑换</a>
+    </div>
   </div>
-  <div class="vip-btn">会员兑换</div>
-</div>
-```
-
-  </div>
-
-  <!-- 会员卡 -->
 
   <div class="vip-card">
-    <div>
-      <div>白银会员</div>
-      <div style="font-size:12px;color:#ccc;">15天后到期</div>
-    </div>
-    <div class="btn">立即续费 →</div>
-  </div>
-
-  <!-- 第一组 -->
-
-  <div class="list">
-    <div class="item">
-      <div class="left">
-        <div class="icon"></div>
-        活动中心
+    <div class="vip-info">
+      <div class="vip-level">
+        <i class="fa fa-diamond"></i>
+        <span>白银会员</span>
       </div>
-      <div>签到有礼 ></div>
+      <div class="vip-expire">15天后到期</div>
     </div>
-
-```
-<div class="item">
-  <div class="left">
-    <div class="icon"></div>
-    算力
-  </div>
-  <div>></div>
-</div>
-
-<div class="item">
-  <div class="left">
-    <div class="icon"></div>
-    邀请
-  </div>
-  <div>></div>
-</div>
-
-<div class="item">
-  <div class="left">
-    <div class="icon"></div>
-    训练记录
-  </div>
-  <div>></div>
-</div>
-```
-
+    <a href="vip.html" class="vip-renew">
+      立即续费
+      <i class="fa fa-angle-right"></i>
+    </a>
   </div>
 
-  <!-- 第二组 -->
-
-  <div class="list">
-    <div class="item">
-      <div class="left">
-        <div class="icon"></div>
-        收藏
+  <div class="list-card">
+    <a href="activity.html" class="list-item">
+      <div class="item-icon">
+        <i class="fa fa-calendar-check-o"></i>
       </div>
-      <div>></div>
-    </div>
-
-```
-<div class="item">
-  <div class="left">
-    <div class="icon"></div>
-    足迹
+      <div class="item-content">
+        <div class="item-title">活动中心</div>
+      </div>
+      <span class="item-sub">签到有礼</span>
+      <i class="fa fa-angle-right item-arrow"></i>
+    </a>
+    <a href="power.html" class="list-item">
+      <div class="item-icon">
+        <i class="fa fa-bolt"></i>
+      </div>
+      <div class="item-content">
+        <div class="item-title">算力</div>
+      </div>
+      <i class="fa fa-angle-right item-arrow"></i>
+    </a>
+    <a href="invite.html" class="list-item">
+      <div class="item-icon">
+        <i class="fa fa-user-plus"></i>
+      </div>
+      <div class="item-content">
+        <div class="item-title">邀请</div>
+      </div>
+      <i class="fa fa-angle-right item-arrow"></i>
+    </a>
+    <a href="train-record.html" class="list-item">
+      <div class="item-icon">
+        <i class="fa fa-file-text-o"></i>
+      </div>
+      <div class="item-content">
+        <div class="item-title">训练记录</div>
+      </div>
+      <i class="fa fa-angle-right item-arrow"></i>
+    </a>
   </div>
-  <div>></div>
-</div>
 
-<div class="item">
-  <div class="left">
-    <div class="icon"></div>
-    付费记录
+  <div class="list-card">
+    <a href="favorites.html" class="list-item">
+      <div class="item-icon">
+        <i class="fa fa-star"></i>
+      </div>
+      <div class="item-content">
+        <div class="item-title">收藏</div>
+      </div>
+      <i class="fa fa-angle-right item-arrow"></i>
+    </a>
+    <a href="footprint.html" class="list-item">
+      <div class="item-icon">
+        <i class="fa fa-map-marker"></i>
+      </div>
+      <div class="item-content">
+        <div class="item-title">足迹</div>
+      </div>
+      <i class="fa fa-angle-right item-arrow"></i>
+    </a>
+    <a href="payment.html" class="list-item">
+      <div class="item-icon">
+        <i class="fa fa-credit-card"></i>
+      </div>
+      <div class="item-content">
+        <div class="item-title">付费记录</div>
+      </div>
+      <i class="fa fa-angle-right item-arrow"></i>
+    </a>
+    <a href="settings.html" class="list-item">
+      <div class="item-icon">
+        <i class="fa fa-gear"></i>
+      </div>
+      <div class="item-content">
+        <div class="item-title">设置</div>
+      </div>
+      <i class="fa fa-angle-right item-arrow"></i>
+    </a>
   </div>
-  <div>></div>
-</div>
-
-<div class="item">
-  <div class="left">
-    <div class="icon"></div>
-    设置
-  </div>
-  <div>></div>
-</div>
-```
-
-  </div>
 
 </div>
 
-<!-- 底部 -->
-
-<div class="tabbar">
-  <a href="calendar.html" class="">首页</a>
-  <a href="tools.html" class="">功能</a>
-  <a href="my.html" class="active">我的</a>
-</div>
+<nav class="tabbar">
+  <a href="calendar.html">
+    <i class="fa fa-home"></i>
+    <span>首页</span>
+  </a>
+  <a href="tools.html">
+    <i class="fa fa-th-large"></i>
+    <span>功能</span>
+  </a>
+  <a href="claw.html">
+    <i class="fa fa-commenting"></i>
+    <span>助手</span>
+  </a>
+  <a href="calendar.html">
+    <i class="fa fa-calendar"></i>
+    <span>日历</span>
+  </a>
+  <a href="my.html" class="active">
+    <i class="fa fa-user"></i>
+    <span>我的</span>
+  </a>
+</nav>
 
 </body>
 </html>
