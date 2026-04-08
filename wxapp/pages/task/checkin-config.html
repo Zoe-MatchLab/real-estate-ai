@@ -743,8 +743,17 @@
         <div class="toggle-switch active" id="locationSwitch" onclick="toggleLocation()"></div>
       </div>
       
+      <!-- 打卡位置 -->
+      <div class="range-input" id="locationRow" style="display:flex;align-items:center;">
+        <span style="font-size:13px;color:var(--color-sub);flex-shrink:0;">打卡位置</span>
+        <input type="text" id="checkinAddress" placeholder="点击选择打卡位置" readonly onclick="selectLocation()" style="flex:1;padding:8px 12px;font-size:14px;border:1px solid var(--color-border);border-radius:8px;margin:0 8px;">
+        <button onclick="selectLocation()" style="padding:8px 12px;font-size:13px;color:var(--brand-primary);background:rgba(250,140,22,0.1);border:none;border-radius:8px;">选择</button>
+      </div>
+      <input type="hidden" id="checkinLat" value="30.5721">
+      <input type="hidden" id="checkinLng" value="114.1234">
+      
       <!-- 打卡范围 -->
-      <div class="range-input" id="rangeInput">
+      <div class="range-input" id="rangeInput" style="margin-top:12px;">
         <span style="font-size:13px;color:var(--color-sub);">允许偏差范围</span>
         <input type="number" id="rangeValue" value="100" min="10" max="1000">
         <span class="range-unit">米</span>
@@ -950,6 +959,50 @@
     </div>
   </div>
 
+  <!-- 位置选择器弹窗 -->
+  <div class="modal-overlay" id="locationModal">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">选择打卡位置</span>
+        <div class="modal-close" onclick="closeLocationModal()">
+          <i class="fa fa-times"></i>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="form-item">
+          <div class="form-label">搜索地址</div>
+          <input type="text" class="form-input" id="locationSearchInput" placeholder="输入楼盘地址搜索">
+        </div>
+        <div class="form-item">
+          <div class="form-label">常用位置</div>
+          <div class="selector-row" onclick="confirmLocation('30.5721', '114.1234', '武汉市洪山区珞喻路1077号')">
+            <div class="selector-info">
+              <div class="selector-label">万科翡翠公园-营销中心</div>
+              <div class="selector-count">珞喻路1077号</div>
+            </div>
+          </div>
+          <div class="selector-row" onclick="confirmLocation('30.5735', '114.1300', '武汉市洪山区光谷大道')">
+            <div class="selector-info">
+              <div class="selector-label">保利天汇-售楼处</div>
+              <div class="selector-count">光谷大道288号</div>
+            </div>
+          </div>
+          <div class="selector-row" onclick="confirmLocation('30.5100', '114.2500', '武汉市武昌区中北路')">
+            <div class="selector-info">
+              <div class="selector-label">龙湖天街-商业街</div>
+              <div class="selector-count">中北路108号</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-item" style="margin-top:16px;">
+          <button onclick="getCurrentLocation()" style="width:100%;padding:12px;background:var(--color-bg);border:1px dashed var(--color-border);border-radius:8px;display:flex;align-items:center;justify-content:center;gap:6px;color:var(--brand-primary);font-size:14px;">
+            <i class="fa fa-location-arrow"></i> 获取当前定位
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast -->
   <div class="toast" id="toast"></div>
 
@@ -1020,16 +1073,47 @@ document.addEventListener('DOMContentLoaded', function() {
 function toggleLocation() {
   var toggle = document.getElementById('locationSwitch');
   var rangeInput = document.getElementById('rangeInput');
+  var locationRow = document.getElementById('locationRow');
   
   config.checkinEnabled = !config.checkinEnabled;
   
   if (config.checkinEnabled) {
     toggle.classList.add('active');
+    locationRow.style.display = 'flex';
     rangeInput.style.display = 'flex';
   } else {
     toggle.classList.remove('active');
+    locationRow.style.display = 'none';
     rangeInput.style.display = 'none';
   }
+}
+
+// 打开位置选择器
+function selectLocation() {
+  document.getElementById('locationModal').classList.add('show');
+}
+
+// 关闭位置选择器
+function closeLocationModal() {
+  document.getElementById('locationModal').classList.remove('show');
+}
+
+// 确认选择位置
+function confirmLocation(lat, lng, address) {
+  document.getElementById('checkinLat').value = lat;
+  document.getElementById('checkinLng').value = lng;
+  document.getElementById('checkinAddress').value = address;
+  closeLocationModal();
+  showToast('已选择位置');
+}
+
+// 获取当前定位
+function getCurrentLocation() {
+  // 模拟获取定位
+  showToast('正在获取定位...');
+  setTimeout(function() {
+    confirmLocation('30.5721', '114.1234', '武汉市洪山区珞喻路1077号（当前定位）');
+  }, 1000);
 }
 
 // 渲染打卡点列表
