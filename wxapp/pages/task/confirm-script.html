@@ -55,7 +55,7 @@
             -webkit-font-smoothing: antialiased;
         }
         
-        .page { min-height: 100vh; padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+        .page { min-height: 100vh; padding-bottom: calc(140px + env(safe-area-inset-bottom)); }
         
         /* 头部 */
         .header {
@@ -209,6 +209,32 @@
         /* 文案列表 */
         .copywriter-list { padding: 0 var(--spacing-md); display: none; }
         .copywriter-list.show { display: block; }
+
+        /* 全选工具栏 */
+        .select-all-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-sm) 0;
+            margin-bottom: var(--spacing-sm);
+        }
+        .select-all-label {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: 13px;
+            color: var(--color-sub);
+            cursor: pointer;
+        }
+        .select-all-label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--brand-primary);
+        }
+        .select-count {
+            font-size: 12px;
+            color: var(--color-sub);
+        }
         
         .copywriter-card {
             background: white;
@@ -228,20 +254,15 @@
             cursor: pointer;
         }
         
-        .checkbox-circle {
-            width: 22px; height: 22px;
-            border: 2px solid var(--color-border);
-            border-radius: 4px;
+        .copywriter-checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--brand-primary);
             margin-right: var(--spacing-md);
-            display: flex; align-items: center; justify-content: center;
-            transition: all var(--transition-fast);
             flex-shrink: 0;
         }
-        .copywriter-card.selected .checkbox-circle { border-color: var(--brand-primary); background: var(--brand-primary); }
-        .checkbox-circle::after { content: ''; width: 10px; height: 6px; border-left: 2px solid white; border-bottom: 2px solid white; transform: rotate(-45deg) translateY(-1px); opacity: 0; display: block; }
-        .copywriter-card.selected .checkbox-circle::after { opacity: 1; }
         
-        .copywriter-info { flex: 1; }
+        .copywriter-info { flex: 1; min-width: 0; }
         
         .copywriter-platform {
             display: inline-flex; align-items: center;
@@ -254,8 +275,27 @@
         .copywriter-platform.wechat { background: #E8FFEA; color: var(--color-success); }
         .copywriter-platform.video { background: #E8F3FF; color: var(--color-info); }
         
-        .copywriter-title { font-size: 14px; font-weight: 500; color: var(--color-title); }
+        .copywriter-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-title);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
         .copywriter-meta { font-size: 11px; color: var(--color-sub); margin-top: 2px; }
+        
+        .copywriter-expand-icon {
+            margin-left: auto;
+            margin-right: var(--spacing-sm);
+            font-size: 12px;
+            color: var(--color-sub);
+            transition: transform var(--transition-fast);
+            flex-shrink: 0;
+        }
+        .copywriter-card.expanded .copywriter-expand-icon {
+            transform: rotate(180deg);
+        }
         
         .copywriter-content { padding: 0 var(--spacing-md) var(--spacing-md); display: none; }
         .copywriter-card.expanded .copywriter-content { display: block; }
@@ -290,7 +330,40 @@
             transition: all var(--transition-fast);
         }
         .action-btn:active { transform: scale(0.98); }
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
         .action-btn.primary { background: var(--brand-primary); border-color: var(--brand-primary); color: white; }
+
+        /* 重新生成全部按钮 */
+        .regenerate-all-section {
+            padding: var(--spacing-md);
+            padding-top: 0;
+            display: none;
+        }
+        .regenerate-all-section.show { display: block; }
+        .regenerate-all-btn {
+            width: 100%;
+            padding: var(--spacing-md);
+            background: white;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            font-size: 14px;
+            color: var(--color-text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            transition: all var(--transition-fast);
+        }
+        .regenerate-all-btn:active { transform: scale(0.98); }
+        .regenerate-all-btn.loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+        .regenerate-all-btn i { color: var(--color-purple); }
 
         /* 底部操作 */
         .bottom-bar {
@@ -323,6 +396,7 @@
             cursor: pointer;
             box-shadow: 0 4px 16px rgba(250,140,22,0.3);
         }
+        .confirm-btn:active { transform: scale(0.99); }
 
         /* Toast */
         .toast {
@@ -386,10 +460,10 @@
         </div>
 
         <!-- 素材参考提示 -->
-        <div class="material-hint">
+        <div class="material-hint" id="materialHint">
             <i class="fa fa-folder-open"></i>
             <div class="material-hint-text">
-                基于阶段2上传的<span class="font-semibold">6个素材点位</span>进行AI生成，包括沙盘照片、样板间视频、区位配套等
+                基于阶段2上传的<span class="font-semibold" id="materialCount">-</span>个素材点位进行AI生成，包括沙盘照片、样板间视频、区位配套等
             </div>
         </div>
 
@@ -404,15 +478,25 @@
 
         <!-- 文案列表 -->
         <div class="copywriter-list" id="copywriterList">
+            <!-- 全选工具栏 -->
+            <div class="select-all-bar">
+                <label class="select-all-label">
+                    <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll()">
+                    <span>全选</span>
+                </label>
+                <span class="select-count" id="selectCount">已选0/3种</span>
+            </div>
+
             <!-- 小红书文案 -->
-            <div class="copywriter-card" id="card_xiaohongshu" onclick="toggleCard('xiaohongshu')">
-                <div class="copywriter-header">
-                    <div class="checkbox-circle"></div>
+            <div class="copywriter-card" id="card_xiaohongshu">
+                <div class="copywriter-header" onclick="toggleCard('xiaohongshu')">
+                    <input type="checkbox" class="copywriter-checkbox" id="check_xiaohongshu" onchange="selectCopy('xiaohongshu')">
                     <div class="copywriter-info">
                         <div class="copywriter-platform xiaohongshu">小红书</div>
-                        <div class="copywriter-title">中海汇德里 | 探盘日记</div>
+                        <div class="copywriter-title" id="title_xiaohongshu">中海汇德里 | 探盘日记</div>
                         <div class="copywriter-meta">约200字 · 已生成</div>
                     </div>
+                    <i class="fa fa-chevron-down copywriter-expand-icon"></i>
                 </div>
                 <div class="copywriter-content">
                     <div class="copywriter-text" id="content_xiaohongshu">【探盘日记 | 中海汇德里】
@@ -430,25 +514,29 @@
 
 #张江买房 #新房探盘 #中海汇德里</div>
                     <div class="copywriter-actions">
-                        <button class="action-btn" onclick="event.stopPropagation(); regenerateCopy('xiaohongshu')">
+                        <button class="action-btn" id="regen_xiaohongshu" onclick="regenerateCopy('xiaohongshu')">
                             <i class="fa fa-refresh"></i> 重新生成
                         </button>
-                        <button class="action-btn primary" onclick="event.stopPropagation(); selectCopy('xiaohongshu')">
+                        <button class="action-btn primary" onclick="selectCopy('xiaohongshu')">
                             <i class="fa fa-check"></i> 选用此版本
+                        </button>
+                        <button class="action-btn" onclick="copyText('xiaohongshu')">
+                            <i class="fa fa-copy"></i> 复制
                         </button>
                     </div>
                 </div>
             </div>
 
             <!-- 公众号文案 -->
-            <div class="copywriter-card" id="card_wechat" onclick="toggleCard('wechat')">
-                <div class="copywriter-header">
-                    <div class="checkbox-circle"></div>
+            <div class="copywriter-card" id="card_wechat">
+                <div class="copywriter-header" onclick="toggleCard('wechat')">
+                    <input type="checkbox" class="copywriter-checkbox" id="check_wechat" onchange="selectCopy('wechat')">
                     <div class="copywriter-info">
                         <div class="copywriter-platform wechat">公众号</div>
-                        <div class="copywriter-title">【开盘预告】中海汇德里震撼来袭</div>
+                        <div class="copywriter-title" id="title_wechat">【开盘预告】中海汇德里震撼来袭</div>
                         <div class="copywriter-meta">约500字 · 已生成</div>
                     </div>
+                    <i class="fa fa-chevron-down copywriter-expand-icon"></i>
                 </div>
                 <div class="copywriter-content">
                     <div class="copywriter-text" id="content_wechat">【开盘预告 | 中海汇德里】
@@ -467,25 +555,29 @@
 
 感兴趣的购房者可私信或评论区留言~</div>
                     <div class="copywriter-actions">
-                        <button class="action-btn" onclick="event.stopPropagation(); regenerateCopy('wechat')">
+                        <button class="action-btn" id="regen_wechat" onclick="regenerateCopy('wechat')">
                             <i class="fa fa-refresh"></i> 重新生成
                         </button>
-                        <button class="action-btn primary" onclick="event.stopPropagation(); selectCopy('wechat')">
+                        <button class="action-btn primary" onclick="selectCopy('wechat')">
                             <i class="fa fa-check"></i> 选用此版本
+                        </button>
+                        <button class="action-btn" onclick="copyText('wechat')">
+                            <i class="fa fa-copy"></i> 复制
                         </button>
                     </div>
                 </div>
             </div>
 
             <!-- 短视频脚本 -->
-            <div class="copywriter-card" id="card_video" onclick="toggleCard('video')">
-                <div class="copywriter-header">
-                    <div class="checkbox-circle"></div>
+            <div class="copywriter-card" id="card_video">
+                <div class="copywriter-header" onclick="toggleCard('video')">
+                    <input type="checkbox" class="copywriter-checkbox" id="check_video" onchange="selectCopy('video')">
                     <div class="copywriter-info">
                         <div class="copywriter-platform video">短视频</div>
-                        <div class="copywriter-title">中海汇德里 | 楼盘介绍脚本</div>
+                        <div class="copywriter-title" id="title_video">中海汇德里 | 楼盘介绍脚本</div>
                         <div class="copywriter-meta">约60秒 · 已生成</div>
                     </div>
+                    <i class="fa fa-chevron-down copywriter-expand-icon"></i>
                 </div>
                 <div class="copywriter-content">
                     <div class="copywriter-text" id="content_video">【中海汇德里 · 短视频脚本】
@@ -508,20 +600,31 @@
 📍 镜头6（55-60秒）：结尾
 首付20%起，购房享3万抵8万优惠！关注我，带你看更多好房！</div>
                     <div class="copywriter-actions">
-                        <button class="action-btn" onclick="event.stopPropagation(); regenerateCopy('video')">
+                        <button class="action-btn" id="regen_video" onclick="regenerateCopy('video')">
                             <i class="fa fa-refresh"></i> 重新生成
                         </button>
-                        <button class="action-btn primary" onclick="event.stopPropagation(); selectCopy('video')">
+                        <button class="action-btn primary" onclick="selectCopy('video')">
                             <i class="fa fa-check"></i> 选用此版本
+                        </button>
+                        <button class="action-btn" onclick="copyText('video')">
+                            <i class="fa fa-copy"></i> 复制
                         </button>
                     </div>
                 </div>
+            </div>
+
+            <!-- 重新生成全部 -->
+            <div class="regenerate-all-section" id="regenerateAllSection">
+                <button class="regenerate-all-btn" id="regenerateAllBtn" onclick="startGenerate()">
+                    <i class="fa fa-refresh"></i>
+                    <span>重新生成全部文案</span>
+                </button>
             </div>
         </div>
 
         <!-- 底部操作栏 -->
         <div class="bottom-bar">
-            <div class="bottom-hint" id="bottomHint">请选择一种文案版本确认提交</div>
+            <div class="bottom-hint" id="bottomHint">请选择要使用的文案版本（可多选）</div>
             <button class="confirm-btn" id="confirmBtn" onclick="handleConfirm()">
                 <i class="fa fa-check"></i>
                 <span>确认并提交</span>
@@ -530,9 +633,51 @@
     </div>
 
     <script>
+        // 页面数据
+        const PLATFORMS = ['xiaohongshu', 'wechat', 'video'];
+        const PLATFORM_NAMES = {
+            'xiaohongshu': '小红书',
+            'wechat': '公众号',
+            'video': '短视频'
+        };
+
         let selectedCopies = new Set();
         let expandedCard = null;
         let isGenerated = false;
+        let houseName = '';
+        let materialCount = 0;
+
+        // 初始化
+        function init() {
+            // 从URL参数读取数据
+            const params = new URLSearchParams(window.location.search);
+            houseName = params.get('houseName') || '楼盘名称';
+            materialCount = parseInt(params.get('materialCount')) || 6;
+
+            // 更新页面数据
+            document.getElementById('materialCount').textContent = materialCount;
+            
+            PLATFORMS.forEach(type => {
+                const titleEl = document.getElementById('title_' + type);
+                if (titleEl) {
+                    titleEl.textContent = houseName + ' | ' + getDefaultTitle(type);
+                }
+            });
+
+            // 检查是否已有生成结果
+            if (params.get('generated') === '1') {
+                showGeneratedResults();
+            }
+        }
+
+        function getDefaultTitle(type) {
+            const titles = {
+                'xiaohongshu': '探盘日记',
+                'wechat': '开盘预告',
+                'video': '楼盘介绍脚本'
+            };
+            return titles[type] || '文案';
+        }
 
         function goBack() {
             window.location.href = 'task-detail.html?step=2';
@@ -544,22 +689,34 @@
             const list = document.getElementById('copywriterList');
             const fill = document.getElementById('generatingFill');
             const progress = document.getElementById('generatingProgress');
+            const regenAllBtn = document.getElementById('regenerateAllBtn');
 
             // 显示生成状态
             banner.classList.add('show');
             genSection.classList.add('hidden');
+            list.classList.add('show');
+            document.getElementById('regenerateAllSection').classList.add('show');
+            if (regenAllBtn) {
+                regenAllBtn.classList.add('loading');
+                regenAllBtn.disabled = true;
+            }
+
+            // 重置进度
+            fill.style.width = '0%';
+            progress.textContent = '0%';
+            const items = ['genItem1', 'genItem2', 'genItem3'];
+            items.forEach((id, idx) => {
+                const texts = ['小红书文案生成中...', '公众号文案生成中...', '短视频脚本生成中...'];
+                document.getElementById(id).innerHTML = `<i class="fa fa-circle-o"></i> ${texts[idx]}`;
+            });
 
             // 模拟生成进度
             let prog = 0;
-            const items = ['genItem1', 'genItem2', 'genItem3'];
-            const intervals = [];
-
             function updateItem(index, icon, text) {
                 const el = document.getElementById(items[index]);
                 el.innerHTML = `<i class="fa ${icon}"></i> ${text}`;
             }
 
-            // 模拟生成过程
             const progressInterval = setInterval(() => {
                 prog += Math.random() * 15;
                 if (prog > 100) prog = 100;
@@ -574,12 +731,23 @@
                     clearInterval(progressInterval);
                     setTimeout(() => {
                         banner.classList.remove('show');
-                        list.classList.add('show');
+                        if (regenAllBtn) {
+                            regenAllBtn.classList.remove('loading');
+                            regenAllBtn.disabled = false;
+                        }
                         isGenerated = true;
                         showToast('三种文案已生成完毕');
                     }, 500);
                 }
             }, 200);
+        }
+
+        function showGeneratedResults() {
+            document.getElementById('generatingBanner').classList.remove('show');
+            document.getElementById('generateSection').classList.add('hidden');
+            document.getElementById('copywriterList').classList.add('show');
+            document.getElementById('regenerateAllSection').classList.add('show');
+            isGenerated = true;
         }
 
         function toggleCard(type) {
@@ -600,40 +768,81 @@
             }
         }
 
-        function selectCopy(type, event) {
-            if (event) event.stopPropagation();
-            
+        function selectCopy(type) {
             const card = document.getElementById('card_' + type);
+            const checkbox = document.getElementById('check_' + type);
             
             // 切换选中状态
             if (selectedCopies.has(type)) {
                 selectedCopies.delete(type);
                 card.classList.remove('selected');
-                showToast('已取消' + getPlatformName(type));
+                checkbox.checked = false;
             } else {
                 selectedCopies.add(type);
                 card.classList.add('selected');
-                showToast('已选用' + getPlatformName(type));
+                checkbox.checked = true;
             }
 
-            // 更新底部按钮
+            // 更新UI
+            updateSelectAllState();
             updateConfirmBtn();
         }
 
-        function getPlatformName(type) {
-            const names = {
-                'xiaohongshu': '小红书',
-                'wechat': '公众号',
-                'video': '短视频'
-            };
-            return names[type] || type;
+        function toggleSelectAll() {
+            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+            
+            if (selectAllCheckbox.checked) {
+                // 全选
+                PLATFORMS.forEach(type => {
+                    selectedCopies.add(type);
+                    const card = document.getElementById('card_' + type);
+                    const checkbox = document.getElementById('check_' + type);
+                    card.classList.add('selected');
+                    checkbox.checked = true;
+                });
+            } else {
+                // 取消全选
+                PLATFORMS.forEach(type => {
+                    selectedCopies.delete(type);
+                    const card = document.getElementById('card_' + type);
+                    const checkbox = document.getElementById('check_' + type);
+                    card.classList.remove('selected');
+                    checkbox.checked = false;
+                });
+            }
+
+            updateConfirmBtn();
+        }
+
+        function updateSelectAllState() {
+            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+            const selectCount = document.getElementById('selectCount');
+            
+            selectAllCheckbox.checked = selectedCopies.size === PLATFORMS.length;
+            selectCount.textContent = `已选${selectedCopies.size}/${PLATFORMS.length}种`;
         }
 
         function regenerateCopy(type) {
-            showToast('正在重新生成' + getPlatformName(type) + '文案...');
+            const btn = document.getElementById('regen_' + type);
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> 生成中...';
+            
+            showToast('正在重新生成' + PLATFORM_NAMES[type] + '文案...');
+            
             setTimeout(() => {
-                showToast(getPlatformName(type) + '文案已重新生成');
-            }, 1500);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa fa-refresh"></i> 重新生成';
+                showToast(PLATFORM_NAMES[type] + '文案已重新生成');
+            }, 2000);
+        }
+
+        function copyText(type) {
+            const content = document.getElementById('content_' + type).textContent;
+            navigator.clipboard.writeText(content).then(() => {
+                showToast('文案已复制到剪贴板');
+            }).catch(() => {
+                showToast('复制失败，请手动选择复制');
+            });
         }
 
         function updateConfirmBtn() {
@@ -643,10 +852,10 @@
 
             if (count > 0) {
                 btn.classList.add('ready');
-                if (count === 3) {
-                    hint.textContent = '已选用全部3种文案';
+                if (count === PLATFORMS.length) {
+                    hint.textContent = '已选用全部' + count + '种文案';
                 } else {
-                    hint.textContent = '已选用' + count + '种文案：' + Array.from(selectedCopies).map(getPlatformName).join('、');
+                    hint.textContent = '已选用' + count + '种文案';
                 }
             } else {
                 btn.classList.remove('ready');
@@ -659,10 +868,20 @@
                 showToast('请至少选择一种文案版本');
                 return;
             }
-            const selected = Array.from(selectedCopies).map(getPlatformName).join('、');
+
+            // 保存选中状态到 localStorage
+            const selectedData = {
+                selected: Array.from(selectedCopies),
+                houseName: houseName,
+                timestamp: Date.now()
+            };
+            localStorage.setItem('confirm-script-selected', JSON.stringify(selectedData));
+
+            const selected = Array.from(selectedCopies).map(t => PLATFORM_NAMES[t]).join('、');
             showToast('确认提交' + selected + '文案');
+            
             setTimeout(() => {
-                window.location.href = 'result-generate.html?step=3';
+                window.location.href = 'result-generate.html?step=3&selected=' + Array.from(selectedCopies).join(',');
             }, 1000);
         }
 
@@ -676,18 +895,8 @@
             setTimeout(() => toast.remove(), 2000);
         }
 
-        // 页面加载时检查是否已生成
-        document.addEventListener('DOMContentLoaded', () => {
-            // 模拟已有生成结果的情况（用于调试）
-            // 如果URL有?generated=1参数，自动显示结果
-            const params = new URLSearchParams(window.location.search);
-            if (params.get('generated') === '1') {
-                document.getElementById('generatingBanner').classList.remove('show');
-                document.getElementById('generateSection').classList.add('hidden');
-                document.getElementById('copywriterList').classList.add('show');
-                isGenerated = true;
-            }
-        });
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
 </html>
