@@ -206,7 +206,29 @@
       font-size: 14px;
     }
     
-    .tabbar {
+    /* Toast提示 */
+    .toast {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(29, 33, 41, 0.9);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      z-index: 10000;
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+    
+    .toast.show {
+      opacity: 1;
+    }
+    
+    /* TabBar胶囊样式 */
+    .tab-bar-bottom {
       position: fixed;
       bottom: 0;
       left: 0;
@@ -221,24 +243,40 @@
       z-index: 100;
     }
     
-    .tabbar a {
-      flex: 1;
+    .tab-bar-bottom {
+      position: fixed;
+      bottom: calc(16px + env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(29, 33, 41, 0.96);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 28px;
+      padding: 8px 20px;
+      z-index: 9999;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.24);
       display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
       gap: 4px;
-      color: #86909C;
-      text-decoration: none;
-      padding: 8px 0;
-      font-size: 10px;
     }
     
-    .tabbar a i {
+    .tab-item-bottom {
+      width: 44px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 18px;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    
+    .tab-item-bottom i {
       font-size: 20px;
     }
     
-    .tabbar a.active {
+    .tab-item-bottom.active {
+      background: rgba(250, 140, 22, 0.2);
       color: #FA8C16;
     }
   </style>
@@ -266,7 +304,7 @@
           <span class="user-tag">经纪人</span>
         </div>
       </div>
-      <a href="vip.html" class="vip-btn">会员兑换</a>
+      <div class="vip-btn" onclick="showToast()">会员兑换</div>
     </div>
   </div>
 
@@ -278,14 +316,14 @@
       </div>
       <div class="vip-expire">15天后到期</div>
     </div>
-    <a href="vip.html" class="vip-renew">
+    <div class="vip-renew" onclick="showToast()">
       立即续费
       <i class="fa fa-angle-right"></i>
     </a>
   </div>
 
   <div class="list-card">
-    <a href="activity.html" class="list-item">
+    <div class="list-item" onclick="showToast()">
       <div class="item-icon">
         <i class="fa fa-calendar-check-o"></i>
       </div>
@@ -295,7 +333,7 @@
       <span class="item-sub">签到有礼</span>
       <i class="fa fa-angle-right item-arrow"></i>
     </a>
-    <a href="power.html" class="list-item">
+    <div class="list-item" onclick="showToast()">
       <div class="item-icon">
         <i class="fa fa-bolt"></i>
       </div>
@@ -304,7 +342,7 @@
       </div>
       <i class="fa fa-angle-right item-arrow"></i>
     </a>
-    <a href="invite.html" class="list-item">
+    <div class="list-item" onclick="showToast()">
       <div class="item-icon">
         <i class="fa fa-user-plus"></i>
       </div>
@@ -313,7 +351,7 @@
       </div>
       <i class="fa fa-angle-right item-arrow"></i>
     </a>
-    <a href="train-record.html" class="list-item">
+    <div class="list-item" onclick="showToast()">
       <div class="item-icon">
         <i class="fa fa-file-text-o"></i>
       </div>
@@ -325,7 +363,7 @@
   </div>
 
   <div class="list-card">
-    <a href="favorites.html" class="list-item">
+    <div class="list-item" onclick="showToast()">
       <div class="item-icon">
         <i class="fa fa-star"></i>
       </div>
@@ -334,7 +372,7 @@
       </div>
       <i class="fa fa-angle-right item-arrow"></i>
     </a>
-    <a href="footprint.html" class="list-item">
+    <div class="list-item" onclick="showToast()">
       <div class="item-icon">
         <i class="fa fa-map-marker"></i>
       </div>
@@ -343,7 +381,7 @@
       </div>
       <i class="fa fa-angle-right item-arrow"></i>
     </a>
-    <a href="payment.html" class="list-item">
+    <div class="list-item" onclick="showToast()">
       <div class="item-icon">
         <i class="fa fa-credit-card"></i>
       </div>
@@ -352,7 +390,7 @@
       </div>
       <i class="fa fa-angle-right item-arrow"></i>
     </a>
-    <a href="settings.html" class="list-item">
+    <div class="list-item" onclick="showToast()">
       <div class="item-icon">
         <i class="fa fa-gear"></i>
       </div>
@@ -365,28 +403,37 @@
 
 </div>
 
-<nav class="tabbar">
-  <a href="calendar.html">
+<!-- Toast提示 -->
+<div class="toast" id="toast">未开放，敬请期待</div>
+
+<!-- TabBar胶囊 -->
+<nav class="tab-bar-bottom">
+  <a href="calendar.html" class="tab-item-bottom">
     <i class="fa fa-home"></i>
-    <span>首页</span>
   </a>
-  <a href="tools.html">
+  <a href="tools.html" class="tab-item-bottom">
     <i class="fa fa-th-large"></i>
-    <span>功能</span>
   </a>
-  <a href="claw.html">
+  <a href="claw.html" class="tab-item-bottom">
     <i class="fa fa-commenting"></i>
-    <span>助手</span>
   </a>
-  <a href="calendar.html">
+  <a href="calendar.html" class="tab-item-bottom">
     <i class="fa fa-calendar"></i>
-    <span>日历</span>
   </a>
-  <a href="my.html" class="active">
+  <a href="my.html" class="tab-item-bottom active">
     <i class="fa fa-user"></i>
-    <span>我的</span>
   </a>
 </nav>
+
+<script>
+  function showToast() {
+    var toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(function() {
+      toast.classList.remove('show');
+    }, 2000);
+  }
+</script>
 
 </body>
 </html>
