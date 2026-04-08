@@ -327,6 +327,34 @@
             min-height: 150px;
             font-family: inherit;
         }
+
+        /* 编辑模式操作按钮 */
+        .copywriter-edit-btns {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-lg);
+            margin-top: var(--spacing-md);
+        }
+        .edit-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.15s;
+        }
+        .edit-btn:active { transform: scale(0.9); }
+        .edit-btn.cancel {
+            background: var(--color-bg);
+            border: 2px solid var(--color-border);
+        }
+        .edit-btn.confirm {
+            background: var(--brand-primary-light);
+        }
         
         .copywriter-actions {
             display: flex;
@@ -537,13 +565,9 @@
                         </button>
                     </div>
                     <div class="copywriter-edit-actions" style="display:none;">
-                        <div class="copywriter-actions">
-                            <button class="action-btn" onclick="cancelEdit('xiaohongshu')">
-                                <i class="fa fa-times"></i>取消
-                            </button>
-                            <button class="action-btn" onclick="saveEdit('xiaohongshu')" style="background:var(--brand-primary);border-color:var(--brand-primary);color:white;">
-                                <i class="fa fa-check"></i>保存
-                            </button>
+                        <div class="copywriter-edit-btns">
+                            <button class="edit-btn cancel" onclick="cancelEdit('xiaohongshu')">❌</button>
+                            <button class="edit-btn confirm" onclick="saveEdit('xiaohongshu')">✅</button>
                         </div>
                     </div>
                 </div>
@@ -575,13 +599,9 @@
                         </button>
                     </div>
                     <div class="copywriter-edit-actions" style="display:none;">
-                        <div class="copywriter-actions">
-                            <button class="action-btn" onclick="cancelEdit('wechat')">
-                                <i class="fa fa-times"></i>取消
-                            </button>
-                            <button class="action-btn" onclick="saveEdit('wechat')" style="background:var(--brand-primary);border-color:var(--brand-primary);color:white;">
-                                <i class="fa fa-check"></i>保存
-                            </button>
+                        <div class="copywriter-edit-btns">
+                            <button class="edit-btn cancel" onclick="cancelEdit('wechat')">❌</button>
+                            <button class="edit-btn confirm" onclick="saveEdit('wechat')">✅</button>
                         </div>
                     </div>
                 </div>
@@ -613,13 +633,9 @@
                         </button>
                     </div>
                     <div class="copywriter-edit-actions" style="display:none;">
-                        <div class="copywriter-actions">
-                            <button class="action-btn" onclick="cancelEdit('video')">
-                                <i class="fa fa-times"></i>取消
-                            </button>
-                            <button class="action-btn" onclick="saveEdit('video')" style="background:var(--brand-primary);border-color:var(--brand-primary);color:white;">
-                                <i class="fa fa-check"></i>保存
-                            </button>
+                        <div class="copywriter-edit-btns">
+                            <button class="edit-btn cancel" onclick="cancelEdit('video')">❌</button>
+                            <button class="edit-btn confirm" onclick="saveEdit('video')">✅</button>
                         </div>
                     </div>
                 </div>
@@ -948,15 +964,18 @@
 
         function editCopy(type) {
             const card = document.getElementById('card_' + type);
-            card.classList.add('editing');
             const textarea = document.getElementById('textarea_' + type);
-            const content = document.getElementById('content_' + type).textContent;
-            textarea.value = content;
+            const content = document.getElementById('content_' + type);
+            
+            textarea.value = content.textContent;
             textarea.style.display = 'block';
-            document.getElementById('content_' + type).style.display = 'none';
+            content.style.display = 'none';
+            
             // 隐藏操作按钮，显示编辑操作按钮
             card.querySelectorAll('.copywriter-actions').forEach(el => el.style.display = 'none');
-            card.querySelector('.copywriter-edit-actions').style.display = 'block';
+            const editActions = card.querySelector('.copywriter-edit-actions');
+            if (editActions) editActions.style.display = 'flex';
+            
             textarea.focus();
         }
 
@@ -975,9 +994,11 @@
             originalContent[type] = newText;
             textarea.style.display = 'none';
             content.style.display = 'block';
+            
             card.querySelectorAll('.copywriter-actions').forEach(el => el.style.display = 'flex');
-            card.querySelector('.copywriter-edit-actions').style.display = 'none';
-            card.classList.remove('editing');
+            const editActions = card.querySelector('.copywriter-edit-actions');
+            if (editActions) editActions.style.display = 'none';
+            
             showToast(PLATFORM_NAMES[type] + '文案已保存');
         }
 
@@ -989,9 +1010,10 @@
             textarea.value = originalContent[type] || '';
             textarea.style.display = 'none';
             content.style.display = 'block';
+            
             card.querySelectorAll('.copywriter-actions').forEach(el => el.style.display = 'flex');
-            card.querySelector('.copywriter-edit-actions').style.display = 'none';
-            card.classList.remove('editing');
+            const editActions = card.querySelector('.copywriter-edit-actions');
+            if (editActions) editActions.style.display = 'none';
         }
 
         function updateConfirmBtn() {
