@@ -760,13 +760,23 @@
                 fill.style.width = prog + '%';
                 progress.textContent = Math.round(prog) + '%';
 
-                // 逐个显示卡片
+                // 逐个显示卡片并填充内容
                 for (let i = 0; i < thresholds.length; i++) {
                     if (prog >= thresholds[i] && lastRevealed < i) {
                         lastRevealed = i;
-                        const card = document.getElementById('card_' + cardTypes[i]);
+                        const type = cardTypes[i];
+                        const card = document.getElementById('card_' + type);
+                        const contentEl = document.getElementById('content_' + type);
+                        
+                        // 填充文案内容
+                        if (contentEl && !contentEl.textContent) {
+                            const text = getDefaultContent(type);
+                            contentEl.textContent = text;
+                            originalContent[type] = text;
+                        }
+                        
                         card.classList.add('revealed');
-                        updateItem(i, 'fa-check-circle', PLATFORM_NAMES[cardTypes[i]] + '文案 ✓');
+                        updateItem(i, 'fa-check-circle', PLATFORM_NAMES[type] + '文案 ✓');
                     }
                 }
 
@@ -799,8 +809,9 @@
         }
 
         function getDefaultContent(type) {
+            const name = houseName || '楼盘名称';
             const contents = {
-                'xiaohongshu': `【探盘日记 | ${houseName}】
+                'xiaohongshu': `【探盘日记 | ${name}】
 
 终于来打卡张江神盘了！🏠
 
@@ -813,10 +824,10 @@
 • 周边商业配套成熟
 • 金牌顾问一对一服务
 
-#张江买房 #新房探盘 #${houseName}`,
-                'wechat': `【开盘预告 | ${houseName}】
+#张江买房 #新房探盘 #${name}`,
+                'wechat': `【开盘预告 | ${name}】
 
-位于浦东张江核心地段，${houseName}项目今日正式开放预约！
+位于浦东张江核心地段，${name}项目今日正式开放预约！
 
 🎯 项目亮点：
 • 绝佳区位：紧邻地铁站，30分钟直达陆家嘴
@@ -829,10 +840,10 @@
 更有金牌顾问一对一服务，看房专车接送
 
 感兴趣的购房者可私信或评论区留言~`,
-                'video': `【${houseName} · 短视频脚本】
+                'video': `【${name} · 短视频脚本】
 
 📍 镜头1（0-5秒）：楼盘大门全景
-今天带大家探秘张江网红神盘——${houseName}！
+今天带大家探秘张江网红神盘——${name}！
 
 📍 镜头2（5-15秒）：区位地图展示
 位于浦东张江核心地段，地铁口仅500米，30分钟直达陆家嘴。
