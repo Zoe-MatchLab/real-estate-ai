@@ -42,11 +42,10 @@
             --transition-normal: 0.25s ease;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        button:focus-visible, a:focus-visible {
-            outline: 2px solid var(--brand-primary);
-            outline-offset: 2px;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         html, body {
@@ -57,42 +56,26 @@
             color: var(--color-text);
             background: var(--color-bg);
             -webkit-font-smoothing: antialiased;
-        }
-
-        .page {
-            display: grid;
-            grid-template-rows: auto 1fr auto auto;
-            height: 100vh;
-            height: 100dvh;
-            background: var(--color-bg);
             overflow: hidden;
         }
 
-        .nav-bar {
-            grid-row: 1;
-        }
-
-        .chat-area {
-            grid-row: 2;
-            overflow-y: auto;
-            min-height: 0;
-        }
-
-        .quick-commands {
-            grid-row: 3;
-        }
-
-
-        .input-area {
-            grid-row: 4;
+        /* ========== 页面容器 ========== */
+        .page {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            height: 100vh;
+            height: 100dvh;
+            height: 100%;
+            overflow: hidden;
         }
 
         /* ========== 顶部导航栏 ========== */
         .nav-bar {
+            flex-shrink: 0;
             background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
             padding: calc(12px + env(safe-area-inset-top)) var(--spacing-md) var(--spacing-md);
             color: white;
-            flex-shrink: 0;
         }
 
         .nav-bar-inner {
@@ -118,11 +101,9 @@
             border-radius: var(--radius-lg);
             color: white;
             cursor: pointer;
-            transition: all var(--transition-fast);
         }
 
         .nav-back:active {
-            transform: scale(0.95);
             background: rgba(255,255,255,0.25);
         }
 
@@ -186,11 +167,9 @@
             border-radius: var(--radius-lg);
             color: white;
             cursor: pointer;
-            transition: all var(--transition-fast);
         }
 
         .nav-btn:active {
-            transform: scale(0.95);
             background: rgba(255,255,255,0.25);
         }
 
@@ -198,67 +177,13 @@
             font-size: 16px;
         }
 
-        /* ========== 快捷指令区 - 横向滚动药丸 ========== */
-        .quick-commands {
-            background: var(--color-card);
-            border-top: 1px solid var(--color-border);
-            padding: 8px 0;
-            overflow: hidden;
-            grid-row: 3;
-        }
-
-        .quick-commands-scroll {
-            display: flex;
-            gap: 8px;
-            padding: 0 var(--spacing-md);
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-        }
-
-        .quick-commands-scroll::-webkit-scrollbar {
-            display: none;
-        }
-
-        .quick-cmd-pill {
-            flex: 0 0 auto;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 14px;
-            background: var(--color-bg);
-            border: 1px solid var(--color-border);
-            border-radius: 20px;
-            font-size: 13px;
-            color: var(--color-text);
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            white-space: nowrap;
-        }
-
-        .quick-cmd-pill:active {
-            background: var(--brand-primary);
-            border-color: var(--brand-primary);
-            color: white;
-            transform: scale(0.96);
-        }
-
-        .quick-cmd-pill i {
-            font-size: 14px;
-        }
-
-        .quick-cmd-pill:active i {
-            color: white;
-        }
-
         /* ========== 对话区域 ========== */
         .chat-area {
-            min-height: 0;
+            flex: 1;
             overflow-y: auto;
+            overflow-x: hidden;
             padding: var(--spacing-md);
-            padding-bottom: calc(8px + env(safe-area-inset-bottom));
             -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
         }
 
         /* 滚动条美化 */
@@ -275,34 +200,160 @@
             border-radius: 2px;
         }
 
-        /* 空状态 */
-        .empty-state {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: var(--spacing-xl) var(--spacing-md);
-            text-align: center;
-            color: var(--color-sub);
+        /* ========== 底部区域 ========== */
+        .bottom-area {
+            flex-shrink: 0;
+            background: var(--color-card);
+            border-top: 1px solid var(--color-border);
         }
 
-        .empty-state-icon {
-            width: 64px;
-            height: 64px;
+        /* 快捷指令区 */
+        .quick-commands {
+            padding: 8px var(--spacing-md);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .quick-commands::-webkit-scrollbar {
+            display: none;
+        }
+
+        .quick-commands-scroll {
+            display: flex;
+            gap: 8px;
+        }
+
+        .quick-cmd-pill {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
             background: var(--color-bg);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            margin-bottom: var(--spacing-md);
+            border: 1px solid var(--color-border);
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--color-text);
+            cursor: pointer;
+            white-space: nowrap;
         }
 
-        .empty-state-text {
+        .quick-cmd-pill:active {
+            background: var(--brand-primary);
+            border-color: var(--brand-primary);
+            color: white;
+        }
+
+        .quick-cmd-pill i {
             font-size: 14px;
         }
 
-        /* 欢迎卡片 */
+        .quick-cmd-pill:active i {
+            color: white;
+        }
+
+        /* 输入区 */
+        .input-area {
+            padding: var(--spacing-sm) var(--spacing-md);
+            padding-bottom: calc(var(--spacing-sm) + env(safe-area-inset-bottom));
+        }
+
+        .input-row {
+            display: flex;
+            align-items: flex-end;
+            gap: var(--spacing-sm);
+        }
+
+        .input-actions {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+
+        .input-action {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-bg);
+            border: none;
+            border-radius: var(--radius-full);
+            color: var(--color-sub);
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .input-action:active {
+            background: var(--brand-primary-light);
+            color: var(--brand-primary);
+        }
+
+        .input-action.voice {
+            background: var(--brand-primary-light);
+            color: var(--brand-primary);
+        }
+
+        .input-wrapper {
+            flex: 1;
+        }
+
+        .input-field {
+            width: 100%;
+            min-height: 40px;
+            max-height: 100px;
+            padding: 8px 14px;
+            background: var(--color-bg);
+            border: 2px solid transparent;
+            border-radius: 20px;
+            font-family: var(--font-family);
+            font-size: 15px;
+            color: var(--color-title);
+            resize: none;
+            outline: none;
+            line-height: 1.4;
+        }
+
+        .input-field:focus {
+            border-color: var(--brand-primary);
+            background: var(--color-card);
+        }
+
+        .send-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(250, 140, 22, 0.35);
+        }
+
+        .send-btn:active {
+            transform: scale(0.92);
+        }
+
+        .send-btn:disabled {
+            background: var(--color-border);
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .send-btn.loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* ========== 欢迎卡片 ========== */
         .welcome-card {
             background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
             border-radius: var(--radius-xl);
@@ -317,25 +368,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .welcome-card .welcome-avatar {
-            background: rgba(255,255,255,0.2);
-            animation: welcomeAvatarPulse 2s ease-in-out infinite;
-        }
-
-        @keyframes welcomeAvatarPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-
-        .welcome-card .welcome-title {
-            color: white;
-        }
-
-        .welcome-card .welcome-desc {
-            color: rgba(255,255,255,0.9);
-        }
-
         .welcome-header {
             display: flex;
             align-items: center;
@@ -346,13 +378,18 @@
         .welcome-avatar {
             width: 48px;
             height: 48px;
-            background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
+            background: rgba(255,255,255,0.2);
             border-radius: var(--radius-lg);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 26px;
-            box-shadow: 0 4px 12px rgba(250, 140, 22, 0.3);
+            animation: welcomeAvatarPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes welcomeAvatarPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         .welcome-info {
@@ -362,13 +399,13 @@
         .welcome-title {
             font-size: 16px;
             font-weight: 600;
-            color: var(--color-title);
+            color: white;
             margin-bottom: 2px;
         }
 
         .welcome-desc {
             font-size: 12px;
-            color: var(--color-sub);
+            color: rgba(255,255,255,0.9);
         }
 
         /* 推荐问题 */
@@ -383,14 +420,13 @@
             align-items: center;
             gap: var(--spacing-sm);
             padding: var(--spacing-md);
-            background: var(--color-bg);
+            background: rgba(255,255,255,0.95);
             border-radius: var(--radius-lg);
             cursor: pointer;
-            transition: all var(--transition-fast);
         }
 
         .suggest-item:active {
-            background: var(--brand-primary-light);
+            background: rgba(255,255,255,0.85);
         }
 
         .suggest-icon {
@@ -416,7 +452,7 @@
             font-size: 14px;
         }
 
-        /* ========== 消息气泡 - 上下布局 ========== */
+        /* ========== 消息气泡 ========== */
         .message {
             display: flex;
             flex-direction: column;
@@ -429,12 +465,10 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* AI 消息 - 左对齐 */
         .message.ai {
             align-items: flex-start;
         }
 
-        /* 用户消息 - 右对齐 */
         .message.user {
             align-items: flex-end;
         }
@@ -506,7 +540,7 @@
             color: var(--brand-primary);
         }
 
-        /* AI 思考中指示器 */
+        /* AI 思考指示器 */
         .typing-indicator {
             display: flex;
             align-items: center;
@@ -538,7 +572,7 @@
 
         /* 数据卡片 */
         .data-card {
-            background: linear-gradient(135deg, var(--color-bg) 0%, #fff 100%);
+            background: var(--color-bg);
             border-radius: var(--radius-lg);
             padding: var(--spacing-md);
             margin-top: var(--spacing-md);
@@ -571,12 +605,6 @@
             padding: var(--spacing-md);
             text-align: center;
             border: 1px solid var(--color-border);
-            transition: all var(--transition-fast);
-        }
-
-        .data-card-item:active {
-            transform: scale(0.98);
-            border-color: var(--brand-primary);
         }
 
         .data-card-value {
@@ -593,173 +621,6 @@
             font-size: 12px;
             color: var(--color-sub);
             margin-top: 4px;
-        }
-
-        /* 快捷回复气泡 - 卡片式 */
-        .quick-replies {
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-sm);
-            margin-top: var(--spacing-md);
-        }
-
-        .quick-reply {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            padding: var(--spacing-md);
-            background: var(--color-bg);
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-lg);
-            font-size: 14px;
-            color: var(--color-text);
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            text-align: left;
-        }
-
-        .quick-reply:active {
-            background: var(--brand-primary-light);
-            border-color: var(--brand-primary);
-            transform: scale(0.98);
-        }
-
-        .quick-reply-icon {
-            width: 32px;
-            height: 32px;
-            background: var(--brand-primary);
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 14px;
-            flex-shrink: 0;
-        }
-
-        .quick-reply-text {
-            flex: 1;
-        }
-
-        .quick-reply-arrow {
-            color: var(--color-sub);
-            font-size: 12px;
-        }
-
-        /* ========== 底部输入区 ========== */
-        .input-area {
-            background: var(--color-card);
-            padding: var(--spacing-sm) var(--spacing-md);
-            padding-bottom: max(var(--spacing-sm), calc(12px + env(safe-area-inset-bottom)));
-            border-top: 1px solid var(--color-border);
-            grid-row: 4;
-        }
-
-        .input-row {
-            display: flex;
-            align-items: flex-end;
-            gap: var(--spacing-sm);
-        }
-
-        .input-actions {
-            display: flex;
-            gap: var(--spacing-xs);
-        }
-
-        .input-action {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: var(--color-bg);
-            border: none;
-            border-radius: var(--radius-full);
-            color: var(--color-sub);
-            font-size: 16px;
-            cursor: pointer;
-            transition: all var(--transition-fast);
-        }
-
-        .input-action:active {
-            background: var(--brand-primary-light);
-            color: var(--brand-primary);
-            transform: scale(0.95);
-        }
-
-        .input-action.voice {
-            background: var(--brand-primary-light);
-            color: var(--brand-primary);
-        }
-
-        .input-wrapper {
-            flex: 1;
-            position: relative;
-        }
-
-        .input-field {
-            width: 100%;
-            min-height: 40px;
-            max-height: 100px;
-            padding: 8px 14px;
-            background: var(--color-bg);
-            border: 2px solid transparent;
-            border-radius: 20px;
-            font-family: var(--font-family);
-            font-size: 15px;
-            color: var(--color-title);
-            resize: none;
-            outline: none;
-            line-height: 1.4;
-            transition: all var(--transition-fast);
-        }
-
-        .input-field:focus {
-            border-color: var(--brand-primary);
-            background: var(--color-card);
-        }
-
-        .input-field::placeholder {
-            color: var(--color-sub);
-        }
-
-        .send-btn {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            box-shadow: 0 2px 8px rgba(250, 140, 22, 0.35);
-        }
-
-        .send-btn:active {
-            transform: scale(0.92);
-        }
-
-        .send-btn:disabled {
-            background: var(--color-border);
-            box-shadow: none;
-            cursor: not-allowed;
-        }
-
-        .send-btn.loading {
-            pointer-events: none;
-        }
-
-        .send-btn.loading i {
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
         }
 
         /* Toast */
@@ -791,7 +652,7 @@
             <div class="nav-bar-inner">
                 <div class="nav-left">
                     <button class="nav-back" onclick="goBack()" aria-label="返回">
-                        <i class="fa fa-chevron-left" aria-hidden="true"></i>
+                        <i class="fa fa-chevron-left"></i>
                     </button>
                     <div class="nav-avatar">🦷</div>
                     <div class="nav-info">
@@ -804,16 +665,14 @@
                 </div>
                 <div class="nav-right">
                     <button class="nav-btn" onclick="showToast('历史记录')" aria-label="历史记录">
-                        <i class="fa fa-history" aria-hidden="true"></i>
+                        <i class="fa fa-history"></i>
                     </button>
                     <button class="nav-btn" onclick="showToast('更多设置')" aria-label="更多设置">
-                        <i class="fa fa-ellipsis-h" aria-hidden="true"></i>
+                        <i class="fa fa-ellipsis-h"></i>
                     </button>
                 </div>
             </div>
         </div>
-
-
 
         <!-- 对话区域 -->
         <div class="chat-area" id="chatArea">
@@ -844,61 +703,64 @@
                         <i class="fa fa-angle-right suggest-arrow"></i>
                     </div>
                 </div>
-        </div>
-
-        <!-- 快捷指令区 -->
-        <div class="quick-commands">
-            <div class="quick-commands-scroll">
-                <button class="quick-cmd-pill" onclick="sendQuickAction('下达探盘任务')">
-                    <i class="fa fa-map-marker"></i>
-                    下达任务
-                </button>
-                <button class="quick-cmd-pill" onclick="sendQuickAction('查看数据看板')">
-                    <i class="fa fa-bar-chart"></i>
-                    数据看板
-                </button>
-                <button class="quick-cmd-pill" onclick="sendQuickAction('生成朋友圈文案')">
-                    <i class="fa fa-magic"></i>
-                    生成文案
-                </button>
-                <button class="quick-cmd-pill" onclick="sendQuickAction('生成探盘报告')">
-                    <i class="fa fa-file-text-o"></i>
-                    探盘报告
-                </button>
-                <button class="quick-cmd-pill" onclick="sendQuickAction('房源推荐')">
-                    <i class="fa fa-home"></i>
-                    房源推荐
-                </button>
             </div>
         </div>
 
-        <!-- 底部输入区 -->
-        <div class="input-area">
-            <div class="input-row">
-                <div class="input-actions">
-                    <button class="input-action voice" onclick="toggleVoiceInput()" aria-label="语音输入">
-                        <i class="fa fa-microphone"></i>
+        <!-- 底部区域 -->
+        <div class="bottom-area">
+            <!-- 快捷指令区 -->
+            <div class="quick-commands">
+                <div class="quick-commands-scroll">
+                    <button class="quick-cmd-pill" onclick="sendQuickAction('下达探盘任务')">
+                        <i class="fa fa-map-marker"></i>
+                        下达任务
+                    </button>
+                    <button class="quick-cmd-pill" onclick="sendQuickAction('查看数据看板')">
+                        <i class="fa fa-bar-chart"></i>
+                        数据看板
+                    </button>
+                    <button class="quick-cmd-pill" onclick="sendQuickAction('生成朋友圈文案')">
+                        <i class="fa fa-magic"></i>
+                        生成文案
+                    </button>
+                    <button class="quick-cmd-pill" onclick="sendQuickAction('生成探盘报告')">
+                        <i class="fa fa-file-text-o"></i>
+                        探盘报告
+                    </button>
+                    <button class="quick-cmd-pill" onclick="sendQuickAction('房源推荐')">
+                        <i class="fa fa-home"></i>
+                        房源推荐
                     </button>
                 </div>
-                <div class="input-wrapper">
-                    <textarea 
-                        class="input-field" 
-                        id="inputField" 
-                        placeholder="" 
-                        rows="1" 
-                        oninput="autoResize(this); toggleSendBtn()"
-                        aria-label="输入消息"
-                    ></textarea>
+            </div>
+
+            <!-- 输入区 -->
+            <div class="input-area">
+                <div class="input-row">
+                    <div class="input-actions">
+                        <button class="input-action voice" onclick="toggleVoiceInput()" aria-label="语音输入">
+                            <i class="fa fa-microphone"></i>
+                        </button>
+                    </div>
+                    <div class="input-wrapper">
+                        <textarea 
+                            class="input-field" 
+                            id="inputField" 
+                            placeholder="" 
+                            rows="1" 
+                            oninput="autoResize(this); toggleSendBtn()"
+                            aria-label="输入消息"
+                        ></textarea>
+                    </div>
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()" aria-label="发送消息" disabled>
+                        <i class="fa fa-paper-plane"></i>
+                    </button>
                 </div>
-                <button class="send-btn" id="sendBtn" onclick="sendMessage()" aria-label="发送消息" disabled>
-                    <i class="fa fa-paper-plane"></i>
-                </button>
             </div>
         </div>
     </div>
 
     <script>
-        // 快捷动作响应数据
         const quickResponses = {
             '下达探盘任务': {
                 text: '好的，我来帮您下达探盘任务。请告诉我楼盘名称和探盘要求。',
@@ -950,7 +812,6 @@
             }
         };
 
-        // 返回上一页
         function goBack() {
             if (window.history.length > 1) {
                 window.history.back();
@@ -959,13 +820,11 @@
             }
         }
 
-        // 自动调整输入框高度
         function autoResize(el) {
             el.style.height = 'auto';
             el.style.height = Math.min(el.scrollHeight, 100) + 'px';
         }
 
-        // 切换发送按钮状态
         function toggleSendBtn() {
             const input = document.getElementById('inputField');
             const sendBtn = document.getElementById('sendBtn');
@@ -978,16 +837,12 @@
             }
         }
 
-        // 语音输入切换
         function toggleVoiceInput() {
             showToast('语音输入功能即将上线');
         }
 
-        // 发送快捷动作
         function sendQuickAction(action) {
             addMessage('user', action);
-            
-            // 显示 AI 思考中
             showTypingIndicator();
             
             setTimeout(() => {
@@ -1001,14 +856,6 @@
             }, 1000);
         }
 
-        // 发送快捷回复
-        function sendQuickReply(text) {
-            document.getElementById('inputField').value = text;
-            autoResize(document.getElementById('inputField'));
-            sendMessage();
-        }
-
-        // 发送消息
         function sendMessage() {
             const input = document.getElementById('inputField');
             const text = input.value.trim();
@@ -1018,12 +865,10 @@
             input.value = '';
             autoResize(input);
             
-            // 显示发送按钮 loading
             const sendBtn = document.getElementById('sendBtn');
             sendBtn.classList.add('loading');
             sendBtn.innerHTML = '<i class="fa fa-spinner"></i>';
             
-            // 显示 AI 思考中
             showTypingIndicator();
 
             setTimeout(() => {
@@ -1034,7 +879,6 @@
             }, 1200);
         }
 
-        // 显示思考中指示器
         function showTypingIndicator() {
             const chat = document.getElementById('chatArea');
             const html = `
@@ -1051,32 +895,26 @@
             scrollToBottom();
         }
 
-        // 隐藏思考中指示器
         function hideTypingIndicator() {
             const indicator = document.getElementById('typingIndicator');
-            if (indicator) {
-                indicator.remove();
-            }
+            if (indicator) indicator.remove();
         }
 
-        // 添加用户消息
         function addMessage(role, text) {
             const chat = document.getElementById('chatArea');
             const time = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
             
-            let statusHtml = '';
-            if (role === 'user') {
-                statusHtml = '<i class="fa fa-check message-status"></i>';
-            }
-            
             const html = `
                 <div class="message ${role}">
-                    <div class="message-avatar ${role}" aria-hidden="true">
+                    <div class="message-avatar ${role}">
                         ${role === 'ai' ? '🦷' : '👤'}
                     </div>
                     <div class="message-content">
                         <div class="message-bubble">${escapeHtml(text)}</div>
-                        <div class="message-time">${statusHtml}${time}</div>
+                        <div class="message-time">
+                            ${role === 'user' ? '<i class="fa fa-check message-status"></i>' : ''}
+                            ${time}
+                        </div>
                     </div>
                 </div>
             `;
@@ -1084,7 +922,6 @@
             scrollToBottom();
         }
 
-        // 添加 AI 消息
         function addAIMessage(text, data) {
             const chat = document.getElementById('chatArea');
             const time = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
@@ -1111,12 +948,9 @@
 
             const html = `
                 <div class="message ai">
-                    <div class="message-avatar ai" aria-hidden="true">🦷</div>
+                    <div class="message-avatar ai">🦷</div>
                     <div class="message-content">
-                        <div class="message-bubble">
-                            ${text}
-                            ${dataHtml}
-                        </div>
+                        <div class="message-bubble">${text}${dataHtml}</div>
                         <div class="message-time">${time}</div>
                     </div>
                 </div>
@@ -1125,20 +959,17 @@
             scrollToBottom();
         }
 
-        // HTML 转义
         function escapeHtml(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
 
-        // 滚动到底部
         function scrollToBottom() {
             const chat = document.getElementById('chatArea');
             chat.scrollTop = chat.scrollHeight;
         }
 
-        // Toast
         function showToast(message) {
             const existing = document.querySelector('.toast');
             if (existing) existing.remove();
@@ -1149,7 +980,6 @@
             setTimeout(() => toast.remove(), 2000);
         }
 
-        // 回车发送
         document.getElementById('inputField').addEventListener('keydown', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
