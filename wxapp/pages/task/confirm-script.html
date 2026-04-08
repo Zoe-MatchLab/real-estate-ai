@@ -114,6 +114,31 @@
         .edit-btn:hover {
             background: #fff7e6;
         }
+        .icon-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            border: 1px solid #E5E6EB;
+            background: transparent;
+            color: #86909C;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .icon-btn:hover {
+            color: #fa8c16;
+            border-color: #fa8c16;
+            background: #fff7e6;
+        }
+        .icon-btn:active {
+            transform: scale(0.9);
+        }
+        .icon-btn.spinning {
+            animation: spin 1s linear infinite;
+            color: #fa8c16;
+        }
         .toast {
             position: fixed;
             top: 50%;
@@ -237,9 +262,14 @@
                     <i class="fa fa-file-text text-primary mr-2"></i>
                     <span class="font-medium text-gray-800">朋友圈文案</span>
                 </div>
-                <button class="edit-btn" onclick="openEditModal('content')">
-                    <i class="fa fa-edit mr-1"></i> 编辑
-                </button>
+                <div class="flex items-center gap-2">
+                    <button class="icon-btn" onclick="handleRegenerate('content')" title="重新生成">
+                        <i class="fa fa-refresh" id="refreshContentIcon"></i>
+                    </button>
+                    <button class="edit-btn" onclick="openEditModal('content')">
+                        <i class="fa fa-edit mr-1"></i> 编辑
+                    </button>
+                </div>
             </div>
             <div id="scriptTitle" class="font-bold text-gray-800 mb-2">【中海汇德里·开盘预告】</div>
             <div id="scriptContent" class="content-box text-sm text-gray-600 leading-relaxed">位于浦东张江核心地段，毗邻地铁站，周边商业配套完善。项目主推89㎡三房和109㎡四房，均价约6.5万/㎡。首付20%起，购房享3万抵8万优惠。金牌顾问一对一服务，看房专车接送。</div>
@@ -254,9 +284,14 @@
                     <i class="fa fa-video-camera text-primary mr-2"></i>
                     <span class="font-medium text-gray-800">视频脚本</span>
                 </div>
-                <button class="edit-btn" onclick="openEditModal('videoScript')">
-                    <i class="fa fa-edit mr-1"></i> 编辑
-                </button>
+                <div class="flex items-center gap-2">
+                    <button class="icon-btn" onclick="handleRegenerate('videoScript')" title="重新生成">
+                        <i class="fa fa-refresh" id="refreshVideoIcon"></i>
+                    </button>
+                    <button class="edit-btn" onclick="openEditModal('videoScript')">
+                        <i class="fa fa-edit mr-1"></i> 编辑
+                    </button>
+                </div>
             </div>
             <div id="videoScript" class="content-box text-sm text-gray-600 leading-relaxed">镜头1: 楼盘大门全景
 镜头2: 区位地图展示
@@ -270,9 +305,6 @@
 
     <!-- 底部操作区 -->
     <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-4 safe-area-bottom">
-        <button id="regenerateBtn" class="w-full btn btn-outline py-3 mb-3" onclick="handleRegenerate()">
-            <i class="fa fa-refresh mr-2"></i> 要求重新生成
-        </button>
         <button id="confirmBtn" class="w-full btn btn-primary py-3" onclick="handleConfirm()">
             <i class="fa fa-check mr-2"></i> 确认并提交
         </button>
@@ -396,21 +428,25 @@
         }
 
         // 要求重新生成
-        function handleRegenerate() {
-            const btn = document.getElementById('regenerateBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<span class="loading-spinner mr-2"></span> 正在重新生成...';
+        function handleRegenerate(type) {
+            const iconId = type === 'content' ? 'refreshContentIcon' : 'refreshVideoIcon';
+            const icon = document.getElementById(iconId);
+            icon.classList.add('spinning');
 
             // 模拟重新生成过程
             setTimeout(() => {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fa fa-refresh mr-2"></i> 要求重新生成';
+                icon.classList.remove('spinning');
                 showToast('已提交重新生成请求');
 
                 // 模拟更新内容
-                taskData.script.content = '位于浦东张江核心地段，毗邻地铁站，周边商业配套完善。项目主推89㎡三房和109㎡四房，均价约6.5万/㎡。首付20%起，购房享3万抵8万优惠。金牌顾问一对一服务，看房专车接送。\n\n（内容已重新优化）';
-                document.getElementById('scriptContent').textContent = taskData.script.content;
-            }, 2000);
+                if (type === 'content') {
+                    taskData.script.content = '位于浦东张江核心地段，毗邻地铁站，周边商业配套完善。项目主推89㎡三房和109㎡四房，均价约6.5万/㎡。首付20%起，购房享3万抵8万优惠。金牌顾问一对一服务，看房专车接送。\n\n（内容已重新优化）';
+                    document.getElementById('scriptContent').textContent = taskData.script.content;
+                } else {
+                    taskData.script.videoScript = '镜头1: 楼盘大门全景（优化版）\n镜头2: 区位地图展示\n镜头3: 沙盘讲解（优化版）\n镜头4: 样板间参观（客厅、卧室、厨房）\n镜头5: 周边配套展示（地铁、商场、学校）\n镜头6: 户型优势总结\n镜头7: 优惠信息及联系方式（更新）';
+                    document.getElementById('videoScript').textContent = taskData.script.videoScript;
+                }
+            }, 1500);
         }
 
         // 确认并提交
