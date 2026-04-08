@@ -215,30 +215,25 @@
         .copywriter-card.revealed { display: block; }
 
         /* 全选工具栏 */
-        .select-all-bar {
+        .toolbar-btn {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: var(--spacing-sm) 0;
-            margin-bottom: var(--spacing-sm);
-        }
-        .select-all-label {
-            display: flex;
-            align-items: center;
+            justify-content: center;
             gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
             font-size: 13px;
-            color: var(--color-sub);
+            color: var(--color-text);
             cursor: pointer;
+            transition: all var(--transition-fast);
         }
-        .select-all-label input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: var(--brand-primary);
+        .toolbar-btn:active {
+            transform: scale(0.98);
+            opacity: 0.8;
         }
-        .select-count {
-            font-size: 12px;
-            color: var(--color-sub);
-        }
+        .toolbar-btn i { color: var(--color-purple); }
         
         .copywriter-card {
             background: white;
@@ -420,33 +415,7 @@
         .action-btn i { font-size: 12px; }
 
         /* 重新生成全部按钮 */
-        .regenerate-all-section {
-            padding: var(--spacing-md);
-            padding-top: 0;
-            display: none;
-        }
-        .regenerate-all-section.show { display: block; }
-        .regenerate-all-btn {
-            width: 100%;
-            padding: var(--spacing-md);
-            background: white;
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-xl);
-            font-size: 14px;
-            color: var(--color-text);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--spacing-sm);
-            transition: all var(--transition-fast);
-        }
-        .regenerate-all-btn:active { transform: scale(0.98); }
-        .regenerate-all-btn.loading {
-            opacity: 0.7;
-            cursor: not-allowed;
-        }
-        .regenerate-all-btn i { color: var(--color-purple); }
+
 
         /* 底部操作 */
         .bottom-bar {
@@ -561,13 +530,12 @@
 
         <!-- 文案列表 -->
         <div class="copywriter-list" id="copywriterList">
-            <!-- 全选工具栏 -->
-            <div class="select-all-bar">
-                <label class="select-all-label">
-                    <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll()">
-                    <span>全选</span>
-                </label>
-                <span class="select-count" id="selectCount">已选0/3种</span>
+            <!-- 工具栏 -->
+            <div style="display:flex;justify-content:flex-end;margin-bottom:var(--spacing-sm);">
+                <button class="toolbar-btn" onclick="startGenerate()">
+                    <i class="fa fa-refresh"></i>
+                    <span>全部重新生成</span>
+                </button>
             </div>
 
             <!-- 小红书文案 -->
@@ -651,13 +619,7 @@
                 </div>
             </div>
 
-            <!-- 重新生成全部 -->
-            <div class="regenerate-all-section" id="regenerateAllSection">
-                <button class="regenerate-all-btn" id="regenerateAllBtn" onclick="startGenerate()">
-                    <i class="fa fa-refresh"></i>
-                    <span>重新生成全部文案</span>
-                </button>
-            </div>
+
         </div>
 
         <!-- 底部操作栏 -->
@@ -778,9 +740,7 @@
             document.querySelectorAll('.copywriter-card').forEach(c => {
                 c.classList.remove('revealed', 'expanded', 'selected');
             });
-            document.getElementById('regenerateAllSection').classList.remove('show');
             selectedCopies.clear();
-            updateSelectAllState();
             updateConfirmBtn();
 
             // 模拟生成进度
@@ -925,43 +885,7 @@
                 checkbox.checked = true;
             }
 
-            // 更新UI
-            updateSelectAllState();
             updateConfirmBtn();
-        }
-
-        function toggleSelectAll() {
-            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
-            
-            if (selectAllCheckbox.checked) {
-                // 全选
-                PLATFORMS.forEach(type => {
-                    selectedCopies.add(type);
-                    const card = document.getElementById('card_' + type);
-                    const checkbox = document.getElementById('check_' + type);
-                    card.classList.add('selected');
-                    checkbox.checked = true;
-                });
-            } else {
-                // 取消全选
-                PLATFORMS.forEach(type => {
-                    selectedCopies.delete(type);
-                    const card = document.getElementById('card_' + type);
-                    const checkbox = document.getElementById('check_' + type);
-                    card.classList.remove('selected');
-                    checkbox.checked = false;
-                });
-            }
-
-            updateConfirmBtn();
-        }
-
-        function updateSelectAllState() {
-            const selectAllCheckbox = document.getElementById('selectAllCheckbox');
-            const selectCount = document.getElementById('selectCount');
-            
-            selectAllCheckbox.checked = selectedCopies.size === PLATFORMS.length;
-            selectCount.textContent = `已选${selectedCopies.size}/${PLATFORMS.length}种`;
         }
 
         function regenerateCopy(type) {
