@@ -526,6 +526,11 @@
         .stage-fill.done { background: var(--color-success); }
         .stage-fill.active { background: var(--brand-primary); }
         .stage-fill.pending { background: var(--color-bg); }
+        .stage-fill.generating { 
+            background: linear-gradient(90deg, var(--color-purple) 50%, var(--color-purple-light) 50%);
+            background-size: 200% 100%;
+            animation: stageGenerate 1.5s linear infinite;
+        }
 
         .stage-group-row {
             display: flex;
@@ -1036,15 +1041,15 @@
                             <div class="stage-items">
                                 <div class="stage-item">
                                     <span class="stage-name">打卡</span>
-                                    <div class="stage-bar"><div class="stage-fill done" style="width: 100%;"></div></div>
+                                    <div class="stage-bar"><div class="stage-fill done"></div></div>
                                 </div>
                                 <div class="stage-item">
                                     <span class="stage-name">素材</span>
-                                    <div class="stage-bar"><div class="stage-fill active" style="width: 50%;"></div></div>
+                                    <div class="stage-bar"><div class="stage-fill done"></div></div>
                                 </div>
                                 <div class="stage-item">
                                     <span class="stage-name">文案</span>
-                                    <div class="stage-bar"><div class="stage-fill pending"></div></div>
+                                    <div class="stage-bar"><div class="stage-fill generating" style="width: 60%;"></div></div>
                                 </div>
                                 <div class="stage-item">
                                     <span class="stage-name">封面</span>
@@ -1057,7 +1062,7 @@
                             <div class="stage-items">
                                 <div class="stage-item">
                                     <span class="stage-name">阅读</span>
-                                    <div class="stage-bar"><div class="stage-fill done" style="width: 100%;"></div></div>
+                                    <div class="stage-bar"><div class="stage-fill done"></div></div>
                                 </div>
                                 <div class="stage-item">
                                     <span class="stage-name">开始</span>
@@ -1068,6 +1073,15 @@
                                     <div class="stage-bar"><div class="stage-fill pending"></div></div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 生成中状态 -->
+                    <div class="generating-status show">
+                        <div class="generating-spinner"></div>
+                        <div class="generating-info">
+                            <div class="generating-text">阶段3 文案生成中 45%...</div>
+                            <div class="generating-progress">阶段4 封面/视频生成等待中</div>
                         </div>
                     </div>
                     
