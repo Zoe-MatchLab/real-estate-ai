@@ -257,6 +257,48 @@
             padding: var(--spacing-md);
             padding-bottom: max(var(--spacing-lg), calc(20px + env(safe-area-inset-bottom)));
             -webkit-overflow-scrolling: touch;
+            scroll-behavior: smooth;
+        }
+
+        /* 滚动条美化 */
+        .chat-area::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .chat-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-area::-webkit-scrollbar-thumb {
+            background: var(--color-border);
+            border-radius: 2px;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-xl) var(--spacing-md);
+            text-align: center;
+            color: var(--color-sub);
+        }
+
+        .empty-state-icon {
+            width: 64px;
+            height: 64px;
+            background: var(--color-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .empty-state-text {
+            font-size: 14px;
         }
 
         /* 欢迎卡片 */
@@ -444,6 +486,14 @@
             color: var(--color-sub);
             margin-top: var(--spacing-xs);
             padding: 0 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .message-status {
+            font-size: 10px;
+            color: var(--brand-primary);
         }
 
         /* AI 思考中指示器 */
@@ -589,8 +639,8 @@
         /* ========== 底部输入区 ========== */
         .input-area {
             background: var(--color-card);
-            padding: var(--spacing-md);
-            padding-bottom: max(var(--spacing-md), calc(16px + env(safe-area-inset-bottom)));
+            padding: var(--spacing-sm) var(--spacing-md);
+            padding-bottom: max(var(--spacing-sm), calc(12px + env(safe-area-inset-bottom)));
             border-top: 1px solid var(--color-border);
             flex-shrink: 0;
         }
@@ -607,8 +657,8 @@
         }
 
         .input-action {
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -616,12 +666,18 @@
             border: none;
             border-radius: var(--radius-full);
             color: var(--color-sub);
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
             transition: all var(--transition-fast);
         }
 
         .input-action:active {
+            background: var(--brand-primary-light);
+            color: var(--brand-primary);
+            transform: scale(0.95);
+        }
+
+        .input-action.voice {
             background: var(--brand-primary-light);
             color: var(--brand-primary);
         }
@@ -633,12 +689,12 @@
 
         .input-field {
             width: 100%;
-            min-height: 44px;
-            max-height: 120px;
-            padding: 10px 16px;
+            min-height: 40px;
+            max-height: 100px;
+            padding: 8px 14px;
             background: var(--color-bg);
             border: 2px solid transparent;
-            border-radius: var(--radius-full);
+            border-radius: 20px;
             font-family: var(--font-family);
             font-size: 15px;
             color: var(--color-title);
@@ -658,23 +714,23 @@
         }
 
         .send-btn {
-            width: 44px;
-            height: 44px;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
             background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
             border: none;
-            border-radius: var(--radius-full);
+            border-radius: 50%;
             color: white;
-            font-size: 16px;
+            font-size: 14px;
             cursor: pointer;
             transition: all var(--transition-fast);
-            box-shadow: 0 4px 12px rgba(250, 140, 22, 0.3);
+            box-shadow: 0 2px 8px rgba(250, 140, 22, 0.35);
         }
 
         .send-btn:active {
-            transform: scale(0.95);
+            transform: scale(0.92);
         }
 
         .send-btn:disabled {
@@ -694,6 +750,30 @@
         @keyframes spin {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
+        }
+
+        /* 输入提示 */
+        .input-hint {
+            font-size: 11px;
+            color: var(--color-sub);
+            padding: 4px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-hint-item {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .input-hint kbd {
+            background: var(--color-bg);
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-size: 10px;
+            border: 1px solid var(--color-border);
         }
 
         /* Toast */
@@ -854,8 +934,8 @@
         <div class="input-area">
             <div class="input-row">
                 <div class="input-actions">
-                    <button class="input-action" onclick="showToast('更多功能')" aria-label="更多功能">
-                        <i class="fa fa-plus"></i>
+                    <button class="input-action voice" onclick="toggleVoiceInput()" aria-label="语音输入">
+                        <i class="fa fa-microphone"></i>
                     </button>
                 </div>
                 <div class="input-wrapper">
@@ -864,13 +944,17 @@
                         id="inputField" 
                         placeholder="输入您的问题..." 
                         rows="1" 
-                        oninput="autoResize(this)"
+                        oninput="autoResize(this); toggleSendBtn()"
                         aria-label="输入消息"
                     ></textarea>
                 </div>
-                <button class="send-btn" id="sendBtn" onclick="sendMessage()" aria-label="发送消息">
+                <button class="send-btn" id="sendBtn" onclick="sendMessage()" aria-label="发送消息" disabled>
                     <i class="fa fa-paper-plane"></i>
                 </button>
+            </div>
+            <div class="input-hint">
+                <span class="input-hint-item"><kbd>Enter</kbd> 发送</span>
+                <span class="input-hint-item"><kbd>Shift</kbd>+<kbd>Enter</kbd> 换行</span>
             </div>
         </div>
     </div>
@@ -940,14 +1024,25 @@
         // 自动调整输入框高度
         function autoResize(el) {
             el.style.height = 'auto';
-            el.style.height = Math.min(el.scrollHeight, 120) + 'px';
-            
+            el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+        }
+
+        // 切换发送按钮状态
+        function toggleSendBtn() {
+            const input = document.getElementById('inputField');
             const sendBtn = document.getElementById('sendBtn');
-            if (el.value.trim()) {
+            if (input.value.trim()) {
+                sendBtn.disabled = false;
                 sendBtn.style.opacity = '1';
             } else {
-                sendBtn.style.opacity = '0.8';
+                sendBtn.disabled = true;
+                sendBtn.style.opacity = '0.5';
             }
+        }
+
+        // 语音输入切换
+        function toggleVoiceInput() {
+            showToast('语音输入功能即将上线');
         }
 
         // 发送快捷动作
@@ -1031,6 +1126,11 @@
             const chat = document.getElementById('chatArea');
             const time = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
             
+            let statusHtml = '';
+            if (role === 'user') {
+                statusHtml = '<i class="fa fa-check message-status"></i>';
+            }
+            
             const html = `
                 <div class="message ${role}">
                     <div class="message-avatar ${role}" aria-hidden="true">
@@ -1038,7 +1138,7 @@
                     </div>
                     <div class="message-content">
                         <div class="message-bubble">${escapeHtml(text)}</div>
-                        <div class="message-time">${time}</div>
+                        <div class="message-time">${statusHtml}${time}</div>
                     </div>
                 </div>
             `;
