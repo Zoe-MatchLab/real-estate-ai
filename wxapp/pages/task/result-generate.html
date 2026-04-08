@@ -3,837 +3,497 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>成果预览 - 房产AI助手</title>
+    <title>成果预览</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#fa8c16',
+                        warning: '#FF9D2B',
+                        danger: '#FA5151',
+                        success: '#00B42A',
+                        gray: {
+                            50: '#F7F8FA',
+                            100: '#EDEEF2',
+                            200: '#D8D9DD',
+                            300: '#B4B5B9',
+                            400: '#86878B',
+                            500: '#4E5969',
+                            600: '#272E3B',
+                            700: '#1D2129',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        :root {
-            --brand-primary: #FA8C16;
-            --brand-primary-dark: #E67A0E;
-            --brand-primary-light: #FFF7E6;
-            --color-success: #00B42A;
-            --color-success-light: #F6FFED;
-            --color-danger: #FA5151;
-            --color-danger-light: #FFF1F0;
-            --color-warning: #FF7D00;
-            --color-warning-light: #FFF7E6;
-            --color-info: #007AFF;
-            --color-info-light: #E8F3FF;
-            --color-title: #1D2129;
-            --color-text: #4E5969;
-            --color-sub: #86909C;
-            --color-border: #E5E6EB;
-            --color-bg: #F7F8FA;
-            --color-card: #FFFFFF;
-            --spacing-xs: 4px;
-            --spacing-sm: 8px;
-            --spacing-md: 16px;
-            --spacing-lg: 24px;
-            --spacing-xl: 32px;
-            --radius-sm: 4px;
-            --radius-md: 8px;
-            --radius-lg: 12px;
-            --radius-xl: 16px;
-            --radius-full: 9999px;
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
-            --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
-            --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
-            --font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
-            --transition-fast: 0.15s ease;
-            --transition-normal: 0.25s ease;
-            --transition-slow: 0.35s ease;
+        body {
+            background-color: #F7F8FA;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        button:focus-visible,
-        a:focus-visible {
-            outline: 2px solid var(--brand-primary);
-            outline-offset: 2px;
+        .card-shadow {
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
         }
-        html, body {
-            height: 100%;
-            font-family: var(--font-family);
-            font-size: 14px;
-            line-height: 1.5;
-            color: var(--color-text);
-            background: var(--color-bg);
-            -webkit-font-smoothing: antialiased;
-        }
-        .page {
-            min-height: 100vh;
-            padding-bottom: calc(100px + env(safe-area-inset-bottom));
-        }
-        /* 头部 */
-        .header {
-            background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
-            padding: calc(44px + env(safe-area-inset-top)) var(--spacing-md) var(--spacing-md);
-            color: white;
-        }
-        .header-top {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-md);
-        }
-        .back-btn {
-            width: 32px;
-            height: 32px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255,255,255,0.2);
-            border-radius: var(--radius-full);
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            border: none;
-            color: white;
-        }
-        .back-btn:hover { background: rgba(255,255,255,0.3); }
-        .header-title {
-            font-size: 17px;
-            font-weight: 600;
-            flex: 1;
-        }
-        .step-badge {
-            font-size: 11px;
-            padding: 2px 10px;
-            background: rgba(255,255,255,0.25);
-            border-radius: var(--radius-full);
-        }
-        /* 进度条 */
-        .progress-bar {
-            display: flex;
-            gap: var(--spacing-sm);
-            margin-top: var(--spacing-md);
-        }
-        .progress-step {
-            flex: 1;
-            height: 4px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 2px;
-        }
-        .progress-step.completed {
-            background: rgba(255,255,255,0.8);
-        }
-        /* 任务信息 */
-        .task-info {
-            background: white;
-            margin: var(--spacing-md);
-            border-radius: var(--radius-xl);
-            padding: var(--spacing-md);
-            box-shadow: var(--shadow-sm);
-            text-align: center;
-        }
-        .task-house-icon {
-            width: 56px;
-            height: 56px;
-            background: var(--brand-primary-light);
-            border-radius: var(--radius-xl);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto var(--spacing-md);
-        }
-        .task-house-icon i {
-            font-size: 28px;
-            color: var(--brand-primary);
-        }
-        .task-name {
-            font-size: 18px;
-            font-weight: 600;
-            color: var(--color-title);
-            margin-bottom: var(--spacing-xs);
-        }
-        .task-address {
-            font-size: 12px;
-            color: var(--color-sub);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--spacing-xs);
-            margin-bottom: var(--spacing-md);
-        }
-        .progress-text {
-            font-size: 13px;
-            color: var(--color-success);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--spacing-sm);
-        }
-        .progress-text::before,
-        .progress-text::after {
-            content: '';
-            display: block;
-            width: 40px;
-            height: 1px;
-            background: var(--color-border);
-        }
-        /* 成果卡片 */
-        .result-section {
-            margin: 0 var(--spacing-md) var(--spacing-md);
-        }
-        .result-label {
-            display: flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            font-size: 14px;
+        .btn {
+            border-radius: 8px;
             font-weight: 500;
-            color: var(--color-title);
-            margin-bottom: var(--spacing-md);
+            transition: all 0.2s ease;
         }
-        .result-label i {
-            color: var(--brand-primary);
-        }
-        /* 封面图卡片 */
-        .cover-card {
-            background: white;
-            border-radius: var(--radius-xl);
-            overflow: hidden;
-            box-shadow: var(--shadow-md);
-            margin-bottom: var(--spacing-sm);
-        }
-        .cover-image-wrap {
-            position: relative;
-            cursor: pointer;
-        }
-        .cover-image {
-            width: 100%;
-            display: block;
-            transition: transform var(--transition-normal);
-        }
-        .cover-image-wrap:active .cover-image {
-            transform: scale(0.98);
-        }
-        .cover-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background var(--transition-fast);
-        }
-        .cover-image-wrap:active .cover-overlay {
-            background: rgba(0,0,0,0.2);
-        }
-        .cover-zoom-icon {
-            width: 48px;
-            height: 48px;
-            background: rgba(0,0,0,0.5);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 20px;
-            opacity: 0;
-            transition: opacity var(--transition-fast);
-        }
-        .cover-image-wrap:hover .cover-zoom-icon {
-            opacity: 1;
-        }
-        .cover-actions {
-            padding: var(--spacing-md);
-            display: flex;
-            justify-content: flex-end;
-        }
-        .action-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: var(--spacing-xs);
-            padding: var(--spacing-sm) var(--spacing-md);
-            background: var(--brand-primary-light);
-            border: none;
-            border-radius: var(--radius-full);
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--brand-primary);
-            cursor: pointer;
-            transition: all var(--transition-fast);
-        }
-        .action-btn:active {
+        .btn:active {
             transform: scale(0.95);
-            background: #FFE4C4;
+            opacity: 0.8;
         }
-        .action-btn i {
-            font-size: 14px;
+        .btn-primary {
+            background: #fa8c16;
+            color: white;
         }
-        /* 视频卡片 */
-        .video-card {
+        .btn-primary:active {
+            background: #d46b08;
+        }
+        .btn-secondary {
             background: white;
-            border-radius: var(--radius-xl);
+            color: #fa8c16;
+            border: 1px solid #fa8c16;
+        }
+        .btn-secondary:active {
+            background: #fff7e6;
+        }
+        .progress-bar {
+            height: 6px;
+            border-radius: 3px;
+            background: #f0f0f0;
             overflow: hidden;
-            box-shadow: var(--shadow-md);
-            margin-bottom: var(--spacing-sm);
         }
-        .video-wrap {
-            position: relative;
-            background: #000;
+        .progress-value {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #fa8c16, #ff7a45);
         }
-        .video-player {
-            width: 100%;
-            display: block;
-            max-height: 300px;
-            object-fit: contain;
+        .tag {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 500;
         }
-        .video-placeholder {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255,255,255,0.5);
+        .tag-success {
+            background: #E8FFEA;
+            color: #00B42A;
         }
-        .video-placeholder i {
-            font-size: 48px;
-            margin-bottom: var(--spacing-sm);
+        .tag-info {
+            background: #E8F3FF;
+            color: #165DFF;
         }
-        .video-placeholder-text {
-            font-size: 13px;
-        }
-        .play-btn-overlay {
-            position: absolute;
+        .toast {
+            position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 64px;
-            height: 64px;
-            background: rgba(255,255,255,0.9);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            box-shadow: 0 4px 16px rgba(0,0,0,0.3);
-        }
-        .play-btn-overlay:hover {
-            transform: translate(-50%, -50%) scale(1.1);
-        }
-        .play-btn-overlay i {
-            font-size: 24px;
-            color: var(--color-title);
-            margin-left: 4px;
-        }
-        .video-actions {
-            padding: var(--spacing-md);
-            display: flex;
-            justify-content: flex-end;
-            gap: var(--spacing-sm);
-        }
-        .action-btn.outline {
-            background: transparent;
-            border: 1px solid var(--brand-primary);
-            color: var(--brand-primary);
-        }
-        .action-btn.outline:active {
-            background: var(--brand-primary-light);
-        }
-        /* 完成状态 */
-        .complete-banner {
-            margin: var(--spacing-md);
-            padding: var(--spacing-lg);
-            background: linear-gradient(135deg, var(--color-success) 0%, #00D255 100%);
-            border-radius: var(--radius-xl);
+            background: rgba(0, 0, 0, 0.7);
             color: white;
-            text-align: center;
-            box-shadow: 0 4px 16px rgba(0,180,42,0.3);
+            padding: 12px 20px;
+            border-radius: 8px;
+            z-index: 9999;
+            animation: fadeIn 0.2s ease;
         }
-        .complete-icon {
-            font-size: 48px;
-            margin-bottom: var(--spacing-sm);
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
         }
-        .complete-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: var(--spacing-xs);
+        img {
+            -webkit-user-drag: none;
+            user-select: none;
+            max-width: 100%;
         }
-        .complete-sub {
-            font-size: 13px;
-            opacity: 0.85;
+        * {
+            touch-action: manipulation;
         }
-        /* 底部操作 */
-        .bottom-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: white;
-            padding: var(--spacing-md);
-            padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
-            box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
-        }
-        .back-btn-large {
-            width: 100%;
-            padding: var(--spacing-md);
-            background: var(--brand-primary);
-            border: none;
-            border-radius: var(--radius-xl);
-            font-size: 16px;
-            font-weight: 600;
-            color: white;
-            cursor: pointer;
-            transition: all var(--transition-normal);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--spacing-sm);
-            box-shadow: 0 4px 16px rgba(250,140,22,0.3);
-        }
-        .back-btn-large:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(250,140,22,0.4);
-        }
-        .back-btn-large:active {
-            transform: translateY(0);
-        }
-        /* 图片预览全屏弹窗 */
+        /* 图片预览 */
         .image-preview-modal {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.95);
-            z-index: 99998;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
             display: none;
             flex-direction: column;
-            opacity: 0;
-            transition: opacity var(--transition-normal);
-        }
-        .image-preview-modal.show {
-            display: flex;
-            opacity: 1;
-        }
-        .preview-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: var(--spacing-md);
-            padding-top: calc(var(--spacing-md) + env(safe-area-inset-top));
-            color: white;
-        }
-        .preview-close {
-            width: 32px;
-            height: 32px;
-            display: flex;
             align-items: center;
             justify-content: center;
-            background: rgba(255,255,255,0.2);
-            border-radius: 50%;
-            cursor: pointer;
-            transition: background var(--transition-fast);
-            border: none;
-            color: white;
         }
-        .preview-close:hover {
-            background: rgba(255,255,255,0.3);
-        }
-        .preview-title-text {
-            font-size: 15px;
-            font-weight: 500;
-        }
-        .preview-body {
-            flex: 1;
+        .image-preview-modal.active {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: var(--spacing-md);
-            overflow: auto;
         }
-        .preview-img {
+        .image-preview-modal img {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            border-radius: var(--radius-lg);
-            transition: transform var(--transition-normal);
-            transform-origin: center center;
         }
-        .preview-footer {
-            padding: var(--spacing-lg);
-            display: flex;
-            gap: var(--spacing-md);
-        }
-        .preview-footer-btn {
-            flex: 1;
-            padding: var(--spacing-md);
-            border: none;
-            border-radius: var(--radius-lg);
-            font-size: 15px;
-            font-weight: 500;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--spacing-sm);
-            transition: all var(--transition-fast);
-        }
-        .preview-footer-btn.download {
-            background: var(--brand-primary);
+        .image-preview-modal .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
             color: white;
+            font-size: 28px;
+            z-index: 10001;
         }
-        .preview-footer-btn.cancel {
-            background: rgba(255,255,255,0.15);
-            color: white;
-        }
-        /* Toast */
-        .toast {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.75);
-            color: white;
-            padding: 16px 32px;
-            border-radius: var(--radius-lg);
-            z-index: 99999;
-            font-size: 15px;
-            animation: toastIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-            pointer-events: none;
-        }
-        .toast.success { background: rgba(0,180,42,0.95); }
-        .toast.error { background: rgba(250,81,81,0.95); }
-        .toast.info { background: rgba(0,122,255,0.95); }
-        @keyframes toastIn {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        .safe-area-bottom {
+            padding-bottom: calc(16px + env(safe-area-inset-bottom));
         }
     </style>
 </head>
-<body>
-    <div class="page">
-        <!-- 头部 -->
-        <div class="header">
-            <div class="header-top">
-                <button class="back-btn" onclick="goBack()">
-                    <i class="fa fa-angle-left"></i>
-                </button>
-                <span class="header-title">成果预览</span>
-                <span class="step-badge">4/4</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-step completed"></div>
-                <div class="progress-step completed"></div>
-                <div class="progress-step completed"></div>
-                <div class="progress-step completed"></div>
-            </div>
-        </div>
-
-        <!-- 任务信息 -->
-        <div class="task-info">
-            <div class="task-house-icon">
-                <i class="fa fa-home"></i>
-            </div>
-            <div class="task-name" id="houseName">中海汇德里</div>
-            <div class="task-address">
-                <i class="fa fa-map-marker"></i>
-                <span id="address">浦东新区张江高科技园区</span>
-            </div>
-            <div class="progress-text">
-                <i class="fa fa-check-circle"></i>
-                4/4 已完成
-            </div>
-        </div>
-
-        <!-- 封面图 -->
-        <div class="result-section">
-            <div class="result-label">
-                <i class="fa fa-image"></i>
-                封面图
-            </div>
-            <div class="cover-card">
-                <div class="cover-image-wrap" onclick="previewImage()">
-                    <img class="cover-image" id="coverImg" src="" alt="封面图">
-                    <div class="cover-overlay">
-                        <div class="cover-zoom-icon">
-                            <i class="fa fa-search-plus"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="cover-actions">
-                    <button class="action-btn" onclick="downloadCover()">
-                        <i class="fa fa-download"></i>
-                        下载
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- 宣传视频 -->
-        <div class="result-section">
-            <div class="result-label">
-                <i class="fa fa-video-camera"></i>
-                宣传视频
-            </div>
-            <div class="video-card">
-                <div class="video-wrap">
-                    <div class="video-placeholder" id="videoPlaceholder">
-                        <i class="fa fa-film"></i>
-                        <div class="video-placeholder-text">视频加载中...</div>
-                    </div>
-                    <video class="video-player" id="videoPlayer" style="display:none;" controls playsinline></video>
-                    <div class="play-btn-overlay" id="playBtn" onclick="toggleVideo()">
-                        <i class="fa fa-play"></i>
-                    </div>
-                </div>
-                <div class="video-actions">
-                    <button class="action-btn outline" onclick="downloadVideo()">
-                        <i class="fa fa-download"></i>
-                        下载
-                    </button>
-                    <button class="action-btn" onclick="shareVideo()">
-                        <i class="fa fa-share-alt"></i>
-                        分享
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- 完成提示 -->
-        <div class="complete-banner">
-            <div class="complete-icon">
-                <i class="fa fa-check-circle"></i>
-            </div>
-            <div class="complete-title">任务全部完成！</div>
-            <div class="complete-sub">封面图和宣传视频已生成，可下载或分享</div>
-        </div>
-
-        <!-- 底部返回 -->
-        <div class="bottom-bar">
-            <button class="back-btn-large" onclick="goToCalendar()">
-                <i class="fa fa-calendar"></i>
-                返回任务列表
+<body class="pb-24">
+    <!-- 顶部导航 -->
+    <div class="bg-white sticky top-0 z-40">
+        <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+            <button class="text-gray-700 btn" onclick="history.back()">
+                <i class="fa fa-angle-left text-xl"></i>
             </button>
+            <h1 class="font-medium text-gray-700">成果预览</h1>
+            <div class="w-8"></div>
         </div>
     </div>
 
-    <!-- 图片预览弹窗 -->
-    <div class="image-preview-modal" id="imagePreviewModal">
-        <div class="preview-header">
-            <button class="preview-close" onclick="closeImagePreview()">
-                <i class="fa fa-times"></i>
-            </button>
-            <span class="preview-title-text">封面图预览</span>
-            <div style="width: 32px;"></div>
+    <!-- 楼盘信息区 -->
+    <div class="p-4">
+        <div class="bg-white rounded-xl p-4 card-shadow text-center">
+            <div class="flex items-center justify-center mb-2">
+                <i class="fa fa-home text-primary mr-2"></i>
+                <h2 id="houseName" class="text-lg font-bold">中海汇德里</h2>
+            </div>
+            <p id="address" class="text-sm text-gray-500 mb-3">浦东新区张江高科技园区</p>
+            <div class="flex items-center justify-center">
+                <div class="flex items-center">
+                    <span class="text-sm text-gray-600">完成进度</span>
+                    <div class="mx-3 flex items-center">
+                        <div class="progress-bar w-32">
+                            <div id="progressValue" class="progress-value" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    <span id="stageText" class="text-sm font-medium text-success">4/4 已完成</span>
+                </div>
+            </div>
         </div>
-        <div class="preview-body">
-            <img class="preview-img" id="previewImg" src="" alt="预览">
+    </div>
+
+    <!-- 封面图展示区 -->
+    <div class="px-4 mb-4">
+        <div class="bg-white rounded-xl p-4 card-shadow">
+            <div class="flex items-center mb-3">
+                <i class="fa fa-picture-o text-primary mr-2"></i>
+                <h3 class="font-medium text-gray-800">封面图</h3>
+            </div>
+            <div class="relative rounded-lg overflow-hidden bg-gray-100 mb-3">
+                <img 
+                    id="coverImage" 
+                    src="https://picsum.photos/600/400?random=cover" 
+                    alt="封面图"
+                    class="w-full object-cover cursor-pointer"
+                    onclick="previewImage(this.src)"
+                >
+                <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-10 transition-all flex items-center justify-center">
+                    <i class="fa fa-search-plus text-white text-2xl opacity-0 hover:opacity-100 transition-opacity"></i>
+                </div>
+            </div>
+            <div class="flex justify-end">
+                <button class="btn btn-secondary py-2 px-4 text-sm" onclick="downloadCoverImage()">
+                    <i class="fa fa-download mr-1"></i> 下载
+                </button>
+            </div>
         </div>
-        <div class="preview-footer">
-            <button class="preview-footer-btn cancel" onclick="closeImagePreview()">关闭</button>
-            <button class="preview-footer-btn download" onclick="downloadCoverFromPreview()">
-                <i class="fa fa-download"></i>
-                下载封面
-            </button>
+    </div>
+
+    <!-- 宣传视频展示区 -->
+    <div class="px-4 mb-4">
+        <div class="bg-white rounded-xl p-4 card-shadow">
+            <div class="flex items-center mb-3">
+                <i class="fa fa-video-camera text-primary mr-2"></i>
+                <h3 class="font-medium text-gray-800">宣传视频</h3>
+            </div>
+            <div class="relative rounded-lg overflow-hidden bg-gray-900 mb-3">
+                <video 
+                    id="promoVideo"
+                    src="https://www.w3schools.com/html/mov_bbb.mp4"
+                    controls
+                    playsinline
+                    webkit-playsinline
+                    x5-video-player-type="h5"
+                    x5-video-player-fullscreen="true"
+                    poster="https://picsum.photos/600/338?random=video"
+                    class="w-full"
+                ></video>
+            </div>
+            <div class="flex justify-end gap-2">
+                <button class="btn btn-secondary py-2 px-4 text-sm" onclick="downloadVideo()">
+                    <i class="fa fa-download mr-1"></i> 下载
+                </button>
+                <button class="btn btn-primary py-2 px-4 text-sm" onclick="shareVideo()">
+                    <i class="fa fa-share mr-1"></i> 分享
+                </button>
+            </div>
         </div>
+    </div>
+
+    <!-- 分享说明 -->
+    <div class="px-4 mb-4">
+        <div class="bg-blue-50 rounded-xl p-4">
+            <div class="flex items-start">
+                <i class="fa fa-lightbulb-o text-primary mt-1 mr-2"></i>
+                <div>
+                    <p class="text-sm text-blue-700 font-medium mb-1">分享建议</p>
+                    <p class="text-xs text-blue-600 leading-relaxed">
+                        生成的营销物料已包含楼盘核心卖点,可直接用于朋友圈、抖音等平台发布。如需自定义文案,可先下载后在本地编辑。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部返回按钮 -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-4 safe-area-bottom">
+        <button 
+            id="backBtn"
+            class="w-full btn btn-primary py-3 text-base"
+            onclick="goBackToList()"
+        >
+            <i class="fa fa-list-ul mr-2"></i> 返回任务列表
+        </button>
+    </div>
+
+    <!-- 图片预览Modal -->
+    <div id="imagePreviewModal" class="image-preview-modal" onclick="closePreview()">
+        <button class="close-btn" onclick="closePreview()">
+            <i class="fa fa-times"></i>
+        </button>
+        <img id="previewImage" src="" alt="预览">
     </div>
 
     <script>
-        // 任务数据
+        // ===== URL参数解析 =====
+        function getQueryParam(name) {
+            const params = new URLSearchParams(window.location.search);
+            return params.get(name);
+        }
+
+        // 模拟任务数据
         const taskData = {
             houseName: '中海汇德里',
             address: '浦东新区张江高科技园区',
-            currentStage: 4,
+            currentStage: parseInt(getQueryParam('step')) || 4,
+            totalStages: 4,
+            taskId: getQueryParam('task') || 'TASK001',
             result: {
-                coverImage: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&h=400&fit=crop',
-                videoUrl: '',
-                coverDownloadUrl: '',
-                videoDownloadUrl: ''
+                coverImage: 'https://picsum.photos/600/400?random=cover',
+                videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4'
             }
         };
 
-        // 初始化
-        function init() {
-            document.getElementById('houseName').textContent = taskData.houseName;
-            document.getElementById('address').textContent = taskData.address;
-            document.getElementById('coverImg').src = taskData.result.coverImage;
-            document.getElementById('previewImg').src = taskData.result.coverImage;
-
-            // 视频处理
-            const videoUrl = taskData.result.videoUrl;
-            if (videoUrl) {
-                document.getElementById('videoPlaceholder').style.display = 'none';
-                const videoPlayer = document.getElementById('videoPlayer');
-                videoPlayer.style.display = 'block';
-                videoPlayer.src = videoUrl;
-                document.getElementById('playBtn').style.display = 'flex';
-            } else {
-                document.getElementById('videoPlaceholder').style.display = 'flex';
-                document.getElementById('playBtn').style.display = 'none';
-            }
+        // 显示Toast提示
+        function showToast(message, duration = 2000) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, duration);
         }
 
-        // 预览封面图（全屏）
-        function previewImage() {
+        // 图片预览
+        function previewImage(src) {
             const modal = document.getElementById('imagePreviewModal');
-            const previewImg = document.getElementById('previewImg');
-            const img = document.getElementById('coverImg');
-
-            // 初始化缩放
-            previewImg.style.transform = 'scale(1)';
-            previewImg.dataset.scale = '1';
-
-            modal.classList.add('show');
+            const img = document.getElementById('previewImage');
+            img.src = src;
+            modal.classList.add('active');
+            // 禁止背景滚动
+            document.body.style.overflow = 'hidden';
         }
 
         // 关闭图片预览
-        function closeImagePreview() {
-            document.getElementById('imagePreviewModal').classList.remove('show');
-        }
-
-        // 双指缩放图片预览
-        (function() {
-            let initialDistance = 0;
-            let initialScale = 1;
-
-            document.getElementById('imagePreviewModal').addEventListener('touchstart', function(e) {
-                if (e.touches.length === 2) {
-                    initialDistance = getDistance(e.touches[0], e.touches[1]);
-                    const img = document.getElementById('previewImg');
-                    initialScale = parseFloat(img.dataset.scale) || 1;
-                }
-            });
-
-            document.getElementById('imagePreviewModal').addEventListener('touchmove', function(e) {
-                if (e.touches.length === 2) {
-                    e.preventDefault();
-                    const currentDistance = getDistance(e.touches[0], e.touches[1]);
-                    const scale = initialScale * (currentDistance / initialDistance);
-                    const img = document.getElementById('previewImg');
-                    const clampedScale = Math.min(Math.max(scale, 0.5), 3);
-                    img.style.transform = 'scale(' + clampedScale + ')';
-                    img.dataset.scale = clampedScale;
-                }
-            });
-        })();
-
-        function getDistance(touch1, touch2) {
-            return Math.hypot(touch2.clientX - touch1.clientX, touch2.clientY - touch1.clientY);
+        function closePreview() {
+            const modal = document.getElementById('imagePreviewModal');
+            modal.classList.remove('active');
+            // 恢复背景滚动
+            document.body.style.overflow = '';
         }
 
         // 下载封面图
-        function downloadCover() {
-            const imgSrc = taskData.result.coverImage;
-            if (!imgSrc) {
-                showToast('封面图暂不可用', 'error');
-                return;
-            }
-
-            showToast('正在下载封面图...', 'info');
-
-            // 模拟下载（实际项目中调用微信 downloadAPI）
-            const link = document.createElement('a');
-            link.href = imgSrc;
-            link.download = taskData.houseName + '_封面图.jpg';
-            link.target = '_blank';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            setTimeout(() => {
-                showToast('封面图下载成功', 'success');
-            }, 1000);
-        }
-
-        // 从预览弹窗下载封面
-        function downloadCoverFromPreview() {
-            downloadCover();
-        }
-
-        // 播放/暂停视频
-        function toggleVideo() {
-            const video = document.getElementById('videoPlayer');
-            const playBtn = document.getElementById('playBtn');
-
-            if (video.paused) {
-                video.play();
-                playBtn.querySelector('i').className = 'fa fa-pause';
+        function downloadCoverImage() {
+            const img = document.getElementById('coverImage');
+            const src = img.src;
+            
+            // 尝试使用微信小程序下载API
+            if (typeof wx !== 'undefined' && wx.downloadFile) {
+                wx.showLoading({ title: '下载中...' });
+                wx.downloadFile({
+                    url: src,
+                    success: function(res) {
+                        wx.hideLoading();
+                        if (res.statusCode === 200) {
+                            wx.saveImageToPhotosAlbum({
+                                filePath: res.tempFilePath,
+                                success: function() {
+                                    showToast('封面图已保存到相册');
+                                },
+                                fail: function() {
+                                    showToast('保存失败,请授权相册权限');
+                                }
+                            });
+                        }
+                    },
+                    fail: function() {
+                        wx.hideLoading();
+                        showToast('下载失败');
+                    }
+                });
             } else {
-                video.pause();
-                playBtn.querySelector('i').className = 'fa fa-play';
+                // 降级为浏览器下载
+                const link = document.createElement('a');
+                link.href = src;
+                link.download = taskData.houseName + '_封面图.jpg';
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showToast('开始下载封面图');
             }
         }
 
         // 下载视频
         function downloadVideo() {
-            const videoUrl = taskData.result.videoUrl;
-            if (!videoUrl) {
-                showToast('视频暂不可用', 'error');
-                return;
-            }
-
-            showToast('正在下载视频...', 'info');
-
-            const link = document.createElement('a');
-            link.href = videoUrl;
-            link.download = taskData.houseName + '_宣传视频.mp4';
-            link.target = '_blank';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            setTimeout(() => {
-                showToast('视频下载成功', 'success');
-            }, 1000);
-        }
-
-        // 分享视频
-        function shareVideo() {
-            // 实际项目中调用微信分享 API
-            if (typeof wx !== 'undefined' && wx.ready) {
-                wx.updateAppMessageShareData({
-                    title: taskData.houseName + ' - 楼盘宣传',
-                    desc: '查看楼盘封面图和宣传视频',
-                    link: window.location.href,
-                    imgUrl: taskData.result.coverImage,
-                    success: function() {
-                        showToast('分享已准备好', 'success');
+            const video = document.getElementById('promoVideo');
+            const src = video.src;
+            
+            // 尝试使用微信小程序下载API
+            if (typeof wx !== 'undefined' && wx.downloadFile) {
+                wx.showLoading({ title: '下载中...' });
+                wx.downloadFile({
+                    url: src,
+                    success: function(res) {
+                        wx.hideLoading();
+                        if (res.statusCode === 200) {
+                            wx.saveVideoToPhotosAlbum({
+                                filePath: res.tempFilePath,
+                                success: function() {
+                                    showToast('视频已保存到相册');
+                                },
+                                fail: function() {
+                                    showToast('保存失败,请授权相册权限');
+                                }
+                            });
+                        }
                     },
                     fail: function() {
-                        showToast('分享失败，请稍后重试', 'error');
+                        wx.hideLoading();
+                        showToast('下载失败');
                     }
                 });
             } else {
-                // 非微信环境提示
-                showToast('请在微信中使用分享功能', 'info');
+                // 降级为浏览器下载
+                const link = document.createElement('a');
+                link.href = src;
+                link.download = taskData.houseName + '_宣传视频.mp4';
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showToast('开始下载视频');
             }
         }
 
-        // 返回上一页
-        function goBack() {
-            window.location.href = 'task-detail.html?task=TASK001&step=4';
+        // 分享视频/成果
+        function shareVideo() {
+            // 尝试使用微信小程序分享API
+            if (typeof wx !== 'undefined' && wx.showShareMenu) {
+                wx.showShareMenu({
+                    withShareTicket: true,
+                    menus: ['shareAppMessage', 'shareTimeline']
+                });
+                showToast('请点击右上角分享');
+            } else {
+                // 降级为Web Share API
+                if (navigator.share) {
+                    navigator.share({
+                        title: taskData.houseName + '营销物料',
+                        text: '来自房产AI作业平台的宣传视频',
+                        url: window.location.href
+                    }).then(() => {
+                        showToast('分享成功');
+                    }).catch(() => {
+                        showToast('分享取消');
+                    });
+                } else {
+                    // 降级复制链接
+                    const dummy = document.createElement('input');
+                    dummy.value = window.location.href;
+                    document.body.appendChild(dummy);
+                    dummy.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(dummy);
+                    showToast('链接已复制,请自行分享');
+                }
+            }
         }
 
         // 返回任务列表
-        function goToCalendar() {
-            window.location.href = 'calendar.html';
+        function goBackToList() {
+            window.location.href = 'task-detail.html';
         }
 
-        // Toast 提示
-        function showToast(message, type = '') {
-            const existing = document.querySelector('.toast');
-            if (existing) existing.remove();
-
-            const toast = document.createElement('div');
-            toast.className = 'toast' + (type ? ' ' + type : '');
-            toast.textContent = message;
-            document.body.appendChild(toast);
-
-            setTimeout(() => toast.remove(), 2500);
+        // 初始化页面数据
+        function initPageData() {
+            document.getElementById('houseName').textContent = taskData.houseName;
+            document.getElementById('address').textContent = taskData.address;
+            document.getElementById('coverImage').src = taskData.result.coverImage;
+            document.getElementById('promoVideo').src = taskData.result.videoUrl;
+            
+            const progress = (taskData.currentStage / taskData.totalStages) * 100;
+            document.getElementById('progressValue').style.width = progress + '%';
+            document.getElementById('stageText').textContent = 
+                taskData.currentStage + '/' + taskData.totalStages + ' 已完成';
         }
 
-        // 点击弹窗背景关闭
-        document.getElementById('imagePreviewModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeImagePreview();
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initPageData();
+            
+            // 从URL参数获取任务数据(实际项目中会从这里获取)
+            const urlParams = new URLSearchParams(window.location.search);
+            const houseName = urlParams.get('houseName');
+            const coverImage = urlParams.get('coverImage');
+            const videoUrl = urlParams.get('videoUrl');
+            
+            if (houseName) {
+                document.getElementById('houseName').textContent = decodeURIComponent(houseName);
+            }
+            if (coverImage) {
+                document.getElementById('coverImage').src = decodeURIComponent(coverImage);
+            }
+            if (videoUrl) {
+                document.getElementById('promoVideo').src = decodeURIComponent(videoUrl);
             }
         });
 
-        init();
+        // 处理图片加载失败
+        document.getElementById('coverImage').onerror = function() {
+            this.src = 'https://via.placeholder.com/600x400?text=封面图';
+        };
+        
+        document.getElementById('promoVideo').onerror = function() {
+            showToast('视频加载失败');
+        };
+
+        // 监听视频播放错误
+        const video = document.getElementById('promoVideo');
+        video.addEventListener('error', function() {
+            showToast('视频加载失败,请重试');
+        });
     </script>
 </body>
 </html>

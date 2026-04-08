@@ -504,6 +504,14 @@
     </div>
     
     <script>
+        // ===== URL参数解析 =====
+        function getQueryParam(name) {
+            const params = new URLSearchParams(window.location.search);
+            return params.get(name);
+        }
+
+        const taskId = getQueryParam('task') || 'TASK001';
+
         // 模拟定位状态
         let currentDistance = 350; // 米
         let isInRange = false;
@@ -568,7 +576,7 @@
             setTimeout(() => {
                 // 存储打卡状态到 localStorage
                 localStorage.setItem('task_checkin_location', JSON.stringify({
-                    taskId: 'TASK001',
+                    taskId: taskId,
                     step: 1,
                     status: 'completed',
                     time: now.toISOString(),
@@ -578,7 +586,7 @@
                 // 3秒后返回
                 setTimeout(() => {
                     overlay.classList.remove('show');
-                    window.location.href = 'task-detail.html?task=TASK001&step=1';
+                    window.location.href = `task-detail.html?task=${taskId}&step=1`;
                 }, 2000);
             }, 1000);
         }
@@ -593,7 +601,7 @@
         
         // 返回
         function goBack() {
-            window.location.href = 'task-detail.html?task=TASK001';
+            window.location.href = `task-detail.html?task=${taskId}`;
         }
         
         // Toast 提示

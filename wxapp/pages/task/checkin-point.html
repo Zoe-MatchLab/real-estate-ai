@@ -615,6 +615,14 @@
     </div>
     
     <script>
+        // ===== URL参数解析 =====
+        function getQueryParam(name) {
+            const params = new URLSearchParams(window.location.search);
+            return params.get(name);
+        }
+
+        const taskId = getQueryParam('task') || 'TASK001';
+
         // 点位数据
         const points = {
             1: { photos: [], videos: [], audios: [], remark: '', status: 'pending' },
@@ -786,12 +794,12 @@
                 showToast('请至少完成1个点位');
                 return;
             }
-            window.location.href = 'confirm-script.html?task=TASK001';
+            window.location.href = `confirm-script.html?task=${taskId}`;
         }
         
         // 返回
         function goBack() {
-            window.location.href = 'task-detail.html?task=TASK001&step=2';
+            window.location.href = `task-detail.html?task=${taskId}&step=2`;
         }
         
         // Toast

@@ -279,7 +279,7 @@
     </div>
 
     <!-- 编辑弹窗 -->
-    <div id="editModal" class="modal-overlay" onclick="closeEditModal()"></div>
+    <div id="editModalOverlay" class="modal-overlay" onclick="closeEditModal()"></div>
     <div id="editModal" class="modal">
         <div class="p-4 border-b border-gray-100">
             <div class="flex items-center justify-between">
@@ -307,11 +307,18 @@
     </div>
 
     <script>
+        // ===== URL参数解析 =====
+        function getQueryParam(name) {
+            const params = new URLSearchParams(window.location.search);
+            return params.get(name);
+        }
+
         // 模拟数据
         const taskData = {
             houseName: '中海汇德里',
             address: '浦东新区张江高科技园区',
-            currentStage: 3,
+            currentStage: parseInt(getQueryParam('step')) || 3,
+            taskId: getQueryParam('task') || 'TASK001',
             script: {
                 title: '【中海汇德里·开盘预告】',
                 content: '位于浦东张江核心地段，毗邻地铁站，周边商业配套完善。项目主推89㎡三房和109㎡四房，均价约6.5万/㎡。首付20%起，购房享3万抵8万优惠。金牌顾问一对一服务，看房专车接送。',
@@ -453,7 +460,7 @@
         }
 
         // 点击弹窗外部关闭
-        document.getElementById('editModal').addEventListener('click', function(e) {
+        document.getElementById('editModalOverlay').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeEditModal();
             }

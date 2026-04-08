@@ -328,7 +328,7 @@
                 <i class="fa fa-angle-left text-lg"></i>
             </button>
             <h1 class="nav-title">探盘任务详情</h1>
-            <button class="nav-more">
+            <button class="nav-more" onclick="showMoreMenu()">
                 <i class="fa fa-ellipsis-v text-lg"></i>
             </button>
         </div>
@@ -368,19 +368,31 @@
     </div>
 
     <script>
+        // ===== URL参数解析 =====
+        function getQueryParam(name) {
+            const params = new URLSearchParams(window.location.search);
+            return params.get(name);
+        }
+
         // ===== 模拟数据 =====
         const taskData = {
             houseName: '中海汇德里',
             address: '浦东新区张江高科技园区',
             deadline: '2026-04-08 18:00',
-            currentStage: 2,
-            stages: [
-                { id: 1, name: '打卡', status: 'completed', time: '10:30:00' },
-                { id: 2, name: '上传', status: 'active' },
-                { id: 3, name: '文案确认', status: 'pending' },
-                { id: 4, name: '成果生成', status: 'pending' }
-            ]
+            currentStage: parseInt(getQueryParam('step')) || 1,
+            taskId: getQueryParam('task') || 'TASK001'
         };
+
+        // 根据当前阶段计算各阶段状态
+        function calculateStages() {
+            const current = taskData.currentStage;
+            return [
+                { id: 1, name: '打卡', status: current >= 1 ? 'completed' : 'pending', time: current >= 1 ? '10:30:00' : '' },
+                { id: 2, name: '上传', status: current >= 2 ? (current > 2 ? 'completed' : 'active') : 'pending' },
+                { id: 3, name: '文案确认', status: current >= 3 ? (current > 3 ? 'completed' : 'active') : 'pending' },
+                { id: 4, name: '成果生成', status: current >= 4 ? 'completed' : 'pending' }
+            ];
+        }
 
         // ===== 工具函数 =====
         function showToast(msg) {
@@ -415,7 +427,7 @@
         }
 
         function getCompletedCount() {
-            return taskData.stages.filter(s => s.status === 'completed').length;
+            return calculateStages().filter(s => s.status === 'completed').length;
         }
 
         // ===== 渲染函数 =====
@@ -426,7 +438,8 @@
         }
 
         function renderProgress() {
-            const total = taskData.stages.length;
+            const stages = calculateStages();
+            const total = stages.length;
             const completed = getCompletedCount();
             const percent = Math.round((completed / total) * 100);
 
@@ -435,7 +448,7 @@
 
             const stepsEl = document.getElementById('progressSteps');
             stepsEl.innerHTML = '';
-            taskData.stages.forEach((stage, index) => {
+            stages.forEach((stage, index) => {
                 const dot = document.createElement('div');
                 dot.className = 'progress-step-dot';
                 if (stage.status === 'completed') dot.classList.add('completed');
@@ -448,7 +461,8 @@
             const container = document.getElementById('stageList');
             container.innerHTML = '';
 
-            taskData.stages.forEach(stage => {
+            const stages = calculateStages();
+            stages.forEach(stage => {
                 const card = document.createElement('div');
                 card.className = `stage-card ${getStageCardClass(stage.status)}`;
 
@@ -503,6 +517,26 @@
 
         function goConfirm() {
             window.location.href = 'confirm-script.html';
+        }
+
+        // 更多菜单
+        function showMoreMenu() {
+            const action = confirm('请选择操作：\n\n确定：联系客服\n取消：分享任务');
+            if (action) {
+                // 联系客服
+                showToast('客服电话：400-xxx-xxxx');
+            } else {
+                // 分享
+                if (navigator.share) {
+                    navigator.share({
+                        title: taskData.houseName + '探盘任务',
+                        text: '我正在执行' + taskData.houseName + '的探盘任务',
+                        url: window.location.href
+                    });
+                } else {
+                    showToast('已复制分享链接');
+                }
+            }
         }
 
         // ===== 初始化 =====
