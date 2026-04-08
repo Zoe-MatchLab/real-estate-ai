@@ -210,6 +210,10 @@
         .copywriter-list { padding: 0 var(--spacing-md); display: none; }
         .copywriter-list.show { display: block; }
 
+        /* 单个文案卡片 - 初始隐藏 */
+        .copywriter-card { display: none; }
+        .copywriter-card.revealed { display: block; }
+
         /* 全选工具栏 */
         .select-all-bar {
             display: flex;
@@ -710,22 +714,42 @@
                 document.getElementById(id).innerHTML = `<i class="fa fa-circle-o"></i> ${texts[idx]}`;
             });
 
+            // 隐藏所有卡片，重置状态
+            list.classList.add('show');
+            document.querySelectorAll('.copywriter-card').forEach(c => {
+                c.classList.remove('revealed', 'expanded', 'selected');
+            });
+            document.getElementById('regenerateAllSection').classList.remove('show');
+            selectedCopies.clear();
+            updateSelectAllState();
+            updateConfirmBtn();
+
             // 模拟生成进度
             let prog = 0;
+            let lastRevealed = -1;
+            const cardTypes = ['xiaohongshu', 'wechat', 'video'];
+            const thresholds = [33, 66, 100];
+
             function updateItem(index, icon, text) {
                 const el = document.getElementById(items[index]);
                 el.innerHTML = `<i class="fa ${icon}"></i> ${text}`;
             }
 
             const progressInterval = setInterval(() => {
-                prog += Math.random() * 15;
+                prog += Math.random() * 12;
                 if (prog > 100) prog = 100;
                 fill.style.width = prog + '%';
                 progress.textContent = Math.round(prog) + '%';
 
-                if (prog >= 33) updateItem(0, 'fa-check-circle', '小红书文案 ✓');
-                if (prog >= 66) updateItem(1, 'fa-check-circle', '公众号文案 ✓');
-                if (prog >= 100) updateItem(2, 'fa-check-circle', '短视频脚本 ✓');
+                // 逐个显示卡片
+                for (let i = 0; i < thresholds.length; i++) {
+                    if (prog >= thresholds[i] && lastRevealed < i) {
+                        lastRevealed = i;
+                        const card = document.getElementById('card_' + cardTypes[i]);
+                        card.classList.add('revealed');
+                        updateItem(i, 'fa-check-circle', PLATFORM_NAMES[cardTypes[i]] + '文案 ✓');
+                    }
+                }
 
                 if (prog >= 100) {
                     clearInterval(progressInterval);
@@ -735,6 +759,7 @@
                             regenAllBtn.classList.remove('loading');
                             regenAllBtn.disabled = false;
                         }
+                        document.getElementById('regenerateAllSection').classList.add('show');
                         isGenerated = true;
                         showToast('三种文案已生成完毕');
                     }, 500);
@@ -746,6 +771,10 @@
             document.getElementById('generatingBanner').classList.remove('show');
             document.getElementById('generateSection').classList.add('hidden');
             document.getElementById('copywriterList').classList.add('show');
+            // 显示所有卡片
+            document.querySelectorAll('.copywriter-card').forEach(c => {
+                c.classList.add('revealed');
+            });
             document.getElementById('regenerateAllSection').classList.add('show');
             isGenerated = true;
         }
