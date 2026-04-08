@@ -103,6 +103,37 @@
             background: rgba(255,255,255,0.25);
             border-radius: var(--radius-full);
         }
+        /* 阶段进度 */
+        .stage-progress {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 16px;
+            background: white;
+            border-top: 1px solid var(--color-border);
+        }
+        .stage-dot {
+            font-size: 12px;
+            color: var(--color-sub);
+            white-space: nowrap;
+        }
+        .stage-dot.active {
+            color: var(--brand-primary);
+            font-weight: 500;
+        }
+        .stage-dot.completed {
+            color: var(--color-success);
+        }
+        .stage-line {
+            width: 32px;
+            height: 2px;
+            background: var(--brand-primary);
+            margin: 0 4px;
+            border-radius: 1px;
+        }
+        .stage-line.inactive {
+            background: var(--color-border);
+        }
         /* 任务信息 */
         .task-info {
             background: white;
@@ -438,16 +469,14 @@
         </div>
 
         <!-- 阶段进度 -->
-        <div class="flex items-center justify-center py-3 bg-white border-t border-gray-100">
-            <div class="flex items-center">
-                <span class="text-xs text-primary font-medium">阶段1</span>
-                <div class="w-8 h-1 bg-primary mx-1 rounded"></div>
-                <span class="text-xs text-gray-400">阶段2</span>
-                <div class="w-8 h-1 bg-gray-200 mx-1 rounded"></div>
-                <span class="text-xs text-gray-400">阶段3</span>
-                <div class="w-8 h-1 bg-gray-200 mx-1 rounded"></div>
-                <span class="text-xs text-gray-400">阶段4</span>
-            </div>
+        <div class="stage-progress">
+            <span class="stage-dot active">阶段1</span>
+            <div class="stage-line"></div>
+            <span class="stage-dot">阶段2</span>
+            <div class="stage-line inactive"></div>
+            <span class="stage-dot">阶段3</span>
+            <div class="stage-line inactive"></div>
+            <span class="stage-dot">阶段4</span>
         </div>
         
         <!-- 地图区域 -->
