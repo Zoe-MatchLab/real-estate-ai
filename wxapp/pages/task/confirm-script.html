@@ -714,17 +714,11 @@
             const list = document.getElementById('copywriterList');
             const fill = document.getElementById('generatingFill');
             const progress = document.getElementById('generatingProgress');
-            const regenAllBtn = document.getElementById('regenerateAllBtn');
 
             // 显示生成状态
             banner.classList.add('show');
             genSection.classList.add('hidden');
             list.classList.add('show');
-            document.getElementById('regenerateAllSection').classList.add('show');
-            if (regenAllBtn) {
-                regenAllBtn.classList.add('loading');
-                regenAllBtn.disabled = true;
-            }
 
             // 重置进度
             fill.style.width = '0%';
@@ -784,11 +778,6 @@
                     clearInterval(progressInterval);
                     setTimeout(() => {
                         banner.classList.remove('show');
-                        if (regenAllBtn) {
-                            regenAllBtn.classList.remove('loading');
-                            regenAllBtn.disabled = false;
-                        }
-                        document.getElementById('regenerateAllSection').classList.add('show');
                         isGenerated = true;
                         showToast('三种文案已生成完毕');
                     }, 500);
@@ -804,7 +793,6 @@
             document.querySelectorAll('.copywriter-card').forEach(c => {
                 c.classList.add('revealed');
             });
-            document.getElementById('regenerateAllSection').classList.add('show');
             isGenerated = true;
         }
 
