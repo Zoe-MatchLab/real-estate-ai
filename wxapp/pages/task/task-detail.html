@@ -476,7 +476,19 @@
                 } else if (stage.status === 'active') {
                     actionHtml = `<div class="stage-action" onclick="event.stopPropagation(); goUpload()">进入上传 <i class="fa fa-angle-right"></i></div>`;
                 } else if (stage.id === 3) {
-                    actionHtml = `<div class="stage-action" onclick="event.stopPropagation(); goConfirm()">查看详情 <i class="fa fa-angle-right"></i></div>`;
+                    // 阶段3需要阶段2完成后才能查看
+                    if (stage.status === 'pending') {
+                        actionHtml = `<div class="stage-action gray"><i class="fa fa-lock"></i> 待完成</div>`;
+                    } else {
+                        actionHtml = `<div class="stage-action" onclick="event.stopPropagation(); goConfirm()">查看详情 <i class="fa fa-angle-right"></i></div>`;
+                    }
+                } else if (stage.id === 4) {
+                    // 阶段4需要阶段3完成后才能查看
+                    if (stage.status === 'pending') {
+                        actionHtml = `<div class="stage-action gray"><i class="fa fa-lock"></i> 待完成</div>`;
+                    } else {
+                        actionHtml = `<div class="stage-action" onclick="event.stopPropagation(); goResult()">查看成果 <i class="fa fa-angle-right"></i></div>`;
+                    }
                 } else {
                     actionHtml = `<div class="stage-action gray">--</div>`;
                 }
@@ -517,6 +529,10 @@
 
         function goConfirm() {
             window.location.href = 'confirm-script.html';
+        }
+
+        function goResult() {
+            window.location.href = 'result-generate.html';
         }
 
         // 更多菜单
