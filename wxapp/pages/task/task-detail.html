@@ -269,12 +269,12 @@
         }
         .stage-detail.success { color: var(--color-success); }
 
-        /* 重新打卡按钮 */
-        .recheckin-btn {
+        /* 阶段操作按钮（右侧） */
+        .stage-action-btn {
             display: inline-flex;
             align-items: center;
             gap: 4px;
-            padding: 4px 10px;
+            padding: 4px 12px;
             background: var(--brand-primary-light);
             color: var(--brand-primary);
             border-radius: var(--radius-full);
@@ -283,9 +283,9 @@
             border: none;
             cursor: pointer;
             transition: all 0.15s;
-            margin-left: 24px;
+            white-space: nowrap;
         }
-        .recheckin-btn:active {
+        .stage-action-btn:active {
             background: var(--color-warning-light);
             transform: scale(0.96);
         }
@@ -469,22 +469,22 @@
 
                 let detailHtml = '';
                 let actionHtml = '';
-                let recheckinBtn = '';
+
 
                 if (stage.status === 'completed') {
-                    // 不同阶段完成显示不同信息
+                    // 不同阶段完成显示不同信息 + 右侧操作按钮
                     if (stage.id === 1) {
                         detailHtml = `<div class="stage-detail success">✅ 已签到 ${stage.time || '10:30:00'}</div>`;
-                        recheckinBtn = `<button class="recheckin-btn" onclick="event.stopPropagation(); goCheckin()"><i class="fa fa-map-marker"></i> 重新打卡</button>`;
+                        actionHtml = `<button class="stage-action-btn" onclick="event.stopPropagation(); goCheckin()"><i class="fa fa-refresh"></i> 重新打卡</button>`;
                     } else if (stage.id === 2) {
                         detailHtml = `<div class="stage-detail success">✅ 已上传 4个点位</div>`;
-                        recheckinBtn = `<button class="recheckin-btn" onclick="event.stopPropagation(); goUpload()"><i class="fa fa-upload"></i> 重新上传</button>`;
+                        actionHtml = `<button class="stage-action-btn" onclick="event.stopPropagation(); goUpload()"><i class="fa fa-refresh"></i> 重新上传</button>`;
                     } else if (stage.id === 3) {
                         detailHtml = `<div class="stage-detail success">✅ 文案已确认</div>`;
-                        recheckinBtn = `<button class="recheckin-btn" onclick="event.stopPropagation(); goConfirm()"><i class="fa fa-edit"></i> 修改内容</button>`;
+                        actionHtml = `<button class="stage-action-btn" onclick="event.stopPropagation(); goConfirm()"><i class="fa fa-edit"></i> 修改内容</button>`;
                     } else if (stage.id === 4) {
                         detailHtml = `<div class="stage-detail success">✅ 封面图+视频已生成</div>`;
-                        recheckinBtn = `<button class="recheckin-btn" onclick="event.stopPropagation(); goResult()"><i class="fa fa-eye"></i> 查看成果</button>`;
+                        actionHtml = `<button class="stage-action-btn" onclick="event.stopPropagation(); goResult()"><i class="fa fa-eye"></i> 查看成果</button>`;
                     }
                 } else if (stage.status === 'active') {
                     // 进行中阶段显示不同信息
@@ -534,7 +534,6 @@
                         ${actionHtml}
                     </div>
                     ${detailHtml}
-                    ${recheckinBtn}
                 `;
 
                 // 点击卡片跳转（仅对 active 阶段生效）
