@@ -103,36 +103,33 @@
             background: rgba(255,255,255,0.25);
             border-radius: var(--radius-full);
         }
-        /* 阶段进度 */
-        .stage-progress {
+        /* 阶段进度（头部内） */
+        .header-stage-progress {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 12px 16px;
-            background: white;
-            border-top: 1px solid var(--color-border);
+            margin-top: 12px;
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.15);
+            border-radius: var(--radius-lg);
         }
-        .stage-dot {
-            font-size: 12px;
-            color: var(--color-sub);
-            white-space: nowrap;
+        .header-stage-progress .stage-dot {
+            font-size: 11px;
+            color: rgba(255,255,255,0.6);
         }
-        .stage-dot.active {
-            color: var(--brand-primary);
-            font-weight: 500;
+        .header-stage-progress .stage-dot.active {
+            color: white;
+            font-weight: 600;
         }
-        .stage-dot.completed {
-            color: var(--color-success);
-        }
-        .stage-line {
-            width: 32px;
+        .header-stage-progress .stage-line {
+            width: 24px;
             height: 2px;
-            background: var(--brand-primary);
+            background: rgba(255,255,255,0.4);
             margin: 0 4px;
             border-radius: 1px;
         }
-        .stage-line.inactive {
-            background: var(--color-border);
+        .header-stage-progress .stage-line.inactive {
+            background: rgba(255,255,255,0.2);
         }
         /* 任务信息 */
         .task-info {
@@ -453,6 +450,17 @@
                 <span class="header-title">阶段1：定位打卡</span>
                 <span class="step-badge">1/4</span>
             </div>
+
+            <!-- 阶段进度（顶部） -->
+            <div class="header-stage-progress">
+                <span class="stage-dot active">阶段1</span>
+                <div class="stage-line"></div>
+                <span class="stage-dot">阶段2</span>
+                <div class="stage-line inactive"></div>
+                <span class="stage-dot">阶段3</span>
+                <div class="stage-line inactive"></div>
+                <span class="stage-dot">阶段4</span>
+            </div>
         </div>
         
         <!-- 任务信息 -->
@@ -466,17 +474,6 @@
                 <i class="fa fa-map-marker"></i>
                 <span>北京市朝阳区望京街道望京中路甲2号</span>
             </div>
-        </div>
-
-        <!-- 阶段进度 -->
-        <div class="stage-progress">
-            <span class="stage-dot active">阶段1</span>
-            <div class="stage-line"></div>
-            <span class="stage-dot">阶段2</span>
-            <div class="stage-line inactive"></div>
-            <span class="stage-dot">阶段3</span>
-            <div class="stage-line inactive"></div>
-            <span class="stage-dot">阶段4</span>
         </div>
         
         <!-- 地图区域 -->

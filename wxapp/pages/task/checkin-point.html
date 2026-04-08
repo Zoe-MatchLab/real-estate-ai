@@ -152,7 +152,41 @@
         .info-chip strong { color: var(--color-success); }
         .info-chip.warning strong { color: var(--color-warning); }
 
-        /* ===== 阶段进度 ===== */
+        /* ===== 阶段进度（导航栏内） ===== */
+        .nav-stage-progress {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 16px;
+            margin: 8px 16px 0;
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+        }
+        .nav-stage-progress .stage-dot {
+            font-size: 11px;
+            color: var(--color-sub);
+        }
+        .nav-stage-progress .stage-dot.active {
+            color: var(--brand-primary);
+            font-weight: 600;
+        }
+        .nav-stage-progress .stage-dot.completed {
+            color: var(--brand-primary);
+        }
+        .nav-stage-progress .stage-line {
+            width: 24px;
+            height: 2px;
+            margin: 0 4px;
+            border-radius: 1px;
+        }
+        .nav-stage-progress .stage-line.completed {
+            background: var(--brand-primary);
+        }
+        .nav-stage-progress .stage-line.inactive {
+            background: var(--color-border);
+        }
+
+        /* ===== 阶段进度（备用） ===== */
         .stage-progress {
             display: flex;
             align-items: center;
@@ -902,6 +936,17 @@
             </button>
             <div class="nav-title" id="navTitle">素材上传</div>
             <button class="nav-save" onclick="saveDraft()">保存</button>
+
+            <!-- 阶段进度（顶部导航栏内） -->
+            <div class="nav-stage-progress">
+                <span class="stage-dot">阶段1</span>
+                <div class="stage-line completed"></div>
+                <span class="stage-dot active">阶段2</span>
+                <div class="stage-line inactive"></div>
+                <span class="stage-dot">阶段3</span>
+                <div class="stage-line inactive"></div>
+                <span class="stage-dot">阶段4</span>
+            </div>
         </div>
 
         <!-- 任务信息条 -->
@@ -919,17 +964,6 @@
             <div class="info-chip" id="requiredChip">
                 必填 <strong id="requiredPass">0</strong>/<span id="requiredTotal">0</span> 通过
             </div>
-        </div>
-
-        <!-- 阶段进度 -->
-        <div class="stage-progress">
-            <span class="stage-dot">阶段1</span>
-            <div class="stage-line completed"></div>
-            <span class="stage-dot active">阶段2</span>
-            <div class="stage-line inactive"></div>
-            <span class="stage-dot">阶段3</span>
-            <div class="stage-line inactive"></div>
-            <span class="stage-dot">阶段4</span>
         </div>
 
         <!-- 点位列表 -->
