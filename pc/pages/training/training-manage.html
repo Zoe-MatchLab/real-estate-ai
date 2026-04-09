@@ -62,20 +62,10 @@
                 const sidebarHtml = await res.text();
                 document.getElementById('sidebar-container').innerHTML = sidebarHtml;
                 
-                // 初始化侧边栏高亮
-                const currentPage = window.location.pathname.split('/').pop();
-                const navLinks = document.querySelectorAll('aside a');
-                
-                navLinks.forEach(link => {
-                    const href = link.getAttribute('href');
-                    if (href === currentPage || (currentPage === '' && href === 'index.html')) {
-                        link.classList.remove('text-gray-600', 'hover:bg-gray-50');
-                        link.classList.add('text-primary', 'bg-blue-50', 'border-r-4', 'border-primary');
-                    } else {
-                        link.classList.remove('text-primary', 'bg-blue-50', 'border-r-4', 'border-primary');
-                        link.classList.add('text-gray-600', 'hover:bg-gray-50');
-                    }
-                });
+                // 修复侧边栏链接路径
+                if (window.fixSidebarLinks) window.fixSidebarLinks();
+                // 初始化高亮
+                if (window.initSidebar) window.initSidebar();
             } catch (e) {
                 console.error('侧边栏加载失败:', e);
             }

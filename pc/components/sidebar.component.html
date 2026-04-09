@@ -12,31 +12,31 @@
         </a>
         
         <!-- 新盘管理 -->
-        <a href="pages/material/material-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+        <a href="material-manage.html" data-path="pages/material/material-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
             <i class="fa fa-home w-5 text-center"></i>
             <span class="ml-3">新盘管理</span>
         </a>
         
         <!-- 探盘任务管理 -->
-        <a href="pages/task/task-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+        <a href="task-manage.html" data-path="pages/task/task-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
             <i class="fa fa-tasks w-5 text-center"></i>
             <span class="ml-3">探盘任务管理</span>
         </a>
         
         <!-- 产品力训练 -->
-        <a href="pages/training/training-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+        <a href="training-manage.html" data-path="pages/training/training-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
             <i class="fa fa-graduation-cap w-5 text-center"></i>
             <span class="ml-3">产品力训练</span>
         </a>
         
         <!-- 话术训练管理 -->
-        <a href="pages/speech/speech-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+        <a href="speech-manage.html" data-path="pages/speech/speech-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
             <i class="fa fa-comments w-5 text-center"></i>
             <span class="ml-3">话术训练管理</span>
         </a>
         
         <!-- 获客内容管理 -->
-        <a href="pages/content/content-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+        <a href="content-manage.html" data-path="pages/content/content-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
             <i class="fa fa-magic w-5 text-center"></i>
             <span class="ml-3">获客内容管理</span>
         </a>
@@ -45,19 +45,19 @@
         <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">管理层</div>
         
         <!-- 数据分析 -->
-        <a href="pages/data/data-analysis.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+        <a href="data-analysis.html" data-path="pages/data/data-analysis.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
             <i class="fa fa-bar-chart w-5 text-center"></i>
             <span class="ml-3">数据分析</span>
         </a>
         
         <!-- 董事长决策看板一 -->
-        <a href="pages/board/board-chairman.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+        <a href="board-chairman.html" data-path="pages/board/board-chairman.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
             <i class="fa fa-trophy w-5 text-center"></i>
             <span class="ml-3">总部决策看板一</span>
         </a>
 
         <!-- 董事长决策看板二 -->
-        <a href="pages/board/board-chairman-2.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+        <a href="board-chairman-2.html" data-path="pages/board/board-chairman-2.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
             <i class="fa fa-area-chart w-5 text-center"></i>
             <span class="ml-3">总部决策看板二</span>
         </a>
@@ -66,7 +66,7 @@
         <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">系统管理</div>
         
         <!-- 团队管理 -->
-        <a href="pages/team/team-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+        <a href="team-manage.html" data-path="pages/team/team-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
             <i class="fa fa-users w-5 text-center"></i>
             <span class="ml-3">团队管理</span>
         </a>
@@ -91,19 +91,45 @@ aside a.active {
 
 <!-- 侧边栏公共JS -->
 <script>
-// 加载完侧边栏后自动设置当前页面高亮
-function initSidebar() {
-    const currentPage = window.location.pathname.split('/').pop();
-    const navLinks = document.querySelectorAll('aside a');
+// 修正侧边栏链接路径
+function fixSidebarLinks() {
+    const pathname = window.location.pathname;
+    const links = document.querySelectorAll('aside a[data-path]');
     
-    navLinks.forEach(link => {
-        const href = link.getAttribute('href');
-        if (href === currentPage || (currentPage === '' && href === 'index.html')) {
+    links.forEach(link => {
+        const dataPath = link.getAttribute('data-path');
+        // 从当前路径计算深度
+        const depth = (pathname.match(/\/pages\//g) || []).length;
+        
+        if (depth > 0) {
+            // 在子目录中，需要往回走
+            const prefix = '../'.repeat(depth);
+            link.setAttribute('href', prefix + dataPath);
+        } else {
+            // 在根目录，直接使用
+            link.setAttribute('href', dataPath);
+        }
+    });
+}
+
+// 高亮当前页面
+function initSidebar() {
+    const pathname = window.location.pathname;
+    const links = document.querySelectorAll('aside a[data-path]');
+    
+    links.forEach(link => {
+        const dataPath = link.getAttribute('data-path');
+        if (pathname.includes(dataPath)) {
+            link.classList.add('active');
+        }
+        // 首页特殊处理
+        if ((pathname.endsWith('/pc/') || pathname.endsWith('/pc/index.html')) && link.getAttribute('href').includes('index.html')) {
             link.classList.add('active');
         }
     });
 }
 
-// 全局暴露initSidebar函数供页面调用
+// 全局暴露函数
 window.initSidebar = initSidebar;
+window.fixSidebarLinks = fixSidebarLinks;
 </script>
