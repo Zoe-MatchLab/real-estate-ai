@@ -91,7 +91,7 @@
         // 加载公共侧边栏组件
         document.addEventListener('DOMContentLoaded', async function() {
             try {
-                const res = await fetch('components/sidebar.html');
+                const res = await fetch('../../components/sidebar.component.html');
                 const sidebarHtml = await res.text();
                 document.getElementById('sidebar-container').innerHTML = sidebarHtml;
                 
