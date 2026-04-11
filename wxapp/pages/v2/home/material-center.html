@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>物料中心 - V2.0 - 房产AI助手</title>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --brand-primary: #FA8C16;
+      --brand-primary-dark: #E67A0E;
+      --color-success: #00B42A;
+      --color-warning: #FF7D00;
+      --color-danger: #FA5151;
+      --color-info: #007AFF;
+      --color-title: #1D2129;
+      --color-text: #4E5969;
+      --color-sub: #86909C;
+      --color-border: #E5E6EB;
+      --color-bg: #F7F8FA;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: #f5f5f5;
+      color: var(--color-title);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 80px;
+    }
+    .container { padding-bottom: 80px; }
+
+    /* 顶部导航 */
+    .top-nav {
+      background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
+      padding: 12px 15px 20px;
+      color: white;
+    }
+    .top-nav .nav-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .top-nav .nav-title {
+      font-size: 17px;
+      font-weight: 600;
+    }
+    .top-nav .nav-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-decoration: none;
+    }
+
+    /* 搜索栏 */
+    .search-bar {
+      background: white;
+      padding: 10px 15px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .search-input-wrap {
+      flex: 1;
+      background: var(--color-bg);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      padding: 6px 14px;
+      gap: 8px;
+    }
+    .search-input-wrap input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      outline: none;
+      color: var(--color-text);
+    }
+    .search-input-wrap input::placeholder { color: var(--color-sub); }
+    .filter-btn {
+      background: var(--brand-primary);
+      color: white;
+      border: none;
+      border-radius: 16px;
+      padding: 6px 14px;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+    }
+
+    /* 分类Tab */
+    .category-tabs {
+      background: white;
+      display: flex;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--color-border);
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .category-tabs::-webkit-scrollbar { display: none; }
+    .category-tab {
+      flex-shrink: 0;
+      padding: 12px 16px;
+      font-size: 14px;
+      color: var(--color-sub);
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .category-tab.active {
+      color: var(--brand-primary);
+      border-bottom-color: var(--brand-primary);
+      font-weight: 600;
+    }
+
+    /* 瀑布流 */
+    .masonry-grid {
+      display: flex;
+      gap: 10px;
+      padding: 12px 15px;
+    }
+    .masonry-col {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .material-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      break-inside: avoid;
+    }
+    .material-cover {
+      width: 100%;
+      position: relative;
+      background: #f0f0f0;
+    }
+    .material-cover img {
+      width: 100%;
+      display: block;
+    }
+    .material-cover .cover-img {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+    }
+    .cover-placeholder {
+      width: 100%;
+      aspect-ratio: 3/4;
+      background: linear-gradient(135deg, #f0f0f0, #e8e8e8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ccc;
+      font-size: 32px;
+    }
+    .material-type-tag {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: rgba(0,0,0,0.55);
+      color: white;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      backdrop-filter: blur(4px);
+    }
+    .material-body {
+      padding: 10px;
+    }
+    .material-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-title);
+      margin-bottom: 4px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .material-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+    }
+    .material-building {
+      font-size: 11px;
+      color: var(--color-sub);
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .material-actions {
+      display: flex;
+      gap: 6px;
+    }
+    .material-action-btn {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--color-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-sub);
+      font-size: 11px;
+      border: none;
+      cursor: pointer;
+    }
+    .material-action-btn:hover { color: var(--brand-primary); }
+
+    /* 筛选弹窗 */
+    .filter-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+    .filter-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .filter-sheet {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      border-radius: 16px 16px 0 0;
+      z-index: 1000;
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .filter-overlay.show .filter-sheet {
+      transform: translateY(0);
+    }
+    .filter-sheet .sheet-handle {
+      width: 36px;
+      height: 4px;
+      background: #ddd;
+      border-radius: 2px;
+      margin: 10px auto;
+    }
+    .filter-sheet .sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px 8px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .filter-sheet .sheet-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--color-title);
+    }
+    .filter-sheet .sheet-close {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--color-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-sub);
+      border: none;
+      cursor: pointer;
+    }
+    .filter-section {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .filter-section-title {
+      font-size: 13px;
+      color: var(--color-sub);
+      margin-bottom: 10px;
+    }
+    .filter-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .filter-tag {
+      padding: 5px 14px;
+      border-radius: 16px;
+      font-size: 13px;
+      border: 1px solid var(--color-border);
+      background: white;
+      color: var(--color-text);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-tag.active {
+      background: var(--brand-primary);
+      color: white;
+      border-color: var(--brand-primary);
+    }
+    .filter-footer {
+      padding: 12px 16px;
+      display: flex;
+      gap: 10px;
+      position: sticky;
+      bottom: 0;
+      background: white;
+      border-top: 1px solid var(--color-border);
+    }
+    .filter-footer button {
+      flex: 1;
+      height: 44px;
+      border-radius: 22px;
+      font-size: 15px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+    }
+    .filter-footer .btn-reset {
+      background: var(--color-bg);
+      color: var(--color-text);
+    }
+    .filter-footer .btn-confirm {
+      background: var(--brand-primary);
+      color: white;
+    }
+
+    /* 底部TabBar */
+    .tabbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(29, 33, 41, 0.96);
+      backdrop-filter: blur(20px);
+      display: flex;
+      padding: 6px 0;
+      padding-bottom: calc(6px + env(safe-area-inset-bottom));
+      z-index: 100;
+    }
+    .tabbar-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: 4px 0;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      font-size: 10px;
+      transition: color 0.2s;
+    }
+    .tabbar-item.active { color: var(--brand-primary); }
+    .tabbar-item i { font-size: 22px; }
+    .tabbar-item span { font-size: 10px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 顶部导航 -->
+    <div class="top-nav">
+      <div class="nav-row">
+        <a href="#" class="nav-btn"><i class="fa fa-angle-left"></i></a>
+        <span class="nav-title">物料中心</span>
+        <a href="#" class="nav-btn"><i class="fa fa-share-alt"></i></a>
+      </div>
+    </div>
+
+    <!-- 搜索栏 -->
+    <div class="search-bar">
+      <div class="search-input-wrap">
+        <i class="fa fa-search" style="color:#86909C;font-size:14px"></i>
+        <input type="text" placeholder="搜索楼盘/内容关键词...">
+      </div>
+      <button class="filter-btn" onclick="openFilter()">
+        <i class="fa fa-sliders"></i>筛选
+      </button>
+    </div>
+
+    <!-- 分类Tab -->
+    <div class="category-tabs" id="categoryTabs">
+      <div class="category-tab active" data-type="all" onclick="switchCategory('all', this)">全部</div>
+      <div class="category-tab" data-type="xhs" onclick="switchCategory('xhs', this)">小红书</div>
+      <div class="category-tab" data-type="gzh" onclick="switchCategory('gzh', this)">公众号</div>
+      <div class="category-tab" data-type="video" onclick="switchCategory('video', this)">短视频</div>
+      <div class="category-tab" data-type="photo" onclick="switchCategory('photo', this)">实拍图</div>
+      <div class="category-tab" data-type="audio" onclick="switchCategory('audio', this)">音频</div>
+    </div>
+
+    <!-- 瀑布流内容 -->
+    <div class="masonry-grid" id="masonryGrid">
+      <!-- 左列 -->
+      <div class="masonry-col" id="col1"></div>
+      <!-- 右列 -->
+      <div class="masonry-col" id="col2"></div>
+    </div>
+  </div>
+
+  <!-- 筛选弹窗 -->
+  <div class="filter-overlay" id="filterOverlay" onclick="closeFilter(event)">
+    <div class="filter-sheet" onclick="event.stopPropagation()">
+      <div class="sheet-handle"></div>
+      <div class="sheet-header">
+        <span class="sheet-title">多维筛选</span>
+        <button class="sheet-close" onclick="closeFilter()"><i class="fa fa-times"></i></button>
+      </div>
+
+      <!-- 楼盘筛选 -->
+      <div class="filter-section">
+        <div class="filter-section-title">楼盘</div>
+        <div class="filter-tags">
+          <span class="filter-tag active" onclick="toggleTag(this)">全部</span>
+          <span class="filter-tag" onclick="toggleTag(this)">中海汇德里</span>
+          <span class="filter-tag" onclick="toggleTag(this)">万科翡翠公园</span>
+          <span class="filter-tag" onclick="toggleTag(this)">华润外滩九里</span>
+          <span class="filter-tag" onclick="toggleTag(this)">龙湖天琅</span>
+        </div>
+      </div>
+
+      <!-- 内容类型 -->
+      <div class="filter-section">
+        <div class="filter-section-title">内容类型</div>
+        <div class="filter-tags">
+          <span class="filter-tag active" onclick="toggleTag(this)">全部</span>
+          <span class="filter-tag" onclick="toggleTag(this)">小红书文案</span>
+          <span class="filter-tag" onclick="toggleTag(this)">公众号文章</span>
+          <span class="filter-tag" onclick="toggleTag(this)">短视频脚本</span>
+          <span class="filter-tag" onclick="toggleTag(this)">实拍图片</span>
+          <span class="filter-tag" onclick="toggleTag(this)">销售说辞</span>
+        </div>
+      </div>
+
+      <!-- 经纪人 -->
+      <div class="filter-section">
+        <div class="filter-section-title">经纪人</div>
+        <div class="filter-tags">
+          <span class="filter-tag active" onclick="toggleTag(this)">全部</span>
+          <span class="filter-tag" onclick="toggleTag(this)">陈佳佳</span>
+          <span class="filter-tag" onclick="toggleTag(this)">李明</span>
+          <span class="filter-tag" onclick="toggleTag(this)">王芳</span>
+          <span class="filter-tag" onclick="toggleTag(this)">赵伟</span>
+        </div>
+      </div>
+
+      <!-- 排序 -->
+      <div class="filter-section">
+        <div class="filter-section-title">排序方式</div>
+        <div class="filter-tags">
+          <span class="filter-tag active" onclick="toggleTag(this)">最新优先</span>
+          <span class="filter-tag" onclick="toggleTag(this)">浏览量最高</span>
+          <span class="filter-tag" onclick="toggleTag(this)">收藏最多</span>
+        </div>
+      </div>
+
+      <div class="filter-footer">
+        <button class="btn-reset" onclick="resetFilter()">重置</button>
+        <button class="btn-confirm" onclick="confirmFilter()">确认筛选 (3)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部TabBar -->
+  <div class="tabbar">
+    <a href="index.html" class="tabbar-item">
+      <i class="fa fa-home"></i>
+      <span>首页</span>
+    </a>
+    <a href="tools.html" class="tabbar-item">
+      <i class="fa fa-rocket"></i>
+      <span>功能</span>
+    </a>
+    <a href="../other/ai-design.html" class="tabbar-item">
+      <i class="fa fa-magic"></i>
+      <span>AI设计</span>
+    </a>
+    <a href="../home/calendar.html" class="tabbar-item">
+      <i class="fa fa-calendar"></i>
+      <span>日历</span>
+    </a>
+    <a href="my.html" class="tabbar-item active">
+      <i class="fa fa-user"></i>
+      <span>我的</span>
+    </a>
+  </div>
+
+  <script>
+    // 物料数据
+    const materials = [
+      { id: 1, title: '中海汇德里｜浦东改善首选，地铁上盖+品牌物业，值得一看！', type: '小红书', building: '中海汇德里', img: '', height: 180 },
+      { id: 2, title: '万科翡翠公园楼栋采光分析实拍', type: '实拍图', building: '万科翡翠公园', img: '', height: 220 },
+      { id: 3, title: '【深度】万科翡翠公园产品力全面解读', type: '公众号', building: '万科翡翠公园', img: '', height: 160 },
+      { id: 4, title: '15秒口播脚本：如何用三句话说清楼盘卖点', type: '短视频', building: '中海汇德里', img: '', height: 200 },
+      { id: 5, title: '中海汇德里样板间VR全景图（3室2厅）', type: '实拍图', building: '中海汇德里', img: '', height: 240 },
+      { id: 6, title: '客户常见20问标准应答话术（新版）', type: '音频', building: '通用', img: '', height: 150 },
+      { id: 7, title: '外滩九里｜黄浦核心地段，顶级教育资源环绕', type: '小红书', building: '华润外滩九里', img: '', height: 185 },
+      { id: 8, title: '龙湖天琅区位配套实拍图集', type: '实拍图', building: '龙湖天琅', img: '', height: 210 },
+      { id: 9, title: '【硬核】2026年浦东新房选购指南', type: '公众号', building: '通用', img: '', height: 170 },
+      { id: 10, title: '竞品对比话术：如何应对客户问竞品', type: '音频', building: '通用', img: '', height: 155 },
+    ];
+
+    const typeIcons = { '小红书': 'fa-pencil', '公众号': 'fa-newspaper-o', '短视频': 'fa-video-camera', '实拍图': 'fa-image', '音频': 'fa-microphone' };
+    const typeColors = { '小红书': '#FF6B6B', '公众号': '#4ECDC4', '短视频': '#FA8C16', '实拍图': '#007AFF', '音频': '#9B59B6' };
+
+    function renderMasonry(filter = 'all') {
+      const col1 = document.getElementById('col1');
+      const col2 = document.getElementById('col2');
+      col1.innerHTML = '';
+      col2.innerHTML = '';
+
+      const filtered = filter === 'all' ? materials : materials.filter(m => m.type.includes(filter));
+      filtered.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'material-card';
+        const imgHeight = item.height || 180;
+        const col = index % 2 === 0 ? col1 : col2;
+        card.innerHTML = `
+          <div class="material-cover" style="height:${imgHeight}px">
+            <div class="cover-placeholder"><i class="fa ${typeIcons[item.type] || 'fa-image'}"></i></div>
+            <span class="material-type-tag" style="background:${typeColors[item.type]}">${item.type}</span>
+          </div>
+          <div class="material-body">
+            <div class="material-title">${item.title}</div>
+            <div class="material-meta">
+              <span class="material-building"><i class="fa fa-map-marker"></i>${item.building}</span>
+              <div class="material-actions">
+                <button class="material-action-btn" title="收藏"><i class="fa fa-heart-o"></i></button>
+                <button class="material-action-btn" title="分享"><i class="fa fa-share-alt"></i></button>
+              </div>
+            </div>
+          </div>
+        `;
+        col.appendChild(card);
+      });
+    }
+
+    function switchCategory(type, el) {
+      document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+      renderMasonry(type);
+    }
+
+    function openFilter() {
+      document.getElementById('filterOverlay').classList.add('show');
+    }
+
+    function closeFilter(e) {
+      if (e && e.target !== e.currentTarget) return;
+      document.getElementById('filterOverlay').classList.remove('show');
+    }
+
+    function toggleTag(el) {
+      el.classList.toggle('active');
+    }
+
+    function resetFilter() {
+      document.querySelectorAll('.filter-tag').forEach((t, i) => {
+        t.classList.toggle('active', i === 0 || t.textContent === '全部' || t.textContent === '最新优先');
+      });
+    }
+
+    function confirmFilter() {
+      closeFilter();
+      renderMasonry();
+    }
+
+    // 初始化
+    renderMasonry();
+  </script>
+</body>
+</html>
