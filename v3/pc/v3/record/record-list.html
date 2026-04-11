@@ -127,10 +127,10 @@
                     </button>
                     <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white">
                         <option value="">全部状态</option>
-                        <option value="pending">pending（待分析）</option>
-                        <option value="processing">processing（分析中）</option>
-                        <option value="completed">completed（已完成）</option>
-                        <option value="failed">failed（分析失败）</option>
+                        <option value="pending">待分析</option>
+                        <option value="processing">分析中</option>
+                        <option value="completed">已完成</option>
+                        <option value="failed">分析失败</option>
                     </select>
                 </div>
             </div>
@@ -143,15 +143,15 @@
                 </div>
                 <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-orange-400 cursor-pointer hover:shadow-md transition" onclick="filterStatus('pending')">
                     <div class="text-2xl font-bold text-orange-500">23</div>
-                    <div class="text-xs text-gray-500 mt-1">pending（待分析）</div>
+                    <div class="text-xs text-gray-500 mt-1">待分析</div>
                 </div>
                 <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-blue-400 cursor-pointer hover:shadow-md transition" onclick="filterStatus('processing')">
                     <div class="text-2xl font-bold text-blue-500">12</div>
-                    <div class="text-xs text-gray-500 mt-1">processing（分析中）</div>
+                    <div class="text-xs text-gray-500 mt-1">分析中</div>
                 </div>
                 <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-green-500 cursor-pointer hover:shadow-md transition" onclick="filterStatus('completed')">
                     <div class="text-2xl font-bold text-green-600">121</div>
-                    <div class="text-xs text-gray-500 mt-1">completed（已完成）</div>
+                    <div class="text-xs text-gray-500 mt-1">已完成</div>
                 </div>
             </div>
 
@@ -166,10 +166,10 @@
                         <label class="block text-xs text-gray-500 mb-1">分析状态</label>
                         <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-white">
                             <option value="">全部</option>
-                            <option value="pending">pending</option>
-                            <option value="processing">processing</option>
-                            <option value="completed">completed</option>
-                            <option value="failed">failed</option>
+                            <option value="pending">待分析</option>
+                            <option value="processing">分析中</option>
+                            <option value="completed">已完成</option>
+                            <option value="failed">分析失败</option>
                         </select>
                     </div>
                     <div class="min-w-[160px]">
@@ -246,7 +246,7 @@
                                     </div>
                                 </td>
                                 <td class="px-4 py-3">
-                                    <span class="tag tag-status-completed">completed</span>
+                                    <span class="tag tag-status-completed">已完成</span>
                                 </td>
                                 <td class="px-4 py-3">
                                     <div class="text-gray-700 text-sm">2026-04-10 15:00</div>
@@ -288,7 +288,7 @@
                                     </div>
                                 </td>
                                 <td class="px-4 py-3">
-                                    <span class="tag tag-status-completed">completed</span>
+                                    <span class="tag tag-status-completed">已完成</span>
                                 </td>
                                 <td class="px-4 py-3">
                                     <div class="text-gray-700 text-sm">2026-04-08 10:15</div>
@@ -325,7 +325,7 @@
                                     <span class="text-gray-400 text-sm italic">分析中...</span>
                                 </td>
                                 <td class="px-4 py-3">
-                                    <span class="tag tag-status-processing">processing</span>
+                                    <span class="tag tag-status-processing">分析中</span>
                                 </td>
                                 <td class="px-4 py-3">
                                     <div class="text-gray-700 text-sm">2026-04-11 09:30</div>
@@ -362,7 +362,7 @@
                                     <span class="text-gray-400 text-sm italic">等待中</span>
                                 </td>
                                 <td class="px-4 py-3">
-                                    <span class="tag tag-status-pending">pending</span>
+                                    <span class="tag tag-status-pending">待分析</span>
                                 </td>
                                 <td class="px-4 py-3">
                                     <div class="text-gray-700 text-sm">2026-04-11 08:00</div>
@@ -399,7 +399,7 @@
                                     <span class="text-red-400 text-sm italic">分析失败</span>
                                 </td>
                                 <td class="px-4 py-3">
-                                    <span class="tag tag-status-failed">failed</span>
+                                    <span class="tag tag-status-failed">分析失败</span>
                                 </td>
                                 <td class="px-4 py-3">
                                     <div class="text-gray-700 text-sm">2026-04-10 16:00</div>
