@@ -1,0 +1,417 @@
+{
+  "summary": {
+    "date": "2026-04-11T16:42:18.988Z",
+    "totalRounds": 5,
+    "totalPassed": 42,
+    "totalFailed": 2,
+    "totalWarnings": 2,
+    "passRate": "91.3%"
+  },
+  "rounds": [
+    {
+      "round": 6,
+      "name": "功能深度测试",
+      "date": "2026-04-11T16:40:50.715Z",
+      "tests": [
+        {
+          "id": "FD-01",
+          "page": "customer-list.html",
+          "category": "功能链路",
+          "issue": "客户列表筛选功能",
+          "status": "PASSED",
+          "details": "筛选后表格行数: 3"
+        },
+        {
+          "id": "FD-02",
+          "page": "customer-list.html",
+          "category": "功能链路",
+          "issue": "重置按钮清空筛选",
+          "status": "FAILED",
+          "details": "输入框仍为: 测试客户"
+        },
+        {
+          "id": "FD-03",
+          "page": "customer-detail.html",
+          "category": "功能链路",
+          "issue": "客户详情跟进记录",
+          "status": "PASSED",
+          "details": "找到3个跟进相关元素，跟进区可见"
+        },
+        {
+          "id": "FD-04",
+          "page": "task-list.html",
+          "category": "功能链路",
+          "issue": "任务状态展示",
+          "status": "PASSED",
+          "details": "找到1个状态标签，8个状态元素"
+        },
+        {
+          "id": "FD-05",
+          "page": "record-list.html",
+          "category": "功能链路",
+          "issue": "录音列表筛选搜索",
+          "status": "PASSED",
+          "details": "搜索框: 有，筛选器: 有"
+        },
+        {
+          "id": "FD-06",
+          "page": "task-audit.html",
+          "category": "功能链路",
+          "issue": "任务审核进度条",
+          "status": "PASSED",
+          "details": "进度元素: 45，步骤文字: 1"
+        },
+        {
+          "id": "FD-07",
+          "page": "speech-data.html",
+          "category": "功能链路",
+          "issue": "语音数据分析图表",
+          "status": "PASSED",
+          "details": "图表: 有，数据: 有"
+        },
+        {
+          "id": "FD-08",
+          "page": "record-detail.html",
+          "category": "功能链路",
+          "issue": "录音详情评分展示",
+          "status": "PASSED",
+          "details": "评分: 3分22秒 · 4.2MB · MP3"
+        },
+        {
+          "id": "FD-09",
+          "page": "material-center.html",
+          "category": "功能链路",
+          "issue": "物料中心分类切换",
+          "status": "PASSED",
+          "details": "分类元素: 13个"
+        },
+        {
+          "id": "FD-10",
+          "page": "customer-list.html (wxapp)",
+          "category": "功能链路",
+          "issue": "小程序客户搜索",
+          "status": "PASSED",
+          "details": "搜索框: 有"
+        },
+        {
+          "id": "FD-11",
+          "page": "customer-detail.html (wxapp)",
+          "category": "功能链路",
+          "issue": "小程序拨打电话",
+          "status": "PASSED",
+          "details": "电话按钮: 2个"
+        },
+        {
+          "id": "FD-12",
+          "page": "record-upload.html (wxapp)",
+          "category": "功能链路",
+          "issue": "录音上传功能",
+          "status": "PASSED",
+          "details": "上传组件: 有，上传提示: 3处"
+        }
+      ],
+      "passed": 11,
+      "failed": 1,
+      "warnings": 0
+    },
+    {
+      "round": 8,
+      "name": "用户体验测试",
+      "date": "2026-04-11T16:41:11.868Z",
+      "tests": [
+        {
+          "id": "UE-01",
+          "page": "customer-list.html",
+          "category": "用户体验",
+          "issue": "页面加载时间",
+          "status": "WARNING",
+          "details": "加载耗时: 4418ms"
+        },
+        {
+          "id": "UE-02",
+          "page": "customer-list.html",
+          "category": "用户体验",
+          "issue": "批量转移按钮可用性",
+          "status": "PASSED",
+          "details": "可见: true，可用: true"
+        },
+        {
+          "id": "UE-03",
+          "page": "customer-list.html",
+          "category": "用户体验",
+          "issue": "输入框焦点状态",
+          "status": "PASSED",
+          "details": "焦点获取: true"
+        },
+        {
+          "id": "UE-04",
+          "page": "customer-list.html",
+          "category": "用户体验",
+          "issue": "下拉菜单交互",
+          "status": "PASSED",
+          "details": "下拉框: 6个，均可见: true"
+        },
+        {
+          "id": "UE-05",
+          "page": "customer-list.html",
+          "category": "用户体验",
+          "issue": "模态框打开关闭",
+          "status": "PASSED",
+          "details": "模态框内容: 8处"
+        },
+        {
+          "id": "UE-06",
+          "page": "customer-detail.html",
+          "category": "用户体验",
+          "issue": "添加跟进按钮",
+          "status": "PASSED",
+          "details": "按钮: 可见"
+        },
+        {
+          "id": "UE-07",
+          "page": "customer-list.html",
+          "category": "用户体验",
+          "issue": "表格行悬停效果",
+          "status": "PASSED",
+          "details": "悬停行: 有"
+        },
+        {
+          "id": "UE-08",
+          "page": "task-audit.html",
+          "category": "用户体验",
+          "issue": "审核按钮布局",
+          "status": "PASSED",
+          "details": "通过按钮: 2，驳回按钮: 3"
+        },
+        {
+          "id": "UE-09",
+          "page": "material-center.html (wxapp)",
+          "category": "用户体验",
+          "issue": "小程序页面加载时间",
+          "status": "PASSED",
+          "details": "加载耗时: 2492ms"
+        },
+        {
+          "id": "UE-10",
+          "page": "customer-list.html (wxapp)",
+          "category": "用户体验",
+          "issue": "小程序按钮触摸友好",
+          "status": "WARNING",
+          "details": "按钮数量: 0"
+        },
+        {
+          "id": "UE-11",
+          "page": "record-upload.html (wxapp)",
+          "category": "用户体验",
+          "issue": "上传区域明显程度",
+          "status": "PASSED",
+          "details": "上传元素: 16，提示文字: 有"
+        },
+        {
+          "id": "UE-12",
+          "page": "customer-detail.html (wxapp)",
+          "category": "用户体验",
+          "issue": "拨打电话按钮",
+          "status": "PASSED",
+          "details": "电话按钮: 2个"
+        }
+      ],
+      "passed": 10,
+      "failed": 0,
+      "warnings": 2
+    },
+    {
+      "round": 9,
+      "name": "端到端测试",
+      "date": "2026-04-11T16:41:31.084Z",
+      "tests": [
+        {
+          "id": "E2E-01",
+          "page": "customer-list -> customer-detail",
+          "category": "端到端",
+          "issue": "客户管理列表到详情流程",
+          "status": "PASSED",
+          "details": "列表: 有，详情: 有"
+        },
+        {
+          "id": "E2E-02",
+          "page": "customer-list.html",
+          "category": "端到端",
+          "issue": "筛选-搜索-重置流程",
+          "status": "PASSED",
+          "details": "筛选后: 3行，重置后: 3行"
+        },
+        {
+          "id": "E2E-03",
+          "page": "record-list -> record-detail",
+          "category": "端到端",
+          "issue": "录音管理流程",
+          "status": "PASSED",
+          "details": "列表: 有，详情: 有"
+        },
+        {
+          "id": "E2E-04",
+          "page": "task-list -> task-audit",
+          "category": "端到端",
+          "issue": "任务管理流程",
+          "status": "PASSED",
+          "details": "任务列表: 有，审核页: 有"
+        },
+        {
+          "id": "E2E-05",
+          "page": "speech-data.html",
+          "category": "端到端",
+          "issue": "语音数据分析完整展示",
+          "status": "PASSED",
+          "details": "数据: 有，Tab: 无"
+        },
+        {
+          "id": "E2E-06",
+          "page": "customer-list.html",
+          "category": "端到端",
+          "issue": "批量转移操作流程",
+          "status": "PASSED",
+          "details": "转移弹窗: 打开"
+        },
+        {
+          "id": "E2E-07",
+          "page": "customer-detail.html",
+          "category": "端到端",
+          "issue": "添加跟进流程",
+          "status": "PASSED",
+          "details": "跟进表单: 打开"
+        },
+        {
+          "id": "E2E-08",
+          "status": "ERROR",
+          "error": "locator.count: Unexpected token \"=\" while parsing css selector \"[class*=\"list\"], [class*=\"card\"], text=/客户/\". Did you mean to CSS.escape it?"
+        },
+        {
+          "id": "E2E-09",
+          "page": "material-center.html (wxapp)",
+          "category": "端到端",
+          "issue": "物料中心浏览",
+          "status": "PASSED",
+          "details": "物料内容: 有，分类: 有"
+        },
+        {
+          "id": "E2E-10",
+          "page": "record-upload.html (wxapp)",
+          "category": "端到端",
+          "issue": "录音上传完整表单",
+          "status": "PASSED",
+          "details": "上传区: 有，客户选择: 有，提交: 有"
+        }
+      ],
+      "passed": 9,
+      "failed": 1,
+      "warnings": 0
+    },
+    {
+      "round": 10,
+      "name": "最终验收测试",
+      "date": "2026-04-11T16:41:53.445Z",
+      "tests": [
+        {
+          "id": "FA-01",
+          "page": "PC端全部页面",
+          "category": "最终验收",
+          "issue": "页面可访问性",
+          "status": "PASSED",
+          "details": "失败: 0/7页"
+        },
+        {
+          "id": "FA-02",
+          "page": "小程序端全部页面",
+          "category": "最终验收",
+          "issue": "页面可访问性",
+          "status": "PASSED",
+          "details": "失败: 0/4页"
+        },
+        {
+          "id": "FA-03",
+          "page": "customer-list.html",
+          "category": "最终验收",
+          "issue": "客户管理核心功能",
+          "status": "PASSED",
+          "details": "列表: true，搜索: true，筛选: true，转移: true"
+        },
+        {
+          "id": "FA-04",
+          "page": "task-list + task-audit",
+          "category": "最终验收",
+          "issue": "任务管理核心功能",
+          "status": "PASSED",
+          "details": "任务列表: true，审核: true"
+        },
+        {
+          "id": "FA-05",
+          "page": "record-list + record-detail",
+          "category": "最终验收",
+          "issue": "录音管理核心功能",
+          "status": "PASSED",
+          "details": "列表: true，详情: true"
+        },
+        {
+          "id": "FA-06",
+          "page": "speech-data.html",
+          "category": "最终验收",
+          "issue": "语音数据分析展示",
+          "status": "PASSED",
+          "details": "图表: true，数据: true，Tab: false"
+        },
+        {
+          "id": "FA-07",
+          "page": "PC端页面",
+          "category": "最终验收",
+          "issue": "UI风格一致性",
+          "status": "PASSED",
+          "details": "主色调使用: 一致"
+        },
+        {
+          "id": "FA-08",
+          "page": "PC端页面",
+          "category": "最终验收",
+          "issue": "响应式布局",
+          "status": "PASSED",
+          "details": "多分辨率测试通过"
+        },
+        {
+          "id": "FA-09",
+          "page": "小程序端",
+          "category": "最终验收",
+          "issue": "小程序核心功能",
+          "status": "PASSED",
+          "details": "客户管理: 有，物料中心: 有"
+        },
+        {
+          "id": "FA-10",
+          "page": "customer-list + customer-detail",
+          "category": "最终验收",
+          "issue": "已知P1问题修复",
+          "status": "PASSED",
+          "details": "批量转移默认值问题: 已修复，添加跟进按钮: 有"
+        },
+        {
+          "id": "FA-11",
+          "page": "多页面导航",
+          "category": "最终验收",
+          "issue": "整体稳定性",
+          "status": "PASSED",
+          "details": "连续导航无崩溃"
+        },
+        {
+          "id": "FA-12",
+          "page": "全局",
+          "category": "最终验收",
+          "issue": "上线前检查清单",
+          "status": "PASSED",
+          "details": "页面可访问: ✓，核心功能: ✓，数据展示: ✓，无致命错误: ✓"
+        }
+      ],
+      "passed": 12,
+      "failed": 0,
+      "warnings": 0
+    }
+  ]
+}

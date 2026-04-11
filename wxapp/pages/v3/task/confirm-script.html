@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>文案确认 - 房产AI作业平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        success: '#00B42A',
+                        warning: '#FF7D00',
+                        danger: '#F53F3F',
+                        dark: '#1D2129',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body { background: #F2F3F5; min-height: 100vh; padding-bottom: 80px; }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="bg-white px-4 pt-12 pb-3 sticky top-0 z-50 shadow-sm">
+        <div class="flex items-center justify-between">
+            <button onclick="history.back()" class="text-primary"><i class="fa fa-chevron-left text-lg"></i></button>
+            <h1 class="text-base font-bold text-dark">阶段3：文案确认</h1>
+            <div class="w-8"></div>
+        </div>
+        <!-- 进度 -->
+        <div class="flex items-center mt-3 space-x-1">
+            <div class="flex-1 h-1.5 bg-success rounded-full"></div>
+            <div class="flex-1 h-1.5 bg-success rounded-full"></div>
+            <div class="flex-1 h-1.5 bg-warning rounded-full"></div>
+            <div class="flex-1 h-1.5 bg-gray-200 rounded-full"></div>
+        </div>
+        <p class="text-xs text-gray-400 mt-1">步骤 3/4 · 文案/脚本生成</p>
+    </div>
+
+    <!-- 平台选择 -->
+    <div class="mx-3 mt-3 bg-white rounded-xl p-4 shadow-sm">
+        <h3 class="text-sm font-semibold text-dark mb-3">选择需要生成的内容</h3>
+        <div class="grid grid-cols-2 gap-3">
+            <div class="border-2 border-primary rounded-xl p-3 relative" id="card-redbook">
+                <div class="absolute top-2 right-2"><div class="w-5 h-5 bg-primary rounded-full flex items-center justify-center text-white text-xs"><i class="fa fa-check"></i></div></div>
+                <div class="text-2xl mb-2">📕</div>
+                <p class="text-sm font-semibold text-dark">小红书文案</p>
+                <p class="text-xs text-gray-400 mt-1">500-800字图文脚本</p>
+            </div>
+            <div class="border border-gray-200 rounded-xl p-3 relative cursor-pointer" onclick="toggleCard(this, 'gzh')">
+                <div class="absolute top-2 right-2 opacity-0" id="check-gzh"><div class="w-5 h-5 bg-primary rounded-full flex items-center justify-center text-white text-xs"><i class="fa fa-check"></i></div></div>
+                <div class="text-2xl mb-2">📰</div>
+                <p class="text-sm font-semibold text-dark">公众号文案</p>
+                <p class="text-xs text-gray-400 mt-1">1000-1500字深度图文</p>
+            </div>
+            <div class="border border-gray-200 rounded-xl p-3 relative cursor-pointer" onclick="toggleCard(this, 'video')">
+                <div class="absolute top-2 right-2 opacity-0" id="check-video"><div class="w-5 h-5 bg-primary rounded-full flex items-center justify-center text-white text-xs"><i class="fa fa-check"></i></div></div>
+                <div class="text-2xl mb-2">🎬</div>
+                <p class="text-sm font-semibold text-dark">短视频脚本</p>
+                <p class="text-xs text-gray-400 mt-1">15-60秒分镜头脚本</p>
+            </div>
+            <div class="border border-gray-200 rounded-xl p-3 relative cursor-pointer" onclick="toggleCard(this, 'moments')">
+                <div class="absolute top-2 right-2 opacity-0" id="check-moments"><div class="w-5 h-5 bg-primary rounded-full flex items-center justify-center text-white text-xs"><i class="fa fa-check"></i></div></div>
+                <div class="text-2xl mb-2">💬</div>
+                <p class="text-sm font-semibold text-dark">朋友圈文案</p>
+                <p class="text-xs text-gray-400 mt-1">朋友圈推广文字</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 小红书文案预览 -->
+    <div class="mx-3 mt-3 bg-white rounded-xl p-4 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-semibold text-dark">📕 小红书文案预览</h3>
+            <button class="text-xs text-primary" onclick="editContent()"><i class="fa fa-edit mr-1"></i>编辑</button>
+        </div>
+        <!-- 封面图 -->
+        <div class="bg-gradient-to-br from-blue-100 via-orange-50 to-pink-100 rounded-xl h-40 flex items-center justify-center mb-3 relative">
+            <div class="text-center">
+                <p class="text-sm text-gray-600">封面图预览区域</p>
+                <p class="text-xs text-gray-400 mt-1">3:4 竖图 · AI生成</p>
+            </div>
+            <button class="absolute top-2 right-2 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow text-gray-400 hover:text-primary">
+                <i class="fa fa-refresh"></i>
+            </button>
+        </div>
+        <!-- 正文 -->
+        <div class="text-sm text-gray-800 leading-relaxed">
+            <p class="font-bold text-base mb-2">万科城市之光｜总价550万起入住CBD精装三居，这波行情不能再错过了！</p>
+            <p class="mb-2">最近很多朋友问我CBD附近有什么性价比高的新盘，今天就给大家推荐一下万科城市之光~</p>
+            <p class="mb-2">🏠 项目基本信息</p>
+            <p class="mb-2">位置：朝阳区CBD核心区·光华路8号<br>均价：7.8万/㎡（精装）<br>户型：88-130㎡三至四居<br>总价：550万起</p>
+            <p class="mb-2">🌟 为什么推荐这个盘？</p>
+            <p class="mb-2">1️⃣ 位置绝了！地铁直达，出行超方便<br>2️⃣ 万科品质，精装交付，省心省力<br>3️⃣ 周边配套齐全，学校医院商场全都有<br>4️⃣ 户型设计合理，得房率高达82%</p>
+            <p class="text-gray-400 text-xs">#北京新房 #万科城市之光 #买房攻略 #CBD #刚需改善</p>
+        </div>
+        <!-- 操作按钮 -->
+        <div class="flex space-x-2 mt-4">
+            <button class="flex-1 py-2 border border-primary text-primary rounded-lg text-xs font-medium" onclick="regenerateContent()">
+                <i class="fa fa-refresh mr-1"></i>重新生成
+            </button>
+            <button class="flex-1 py-2 bg-success text-white rounded-lg text-xs font-medium" onclick="confirmContent()">
+                <i class="fa fa-check mr-1"></i>确认发布
+            </button>
+        </div>
+    </div>
+
+    <!-- 生成状态提示 -->
+    <div class="mx-3 mt-3 bg-orange-50 border border-orange-100 rounded-xl p-4">
+        <div class="flex items-start">
+            <i class="fa fa-info-circle text-warning mt-0.5 mr-2"></i>
+            <div>
+                <p class="text-sm font-medium text-warning">提示</p>
+                <p class="text-xs text-gray-600 mt-1">确认文案后将解锁「封面图/视频生成」阶段。您也可以直接提交，后续在内容日历中查看生成进度。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部操作 -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-4 py-3 z-50">
+        <button class="w-full py-3 bg-primary text-white rounded-xl text-sm font-semibold" onclick="confirmContent()">
+            确认文案，进入成果生成阶段
+        </button>
+    </div>
+
+    <script>
+        function toggleCard(el, type) {
+            const check = document.getElementById('check-' + type);
+            if (check.style.opacity === '1') {
+                check.style.opacity = '0';
+                el.classList.remove('border-primary');
+                el.classList.add('border-gray-200');
+            } else {
+                check.style.opacity = '1';
+                el.classList.add('border-primary');
+                el.classList.remove('border-gray-200');
+            }
+        }
+        function editContent() {
+            alert('打开编辑模式');
+        }
+        function regenerateContent() {
+            alert('正在重新生成文案，请稍候...');
+        }
+        function confirmContent() {
+            if (confirm('确认文案内容？确认后将进入成果生成阶段。')) {
+                location.href = 'result-generate.html';
+            }
+        }
+    </script>
+</body>
+</html>

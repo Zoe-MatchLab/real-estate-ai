@@ -27,6 +27,7 @@
         .tag-level-high { background: #E8FFEA; color: #00B42A; }
         .tag-level-medium { background: #FFF7E8; color: #FF7D00; }
         .tag-source-online { background: #F3E8FF; color: #722ED1; }
+        .aside-active { color: #165DFF; background-color: #E8F3FF; border-right: 4px solid #165DFF; }
         .follow-method { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
     </style>
     <style>
@@ -77,17 +78,25 @@
 
     <div class="flex pt-14">
         <!-- 侧边栏 -->
-        <div id="sidebar-container"><aside class="w-64 bg-white h-[calc(100vh-56px)] fixed left-0 shadow-sm"><nav class="py-4"><div class="px-4 py-2 text-xs text-gray-400 uppercase font-medium">工作台</div><a href="../index.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-dashboard w-5 text-center"></i><span class="ml-3">数据看板</span></a><a href="../material/material-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-home w-5 text-center"></i><span class="ml-3">新盘管理</span></a><a href="task/task-list.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 active"><i class="fa fa-tasks w-5 text-center"></i><span class="ml-3">探盘任务管理</span></a><a href="../speech/speech-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-comments w-5 text-center"></i><span class="ml-3">话术训练管理</span></a><a href="../content/content-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-magic w-5 text-center"></i><span class="ml-3">获客内容管理</span></a><div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">管理层</div><a href="record/record-list.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-microphone w-5 text-center"></i><span class="ml-3">录音分析</span><span class="ml-auto text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded">NEW</span></a><a href="customer/customer-list.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-user-circle w-5 text-center"></i><span class="ml-3">客户管理</span><span class="ml-auto text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded">NEW</span></a><a href="speech/speech-data.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-line-chart w-5 text-center"></i><span class="ml-3">训练数据中心</span><span class="ml-auto text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded">NEW</span></a><a href="../data/data-analysis.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-bar-chart w-5 text-center"></i><span class="ml-3">数据分析</span></a><a href="../team/team-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-users w-5 text-center"></i><span class="ml-3">团队管理</span></a><div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">系统管理</div><a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-cog w-5 text-center"></i><span class="ml-3">系统设置</span></a></nav></aside></div>
-        <script>
-        document.addEventListener('DOMContentLoaded', async function() {
-            try {
-                const res = await fetch('../../components/sidebar.component.html');
-                document.getElementById('sidebar-container').innerHTML = await res.text();
-                if (window.fixSidebarLinks) window.fixSidebarLinks();
-                if (window.initSidebar) window.initSidebar();
-            } catch (e) { console.error('侧边栏加载失败:', e); }
-        });
-        </script>
+        <!-- 侧边栏 - 内联，不使用fetch -->
+<aside class="w-64 bg-white h-[calc(100vh-56px)] fixed left-0 shadow-sm">
+    <nav class="py-4">
+        <div class="px-4 py-2 text-xs text-gray-400 uppercase font-medium">工作台</div>
+        <a href="../index.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-dashboard w-5 text-center"></i><span class="ml-3">数据看板</span></a>
+        <a href="../material/material-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-home w-5 text-center"></i><span class="ml-3">新盘管理</span></a>
+        <a href="../task/task-list.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-tasks w-5 text-center"></i><span class="ml-3">探盘任务管理</span></a>
+        <a href="../speech/speech-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-comments w-5 text-center"></i><span class="ml-3">话术训练管理</span></a>
+        <a href="../content/content-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-magic w-5 text-center"></i><span class="ml-3">获客内容管理</span></a>
+        <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">管理层</div>
+        <a href="../record/record-list.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-microphone w-5 text-center"></i><span class="ml-3">录音分析</span><span class="ml-auto text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded">NEW</span></a>
+        <a href="customer-list.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 active"><i class="fa fa-user-circle w-5 text-center"></i><span class="ml-3">客户管理</span><span class="ml-auto text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded">NEW</span></a>
+        <a href="../speech/speech-data.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-line-chart w-5 text-center"></i><span class="ml-3">训练数据中心</span><span class="ml-auto text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded">NEW</span></a>
+        <a href="../data/data-analysis.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-bar-chart w-5 text-center"></i><span class="ml-3">数据分析</span></a>
+        <a href="../team/team-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-users w-5 text-center"></i><span class="ml-3">团队管理</span></a>
+        <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">系统管理</div>
+        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-cog w-5 text-center"></i><span class="ml-3">系统设置</span></a>
+    </nav>
+</aside>
 
         <!-- 主内容区 -->
         <main class="ml-64 flex-1 p-6">

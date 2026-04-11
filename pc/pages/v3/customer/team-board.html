@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>团队客户看板 - V3.0 - 房产AI作业平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        success: '#00B42A',
+                        warning: '#FF7D00',
+                        danger: '#F53F3F',
+                        dark: '#1D2129',
+                        'gray-light': '#F2F3F5',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .tag { padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; display: inline-block; }
+        aside a.active { color: #165DFF; background-color: #E8F3FF; border-right: 4px solid #165DFF; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 顶部导航 -->
+    <nav class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
+        <div class="flex justify-between items-center px-6 py-3">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-home text-primary text-2xl"></i>
+                <span class="text-xl font-bold text-dark">房产AI作业平台</span>
+                <span class="text-sm text-gray-500 ml-2">管理后台</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-600 hover:text-primary relative">
+                    <i class="fa fa-bell-o text-lg"></i>
+                    <span class="absolute top-0 right-0 bg-danger text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center">管</div>
+                    <span class="text-sm font-medium">区域经理</span>
+                    <i class="fa fa-angle-down text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex pt-14">
+        <!-- 侧边栏 - 内联，不使用fetch -->
+        <aside class="w-64 bg-white h-[calc(100vh-56px)] fixed left-0 shadow-sm">
+            <nav class="py-4">
+                <div class="px-4 py-2 text-xs text-gray-400 uppercase font-medium">工作台</div>
+                <a href="../../index.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-dashboard w-5 text-center"></i>
+                    <span class="ml-3">数据看板</span>
+                </a>
+                <a href="../../pages/material/material-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-home w-5 text-center"></i>
+                    <span class="ml-3">新盘管理</span>
+                </a>
+                <a href="../../pages/v3/task/task-list.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-tasks w-5 text-center"></i>
+                    <span class="ml-3">探盘任务管理</span>
+                </a>
+                <a href="../../pages/speech/speech-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-comments w-5 text-center"></i>
+                    <span class="ml-3">话术训练管理</span>
+                </a>
+                <a href="../../pages/content/content-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-magic w-5 text-center"></i>
+                    <span class="ml-3">获客内容管理</span>
+                </a>
+                <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">管理层</div>
+                <a href="../../pages/v3/record/record-list.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-microphone w-5 text-center"></i>
+                    <span class="ml-3">录音分析</span>
+                </a>
+                <a href="customer-list.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-user-circle w-5 text-center"></i>
+                    <span class="ml-3">客户管理</span>
+                </a>
+                <a href="team-board.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 active">
+                    <i class="fa fa-users w-5 text-center"></i>
+                    <span class="ml-3">团队客户看板</span>
+                </a>
+                <a href="../../pages/speech/speech-data.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-line-chart w-5 text-center"></i>
+                    <span class="ml-3">训练数据中心</span>
+                </a>
+                <a href="../../pages/data/data-analysis.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-bar-chart w-5 text-center"></i>
+                    <span class="ml-3">数据分析</span>
+                </a>
+                <a href="../../pages/team/team-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-sitemap w-5 text-center"></i>
+                    <span class="ml-3">团队管理</span>
+                </a>
+                <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">系统管理</div>
+                <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-cog w-5 text-center"></i>
+                    <span class="ml-3">系统设置</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="ml-64 flex-1 p-6">
+            <!-- 页面标题 -->
+            <div class="mb-6">
+                <h1 class="text-2xl font-bold text-dark">团队客户看板</h1>
+                <p class="text-gray-500 mt-1">V3.0 · 团队客户数据分析 · 支持查看各经纪人客户数据对比</p>
+            </div>
+
+            <!-- 团队概览统计 V3.0 -->
+            <div class="grid grid-cols-4 gap-5 mb-5">
+                <div class="bg-white rounded-lg shadow-sm p-5">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-gray-500 text-sm">团队客户总数</span>
+                        <i class="fa fa-users text-gray-400"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-dark">128</div>
+                    <div class="text-xs text-gray-400 mt-1">本月新增 +12</div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-5">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-gray-500 text-sm">高意向客户</span>
+                        <i class="fa fa-star text-yellow-400"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-green-600">42</div>
+                    <div class="text-xs text-gray-400 mt-1">占比 32.8%</div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-5">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-gray-500 text-sm">本月成交</span>
+                        <i class="fa fa-handshake text-blue-400"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-blue-600">8</div>
+                    <div class="text-xs text-gray-400 mt-1">成交率 6.3%</div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-5">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-gray-500 text-sm">待跟进客户</span>
+                        <i class="fa fa-clock text-orange-400"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-orange-500">15</div>
+                    <div class="text-xs text-gray-400 mt-1">7天以上未跟进</div>
+                </div>
+            </div>
+
+            <!-- 筛选栏 -->
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-5">
+                <div class="flex flex-wrap gap-3 items-end">
+                    <div class="min-w-[160px]">
+                        <label class="block text-xs text-gray-500 mb-1">经纪人</label>
+                        <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-white">
+                            <option value="">全部经纪人</option>
+                            <option>陈佳佳</option>
+                            <option>李明</option>
+                            <option>王芳</option>
+                            <option>赵伟</option>
+                        </select>
+                    </div>
+                    <div class="min-w-[160px]">
+                        <label class="block text-xs text-gray-500 mb-1">时间范围</label>
+                        <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-white">
+                            <option>本月</option>
+                            <option>上月</option>
+                            <option>近3个月</option>
+                            <option>本季度</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button class="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg text-sm">
+                            <i class="fa fa-search mr-1"></i>搜索
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-5">
+                <!-- 左侧：各经纪人客户数据 -->
+                <div class="col-span-2 space-y-5">
+                    <!-- 客户分布图 -->
+                    <div class="bg-white rounded-lg shadow-sm p-5">
+                        <h3 class="font-bold text-dark text-sm mb-4">各经纪人客户分布</h3>
+                        <div class="h-64">
+                            <canvas id="agentCustomerChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- 经纪人客户明细表 -->
+                    <div class="bg-white rounded-lg shadow-sm">
+                        <div class="p-4 border-b border-gray-100">
+                            <h3 class="font-bold text-dark text-sm">经纪人客户明细</h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-sm">
+                                <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left font-medium">经纪人</th>
+                                        <th class="px-4 py-3 text-left font-medium">客户总数</th>
+                                        <th class="px-4 py-3 text-left font-medium">高意向</th>
+                                        <th class="px-4 py-3 text-left font-medium">中等意向</th>
+                                        <th class="px-4 py-3 text-left font-medium">已成交</th>
+                                        <th class="px-4 py-3 text-left font-medium">本月新增</th>
+                                        <th class="px-4 py-3 text-left font-medium">跟进中</th>
+                                        <th class="px-4 py-3 text-left font-medium">操作</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-100">
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3">
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-7 h-7 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold">陈</div>
+                                                <span class="font-medium text-dark">陈佳佳</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-3 font-medium text-dark">35</td>
+                                        <td class="px-4 py-3 text-green-600 font-medium">12</td>
+                                        <td class="px-4 py-3 text-orange-500">10</td>
+                                        <td class="px-4 py-3 text-blue-600">3</td>
+                                        <td class="px-4 py-3 text-dark">5</td>
+                                        <td class="px-4 py-3">
+                                            <span class="text-primary text-sm cursor-pointer hover:underline">查看</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3">
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-7 h-7 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs font-bold">李</div>
+                                                <span class="font-medium text-dark">李明</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-3 font-medium text-dark">28</td>
+                                        <td class="px-4 py-3 text-green-600 font-medium">10</td>
+                                        <td class="px-4 py-3 text-orange-500">8</td>
+                                        <td class="px-4 py-3 text-blue-600">2</td>
+                                        <td class="px-4 py-3 text-dark">3</td>
+                                        <td class="px-4 py-3">
+                                            <span class="text-primary text-sm cursor-pointer hover:underline">查看</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3">
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-7 h-7 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-xs font-bold">王</div>
+                                                <span class="font-medium text-dark">王芳</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-3 font-medium text-dark">32</td>
+                                        <td class="px-4 py-3 text-green-600 font-medium">11</td>
+                                        <td class="px-4 py-3 text-orange-500">9</td>
+                                        <td class="px-4 py-3 text-blue-600">2</td>
+                                        <td class="px-4 py-3 text-dark">2</td>
+                                        <td class="px-4 py-3">
+                                            <span class="text-primary text-sm cursor-pointer hover:underline">查看</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3">
+                                            <div class="flex items-center gap-2">
+                                                <div class="w-7 h-7 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-xs font-bold">赵</div>
+                                                <span class="font-medium text-dark">赵伟</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-4 py-3 font-medium text-dark">33</td>
+                                        <td class="px-4 py-3 text-green-600 font-medium">9</td>
+                                        <td class="px-4 py-3 text-orange-500">8</td>
+                                        <td class="px-4 py-3 text-blue-600">1</td>
+                                        <td class="px-4 py-3 text-dark">2</td>
+                                        <td class="px-4 py-3">
+                                            <span class="text-primary text-sm cursor-pointer hover:underline">查看</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧：意向分布 + 客户排行榜 -->
+                <div class="col-span-1 space-y-5">
+                    <!-- 意向阶段分布 -->
+                    <div class="bg-white rounded-lg shadow-sm p-5">
+                        <h3 class="font-bold text-dark text-sm mb-4">团队意向阶段分布</h3>
+                        <div class="h-48">
+                            <canvas id="intentionChart"></canvas>
+                        </div>
+                        <div class="mt-3 space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-green-500"></span>高意向</span>
+                                <span class="font-medium text-dark">42人</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-orange-400"></span>中等意向</span>
+                                <span class="font-medium text-dark">35人</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-gray-400"></span>初步了解</span>
+                                <span class="font-medium text-dark">43人</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-500"></span>已成交</span>
+                                <span class="font-medium text-dark">8人</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 高意向客户 TOP5 -->
+                    <div class="bg-white rounded-lg shadow-sm">
+                        <div class="p-4 border-b border-gray-100 flex justify-between items-center">
+                            <h3 class="font-bold text-dark text-sm">高意向客户 TOP5</h3>
+                            <a href="customer-list.html" class="text-xs text-primary hover:text-primary/80">查看全部 <i class="fa fa-angle-right"></i></a>
+                        </div>
+                        <div class="p-4 space-y-3">
+                            <div class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer" onclick="location.href='customer-detail.html'">
+                                <div class="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold">张</div>
+                                <div class="flex-1">
+                                    <div class="font-medium text-dark text-sm">张三</div>
+                                    <div class="text-xs text-gray-400">中海汇德里 · 跟进5次</div>
+                                </div>
+                                <span class="tag" style="background:#E8FFEA;color:#00B42A;font-size:10px">高意向</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer">
+                                <div class="w-8 h-8 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-xs font-bold">陈</div>
+                                <div class="flex-1">
+                                    <div class="font-medium text-dark text-sm">陈莉</div>
+                                    <div class="text-xs text-gray-400">华润外滩九里 · 跟进4次</div>
+                                </div>
+                                <span class="tag" style="background:#E8FFEA;color:#00B42A;font-size:10px">高意向</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer">
+                                <div class="w-8 h-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs font-bold">周</div>
+                                <div class="flex-1">
+                                    <div class="font-medium text-dark text-sm">周明</div>
+                                    <div class="text-xs text-gray-400">龙湖天琅 · 跟进3次</div>
+                                </div>
+                                <span class="tag" style="background:#E8FFEA;color:#00B42A;font-size:10px">高意向</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer">
+                                <div class="w-8 h-8 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xs font-bold">吴</div>
+                                <div class="flex-1">
+                                    <div class="font-medium text-dark text-sm">吴静</div>
+                                    <div class="text-xs text-gray-400">万科翡翠公园 · 跟进3次</div>
+                                </div>
+                                <span class="tag" style="background:#E8FFEA;color:#00B42A;font-size:10px">高意向</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg cursor-pointer">
+                                <div class="w-8 h-8 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-xs font-bold">林</div>
+                                <div class="flex-1">
+                                    <div class="font-medium text-dark text-sm">林涛</div>
+                                    <div class="text-xs text-gray-400">中海汇德里 · 跟进2次</div>
+                                </div>
+                                <span class="tag" style="background:#E8FFEA;color:#00B42A;font-size:10px">高意向</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 待跟进预警 -->
+                    <div class="bg-white rounded-lg shadow-sm">
+                        <div class="p-4 border-b border-gray-100 flex justify-between items-center">
+                            <h3 class="font-bold text-dark text-sm"><i class="fa fa-exclamation-triangle text-orange-400 mr-1"></i>待跟进预警</h3>
+                            <span class="text-xs text-orange-500">15人需要跟进</span>
+                        </div>
+                        <div class="p-4 space-y-2">
+                            <div class="flex justify-between items-center p-2 bg-red-50 rounded-lg">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-6 h-6 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-xs font-bold">王</div>
+                                    <span class="text-sm text-dark">王五</span>
+                                </div>
+                                <span class="text-xs text-red-500">10天未跟进</span>
+                            </div>
+                            <div class="flex justify-between items-center p-2 bg-orange-50 rounded-lg">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-6 h-6 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xs font-bold">李</div>
+                                    <span class="text-sm text-dark">李四</span>
+                                </div>
+                                <span class="text-xs text-orange-500">8天未跟进</span>
+                            </div>
+                            <div class="flex justify-between items-center p-2 bg-orange-50 rounded-lg">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-6 h-6 bg-orange-100 text-orange-600 rounded-full flex items-center justify-center text-xs font-bold">赵</div>
+                                    <span class="text-sm text-dark">赵强</span>
+                                </div>
+                                <span class="text-xs text-orange-500">7天未跟进</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 侧边栏高亮
+        document.addEventListener('DOMContentLoaded', function() {
+            const links = document.querySelectorAll('aside a');
+            links.forEach(link => {
+                if (link.getAttribute('href') === 'team-board.html') {
+                    link.classList.add('active');
+                }
+            });
+
+            // 渲染图表
+            renderAgentCustomerChart();
+            renderIntentionChart();
+        });
+
+        function renderAgentCustomerChart() {
+            const ctx = document.getElementById('agentCustomerChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['陈佳佳', '李明', '王芳', '赵伟'],
+                    datasets: [
+                        {
+                            label: '高意向',
+                            data: [12, 10, 11, 9],
+                            backgroundColor: '#00B42A',
+                            borderRadius: 4,
+                        },
+                        {
+                            label: '中等意向',
+                            data: [10, 8, 9, 8],
+                            backgroundColor: '#FF7D00',
+                            borderRadius: 4,
+                        },
+                        {
+                            label: '已成交',
+                            data: [3, 2, 2, 1],
+                            backgroundColor: '#165DFF',
+                            borderRadius: 4,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: { boxWidth: 12, padding: 16, font: { size: 11 } }
+                        }
+                    },
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { beginAtZero: true, grid: { color: '#F2F3F5' } }
+                    }
+                }
+            });
+        }
+
+        function renderIntentionChart() {
+            const ctx = document.getElementById('intentionChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['高意向', '中等意向', '初步了解', '已成交'],
+                    datasets: [{
+                        data: [42, 35, 43, 8],
+                        backgroundColor: ['#00B42A', '#FF7D00', '#86909C', '#165DFF'],
+                        borderWidth: 0,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    cutout: '65%'
+                }
+            });
+        }
+    </script>
+</body>
+</html>

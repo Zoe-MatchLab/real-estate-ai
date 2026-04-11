@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>客户管理 - 房产AI作业平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        success: '#00B42A',
+                        warning: '#FF7D00',
+                        danger: '#F53F3F',
+                        dark: '#1D2129',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
+        body { background: #F2F3F5; min-height: 100vh; padding-bottom: 80px; }
+        .tag { padding: 2px 6px; border-radius: 4px; font-size: 10px; font-weight: 500; }
+        .tag-level-high { background: #E8FFEA; color: #00B42A; }
+        .tag-level-medium { background: #FFF7E8; color: #FA8C16; }
+        .tag-level-low { background: #F2F3F5; color: #86909C; }
+        .customer-card { background: white; border-radius: 12px; padding: 14px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 1px solid #E5E6EB; display: flex; z-index: 100; padding-bottom: env(safe-area-inset-bottom, 0); }
+        .bottom-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 8px 0; color: #86909C; font-size: 10px; }
+        .bottom-nav-item.active { color: #165DFF; }
+    </style>
+</head>
+<body>
+    <!-- 顶部导航 -->
+    <div class="bg-white px-4 pt-12 pb-3 sticky top-0 z-50 shadow-sm">
+        <div class="flex items-center justify-between mb-3">
+            <h1 class="text-xl font-bold text-dark">客户管理</h1>
+            <button class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white" onclick="showAddModal()">
+                <i class="fa fa-plus text-sm"></i>
+            </button>
+        </div>
+        <!-- 搜索 -->
+        <div class="relative">
+            <i class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            <input type="text" placeholder="搜索客户姓名/电话" class="w-full bg-gray-100 rounded-full px-9 py-2.5 text-sm">
+        </div>
+        <!-- 筛选Tab -->
+        <div class="flex space-x-2 mt-3 overflow-x-auto" style="white-space:nowrap">
+            <button class="px-3 py-1 rounded-full text-xs font-medium bg-primary text-white whitespace-nowrap" id="filterAll" onclick="switchTab('All')">全部</button>
+            <button class="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-500 whitespace-nowrap" id="filterHigh" onclick="switchTab('High')">高意向</button>
+            <button class="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-500 whitespace-nowrap" id="filterMedium" onclick="switchTab('Medium')">中意向</button>
+            <button class="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-500 whitespace-nowrap" id="filterLow" onclick="switchTab('Low')">低意向</button>
+        </div>
+    </div>
+
+    <!-- 统计 -->
+    <div class="mx-3 mt-3 bg-white rounded-xl p-4 shadow-sm">
+        <div class="grid grid-cols-4 text-center">
+            <div>
+                <p class="text-xl font-bold text-dark">28</p>
+                <p class="text-xs text-gray-400">全部客户</p>
+            </div>
+            <div>
+                <p class="text-xl font-bold text-success">12</p>
+                <p class="text-xs text-gray-400">高意向</p>
+            </div>
+            <div>
+                <p class="text-xl font-bold text-warning">10</p>
+                <p class="text-xs text-gray-400">跟进中</p>
+            </div>
+            <div>
+                <p class="text-xl font-bold text-primary">3</p>
+                <p class="text-xs text-gray-400">本月成交</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 客户列表 -->
+    <div class="mx-3 mt-3">
+        <!-- 客户1 -->
+        <div class="customer-card cursor-pointer" onclick="location.href='customer-detail.html'">
+            <div class="flex items-start space-x-3">
+                <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-semibold text-lg flex-shrink-0">张</div>
+                <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-semibold text-dark">张先生</p>
+                            <p class="text-xs text-gray-400 mt-0.5">138****1234</p>
+                        </div>
+                        <span class="tag tag-level-high">高意向</span>
+                    </div>
+                    <div class="mt-2 flex items-center space-x-4 text-xs text-gray-500">
+                        <span><i class="fa fa-home mr-1"></i>万科·城市之光</span>
+                        <span><i class="fa fa-clock-o mr-1"></i>今日跟进</span>
+                    </div>
+                    <div class="mt-2 bg-gray-50 rounded-lg p-2">
+                        <p class="text-xs text-gray-500">需求：三居室、地铁盘、预算600-800万</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 客户2 -->
+        <div class="customer-card cursor-pointer" onclick="location.href='customer-detail.html'">
+            <div class="flex items-start space-x-3">
+                <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-orange-500 font-semibold text-lg flex-shrink-0">李</div>
+                <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-semibold text-dark">李女士</p>
+                            <p class="text-xs text-gray-400 mt-0.5">139****5678</p>
+                        </div>
+                        <span class="tag tag-level-medium">中意向</span>
+                    </div>
+                    <div class="mt-2 flex items-center space-x-4 text-xs text-gray-500">
+                        <span><i class="fa fa-home mr-1"></i>中海·汇德里</span>
+                        <span><i class="fa fa-clock-o mr-1"></i>3天前跟进</span>
+                    </div>
+                    <div class="mt-2 bg-gray-50 rounded-lg p-2">
+                        <p class="text-xs text-gray-500">需求：改善型、看重学校、预算1000万+</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 客户3 -->
+        <div class="customer-card cursor-pointer" onclick="location.href='customer-detail.html'">
+            <div class="flex items-start space-x-3">
+                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-500 font-semibold text-lg flex-shrink-0">王</div>
+                <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-semibold text-dark">王先生</p>
+                            <p class="text-xs text-gray-400 mt-0.5">136****9012</p>
+                        </div>
+                        <span class="tag tag-level-high">高意向</span>
+                    </div>
+                    <div class="mt-2 flex items-center space-x-4 text-xs text-gray-500">
+                        <span><i class="fa fa-home mr-1"></i>融创·学府壹号院</span>
+                        <span><i class="fa fa-check-circle text-success mr-1"></i>已成交</span>
+                    </div>
+                    <div class="mt-2 bg-green-50 rounded-lg p-2">
+                        <p class="text-xs text-success">成交！总价1150万，联排别墅</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 客户4 -->
+        <div class="customer-card cursor-pointer" onclick="location.href='customer-detail.html'">
+            <div class="flex items-start space-x-3">
+                <div class="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 font-semibold text-lg flex-shrink-0">赵</div>
+                <div class="flex-1">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-semibold text-dark">赵女士</p>
+                            <p class="text-xs text-gray-400 mt-0.5">135****2345</p>
+                        </div>
+                        <span class="tag tag-level-low">低意向</span>
+                    </div>
+                    <div class="mt-2 flex items-center space-x-4 text-xs text-gray-500">
+                        <span><i class="fa fa-home mr-1"></i>龙湖·天琅</span>
+                        <span><i class="fa fa-clock-o mr-1"></i>7天前跟进</span>
+                    </div>
+                    <div class="mt-2 bg-gray-50 rounded-lg p-2">
+                        <p class="text-xs text-gray-500">需求：首套房、预算有限，还在观望</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部导航 -->
+    <div class="bottom-nav">
+        <div class="bottom-nav-item" onclick="location.href='../calendar/calendar.html'">
+            <i class="fa fa-calendar text-xl"></i>
+            <span class="mt-1">日历</span>
+        </div>
+        <div class="bottom-nav-item" onclick="location.href='../task/task-detail.html'">
+            <i class="fa fa-tasks text-xl"></i>
+            <span class="mt-1">任务</span>
+        </div>
+        <div class="bottom-nav-item" onclick="location.href='../speech/speech-train.html'">
+            <i class="fa fa-commenting text-xl"></i>
+            <span class="mt-1">训练</span>
+        </div>
+        <div class="bottom-nav-item active">
+            <i class="fa fa-users text-xl"></i>
+            <span class="mt-1">客户</span>
+        </div>
+        <div class="bottom-nav-item" onclick="location.href='../mine.html'">
+            <i class="fa fa-user text-xl"></i>
+            <span class="mt-1">我的</span>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(type) {
+            ['All','High','Medium','Low'].forEach(t => {
+                const el = document.getElementById('filter'+t);
+                el.classList.remove('bg-primary','text-white');
+                el.classList.add('bg-gray-100','text-gray-500');
+            });
+            document.getElementById('filter'+type).classList.add('bg-primary','text-white');
+            document.getElementById('filter'+type).classList.remove('bg-gray-100','text-gray-500');
+        }
+        function showAddModal() {
+            alert('打开新增客户弹窗');
+        }
+    </script>
+</body>
+</html>
