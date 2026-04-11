@@ -1,0 +1,451 @@
+{
+  "timestamp": "2026-04-01T17:54:46.903Z",
+  "summary": {
+    "total": 21,
+    "pass": 21,
+    "fail": 0
+  },
+  "results": [
+    {
+      "name": "首页",
+      "file": "tools.html",
+      "url": "https://zoe-matchlab.github.io/real-estate-ai/wxapp/tools.html",
+      "status": "PASS",
+      "errors": [],
+      "checks": {
+        "load": "PASS",
+        "doctype": "PASS",
+        "title": "PASS",
+        "viewport": "PASS",
+        "charset": "PASS",
+        "bodyContent": "PASS",
+        "tabBar": "PASS",
+        "focusStyles": "FAIL",
+        "toast": "PASS",
+        "safeArea": "PASS"
+      },
+      "title": "AI工具 - 房产AI助手",
+      "consoleErrors": []
+    },
+    {
+      "name": "AI设计",
+      "file": "ai-design.html",
+      "url": "https://zoe-matchlab.github.io/real-estate-ai/wxapp/ai-design.html",
+      "status": "PASS",
+      "errors": [],
+      "checks": {
+        "load": "PASS",
+        "doctype": "PASS",
+        "title": "PASS",
+        "viewport": "PASS",
+        "charset": "PASS",
+        "bodyContent": "PASS",
+        "tabBar": "PASS",
+        "focusStyles": "PASS",
+        "toast": "PASS",
+        "safeArea": "PASS"
+      },
+      "title": "AI设计工具 - 房产AI助手",
+      "consoleErrors": []
+    },
+    {
+      "name": "Claw",
+      "file": "claw.html",
+      "url": "https://zoe-matchlab.github.io/real-estate-ai/wxapp/claw.html",
+      "status": "PASS",
+      "errors": [],
+      "checks": {
+        "load": "PASS",
+        "doctype": "PASS",
+        "title": "PASS",
+        "viewport": "PASS",
+        "charset": "PASS",
+        "bodyContent": "PASS",
+        "tabBar": "PASS",
+        "focusStyles": "PASS",
+        "toast": "PASS",
+        "safeArea": "PASS"
+      },
+      "title": "Claw - 房产AI助手",
+      "consoleErrors": []
+    },
+    {
+      "name": "任务中心",
+      "file": "calendar.html",
+      "url": "https://zoe-matchlab.github.io/real-estate-ai/wxapp/calendar.html",
+      "status": "PASS",
+      "errors": [],
+      "checks": {
+        "load": "PASS",
+        "doctype": "PASS",
+        "title": "PASS",
+        "viewport": "PASS",
+        "charset": "PASS",
+        "bodyContent": "PASS",
+        "tabBar": "WARN (optional)",
+        "focusStyles": "PASS",
+        "toast": "PASS",
+        "safeArea": "PASS"
+      },
+      "title": "任务中心 - 房产AI助手",
+      "consoleErrors": []
+    },
+    {
+      "name": "新建任务",
+      "file": "task-create.html",
+      "url": "https://zoe-matchlab.github.io/real-estate-ai/wxapp/task-create.html",
+      "status": "PASS",
+      "errors": [],
+      "checks": {
+        "load": "PASS",
+        "doctype": "PASS",
+        "title": "PASS",
+        "viewport": "PASS",
+        "charset": "PASS",
+        "bodyContent": "PASS",
+        "tabBar": "PASS",
+        "focusStyles": "PASS",
+        "toast": "PASS",
+        "safeArea": "PASS"
+      },
+      "title": "新建任务 - 房产AI助手",
+      "consoleErrors": []
+    },
+    {
+      "name": "任务详情",
+      "file": "task-detail.html",
+      "url": "https://zoe-matchlab.github.io/real-estate-ai/wxapp/task-detail.html",
+      "status": "PASS",
+      "errors": [],
+      "checks": {
+        "load": "PASS",
+        "doctype": "PASS",
+        "title": "PASS",
+        "viewport": "PASS",
+        "charset": "PASS",
+        "bodyContent": "PASS",
+        "tabBar": "PASS",
+        "focusStyles": "PASS",
+        "toast": "PASS",
+        "safeArea": "PASS"
+      },
+      "title": "探盘任务详情 - 房产AI助手",
+      "consoleErrors": []
+    },
+    {
+      "name": "打卡配置",
+      "file": "checkin-config.html",
+      "url": "https://zoe-matchlab.github.io/real-estate-ai/wxapp/checkin-config.html",
+      "status": "PASS",
+      "errors": [],
+      "checks": {
+        "load": "PASS",
+        "doctype": "PASS",
+        "title": "PASS",
+        "viewport": "PASS",
+        "charset": "PASS",
+        "bodyContent": "PASS",
+        "tabBar": "WARN (optional)",
+        "focusStyles": "PASS",
+        "toast": "PASS",
+        "safeArea": "PASS"
+      },
+      "title": "打卡配置 - 房产AI助手",
+      "consoleErrors": []
+    },
+    {
+      "name": "定位打卡",
+      "file": "checkin-location.html",
+      "url": "https://zoe-matchlab.github.io/real-estate-ai/wxapp/checkin-location.html",
+      "status": "PASS",
+      "errors": [],
+      "checks": {
+        "load": "PASS",
+        "doctype": "PASS",
+        "title": "PASS",
+        "viewport": "PASS",
+        "charset": "PASS",
+        "bodyContent": "PASS",
+        "tabBar": "WARN (optional)",
+        "focusStyles": "PASS",
+        "toast": "PASS",
+        "safeArea": "PASS"
+      },
+      "title": "阶段1：定位打卡 - 房产AI助手",
+      "consoleErrors": []
+    },
+    {
+      "name": "点位打卡",
+      "file": "checkin-point.html",
+      "url": "https://zoe-matchlab.github.io/real-estate-ai/wxapp/checkin-point.html",
+      "status": "PASS",
+      "errors": [],
+      "checks": {
+        "load": "PASS",
+        "doctype": "PASS",
+        "title": "PASS",
+        "viewport": "PASS",
+        "charset": "PASS",
+        "bodyContent": "PASS",
+        "tabBar": "WARN (optional)",
+        "focusStyles": "PASS",
+        "toast": "PASS",
+        "safeArea": "PASS"
+      },
+      "title": "阶段2：点位打卡 - 房产AI助手",
+      "consoleErrors": []
+    },
+    {
+      "name": "确认文案",
+      "file": "confirm-copywriter.html",
+      "url": "https://zoe-matchlab.github.io/real-estate-ai/wxapp/confirm-copywriter.html",
+      "status": "PASS",
+      "errors": [],
+      "checks": {
+        "load": "PASS",
+        "doctype": "PASS",
+        "title": "PASS",
+        "viewport": "PASS",
+        "charset": "PASS",
+        "bodyContent": "PASS",
+        "tabBar": "WARN (optional)",
+        "focusStyles": "PASS",
+        "toast": "PASS",
+        "safeArea": "PASS"
+      },
+      "title": "阶段3：文案确认 - 房产AI助手",
+      "consoleErrors": []
+    },
+    {
+      "name": "提交结果",
+      "file": "submit-result.html",
+      "url": "https://zoe-matchlab.github.io/real-estate-ai/wxapp/submit-result.html",
+      "status": "PASS",
+      "errors": [],
+      "checks": {
+        "load": "PASS",
+        "doctype": "PASS",
+        "title": "PASS",
+        "viewport": "PASS",
+        "charset": "PASS",
+        "bodyContent": "PASS",
+        "tabBar": "WARN (optional)",
+        "focusStyles": "PASS",
+        "toast": "PASS",
+        "safeArea": "PASS"
+      },
+      "title": "阶段4：成果提交 - 房产AI助手",
+      "consoleErrors": []
+    },
+    {
+      "name": "话术训练",
+      "file": "speech-train.html",
+      "url": "https://zoe-matchlab.github.io/real-estate-ai/wxapp/speech-train.html",
+      "status": "PASS",
+      "errors": [],
+      "checks": {
+        "load": "PASS",
+        "doctype": "PASS",
+        "title": "PASS",
+        "viewport": "PASS",
+        "charset": "PASS",
+        "bodyContent": "PASS",
+        "tabBar": "PASS",
+        "focusStyles": "PASS",
+        "toast": "PASS",
+        "safeArea": "PASS"
+      },
+      "title": "AI话术训练 - 房产AI助手",
+      "consoleErrors": []
+    },
+    {
+      "name": "对话训练",
+      "file": "train-dialog.html",
+      "url": "https://zoe-matchlab.github.io/real-estate-ai/wxapp/train-dialog.html",
+      "status": "PASS",
+      "errors": [],
+      "checks": {
+        "load": "PASS",
+        "doctype": "PASS",
+        "title": "PASS",
+        "viewport": "PASS",
+        "charset": "PASS",
+        "bodyContent": "PASS",
+        "tabBar": "WARN (optional)",
+        "focusStyles": "PASS",
+        "toast": "PASS",
+        "safeArea": "PASS"
+      },
+      "title": "AI话术训练 - 房产AI助手",
+      "consoleErrors": []
+    },
+    {
+      "name": "个人中心",
+      "file": "profile.html",
+      "url": "https://zoe-matchlab.github.io/real-estate-ai/wxapp/profile.html",
+      "status": "PASS",
+      "errors": [],
+      "checks": {
+        "load": "PASS",
+        "doctype": "PASS",
+        "title": "PASS",
+        "viewport": "PASS",
+        "charset": "PASS",
+        "bodyContent": "PASS",
+        "tabBar": "PASS",
+        "focusStyles": "PASS",
+        "toast": "PASS",
+        "safeArea": "PASS"
+      },
+      "title": "我的 - 房产AI助手",
+      "consoleErrors": []
+    },
+    {
+      "name": "物料库",
+      "file": "material-library.html",
+      "url": "https://zoe-matchlab.github.io/real-estate-ai/wxapp/material-library.html",
+      "status": "PASS",
+      "errors": [],
+      "checks": {
+        "load": "PASS",
+        "doctype": "PASS",
+        "title": "PASS",
+        "viewport": "PASS",
+        "charset": "PASS",
+        "bodyContent": "PASS",
+        "tabBar": "PASS",
+        "focusStyles": "PASS",
+        "toast": "PASS",
+        "safeArea": "PASS"
+      },
+      "title": "我的物料库 - 房产AI助手",
+      "consoleErrors": []
+    },
+    {
+      "name": "数据看板",
+      "file": "performance-board.html",
+      "url": "https://zoe-matchlab.github.io/real-estate-ai/wxapp/performance-board.html",
+      "status": "PASS",
+      "errors": [],
+      "checks": {
+        "load": "PASS",
+        "doctype": "PASS",
+        "title": "PASS",
+        "viewport": "PASS",
+        "charset": "PASS",
+        "bodyContent": "PASS",
+        "tabBar": "PASS",
+        "focusStyles": "PASS",
+        "toast": "PASS",
+        "safeArea": "PASS"
+      },
+      "title": "数据看板 - 房产AI助手",
+      "consoleErrors": []
+    },
+    {
+      "name": "算力明细",
+      "file": "power-detail.html",
+      "url": "https://zoe-matchlab.github.io/real-estate-ai/wxapp/power-detail.html",
+      "status": "PASS",
+      "errors": [],
+      "checks": {
+        "load": "PASS",
+        "doctype": "PASS",
+        "title": "PASS",
+        "viewport": "PASS",
+        "charset": "PASS",
+        "bodyContent": "PASS",
+        "tabBar": "PASS",
+        "focusStyles": "PASS",
+        "toast": "PASS",
+        "safeArea": "PASS"
+      },
+      "title": "算力明细 - 房产AI助手",
+      "consoleErrors": []
+    },
+    {
+      "name": "我的收藏",
+      "file": "favorites.html",
+      "url": "https://zoe-matchlab.github.io/real-estate-ai/wxapp/favorites.html",
+      "status": "PASS",
+      "errors": [],
+      "checks": {
+        "load": "PASS",
+        "doctype": "PASS",
+        "title": "PASS",
+        "viewport": "PASS",
+        "charset": "PASS",
+        "bodyContent": "PASS",
+        "tabBar": "PASS",
+        "focusStyles": "PASS",
+        "toast": "PASS",
+        "safeArea": "PASS"
+      },
+      "title": "我的收藏 - 房产AI助手",
+      "consoleErrors": []
+    },
+    {
+      "name": "足迹",
+      "file": "footprint.html",
+      "url": "https://zoe-matchlab.github.io/real-estate-ai/wxapp/footprint.html",
+      "status": "PASS",
+      "errors": [],
+      "checks": {
+        "load": "PASS",
+        "doctype": "PASS",
+        "title": "PASS",
+        "viewport": "PASS",
+        "charset": "PASS",
+        "bodyContent": "PASS",
+        "tabBar": "PASS",
+        "focusStyles": "PASS",
+        "toast": "PASS",
+        "safeArea": "PASS"
+      },
+      "title": "我的足迹 - 房产AI助手",
+      "consoleErrors": []
+    },
+    {
+      "name": "活动中心",
+      "file": "activity.html",
+      "url": "https://zoe-matchlab.github.io/real-estate-ai/wxapp/activity.html",
+      "status": "PASS",
+      "errors": [],
+      "checks": {
+        "load": "PASS",
+        "doctype": "PASS",
+        "title": "PASS",
+        "viewport": "PASS",
+        "charset": "PASS",
+        "bodyContent": "PASS",
+        "tabBar": "PASS",
+        "focusStyles": "PASS",
+        "toast": "PASS",
+        "safeArea": "PASS"
+      },
+      "title": "活动中心 - 房产AI助手",
+      "consoleErrors": []
+    },
+    {
+      "name": "任务列表",
+      "file": "task-list.html",
+      "url": "https://zoe-matchlab.github.io/real-estate-ai/wxapp/task-list.html",
+      "status": "PASS",
+      "errors": [],
+      "checks": {
+        "load": "PASS",
+        "doctype": "PASS",
+        "title": "PASS",
+        "viewport": "PASS",
+        "charset": "PASS",
+        "bodyContent": "PASS",
+        "tabBar": "WARN (optional)",
+        "focusStyles": "PASS",
+        "toast": "PASS",
+        "safeArea": "PASS"
+      },
+      "title": "任务中心 - 房产AI助手",
+      "consoleErrors": []
+    }
+  ]
+}

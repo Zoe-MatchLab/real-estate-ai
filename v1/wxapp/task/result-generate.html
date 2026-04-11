@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>成果预览</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#fa8c16',
+                        warning: '#FF9D2B',
+                        danger: '#FA5151',
+                        success: '#00B42A',
+                        gray: {
+                            50: '#F7F8FA',
+                            100: '#EDEEF2',
+                            200: '#D8D9DD',
+                            300: '#B4B5B9',
+                            400: '#86878B',
+                            500: '#4E5969',
+                            600: '#272E3B',
+                            700: '#1D2129',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #F7F8FA;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+        .card-shadow {
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+        /* 头部导航 */
+        .header {
+            background: linear-gradient(135deg, #fa8c16 0%, #FF9500 100%);
+            padding: 16px 16px 20px;
+        }
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .back-btn {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            border-radius: 9999px;
+            color: white;
+            cursor: pointer;
+        }
+        .back-btn:active {
+            background: rgba(255,255,255,0.3);
+        }
+        .back-btn i { font-size: 18px; }
+        .header-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: white;
+        }
+        .step-badge {
+            font-size: 11px;
+            padding: 2px 10px;
+            background: rgba(255,255,255,0.25);
+            border-radius: 9999px;
+            color: white;
+        }
+        .header-stage-progress {
+            padding: 10px 16px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-stage-progress .stage-dot {
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+            white-space: nowrap;
+        }
+        .header-stage-progress .stage-dot.active {
+            color: white;
+            font-weight: 600;
+        }
+        .header-stage-progress .stage-dot.completed {
+            color: rgba(255,255,255,0.9);
+        }
+        .header-stage-progress .stage-dot.success {
+            color: #00B42A;
+        }
+        .header-stage-progress .stage-line {
+            width: 28px;
+            height: 2px;
+            background: rgba(255,255,255,0.5);
+            margin: 0 6px;
+            border-radius: 1px;
+        }
+        .header-stage-progress .stage-line.inactive {
+            background: rgba(255,255,255,0.25);
+        }
+        .btn {
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        .btn:active {
+            transform: scale(0.95);
+            opacity: 0.8;
+        }
+        .btn-primary {
+            background: #fa8c16;
+            color: white;
+        }
+        .btn-primary:active {
+            background: #d46b08;
+        }
+        .btn-secondary {
+            background: white;
+            color: #fa8c16;
+            border: 1px solid #fa8c16;
+        }
+        .btn-secondary:active {
+            background: #fff7e6;
+        }
+        .progress-bar {
+            height: 6px;
+            border-radius: 3px;
+            background: #f0f0f0;
+            overflow: hidden;
+        }
+        .progress-value {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #fa8c16, #ff7a45);
+        }
+        .tag {
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+        .tag-success {
+            background: #E8FFEA;
+            color: #00B42A;
+        }
+        .tag-info {
+            background: #E8F3FF;
+            color: #165DFF;
+        }
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            z-index: 9999;
+            animation: fadeIn 0.2s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        img {
+            -webkit-user-drag: none;
+            user-select: none;
+            max-width: 100%;
+        }
+        * {
+            touch-action: manipulation;
+        }
+        /* 图片预览 */
+        .image-preview-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 10000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .image-preview-modal.active {
+            display: flex;
+        }
+        .image-preview-modal img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .image-preview-modal .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 28px;
+            z-index: 10001;
+        }
+        .safe-area-bottom {
+            padding-bottom: calc(16px + env(safe-area-inset-bottom));
+        }
+    </style>
+</head>
+<body class="pb-24">
+    <!-- 顶部导航 -->
+    <div class="header">
+        <div class="header-top">
+            <button class="back-btn" onclick="goBackToList()">
+                <i class="fa fa-angle-left"></i>
+            </button>
+            <span class="header-title">阶段4：成果预览</span>
+            <span class="step-badge">4/4</span>
+        </div>
+        <!-- 阶段进度（顶部） -->
+        <div class="header-stage-progress">
+            <span class="stage-dot completed">阶段1</span>
+            <div class="stage-line"></div>
+            <span class="stage-dot completed">阶段2</span>
+            <div class="stage-line"></div>
+            <span class="stage-dot completed">阶段3</span>
+            <div class="stage-line"></div>
+            <span class="stage-dot success">阶段4</span>
+        </div>
+    </div>
+
+    <!-- 楼盘信息区 -->
+    <div class="p-4">
+        <div class="bg-white rounded-xl p-4 card-shadow text-center">
+            <div class="flex items-center justify-center mb-2">
+                <i class="fa fa-home text-primary mr-2"></i>
+                <h2 id="houseName" class="text-lg font-bold">中海汇德里</h2>
+            </div>
+            <p id="address" class="text-sm text-gray-500">浦东新区张江高科技园区</p>
+        </div>
+    </div>
+
+    <!-- 封面图展示区 -->
+    <div class="px-4 mb-4">
+        <div class="bg-white rounded-xl p-4 card-shadow">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center">
+                    <i class="fa fa-picture-o text-primary mr-2"></i>
+                    <h3 class="font-medium text-gray-800">封面图</h3>
+                    <span class="text-xs text-gray-400 ml-1" id="coverCount">(3张)</span>
+                </div>
+                <button class="btn btn-outline py-1 px-3 text-xs" onclick="openContentLibrary('cover')">
+                    <i class="fa fa-plus mr-1"></i> 添加
+                </button>
+            </div>
+            <div class="grid grid-cols-2 gap-2 mb-3" id="coverGallery">
+                <div class="relative rounded-lg overflow-hidden bg-gray-100 aspect-square" onclick="previewImage('https://picsum.photos/400/400?random=cover1')">
+                    <img src="https://picsum.photos/400/400?random=cover1" alt="封面图1" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-all flex items-center justify-center">
+                        <i class="fa fa-search-plus text-white text-xl opacity-0 hover:opacity-100 transition-opacity"></i>
+                    </div>
+                    <span class="absolute bottom-1 right-1 bg-black bg-opacity-50 text-white text-xs px-1 rounded">封面</span>
+                </div>
+                <div class="relative rounded-lg overflow-hidden bg-gray-100 aspect-square" onclick="previewImage('https://picsum.photos/400/400?random=cover2')">
+                    <img src="https://picsum.photos/400/400?random=cover2" alt="封面图2" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-all flex items-center justify-center">
+                        <i class="fa fa-search-plus text-white text-xl opacity-0 hover:opacity-100 transition-opacity"></i>
+                    </div>
+                </div>
+                <div class="relative rounded-lg overflow-hidden bg-gray-100 aspect-square" onclick="previewImage('https://picsum.photos/400/400?random=cover3')">
+                    <img src="https://picsum.photos/400/400?random=cover3" alt="封面图3" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-black bg-opacity-0 hover:bg-opacity-20 transition-all flex items-center justify-center">
+                        <i class="fa fa-search-plus text-white text-xl opacity-0 hover:opacity-100 transition-opacity"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end gap-2">
+                <button class="btn btn-secondary py-2 px-4 text-sm" onclick="downloadAllCovers()">
+                    <i class="fa fa-download mr-1"></i> 全部下载
+                </button>
+                <button class="btn btn-secondary py-2 px-4 text-sm" onclick="openContentLibrary('cover')">
+                    <i class="fa fa-folder-open mr-1"></i> 内容库
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 宣传视频展示区 -->
+    <div class="px-4 mb-4">
+        <div class="bg-white rounded-xl p-4 card-shadow">
+            <div class="flex items-center mb-3">
+                <i class="fa fa-video-camera text-primary mr-2"></i>
+                <h3 class="font-medium text-gray-800">宣传视频</h3>
+            </div>
+            <div class="relative rounded-lg overflow-hidden bg-gray-900 mb-3">
+                <video 
+                    id="promoVideo"
+                    src="https://www.w3schools.com/html/mov_bbb.mp4"
+                    controls
+                    playsinline
+                    webkit-playsinline
+                    x5-video-player-type="h5"
+                    x5-video-player-fullscreen="true"
+                    poster="https://picsum.photos/600/338?random=video"
+                    class="w-full"
+                ></video>
+            </div>
+            <div class="flex justify-end gap-2">
+                <button class="btn btn-secondary py-2 px-4 text-sm" onclick="downloadVideo()">
+                    <i class="fa fa-download mr-1"></i> 下载
+                </button>
+                <button class="btn btn-secondary py-2 px-4 text-sm" onclick="openContentLibrary('video')">
+                    <i class="fa fa-folder-open mr-1"></i> 内容库
+                </button>
+                <button class="btn btn-primary py-2 px-4 text-sm" onclick="shareVideo()">
+                    <i class="fa fa-share mr-1"></i> 分享
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 分享说明 -->
+    <div class="px-4 mb-4">
+        <div class="bg-blue-50 rounded-xl p-4">
+            <div class="flex items-start">
+                <i class="fa fa-lightbulb-o text-primary mt-1 mr-2"></i>
+                <div>
+                    <p class="text-sm text-blue-700 font-medium mb-1">分享建议</p>
+                    <p class="text-xs text-blue-600 leading-relaxed">
+                        生成的营销物料已包含楼盘核心卖点,可直接用于朋友圈、抖音等平台发布。如需自定义文案,可先下载后在本地编辑。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部返回按钮 -->
+    <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-4 safe-area-bottom">
+        <button 
+            id="backBtn"
+            class="w-full btn btn-primary py-3 text-base"
+            onclick="goBackToList()"
+        >
+            <i class="fa fa-list-ul mr-2"></i> 返回任务列表
+        </button>
+    </div>
+
+    <!-- 图片预览Modal -->
+    <div id="imagePreviewModal" class="image-preview-modal" onclick="closePreview()">
+        <button class="close-btn" onclick="closePreview()">
+            <i class="fa fa-times"></i>
+        </button>
+        <img id="previewImage" src="" alt="预览">
+    </div>
+
+    <script>
+        // ===== URL参数解析 =====
+        function getQueryParam(name) {
+            const params = new URLSearchParams(window.location.search);
+            return params.get(name);
+        }
+
+        // 模拟任务数据
+        const taskData = {
+            houseName: '中海汇德里',
+            address: '浦东新区张江高科技园区',
+            currentStage: parseInt(getQueryParam('step')) || 4,
+            totalStages: 4,
+            taskId: getQueryParam('task') || 'TASK001',
+            result: {
+                coverImage: 'https://picsum.photos/600/400?random=cover',
+                videoUrl: 'https://www.w3schools.com/html/mov_bbb.mp4'
+            }
+        };
+
+        // 显示Toast提示
+        function showToast(message, duration = 2000) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => {
+                toast.remove();
+            }, duration);
+        }
+
+        // 图片预览
+        function previewImage(src) {
+            const modal = document.getElementById('imagePreviewModal');
+            const img = document.getElementById('previewImage');
+            img.src = src;
+            modal.classList.add('active');
+            // 禁止背景滚动
+            document.body.style.overflow = 'hidden';
+        }
+
+        // 关闭图片预览
+        function closePreview() {
+            const modal = document.getElementById('imagePreviewModal');
+            modal.classList.remove('active');
+            // 恢复背景滚动
+            document.body.style.overflow = '';
+        }
+
+        // 下载封面图
+        function downloadCoverImage() {
+            const gallery = document.getElementById('coverGallery');
+            const firstImg = gallery.querySelector('img');
+            if (firstImg) {
+                downloadSingleImage(firstImg.src, '封面图.jpg');
+            }
+        }
+
+        // 下载单张图片
+        function downloadSingleImage(src, filename) {
+            if (typeof wx !== 'undefined' && wx.downloadFile) {
+                wx.showLoading({ title: '下载中...' });
+                wx.downloadFile({
+                    url: src,
+                    success: function(res) {
+                        wx.hideLoading();
+                        if (res.statusCode === 200) {
+                            wx.saveImageToPhotosAlbum({
+                                filePath: res.tempFilePath,
+                                success: function() {
+                                    showToast('图片已保存到相册');
+                                },
+                                fail: function() {
+                                    showToast('保存失败,请授权相册权限');
+                                }
+                            });
+                        }
+                    },
+                    fail: function() {
+                        wx.hideLoading();
+                        showToast('下载失败');
+                    }
+                });
+            } else {
+                const link = document.createElement('a');
+                link.href = src;
+                link.download = filename || '图片.jpg';
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showToast('开始下载');
+            }
+        }
+
+        // 下载全部封面图
+        function downloadAllCovers() {
+            const gallery = document.getElementById('coverGallery');
+            const images = gallery.querySelectorAll('img');
+            if (images.length === 0) {
+                showToast('没有可下载的封面图');
+                return;
+            }
+            showToast(`开始下载${images.length}张封面图...`);
+            images.forEach((img, index) => {
+                setTimeout(() => {
+                    downloadSingleImage(img.src, `${taskData.houseName}_封面图${index + 1}.jpg`);
+                }, index * 1500); // 每张间隔1.5秒，避免并发请求过多
+            });
+        }
+
+        // 下载视频
+        function downloadVideo() {
+            const video = document.getElementById('promoVideo');
+            const src = video.src;
+            
+            // 尝试使用微信小程序下载API
+            if (typeof wx !== 'undefined' && wx.downloadFile) {
+                wx.showLoading({ title: '下载中...' });
+                wx.downloadFile({
+                    url: src,
+                    success: function(res) {
+                        wx.hideLoading();
+                        if (res.statusCode === 200) {
+                            wx.saveVideoToPhotosAlbum({
+                                filePath: res.tempFilePath,
+                                success: function() {
+                                    showToast('视频已保存到相册');
+                                },
+                                fail: function() {
+                                    showToast('保存失败,请授权相册权限');
+                                }
+                            });
+                        }
+                    },
+                    fail: function() {
+                        wx.hideLoading();
+                        showToast('下载失败');
+                    }
+                });
+            } else {
+                // 降级为浏览器下载
+                const link = document.createElement('a');
+                link.href = src;
+                link.download = taskData.houseName + '_宣传视频.mp4';
+                link.target = '_blank';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showToast('开始下载视频');
+            }
+        }
+
+        // 分享视频/成果
+        function shareVideo() {
+            // 尝试使用微信小程序分享API
+            if (typeof wx !== 'undefined' && wx.showShareMenu) {
+                wx.showShareMenu({
+                    withShareTicket: true,
+                    menus: ['shareAppMessage', 'shareTimeline']
+                });
+                showToast('请点击右上角分享');
+            } else {
+                // 降级为Web Share API
+                if (navigator.share) {
+                    navigator.share({
+                        title: taskData.houseName + '营销物料',
+                        text: '来自房产AI作业平台的宣传视频',
+                        url: window.location.href
+                    }).then(() => {
+                        showToast('分享成功');
+                    }).catch(() => {
+                        showToast('分享取消');
+                    });
+                } else {
+                    // 降级复制链接
+                    const dummy = document.createElement('input');
+                    dummy.value = window.location.href;
+                    document.body.appendChild(dummy);
+                    dummy.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(dummy);
+                    showToast('链接已复制,请自行分享');
+                }
+            }
+        }
+
+        // 打开内容库
+        function openContentLibrary(type) {
+            // 显示内容库弹窗
+            const modal = document.getElementById('contentLibraryModal');
+            if (modal) {
+                modal.classList.add('show');
+            } else {
+                showToast('内容库功能开发中');
+            }
+        }
+
+        // 返回任务列表
+        function goBackToList() {
+            window.location.href = 'task-detail.html?step=4';
+        }
+
+        // 初始化页面数据
+        function initPageData() {
+            document.getElementById('houseName').textContent = taskData.houseName;
+            document.getElementById('address').textContent = taskData.address;
+            document.getElementById('coverImage').src = taskData.result.coverImage;
+            document.getElementById('promoVideo').src = taskData.result.videoUrl;
+            
+            const progress = (taskData.currentStage / taskData.totalStages) * 100;
+            document.getElementById('progressValue').style.width = progress + '%';
+            document.getElementById('stageText').textContent = 
+                taskData.currentStage + '/' + taskData.totalStages + ' 已完成';
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initPageData();
+            
+            // 从URL参数获取任务数据(实际项目中会从这里获取)
+            const urlParams = new URLSearchParams(window.location.search);
+            const houseName = urlParams.get('houseName');
+            const coverImage = urlParams.get('coverImage');
+            const videoUrl = urlParams.get('videoUrl');
+            
+            if (houseName) {
+                document.getElementById('houseName').textContent = decodeURIComponent(houseName);
+            }
+            if (coverImage) {
+                document.getElementById('coverImage').src = decodeURIComponent(coverImage);
+            }
+            if (videoUrl) {
+                document.getElementById('promoVideo').src = decodeURIComponent(videoUrl);
+            }
+        });
+
+        // 处理图片加载失败
+        document.getElementById('coverImage').onerror = function() {
+            this.src = 'https://via.placeholder.com/600x400?text=封面图';
+        };
+        
+        document.getElementById('promoVideo').onerror = function() {
+            showToast('视频加载失败');
+        };
+
+        // 监听视频播放错误
+        const video = document.getElementById('promoVideo');
+        video.addEventListener('error', function() {
+            showToast('视频加载失败,请重试');
+        });
+
+        // 内容库弹窗
+        document.body.insertAdjacentHTML('beforeend', `
+            <div id="contentLibraryModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center" onclick="if(event.target===this)closeContentLibrary()">
+                <div class="bg-white rounded-xl w-11/12 max-w-md max-h-screen overflow-auto">
+                    <div class="flex items-center justify-between p-4 border-b">
+                        <h3 class="font-semibold">选择内容</h3>
+                        <button onclick="closeContentLibrary()" class="text-gray-400 hover:text-gray-600">
+                            <i class="fa fa-times text-lg"></i>
+                        </button>
+                    </div>
+                    <div class="p-4">
+                        <p class="text-center text-gray-500 py-8">内容库功能开发中</p>
+                    </div>
+                </div>
+            </div>
+        `);
+
+        function closeContentLibrary() {
+            const modal = document.getElementById('contentLibraryModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        }
+    </script>
+</body>
+</html>

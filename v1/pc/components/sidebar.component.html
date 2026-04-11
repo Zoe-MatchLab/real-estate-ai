@@ -1,0 +1,170 @@
+<!-- 侧边栏 - 全局公共组件 -->
+<!-- 修改此文件会同步更新所有页面的侧边栏 -->
+<aside class="w-64 bg-white h-[calc(100vh-56px)] fixed left-0 shadow-sm">
+    <nav class="py-4">
+        <!-- 工作台 -->
+        <div class="px-4 py-2 text-xs text-gray-400 uppercase font-medium">工作台</div>
+        
+        <!-- 数据看板 -->
+        <a href="index.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+            <i class="fa fa-dashboard w-5 text-center"></i>
+            <span class="ml-3">数据看板</span>
+        </a>
+        
+        <!-- 新盘管理 -->
+        <a href="material-manage.html" data-path="pages/material/material-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+            <i class="fa fa-home w-5 text-center"></i>
+            <span class="ml-3">新盘管理</span>
+        </a>
+        
+        <!-- 探盘任务管理 -->
+        <a href="task-manage.html" data-path="pages/task/task-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+            <i class="fa fa-tasks w-5 text-center"></i>
+            <span class="ml-3">探盘任务管理</span>
+        </a>
+        
+        <!-- 产品力训练 -->
+        <a href="training-manage.html" data-path="pages/training/training-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+            <i class="fa fa-graduation-cap w-5 text-center"></i>
+            <span class="ml-3">产品力训练</span>
+        </a>
+        
+        <!-- 话术训练管理 -->
+        <a href="speech-manage.html" data-path="pages/speech/speech-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+            <i class="fa fa-comments w-5 text-center"></i>
+            <span class="ml-3">话术训练管理</span>
+        </a>
+        
+        <!-- 获客内容管理 -->
+        <a href="content-manage.html" data-path="pages/content/content-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+            <i class="fa fa-magic w-5 text-center"></i>
+            <span class="ml-3">获客内容管理</span>
+        </a>
+        
+        <!-- 管理层 -->
+        <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">管理层</div>
+        
+        <!-- 数据分析 -->
+        <a href="data-analysis.html" data-path="pages/data/data-analysis.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+            <i class="fa fa-bar-chart w-5 text-center"></i>
+            <span class="ml-3">数据分析</span>
+        </a>
+        
+        <!-- 董事长决策看板一 -->
+        <a href="board-chairman.html" data-path="pages/board/board-chairman.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+            <i class="fa fa-trophy w-5 text-center"></i>
+            <span class="ml-3">总部决策看板一</span>
+        </a>
+
+        <!-- 董事长决策看板二 -->
+        <a href="board-chairman-2.html" data-path="pages/board/board-chairman-2.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+            <i class="fa fa-area-chart w-5 text-center"></i>
+            <span class="ml-3">总部决策看板二</span>
+        </a>
+        
+        <!-- 系统管理 -->
+        <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">系统管理</div>
+        
+        <!-- 团队管理 -->
+        <a href="team-manage.html" data-path="pages/team/team-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+            <i class="fa fa-users w-5 text-center"></i>
+            <span class="ml-3">团队管理</span>
+        </a>
+        
+        <!-- 系统设置 -->
+        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+            <i class="fa fa-cog w-5 text-center"></i>
+            <span class="ml-3">系统设置</span>
+        </a>
+    </nav>
+</aside>
+
+<!-- 侧边栏样式 -->
+<style>
+/* 侧边栏菜单激活样式 */
+aside a.active {
+    color: #165DFF;
+    background-color: #E8F3FF;
+    border-right: 4px solid #165DFF;
+}
+</style>
+
+<!-- 侧边栏公共JS -->
+<script>
+// 计算相对路径
+function getRelativePath(from, to) {
+    // 移除开头的 /
+    from = from.replace(/^\//, '').replace(/\/$/, '');
+    to = to.replace(/^\//, '').replace(/\/$/, '');
+    
+    // 如果是绝对路径（如 pages/task），直接返回
+    if (to.startsWith('pages/') || to.startsWith('index')) {
+        return to;
+    }
+    
+    // 从from目录计算到to的相对路径
+    const fromParts = from.split('/');
+    const toParts = to.split('/');
+    
+    // 找到共同的祖先目录
+    let commonLength = 0;
+    for (let i = 0; i < Math.min(fromParts.length, toParts.length); i++) {
+        if (fromParts[i] === toParts[i]) {
+            commonLength++;
+        } else {
+            break;
+        }
+    }
+    
+    // 从from往回走到共同祖先
+    const upCount = fromParts.length - commonLength;
+    let relative = '';
+    for (let i = 0; i < upCount; i++) {
+        relative += '../';
+    }
+    
+    // 然后走向to
+    relative += toParts.slice(commonLength).join('/');
+    
+    return relative || './';
+}
+
+// 修正侧边栏链接路径
+function fixSidebarLinks() {
+    const pathname = window.location.pathname;
+    // 获取当前页面的目录部分（去掉文件名）
+    const currentPage = pathname.split('/').pop();
+    const currentDir = pathname.replace(new RegExp(currentPage + '$'), '').replace(/\/$/, '');
+    
+    const links = document.querySelectorAll('aside a[data-path]');
+    
+    links.forEach(link => {
+        const dataPath = link.getAttribute('data-path');
+        // 计算相对路径
+        const relativePath = getRelativePath(currentDir, dataPath);
+        link.setAttribute('href', relativePath);
+    });
+}
+
+// 高亮当前页面
+function initSidebar() {
+    const pathname = window.location.pathname;
+    const links = document.querySelectorAll('aside a[data-path]');
+    
+    links.forEach(link => {
+        const dataPath = link.getAttribute('data-path');
+        // 检查当前路径是否包含data-path
+        if (pathname.includes('/' + dataPath)) {
+            link.classList.add('active');
+        }
+        // 首页特殊处理
+        if ((pathname.endsWith('/pc/') || pathname.endsWith('/pc/index.html') || pathname.endsWith('/real-estate-ai/pc/') || pathname.endsWith('/real-estate-ai/pc/index.html') || pathname.endsWith('/')) && link.getAttribute('href').includes('index.html')) {
+            link.classList.add('active');
+        }
+    });
+}
+
+// 全局暴露函数
+window.initSidebar = initSidebar;
+window.fixSidebarLinks = fixSidebarLinks;
+</script>

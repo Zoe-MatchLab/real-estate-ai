@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI话术训练 - 房产AI助手</title>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --brand-primary: #FA8C16;
+            --brand-primary-light: #FFF7E6;
+            --color-success: #00B42A;
+            --color-success-light: #E8FFEA;
+            --color-purple: #722ED1;
+            --color-purple-light: #F7F0FF;
+            --color-info: #007AFF;
+            --color-info-light: #E8F3FF;
+            --color-danger: #FA5151;
+            --color-title: #1D2129;
+            --color-text: #4E5969;
+            --color-sub: #86909C;
+            --color-border: #E5E6EB;
+            --color-bg: #F7F8FA;
+            --color-card: #FFFFFF;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+            --font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            --transition-fast: 0.15s ease;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* Focus 样式 - 可访问性 */
+        button:focus-visible,
+        a:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 2px solid var(--brand-primary);
+            outline-offset: 2px;
+        }
+        html, body {
+            font-family: var(--font-family);
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--color-text);
+            background: var(--color-bg);
+            -webkit-font-smoothing: antialiased;
+        }
+        .page { min-height: 100vh; padding-bottom: 120px; }
+        /* 头部 */
+        .header {
+            background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
+            padding: calc(20px + env(safe-area-inset-top)) var(--spacing-md) var(--spacing-lg);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -30%;
+            right: -20%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        .header-top { display: flex; align-items: center; margin-bottom: var(--spacing-md); position: relative; z-index: 1; }
+        .back-btn { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; }
+        .back-btn i { font-size: 22px; color: white; }
+        .header-title { flex: 1; text-align: center; font-size: 17px; font-weight: 600; margin-right: 36px; }
+        .header-subtitle { font-size: 13px; opacity: 0.85; position: relative; z-index: 1; }
+        /* Tab切换 */
+        .tab-bar {
+            display: flex;
+            background: white;
+            padding: var(--spacing-sm) var(--spacing-md);
+            gap: var(--spacing-sm);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .tab-item {
+            flex: 0 0 auto;
+            padding: 8px 16px;
+            font-size: 14px;
+            color: var(--color-text);
+            background: var(--color-bg);
+            border-radius: var(--radius-full);
+            border: none;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all var(--transition-fast);
+        }
+        .tab-item.active {
+            background: var(--brand-primary);
+            color: white;
+        }
+        /* 内容区 */
+        .content { padding: var(--spacing-md); }
+        /* 项目卡片 */
+        .project-card {
+            background: var(--color-card);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border: 2px solid transparent;
+        }
+        .project-card:active { transform: scale(0.98); }
+        .project-card.selected {
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 0 4px var(--brand-primary-light);
+        }
+        .project-header { display: flex; align-items: center; margin-bottom: var(--spacing-md); }
+        .project-avatar {
+            width: 56px;
+            height: 56px;
+            background: var(--brand-primary-light);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin-right: var(--spacing-md);
+        }
+        .project-avatar.purple { background: var(--color-purple-light); }
+        .project-info { flex: 1; }
+        .project-name { font-size: 16px; font-weight: 600; color: var(--color-title); margin-bottom: 4px; }
+        .project-scenes { font-size: 12px; color: var(--color-sub); }
+        .project-stats {
+            display: flex;
+            gap: var(--spacing-md);
+            padding-top: var(--spacing-md);
+            border-top: 1px solid var(--color-border);
+        }
+        .stat-item { display: flex; align-items: center; gap: var(--spacing-xs); font-size: 12px; color: var(--color-sub); }
+        .stat-value { font-weight: 600; color: var(--color-title); }
+        /* 选中指示 */
+        .check-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--brand-primary);
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+        .project-card.selected .check-icon { display: flex; }
+        /* 场景选择 */
+        .section { margin-bottom: var(--spacing-lg); }
+        .section-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-title);
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        .section-title i { color: var(--brand-primary); }
+        .scene-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-sm);
+        }
+        .scene-item {
+            padding: var(--spacing-md);
+            background: white;
+            border-radius: var(--radius-lg);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border: 2px solid transparent;
+        }
+        .scene-item:active { transform: scale(0.95); }
+        .scene-item.selected {
+            border-color: var(--brand-primary);
+            background: var(--brand-primary-light);
+        }
+        .scene-icon { font-size: 24px; margin-bottom: var(--spacing-xs); }
+        .scene-name { font-size: 13px; color: var(--color-text); }
+        .scene-item.selected .scene-name { color: var(--brand-primary); font-weight: 500; }
+        /* 模式选择 */
+        .mode-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-sm);
+        }
+        .mode-item {
+            padding: var(--spacing-md);
+            background: white;
+            border-radius: var(--radius-lg);
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            border: 2px solid transparent;
+        }
+        .mode-item:active { transform: scale(0.95); }
+        .mode-item.selected {
+            border-color: var(--color-purple);
+            background: var(--color-purple-light);
+        }
+        .mode-icon { font-size: 28px; margin-bottom: var(--spacing-xs); color: var(--color-purple); }
+        .mode-name { font-size: 13px; color: var(--color-text); font-weight: 500; }
+        .mode-desc { font-size: 11px; color: var(--color-sub); margin-top: 2px; }
+        .mode-item.selected .mode-name { color: var(--color-purple); }
+        /* 底部按钮 */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: var(--spacing-md);
+            padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+        }
+        .start-btn {
+            width: 100%;
+            padding: var(--spacing-md);
+            background: var(--color-border);
+            border: none;
+            border-radius: var(--radius-xl);
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            cursor: not-allowed;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+        }
+        .start-btn.ready {
+            background: linear-gradient(135deg, var(--color-purple) 0%, #8B5CF6 100%);
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(114,46,209,0.3);
+        }
+        .start-btn.ready:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(114,46,209,0.4); }
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.75);
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--radius-lg);
+            z-index: 99999;
+            font-size: 14px;
+            animation: toastIn 0.3s ease forwards;
+            pointer-events: none;
+        }
+        @keyframes toastIn { from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- 头部 -->
+        <div class="header">
+            <div class="header-top">
+                <button class="back-btn" onclick="history.back()">
+                    <i class="fa fa-angle-left"></i>
+                </button>
+                <span class="header-title">AI话术训练</span>
+            </div>
+            <div class="header-subtitle">选择项目和场景，开始AI训练</div>
+        </div>
+
+        <!-- Tab -->
+        <div class="tab-bar">
+            <button class="tab-item active" onclick="switchTab('official', this)">官方推荐</button>
+            <button class="tab-item" onclick="switchTab('my', this)">我创建的</button>
+            <button class="tab-item" onclick="switchTab('history', this)">训练历史</button>
+        </div>
+
+        <div class="content">
+            <!-- 选择项目 -->
+            <div class="section">
+                <div class="section-title">
+                    <i class="fa fa-building"></i>
+                    选择训练项目
+                </div>
+                <div id="projectList">
+                    <div class="project-card" onclick="selectProject(1, '万科城市之光')">
+                        <div class="project-header">
+                            <div class="project-avatar">🏠</div>
+                            <div class="project-info">
+                                <div class="project-name">万科城市之光</div>
+                                <div class="project-scenes">场景：邀约/接待/沙盘讲解</div>
+                            </div>
+                            <div class="check-icon"><i class="fa fa-check"></i></div>
+                        </div>
+                        <div class="project-stats">
+                            <div class="stat-item"><i class="fa fa-check-circle"></i> 已完成 <span class="stat-value">8</span> 次</div>
+                            <div class="stat-item"><i class="fa fa-star"></i> 平均评分 <span class="stat-value">85</span> 分</div>
+                        </div>
+                    </div>
+                    <div class="project-card" onclick="selectProject(2, '中海汇德里')">
+                        <div class="project-header">
+                            <div class="project-avatar purple">🏠</div>
+                            <div class="project-info">
+                                <div class="project-name">中海汇德里</div>
+                                <div class="project-scenes">场景：接待/样板间讲解/逼定</div>
+                            </div>
+                            <div class="check-icon"><i class="fa fa-check"></i></div>
+                        </div>
+                        <div class="project-stats">
+                            <div class="stat-item"><i class="fa fa-check-circle"></i> 已完成 <span class="stat-value">12</span> 次</div>
+                            <div class="stat-item"><i class="fa fa-star"></i> 平均评分 <span class="stat-value">92</span> 分</div>
+                        </div>
+                    </div>
+                    <div class="project-card" onclick="selectProject(3, '保利天汇')">
+                        <div class="project-header">
+                            <div class="project-avatar">🏠</div>
+                            <div class="project-info">
+                                <div class="project-name">保利天汇</div>
+                                <div class="project-scenes">场景：邀约/沙盘讲解</div>
+                            </div>
+                            <div class="check-icon"><i class="fa fa-check"></i></div>
+                        </div>
+                        <div class="project-stats">
+                            <div class="stat-item"><i class="fa fa-check-circle"></i> 已完成 <span class="stat-value">5</span> 次</div>
+                            <div class="stat-item"><i class="fa fa-star"></i> 平均评分 <span class="stat-value">78</span> 分</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 选择场景 -->
+            <div class="section">
+                <div class="section-title">
+                    <i class="fa fa-comments"></i>
+                    选择训练场景
+                </div>
+                <div class="scene-grid">
+                    <div class="scene-item selected" onclick="selectScene(this, 'invite')">
+                        <div class="scene-icon">📞</div>
+                        <div class="scene-name">电话邀约</div>
+                    </div>
+                    <div class="scene-item" onclick="selectScene(this, 'reception')">
+                        <div class="scene-icon">🤝</div>
+                        <div class="scene-name">接待讲解</div>
+                    </div>
+                    <div class="scene-item" onclick="selectScene(this, 'sand table')">
+                        <div class="scene-icon">🗺️</div>
+                        <div class="scene-name">沙盘讲解</div>
+                    </div>
+                    <div class="scene-item" onclick="selectScene(this, 'model')">
+                        <div class="scene-icon">🏠</div>
+                        <div class="scene-name">样板间讲解</div>
+                    </div>
+                    <div class="scene-item" onclick="selectScene(this, 'price')">
+                        <div class="scene-icon">💰</div>
+                        <div class="scene-name">价格洽谈</div>
+                    </div>
+                    <div class="scene-item" onclick="selectScene(this, 'close')">
+                        <div class="scene-icon">✍️</div>
+                        <div class="scene-name">逼定成交</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 选择模式 -->
+            <div class="section">
+                <div class="section-title">
+                    <i class="fa fa-microphone"></i>
+                    选择训练模式
+                </div>
+                <div class="mode-grid">
+                    <div class="mode-item selected" onclick="selectMode(this, 'phone')">
+                        <div class="mode-icon"><i class="fa fa-phone"></i></div>
+                        <div class="mode-name">电话模式</div>
+                        <div class="mode-desc">语音对话练习</div>
+                    </div>
+                    <div class="mode-item" onclick="selectMode(this, 'text')">
+                        <div class="mode-icon"><i class="fa fa-commenting"></i></div>
+                        <div class="mode-name">文字模式</div>
+                        <div class="mode-desc">打字沟通练习</div>
+                    </div>
+                    <div class="mode-item" onclick="selectMode(this, 'voice')">
+                        <div class="mode-icon"><i class="fa fa-microphone"></i></div>
+                        <div class="mode-name">语音模式</div>
+                        <div class="mode-desc">语音+文字同步</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部按钮 -->
+        <div class="bottom-bar">
+            <button class="start-btn ready" id="startBtn" onclick="startTraining()">
+                <i class="fa fa-play"></i>
+                <span>开始训练</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let selectedProject = null;
+        let selectedScene = 'invite';
+        let selectedMode = 'phone';
+
+        const sceneNames = {
+            'invite': '电话邀约',
+            'reception': '接待讲解',
+            'sand table': '沙盘讲解',
+            'model': '样板间讲解',
+            'price': '价格洽谈',
+            'close': '逼定成交'
+        };
+
+        const modeNames = {
+            'phone': '电话模式',
+            'text': '文字模式',
+            'voice': '语音模式'
+        };
+
+        // Tab切换
+        function switchTab(tab, el) {
+            document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            showToast('切换到' + (tab === 'official' ? '官方推荐' : tab === 'my' ? '我创建的' : '训练历史'));
+        }
+
+        // 选择项目
+        function selectProject(id, name) {
+            document.querySelectorAll('.project-card').forEach(c => c.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            selectedProject = { id, name };
+            updateButton();
+        }
+
+        // 选择场景
+        function selectScene(el, scene) {
+            document.querySelectorAll('.scene-item').forEach(s => s.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedScene = scene;
+        }
+
+        // 选择模式
+        function selectMode(el, mode) {
+            document.querySelectorAll('.mode-item').forEach(m => m.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedMode = mode;
+        }
+
+        // 更新按钮状态
+        function updateButton() {
+            const btn = document.getElementById('startBtn');
+            if (selectedProject) {
+                btn.classList.add('ready');
+            } else {
+                btn.classList.remove('ready');
+            }
+        }
+
+        // 开始训练
+        function startTraining() {
+            if (!selectedProject) {
+                showToast('请先选择训练项目');
+                return;
+            }
+
+            // 保存选择到 localStorage
+            localStorage.setItem('train_session', JSON.stringify({
+                project: selectedProject,
+                scene: selectedScene,
+                sceneName: sceneNames[selectedScene],
+                mode: selectedMode,
+                modeName: modeNames[selectedMode],
+                startTime: new Date().toISOString()
+            }));
+
+            // 跳转到训练对话页
+            window.location.href = 'train-dialog.html';
+        }
+
+        // Toast
+        function showToast(message) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.remove(), 2000);
+        }
+
+        // 默认选中第一个项目（开发测试用）
+        setTimeout(() => {
+            const firstCard = document.querySelector('.project-card');
+            if (firstCard) {
+                firstCard.click();
+            }
+        }, 300);
+    </script>
+</body>
+</html>

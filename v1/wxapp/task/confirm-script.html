@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>阶段3：文案确认 - 房产AI助手</title>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --brand-primary: #FA8C16;
+            --brand-primary-dark: #E67A0E;
+            --brand-primary-light: #FFF7E6;
+            --color-success: #00B42A;
+            --color-success-light: #F6FFED;
+            --color-danger: #FA5151;
+            --color-danger-light: #FFF1F0;
+            --color-warning: #FF7D00;
+            --color-warning-light: #FFF7E6;
+            --color-info: #007AFF;
+            --color-info-light: #E8F3FF;
+            --color-purple: #722ED1;
+            --color-purple-light: #F7F0FF;
+            --color-title: #1D2129;
+            --color-text: #4E5969;
+            --color-sub: #86909C;
+            --color-border: #E5E6EB;
+            --color-bg: #F7F8FA;
+            --color-card: #FFFFFF;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+            --font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.25s ease;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            font-family: var(--font-family);
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--color-text);
+            background: var(--color-bg);
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .page { min-height: 100vh; padding-bottom: calc(140px + env(safe-area-inset-bottom)); }
+        
+        /* 头部 */
+        .header {
+            background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
+            padding: calc(44px + env(safe-area-inset-top)) var(--spacing-md) var(--spacing-md);
+            color: white;
+        }
+        .header-top {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        .back-btn {
+            width: 32px; height: 32px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.2);
+            border-radius: var(--radius-full);
+            cursor: pointer; border: none; color: white;
+        }
+        .header-title { font-size: 17px; font-weight: 600; flex: 1; text-align: center; }
+        .step-badge { font-size: 11px; padding: 2px 10px; background: rgba(255,255,255,0.25); border-radius: var(--radius-full); }
+
+        /* 阶段进度 */
+        .header-stage-progress {
+            margin-top: 12px;
+            padding: 10px 16px;
+            background: rgba(255,255,255,0.15);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header-stage-progress .stage-dot {
+            font-size: 12px;
+            color: rgba(255,255,255,0.7);
+            white-space: nowrap;
+        }
+        .header-stage-progress .stage-dot.active {
+            color: white;
+            font-weight: 600;
+        }
+        .header-stage-progress .stage-dot.completed {
+            color: rgba(255,255,255,0.9);
+        }
+        .header-stage-progress .stage-line {
+            width: 28px;
+            height: 2px;
+            background: rgba(255,255,255,0.5);
+            margin: 0 6px;
+            border-radius: 1px;
+        }
+        .header-stage-progress .stage-line.inactive {
+            background: rgba(255,255,255,0.25);
+        }
+
+        /* 生成中状态 */
+        .generating-banner {
+            margin: var(--spacing-md);
+            padding: var(--spacing-md);
+            background: linear-gradient(135deg, var(--color-purple) 0%, #8B5CF6 100%);
+            border-radius: var(--radius-xl);
+            color: white;
+            display: none;
+        }
+        .generating-banner.show { display: block; }
+        .generating-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-sm);
+        }
+        .generating-title {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-weight: 600;
+        }
+        .generating-spinner {
+            width: 20px; height: 20px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .generating-progress {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        .generating-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: var(--spacing-sm);
+        }
+        .generating-fill {
+            height: 100%;
+            background: white;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        .generating-items {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-xs);
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* 素材参考区 */
+        .material-hint {
+            margin: 0 var(--spacing-md) var(--spacing-md);
+            padding: var(--spacing-md);
+            background: var(--color-info-light);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+        }
+        .material-hint i { color: var(--color-info); font-size: 18px; margin-top: 2px; }
+        .material-hint-text { font-size: 13px; color: var(--color-info); line-height: 1.5; }
+
+        /* 生成按钮区域 */
+        .generate-section {
+            padding: var(--spacing-md);
+        }
+        .generate-section.hidden { display: none; }
+        
+        .generate-btn {
+            width: 100%;
+            padding: var(--spacing-lg);
+            background: linear-gradient(135deg, var(--color-purple) 0%, #8B5CF6 100%);
+            border: none;
+            border-radius: var(--radius-xl);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-sm);
+            box-shadow: 0 4px 16px rgba(114, 46, 209, 0.3);
+            transition: all var(--transition-normal);
+        }
+        .generate-btn:active { transform: scale(0.98); }
+        .generate-btn i { font-size: 32px; }
+        .generate-btn-hint { font-size: 12px; opacity: 0.8; font-weight: normal; }
+
+        /* 文案列表 */
+        .copywriter-list { padding: 0 var(--spacing-md); display: none; }
+        .copywriter-list.show { display: block; }
+
+        /* 单个文案卡片 - 初始隐藏 */
+        .copywriter-card { display: none; }
+        .copywriter-card.revealed { display: block; }
+
+        /* 全选工具栏 */
+        .toolbar-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-md);
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            font-size: 13px;
+            color: var(--color-text);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+        .toolbar-btn:active {
+            transform: scale(0.98);
+            opacity: 0.8;
+        }
+        .toolbar-btn i { color: var(--color-purple); }
+        
+        .copywriter-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            margin-bottom: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            border: 2px solid transparent;
+            transition: all var(--transition-normal);
+        }
+        .copywriter-card.selected { border-color: var(--brand-primary); box-shadow: 0 0 0 4px var(--brand-primary-light); }
+        
+        .copywriter-header {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-md);
+            cursor: pointer;
+        }
+        
+        .copywriter-checkbox {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--brand-primary);
+            margin-right: var(--spacing-md);
+            flex-shrink: 0;
+        }
+        
+        .copywriter-info { flex: 1; min-width: 0; }
+        
+        .copywriter-platform {
+            display: inline-flex; align-items: center;
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            font-size: 11px;
+            margin-bottom: var(--spacing-xs);
+        }
+        .copywriter-platform.xiaohongshu { background: #FFE7D6; color: var(--brand-primary); }
+        .copywriter-platform.wechat { background: #E8FFEA; color: var(--color-success); }
+        .copywriter-platform.video { background: #E8F3FF; color: var(--color-info); }
+        
+        .copywriter-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-title);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .copywriter-meta { font-size: 11px; color: var(--color-sub); margin-top: 2px; }
+        
+        .copywriter-expand-icon {
+            margin-left: auto;
+            margin-right: var(--spacing-sm);
+            font-size: 12px;
+            color: var(--color-sub);
+            transition: transform var(--transition-fast);
+            flex-shrink: 0;
+        }
+        .copywriter-card.expanded .copywriter-expand-icon {
+            transform: rotate(180deg);
+        }
+        
+        .copywriter-content { padding: 0 var(--spacing-md) var(--spacing-md); display: none; }
+        .copywriter-card.expanded .copywriter-content { display: block; }
+        
+        .copywriter-text {
+            background: var(--color-bg);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--color-text);
+            white-space: pre-wrap;
+        }
+        /* 底部编辑弹窗 */
+        .edit-modal {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 99998;
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+        }
+        .edit-modal.show { display: flex; }
+        .edit-sheet {
+            width: 100%;
+            background: white;
+            border-radius: 16px 16px 0 0;
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .edit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--color-border);
+        }
+        .edit-title { font-size: 16px; font-weight: 600; color: var(--color-title); }
+        .edit-close {
+            width: 28px; height: 28px;
+            display: flex; align-items: center; justify-content: center;
+            color: var(--color-sub); cursor: pointer;
+        }
+        .edit-content {
+            flex: 1;
+            padding: var(--spacing-md);
+            overflow-y: auto;
+        }
+        .edit-textarea {
+            width: 100%;
+            min-height: 200px;
+            padding: var(--spacing-md);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            line-height: 1.8;
+            resize: none;
+            outline: none;
+            font-family: inherit;
+        }
+        .edit-textarea:focus { border-color: var(--brand-primary); }
+        .edit-footer {
+            padding: var(--spacing-md);
+            padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+        .edit-action-btn {
+            flex: 1;
+            padding: var(--spacing-md);
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .edit-action-btn.cancel {
+            background: var(--color-bg);
+            color: var(--color-text);
+        }
+        .edit-action-btn.save {
+            background: var(--brand-primary);
+            color: white;
+        }
+        
+        .copywriter-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
+        
+        .copywriter-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
+        .action-btn {
+            flex: 1;
+            padding: var(--spacing-sm) var(--spacing-xs);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            background: white;
+            font-size: 12px;
+            color: var(--color-text);
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            gap: 4px;
+            transition: all var(--transition-fast);
+            white-space: nowrap;
+        }
+        .action-btn:active { transform: scale(0.98); }
+        .action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .action-btn i { font-size: 12px; }
+
+        /* 重新生成全部按钮 */
+
+
+        /* 底部操作 */
+        .bottom-bar {
+            position: fixed;
+            bottom: 0; left: 0; right: 0;
+            background: white;
+            padding: var(--spacing-md);
+            padding-bottom: calc(var(--spacing-md) + env(safe-area-inset-bottom));
+            box-shadow: 0 -4px 12px rgba(0,0,0,0.08);
+        }
+        .bottom-hint { font-size: 12px; color: var(--color-sub); text-align: center; margin-bottom: var(--spacing-sm); }
+        
+        .confirm-btn {
+            width: 100%;
+            padding: var(--spacing-md);
+            background: var(--color-border);
+            border: none;
+            border-radius: var(--radius-xl);
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--color-sub);
+            cursor: not-allowed;
+            transition: all var(--transition-normal);
+            display: flex; align-items: center; justify-content: center;
+            gap: var(--spacing-sm);
+        }
+        .confirm-btn.ready {
+            background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(250,140,22,0.3);
+        }
+        .confirm-btn:active { transform: scale(0.99); }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.75);
+            color: white;
+            padding: 16px 32px;
+            border-radius: var(--radius-lg);
+            z-index: 99999;
+            font-size: 15px;
+            animation: toastIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            pointer-events: none;
+        }
+        @keyframes toastIn {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- 头部 -->
+        <div class="header">
+            <div class="header-top">
+                <button class="back-btn" onclick="goBack()">
+                    <i class="fa fa-angle-left"></i>
+                </button>
+                <span class="header-title">阶段3：文案确认</span>
+                <span class="step-badge">3/4</span>
+            </div>
+            <div class="header-stage-progress">
+                <span class="stage-dot completed">阶段1</span>
+                <div class="stage-line"></div>
+                <span class="stage-dot completed">阶段2</span>
+                <div class="stage-line"></div>
+                <span class="stage-dot active">阶段3</span>
+                <div class="stage-line inactive"></div>
+                <span class="stage-dot">阶段4</span>
+            </div>
+        </div>
+
+        <!-- 生成中状态 -->
+        <div class="generating-banner" id="generatingBanner">
+            <div class="generating-header">
+                <div class="generating-title">
+                    <div class="generating-spinner"></div>
+                    <span>AI生成中</span>
+                </div>
+                <span class="generating-progress" id="generatingProgress">0%</span>
+            </div>
+            <div class="generating-bar">
+                <div class="generating-fill" id="generatingFill" style="width: 0%"></div>
+            </div>
+            <div class="generating-items">
+                <div id="genItem1"><i class="fa fa-circle-o"></i> 小红书文案生成中...</div>
+                <div id="genItem2"><i class="fa fa-circle-o"></i> 公众号文案生成中...</div>
+                <div id="genItem3"><i class="fa fa-circle-o"></i> 短视频脚本生成中...</div>
+            </div>
+        </div>
+
+        <!-- 素材参考提示 -->
+        <div class="material-hint" id="materialHint">
+            <i class="fa fa-folder-open"></i>
+            <div class="material-hint-text">
+                基于阶段2上传的<span class="font-semibold" id="materialCount">-</span>个素材点位进行AI生成，包括沙盘照片、样板间视频、区位配套等
+            </div>
+        </div>
+
+        <!-- 生成按钮 -->
+        <div class="generate-section" id="generateSection">
+            <button class="generate-btn" onclick="startGenerate()">
+                <i class="fa fa-magic"></i>
+                <span>一键生成三种文案</span>
+                <span class="generate-btn-hint">使用阶段2素材，生成小红书/公众号/短视频文案</span>
+            </button>
+        </div>
+
+        <!-- 文案列表 -->
+        <div class="copywriter-list" id="copywriterList">
+            <!-- 工具栏 -->
+            <div style="display:flex;justify-content:flex-end;margin-bottom:var(--spacing-sm);">
+                <button class="toolbar-btn" onclick="startGenerate()">
+                    <i class="fa fa-refresh"></i>
+                    <span>全部重新生成</span>
+                </button>
+            </div>
+
+            <!-- 小红书文案 -->
+            <div class="copywriter-card" id="card_xiaohongshu">
+                <div class="copywriter-header" onclick="toggleCard('xiaohongshu')">
+                    <input type="checkbox" class="copywriter-checkbox" id="check_xiaohongshu" onclick="event.stopPropagation(); selectCopy('xiaohongshu')">
+                    <div class="copywriter-info">
+                        <div class="copywriter-platform xiaohongshu">小红书</div>
+                        <div class="copywriter-title" id="title_xiaohongshu">中海汇德里 | 探盘日记</div>
+                        <div class="copywriter-meta">约200字</div>
+                    </div>
+                    <i class="fa fa-chevron-down copywriter-expand-icon"></i>
+                </div>
+                <div class="copywriter-content">
+                    <div class="copywriter-text" id="content_xiaohongshu"></div>
+                    <div class="copywriter-actions">
+                        <button class="action-btn" onclick="copyText('xiaohongshu')">
+                            <i class="fa fa-copy"></i>复制
+                        </button>
+                        <button class="action-btn" onclick="regenerateCopy('xiaohongshu')">
+                            <i class="fa fa-refresh"></i>重生
+                        </button>
+                        <button class="action-btn" onclick="openEditModal('xiaohongshu')">
+                            <i class="fa fa-edit"></i>编辑
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 公众号文案 -->
+            <div class="copywriter-card" id="card_wechat">
+                <div class="copywriter-header" onclick="toggleCard('wechat')">
+                    <input type="checkbox" class="copywriter-checkbox" id="check_wechat" onclick="event.stopPropagation(); selectCopy('wechat')">
+                    <div class="copywriter-info">
+                        <div class="copywriter-platform wechat">公众号</div>
+                        <div class="copywriter-title" id="title_wechat">【开盘预告】中海汇德里震撼来袭</div>
+                        <div class="copywriter-meta">约500字</div>
+                    </div>
+                    <i class="fa fa-chevron-down copywriter-expand-icon"></i>
+                </div>
+                <div class="copywriter-content">
+                    <div class="copywriter-text" id="content_wechat"></div>
+                    <div class="copywriter-actions">
+                        <button class="action-btn" onclick="copyText('wechat')">
+                            <i class="fa fa-copy"></i>复制
+                        </button>
+                        <button class="action-btn" onclick="regenerateCopy('wechat')">
+                            <i class="fa fa-refresh"></i>重生
+                        </button>
+                        <button class="action-btn" onclick="openEditModal('wechat')">
+                            <i class="fa fa-edit"></i>编辑
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 短视频脚本 -->
+            <div class="copywriter-card" id="card_video">
+                <div class="copywriter-header" onclick="toggleCard('video')">
+                    <input type="checkbox" class="copywriter-checkbox" id="check_video" onclick="event.stopPropagation(); selectCopy('video')">
+                    <div class="copywriter-info">
+                        <div class="copywriter-platform video">短视频</div>
+                        <div class="copywriter-title" id="title_video">中海汇德里 | 楼盘介绍脚本</div>
+                        <div class="copywriter-meta">约60秒</div>
+                    </div>
+                    <i class="fa fa-chevron-down copywriter-expand-icon"></i>
+                </div>
+                <div class="copywriter-content">
+                    <div class="copywriter-text" id="content_video"></div>
+                    <div class="copywriter-actions">
+                        <button class="action-btn" onclick="copyText('video')">
+                            <i class="fa fa-copy"></i>复制
+                        </button>
+                        <button class="action-btn" onclick="regenerateCopy('video')">
+                            <i class="fa fa-refresh"></i>重生
+                        </button>
+                        <button class="action-btn" onclick="openEditModal('video')">
+                            <i class="fa fa-edit"></i>编辑
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+
+        <!-- 底部操作栏 -->
+        <div class="bottom-bar">
+            <div class="bottom-hint" id="bottomHint">请选择要使用的文案版本（可多选）</div>
+            <button class="confirm-btn" id="confirmBtn" onclick="handleConfirm()">
+                <i class="fa fa-check"></i>
+                <span>确认并提交</span>
+            </button>
+        </div>
+
+        <!-- 编辑弹窗 -->
+        <div class="edit-modal" id="editModal">
+            <div class="edit-sheet">
+                <div class="edit-header">
+                    <span class="edit-title">编辑文案</span>
+                    <div class="edit-close" onclick="closeEditModal()"><i class="fa fa-times"></i></div>
+                </div>
+                <div class="edit-content">
+                    <textarea class="edit-textarea" id="editTextarea"></textarea>
+                </div>
+                <div class="edit-footer">
+                    <button class="edit-action-btn cancel" onclick="closeEditModal()">取消</button>
+                    <button class="edit-action-btn save" onclick="saveEditModal()">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面数据
+        const PLATFORMS = ['xiaohongshu', 'wechat', 'video'];
+        const PLATFORM_NAMES = {
+            'xiaohongshu': '小红书',
+            'wechat': '公众号',
+            'video': '短视频'
+        };
+
+        let selectedCopies = new Set();
+        let expandedCard = null;
+        let isGenerated = false;
+        let houseName = '';
+        let materialCount = 0;
+        let originalContent = {};
+
+        // 初始化
+        function init() {
+            // 从URL参数读取数据
+            const params = new URLSearchParams(window.location.search);
+            houseName = params.get('houseName') || '楼盘名称';
+            materialCount = parseInt(params.get('materialCount')) || 6;
+
+            // 更新页面数据
+            document.getElementById('materialCount').textContent = materialCount;
+            
+            // 填充示例文案内容
+            PLATFORMS.forEach(type => {
+                const titleEl = document.getElementById('title_' + type);
+                if (titleEl) {
+                    titleEl.textContent = houseName + ' | ' + getDefaultTitle(type);
+                }
+                const contentEl = document.getElementById('content_' + type);
+                if (contentEl) {
+                    const text = getDefaultContent(type);
+                    contentEl.textContent = text;
+                    originalContent[type] = text;
+                }
+            });
+
+            // 检查是否已有生成结果
+            if (params.get('generated') === '1') {
+                showGeneratedResults();
+            }
+        }
+
+        function getDefaultTitle(type) {
+            const titles = {
+                'xiaohongshu': '探盘日记',
+                'wechat': '开盘预告',
+                'video': '楼盘介绍脚本'
+            };
+            return titles[type] || '文案';
+        }
+
+        function goBack() {
+            window.location.href = 'task-detail.html?step=2';
+        }
+
+        function startGenerate() {
+            const banner = document.getElementById('generatingBanner');
+            const genSection = document.getElementById('generateSection');
+            const list = document.getElementById('copywriterList');
+            const fill = document.getElementById('generatingFill');
+            const progress = document.getElementById('generatingProgress');
+
+            // 显示生成状态
+            banner.classList.add('show');
+            genSection.classList.add('hidden');
+            list.classList.add('show');
+
+            // 重置进度
+            fill.style.width = '0%';
+            progress.textContent = '0%';
+            const items = ['genItem1', 'genItem2', 'genItem3'];
+            items.forEach((id, idx) => {
+                const texts = ['小红书文案生成中...', '公众号文案生成中...', '短视频脚本生成中...'];
+                document.getElementById(id).innerHTML = `<i class="fa fa-circle-o"></i> ${texts[idx]}`;
+            });
+
+            // 隐藏所有卡片，重置状态
+            list.classList.add('show');
+            document.querySelectorAll('.copywriter-card').forEach(c => {
+                c.classList.remove('revealed', 'expanded', 'selected');
+            });
+            selectedCopies.clear();
+            updateConfirmBtn();
+
+            // 模拟生成进度
+            let prog = 0;
+            let lastRevealed = -1;
+            const cardTypes = ['xiaohongshu', 'wechat', 'video'];
+            const thresholds = [33, 66, 100];
+
+            function updateItem(index, icon, text) {
+                const el = document.getElementById(items[index]);
+                el.innerHTML = `<i class="fa ${icon}"></i> ${text}`;
+            }
+
+            const progressInterval = setInterval(() => {
+                prog += Math.random() * 12;
+                if (prog > 100) prog = 100;
+                fill.style.width = prog + '%';
+                progress.textContent = Math.round(prog) + '%';
+
+                // 逐个显示卡片并填充内容
+                for (let i = 0; i < thresholds.length; i++) {
+                    if (prog >= thresholds[i] && lastRevealed < i) {
+                        lastRevealed = i;
+                        const type = cardTypes[i];
+                        const card = document.getElementById('card_' + type);
+                        const contentEl = document.getElementById('content_' + type);
+                        
+                        // 填充文案内容
+                        if (contentEl && !contentEl.textContent) {
+                            const text = getDefaultContent(type);
+                            contentEl.textContent = text;
+                            originalContent[type] = text;
+                        }
+                        
+                        card.classList.add('revealed');
+                        updateItem(i, 'fa-check-circle', PLATFORM_NAMES[type] + '文案 ✓');
+                    }
+                }
+
+                if (prog >= 100) {
+                    clearInterval(progressInterval);
+                    setTimeout(() => {
+                        banner.classList.remove('show');
+                        isGenerated = true;
+                        showToast('三种文案已生成完毕');
+                    }, 500);
+                }
+            }, 200);
+        }
+
+        function showGeneratedResults() {
+            document.getElementById('generatingBanner').classList.remove('show');
+            document.getElementById('generateSection').classList.add('hidden');
+            document.getElementById('copywriterList').classList.add('show');
+            // 显示所有卡片
+            document.querySelectorAll('.copywriter-card').forEach(c => {
+                c.classList.add('revealed');
+            });
+            isGenerated = true;
+        }
+
+        function getDefaultContent(type) {
+            const name = houseName || '楼盘名称';
+            const contents = {
+                'xiaohongshu': `【探盘日记 | ${name}】
+
+终于来打卡张江神盘了！🏠
+
+📍 位置：浦东张江高科技园区，地铁口500米
+🏗️ 产品：89㎡三房/109㎡四房
+💰 价格：均价6.5万/㎡，首付20%起
+
+✨ 亮点：
+• 毗邻地铁站，通勤超方便
+• 周边商业配套成熟
+• 金牌顾问一对一服务
+
+#张江买房 #新房探盘 #${name}`,
+                'wechat': `【开盘预告 | ${name}】
+
+位于浦东张江核心地段，${name}项目今日正式开放预约！
+
+🎯 项目亮点：
+• 绝佳区位：紧邻地铁站，30分钟直达陆家嘴
+• 优质产品：89㎡三房、109㎡四房，满足不同家庭需求
+• 完善配套：商业、学校、医疗一应俱全
+
+💰 首发优惠：
+购房享3万抵8万专属优惠，首付20%起
+
+更有金牌顾问一对一服务，看房专车接送
+
+感兴趣的购房者可私信或评论区留言~`,
+                'video': `【${name} · 短视频脚本】
+
+📍 镜头1（0-5秒）：楼盘大门全景
+今天带大家探秘张江网红神盘——${name}！
+
+📍 镜头2（5-15秒）：区位地图展示
+位于浦东张江核心地段，地铁口仅500米，30分钟直达陆家嘴。
+
+📍 镜头3（15-30秒）：沙盘讲解
+项目主推89㎡三房和109㎡四房，均价6.5万/㎡。
+
+📍 镜头4（30-45秒）：样板间参观
+走进样板间看看，客厅宽敞明亮，U型厨房太实用了！
+
+📍 镜头5（45-55秒）：配套展示
+周边商业、学校、医院一应俱全，生活超便利！
+
+📍 镜头6（55-60秒）：结尾
+首付20%起，购房享3万抵8万优惠！关注我，带你看更多好房！`
+            };
+            return contents[type] || '';
+        }
+
+        function toggleCard(type) {
+            const card = document.getElementById('card_' + type);
+            const wasExpanded = card.classList.contains('expanded');
+
+            // 关闭所有卡片
+            document.querySelectorAll('.copywriter-card').forEach(c => {
+                c.classList.remove('expanded');
+            });
+
+            // 如果之前没打开，则打开
+            if (!wasExpanded) {
+                card.classList.add('expanded');
+                expandedCard = type;
+            } else {
+                expandedCard = null;
+            }
+        }
+
+        function selectCopy(type) {
+            const card = document.getElementById('card_' + type);
+            const checkbox = document.getElementById('check_' + type);
+            
+            // 切换选中状态
+            if (selectedCopies.has(type)) {
+                selectedCopies.delete(type);
+                card.classList.remove('selected');
+                checkbox.checked = false;
+            } else {
+                selectedCopies.add(type);
+                card.classList.add('selected');
+                checkbox.checked = true;
+            }
+
+            updateConfirmBtn();
+        }
+
+        function regenerateCopy(type) {
+            const btn = document.getElementById('regen_' + type);
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> 生成中...';
+            
+            showToast('正在重新生成' + PLATFORM_NAMES[type] + '文案...');
+            
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa fa-refresh"></i> 重新生成';
+                showToast(PLATFORM_NAMES[type] + '文案已重新生成');
+            }, 2000);
+        }
+
+        function copyText(type) {
+            const content = document.getElementById('content_' + type).textContent;
+            navigator.clipboard.writeText(content).then(() => {
+                showToast('文案已复制到剪贴板');
+            }).catch(() => {
+                showToast('复制失败，请手动选择复制');
+            });
+        }
+
+        function editCopy(type) {
+            const card = document.getElementById('card_' + type);
+            const textarea = document.getElementById('textarea_' + type);
+            const content = document.getElementById('content_' + type);
+            
+            textarea.value = content.textContent;
+            textarea.style.display = 'block';
+            content.style.display = 'none';
+            
+            // 隐藏操作按钮，显示编辑操作按钮
+            card.querySelectorAll('.copywriter-actions').forEach(el => el.style.display = 'none');
+            const editActions = card.querySelector('.copywriter-edit-actions');
+            if (editActions) editActions.style.display = 'flex';
+            
+            textarea.focus();
+        }
+
+        function saveEdit(type) {
+            const card = document.getElementById('card_' + type);
+            const textarea = document.getElementById('textarea_' + type);
+            const content = document.getElementById('content_' + type);
+            const newText = textarea.value.trim();
+            
+            if (!newText) {
+                showToast('文案内容不能为空');
+                return;
+            }
+            
+            content.textContent = newText;
+            originalContent[type] = newText;
+            textarea.style.display = 'none';
+            content.style.display = 'block';
+            
+            card.querySelectorAll('.copywriter-actions').forEach(el => el.style.display = 'flex');
+            const editActions = card.querySelector('.copywriter-edit-actions');
+            if (editActions) editActions.style.display = 'none';
+            
+            showToast(PLATFORM_NAMES[type] + '文案已保存');
+        }
+
+        function cancelEdit(type) {
+            const card = document.getElementById('card_' + type);
+            const textarea = document.getElementById('textarea_' + type);
+            const content = document.getElementById('content_' + type);
+            
+            textarea.value = originalContent[type] || '';
+            textarea.style.display = 'none';
+            content.style.display = 'block';
+            
+            card.querySelectorAll('.copywriter-actions').forEach(el => el.style.display = 'flex');
+            const editActions = card.querySelector('.copywriter-edit-actions');
+            if (editActions) editActions.style.display = 'none';
+        }
+
+        // 底部弹窗编辑
+        let editingType = null;
+
+        function openEditModal(type) {
+            editingType = type;
+            const content = document.getElementById('content_' + type);
+            document.getElementById('editTextarea').value = content.textContent;
+            document.getElementById('editModal').classList.add('show');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('show');
+            editingType = null;
+        }
+
+        function saveEditModal() {
+            if (!editingType) return;
+            const newText = document.getElementById('editTextarea').value.trim();
+            if (!newText) {
+                showToast('文案内容不能为空');
+                return;
+            }
+            const content = document.getElementById('content_' + editingType);
+            content.textContent = newText;
+            originalContent[editingType] = newText;
+            closeEditModal();
+            showToast(PLATFORM_NAMES[editingType] + '文案已保存');
+        }
+
+        function updateConfirmBtn() {
+            const btn = document.getElementById('confirmBtn');
+            const hint = document.getElementById('bottomHint');
+            const count = selectedCopies.size;
+
+            if (count > 0) {
+                btn.classList.add('ready');
+                if (count === PLATFORMS.length) {
+                    hint.textContent = '已选用全部' + count + '种文案';
+                } else {
+                    hint.textContent = '已选用' + count + '种文案';
+                }
+            } else {
+                btn.classList.remove('ready');
+                hint.textContent = '请选择要使用的文案版本（可多选）';
+            }
+        }
+
+        function handleConfirm() {
+            if (selectedCopies.size === 0) {
+                showToast('请至少选择一种文案版本');
+                return;
+            }
+
+            // 保存选中状态到 localStorage
+            const selectedData = {
+                selected: Array.from(selectedCopies),
+                houseName: houseName,
+                timestamp: Date.now()
+            };
+            localStorage.setItem('confirm-script-selected', JSON.stringify(selectedData));
+
+            const selected = Array.from(selectedCopies).map(t => PLATFORM_NAMES[t]).join('、');
+            showToast('确认提交' + selected + '文案');
+            
+            setTimeout(() => {
+                window.location.href = 'result-generate.html?step=3&selected=' + Array.from(selectedCopies).join(',');
+            }, 1000);
+        }
+
+        function showToast(msg) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
