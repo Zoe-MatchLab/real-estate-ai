@@ -48,37 +48,26 @@
     </nav>
 
     <div class="flex pt-14">
-        <!-- 侧边栏容器 - 动态加载公共组件 -->
-        <div id="sidebar-container"></div>
+        <aside class="w-64 bg-white h-[calc(100vh-56px)] fixed left-0 shadow-sm">
+    <nav class="py-4">
+        <div class="px-4 py-2 text-xs text-gray-400 uppercase font-medium">工作台</div>
+        <a href="index.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-dashboard w-5 text-center"></i><span class="ml-3">数据看板</span></a>
+        <a href="material/material-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-home w-5 text-center"></i><span class="ml-3">新盘管理</span></a>
+        <a href="task/task-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-tasks w-5 text-center"></i><span class="ml-3">探盘任务管理</span></a>
+        <a href="training/training-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-graduation-cap w-5 text-center"></i><span class="ml-3">产品力训练</span></a>
+        <a href="speech/speech-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-comments w-5 text-center"></i><span class="ml-3">话术训练管理</span></a>
+        <a href="content/content-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-magic w-5 text-center"></i><span class="ml-3">获客内容管理</span></a>
+        <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">管理层</div>
+        <a href="data/data-analysis.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-bar-chart w-5 text-center"></i><span class="ml-3">数据分析</span></a>
+        <a href="board/board-chairman.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-trophy w-5 text-center"></i><span class="ml-3">总部决策看板一</span></a>
+        <a href="board/board-chairman-2.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-area-chart w-5 text-center"></i><span class="ml-3">总部决策看板二</span></a>
+        <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">系统管理</div>
+        <a href="team/team-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-users w-5 text-center"></i><span class="ml-3">团队管理</span></a>
+        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-cog w-5 text-center"></i><span class="ml-3">系统设置</span></a>
+    </nav>
+</aside>
 
-        <!-- 动态加载公共侧边栏 -->
-        <script>
-        // 加载公共侧边栏组件
-        document.addEventListener('DOMContentLoaded', async function() {
-            try {
-                const res = await fetch('components/sidebar.component.html');
-                const sidebarHtml = await res.text();
-                document.getElementById('sidebar-container').innerHTML = sidebarHtml;
-                
-                // 初始化侧边栏高亮
-                const currentPage = window.location.pathname.split('/').pop();
-                const navLinks = document.querySelectorAll('aside a');
-                
-                navLinks.forEach(link => {
-                    const href = link.getAttribute('href');
-                    if (href === currentPage || (currentPage === '' && href === 'index.html')) {
-                        link.classList.remove('text-gray-600', 'hover:bg-gray-50');
-                        link.classList.add('text-primary', 'bg-blue-50', 'border-r-4', 'border-primary');
-                    } else {
-                        link.classList.remove('text-primary', 'bg-blue-50', 'border-r-4', 'border-primary');
-                        link.classList.add('text-gray-600', 'hover:bg-gray-50');
-                    }
-                });
-            } catch (e) {
-                console.error('侧边栏加载失败:', e);
-            }
-        });
-        </script>
+        
 
         <!-- 主内容区 -->
         <main class="ml-64 flex-1 p-6">
