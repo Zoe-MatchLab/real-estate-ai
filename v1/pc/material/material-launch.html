@@ -660,53 +660,56 @@
                                 <button class="text-xs text-primary" onclick="addReminder()"><i class="fa fa-plus mr-1"></i>新增节点</button>
                             </div>
                             <div id="reminder-list">
+                                <!-- 轻度提醒 -->
                                 <div class="reminder-row">
-                                    <select class="border border-gray-300 rounded px-2 py-1 text-xs w-20 bg-yellow-50">
-                                        <option value="light" selected>轻度</option>
-                                        <option value="mid">中度</option>
-                                        <option value="severe">严重</option>
-                                    </select>
-                                    <span class="text-xs text-gray-400">触发于</span>
-                                    <select class="border border-gray-300 rounded px-2 py-1 text-xs flex-1">
-                                        <option selected>执行进度过半</option>
-                                        <option>任务开始后1天</option>
-                                        <option>任务开始后2天</option>
-                                        <option>截止前1天</option>
-                                        <option>截止前3天</option>
-                                    </select>
-                                    <button class="text-gray-400 hover:text-danger text-xs" onclick="removeReminder(this)"><i class="fa fa-times"></i></button>
+                                    <div class="flex items-center mr-3">
+                                        <span class="tag tag-success mr-2 text-xs">轻度</span>
+                                        <span class="text-sm font-medium">提醒</span>
+                                    </div>
+                                    <div class="flex items-center flex-1">
+                                        <span class="text-sm mr-2">截止前</span>
+                                        <input type="number" class="w-20 border border-gray-300 rounded px-2 py-1 text-center text-sm" value="24">
+                                        <span class="text-sm mx-2">小时</span>
+                                        <input type="checkbox" class="ml-4 mr-1" checked>
+                                        <span class="text-sm">开启</span>
+                                    </div>
+                                    <div class="text-xs text-gray-500">
+                                        <i class="fa fa-bell-o mr-1"></i>推送提醒通知
+                                    </div>
                                 </div>
+                                <!-- 中度提醒 -->
                                 <div class="reminder-row">
-                                    <select class="border border-gray-300 rounded px-2 py-1 text-xs w-20 bg-orange-50">
-                                        <option value="light">轻度</option>
-                                        <option value="mid" selected>中度</option>
-                                        <option value="severe">严重</option>
-                                    </select>
-                                    <span class="text-xs text-gray-400">触发于</span>
-                                    <select class="border border-gray-300 rounded px-2 py-1 text-xs flex-1">
-                                        <option>执行进度过半</option>
-                                        <option>任务开始后1天</option>
-                                        <option>任务开始后2天</option>
-                                        <option selected>截止前1天</option>
-                                        <option>截止前3天</option>
-                                    </select>
-                                    <button class="text-gray-400 hover:text-danger text-xs" onclick="removeReminder(this)"><i class="fa fa-times"></i></button>
+                                    <div class="flex items-center mr-3">
+                                        <span class="tag tag-warning mr-2 text-xs">中度</span>
+                                        <span class="text-sm font-medium">提醒</span>
+                                    </div>
+                                    <div class="flex items-center flex-1">
+                                        <span class="text-sm mr-2">截止前</span>
+                                        <input type="number" class="w-20 border border-gray-300 rounded px-2 py-1 text-center text-sm" value="12">
+                                        <span class="text-sm mx-2">小时</span>
+                                        <input type="checkbox" class="ml-4 mr-1" checked>
+                                        <span class="text-sm">开启</span>
+                                    </div>
+                                    <div class="text-xs text-gray-500">
+                                        <i class="fa fa-bell-o mr-1"></i>强提醒 + 短信通知
+                                    </div>
                                 </div>
+                                <!-- 严重提醒 -->
                                 <div class="reminder-row">
-                                    <select class="border border-gray-300 rounded px-2 py-1 text-xs w-20 bg-red-50">
-                                        <option value="light">轻度</option>
-                                        <option value="mid">中度</option>
-                                        <option value="severe" selected>严重</option>
-                                    </select>
-                                    <span class="text-xs text-gray-400">触发于</span>
-                                    <select class="border border-gray-300 rounded px-2 py-1 text-xs flex-1">
-                                        <option>执行进度过半</option>
-                                        <option>任务开始后1天</option>
-                                        <option>任务开始后2天</option>
-                                        <option>截止前1天</option>
-                                        <option selected>逾期当天</option>
-                                    </select>
-                                    <button class="text-gray-400 hover:text-danger text-xs" onclick="removeReminder(this)"><i class="fa fa-times"></i></button>
+                                    <div class="flex items-center mr-3">
+                                        <span class="tag tag-danger mr-2 text-xs">严重</span>
+                                        <span class="text-sm font-medium">提醒</span>
+                                    </div>
+                                    <div class="flex items-center flex-1">
+                                        <span class="text-sm mr-2">截止前</span>
+                                        <input type="number" class="w-20 border border-gray-300 rounded px-2 py-1 text-center text-sm" value="2">
+                                        <span class="text-sm mx-2">小时</span>
+                                        <input type="checkbox" class="ml-4 mr-1" checked>
+                                        <span class="text-sm">开启</span>
+                                    </div>
+                                    <div class="text-xs text-gray-500">
+                                        <i class="fa fa-exclamation-circle mr-1"></i>强提醒 + 电话催办
+                                    </div>
                                 </div>
                             </div>
                         </div>
