@@ -343,7 +343,7 @@
             if (!selectedId) return;
             const customer = customerData.find(c => c.id === selectedId);
             if (customer) {
-                sessionStorage.setItem('selectedCustomer', JSON.stringify(customer));
+                localStorage.setItem('selectedCustomer', JSON.stringify(customer));
                 showToast('已选择: ' + customer.name);
             }
             history.back();

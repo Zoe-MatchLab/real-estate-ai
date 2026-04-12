@@ -331,8 +331,7 @@
             if (!selectedId) return;
             const building = buildingData.find(b => b.id === selectedId);
             if (building) {
-                // 将选中数据存到会话存储，返回时由详情页读取
-                sessionStorage.setItem('selectedBuilding', JSON.stringify(building));
+                localStorage.setItem('selectedBuilding', JSON.stringify(building));
                 showToast('已选择: ' + building.name);
             }
             history.back();

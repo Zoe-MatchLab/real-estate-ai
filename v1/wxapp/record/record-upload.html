@@ -364,6 +364,40 @@
             background-position: right 12px center;
             cursor: pointer;
         }
+        .select-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 44px;
+            padding: 0 var(--spacing-md);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            background: white;
+            cursor: pointer;
+        }
+        .select-card:active {
+            background: var(--color-bg);
+        }
+        .select-placeholder {
+            color: var(--color-sub);
+            font-size: 14px;
+        }
+        .select-card .fa-chevron-right {
+            color: var(--color-sub);
+            font-size: 12px;
+        }
+        .select-card.selected .select-placeholder {
+            color: var(--color-text);
+        }
+        .select-card .clear-btn {
+            color: var(--color-sub);
+            font-size: 12px;
+            padding: 4px 8px;
+            margin-left: 8px;
+        }
+        .select-card .clear-btn:active {
+            color: var(--color-danger);
+        }
 
         .form-select:focus {
             outline: none;
@@ -559,25 +593,17 @@
                 </div>
                 <div class="form-field">
                     <label class="form-label">关联楼盘</label>
-                    <select class="form-select" id="buildingSelect">
-                        <option value="">不关联楼盘</option>
-                        <option value="BLD_001">中海汇德里</option>
-                        <option value="BLD_002">万科翡翠公园</option>
-                        <option value="BLD_003">华润外滩九里</option>
-                        <option value="BLD_004">龙湖天琅</option>
-                        <option value="BLD_005">保利天汇</option>
-                    </select>
+                    <div class="select-card" id="buildingSelectCard" onclick="goToBuildingSelect()">
+                        <span class="select-placeholder" id="buildingText">点击选择楼盘</span>
+                        <i class="fa fa-chevron-right"></i>
+                    </div>
                 </div>
                 <div class="form-field">
                     <label class="form-label">关联客户</label>
-                    <select class="form-select" id="customerSelect">
-                        <option value="">不关联客户</option>
-                        <option value="CUST_001">张三</option>
-                        <option value="CUST_002">李四</option>
-                        <option value="CUST_003">王五</option>
-                        <option value="CUST_004">赵六</option>
-                        <option value="CUST_005">钱七</option>
-                    </select>
+                    <div class="select-card" id="customerSelectCard" onclick="goToCustomerSelect()">
+                        <span class="select-placeholder" id="customerText">点击选择客户（可选）</span>
+                        <i class="fa fa-chevron-right"></i>
+                    </div>
                 </div>
                 <div class="form-field">
                     <label class="form-label">备注</label>
@@ -767,6 +793,68 @@
                 setTimeout(() => t.remove(), 200);
             }, 2000);
         }
+        
+        // 跳转到楼盘选择页
+        function goToBuildingSelect() {
+            window.location.href = 'building-select.html';
+        }
+        
+        // 跳转到客户选择页
+        function goToCustomerSelect() {
+            window.location.href = 'customer-select.html';
+        }
+        
+        // 页面加载时检查是否有已选择的楼盘
+        function checkSelectedBuilding() {
+            const selected = localStorage.getItem('selectedBuilding');
+            if (selected) {
+                const building = JSON.parse(selected);
+                document.getElementById('buildingText').textContent = building.name;
+                document.getElementById('buildingText').classList.add('selected');
+                document.getElementById('buildingSelectCard').classList.add('selected');
+                const clearBtn = document.createElement('span');
+                clearBtn.className = 'clear-btn';
+                clearBtn.textContent = '✕';
+                clearBtn.onclick = function(e) { clearBuilding(e); };
+                document.getElementById('buildingSelectCard').appendChild(clearBtn);
+            }
+        }
+        
+        // 页面加载时检查是否有已选择的客户
+        function checkSelectedCustomer() {
+            const selected = localStorage.getItem('selectedCustomer');
+            if (selected) {
+                const customer = JSON.parse(selected);
+                document.getElementById('customerText').textContent = customer.name;
+                document.getElementById('customerText').classList.add('selected');
+                document.getElementById('customerSelectCard').classList.add('selected');
+                const clearBtn = document.createElement('span');
+                clearBtn.className = 'clear-btn';
+                clearBtn.textContent = '✕';
+                clearBtn.onclick = function(e) { clearCustomer(e); };
+                document.getElementById('customerSelectCard').appendChild(clearBtn);
+            }
+        }
+        
+        // 清除已选择的楼盘
+        function clearBuilding(e) {
+            e.stopPropagation();
+            localStorage.removeItem('selectedBuilding');
+            location.reload();
+        }
+        
+        // 清除已选择的客户
+        function clearCustomer(e) {
+            e.stopPropagation();
+            localStorage.removeItem('selectedCustomer');
+            location.reload();
+        }
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            checkSelectedBuilding();
+            checkSelectedCustomer();
+        });
     </script>
 </body>
 </html>
