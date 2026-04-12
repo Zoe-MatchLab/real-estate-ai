@@ -75,25 +75,25 @@
         }
 
         /* 根据状态显示/隐藏操作按钮 */
-        tr[data-status="progress"] .btn-edit,
-        tr[data-status="invalid"] .btn-edit,
-        tr[data-status="completed"] .btn-edit {
-            display: none;
-        }
-        tr[data-status="progress"] .btn-delete,
-        tr[data-status="invalid"] .btn-delete,
-        tr[data-status="completed"] .btn-delete,
-        tr[data-status="progress"] .btn-distribute,
-        tr[data-status="completed"] .btn-distribute,
-        tr[data-status="invalid"] .btn-distribute {
-            display: none;
-        }
-        tr[data-status="pending"] .btn-pause,
-        tr[data-status="pending"] .btn-urge,
+        /* 默认隐藏所有状态相关按钮 */
+        .btn-edit, .btn-delete, .btn-distribute, .btn-pause, .btn-urge { display: none !important; }
+        
+        /* 待下发: 查看、下发、编辑、删除 */
+        tr[data-status="pending"] .btn-view,
         tr[data-status="pending"] .btn-distribute,
-        tr[data-status="progress"] .btn-distribute {
-            display: none;
-        }
+        tr[data-status="pending"] .btn-edit,
+        tr[data-status="pending"] .btn-delete { display: inline-block !important; }
+        
+        /* 进行中: 查看、暂停、催办 */
+        tr[data-status="progress"] .btn-view,
+        tr[data-status="progress"] .btn-pause,
+        tr[data-status="progress"] .btn-urge { display: inline-block !important; }
+        
+        /* 已失效: 仅查看 */
+        tr[data-status="invalid"] .btn-view { display: inline-block !important; }
+        
+        /* 已完成: 仅查看 */
+        tr[data-status="completed"] .btn-view { display: inline-block !important; }
 
     </style>
 </head>
@@ -158,9 +158,7 @@
                     <button class="border border-gray-300 bg-white px-4 py-2 rounded-lg hover:bg-gray-50" onclick="window.location.href='task-tracking.html'">
                         <i class="fa fa-line-chart mr-2"></i> 查看追踪驾驶舱
                     </button>
-                    <button class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg" onclick="window.location.href='task-create.html'">
-                        <i class="fa fa-plus-circle mr-2"></i> 新建探盘任务
-                    </button>
+                    
                 </div>
             </div>
             
