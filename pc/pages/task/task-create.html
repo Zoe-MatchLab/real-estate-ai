@@ -131,6 +131,48 @@
             <div class="p-4">
                 <h3 class="font-medium mb-3">1. 项目基础信息配置</h3>
                 <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                    
+                    <!-- 任务类型选择 -->
+                    <div class="form-item mb-4 p-4 bg-blue-50 rounded-lg border border-blue-100">
+                        <label class="block text-sm font-medium mb-3">任务类型 <span class="text-danger">*</span></label>
+                        <div class="grid grid-cols-3 gap-4">
+                            <label class="flex items-start p-3 bg-white rounded-lg border-2 border-primary cursor-pointer relative">
+                                <input type="checkbox" class="mt-1 mr-3" checked disabled>
+                                <div class="flex-1">
+                                    <div class="flex items-center">
+                                        <span class="font-medium">探盘路书</span>
+                                        <span class="tag tag-danger ml-2">必选</span>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">包含定位打卡、点位采集、文案确认、AI内容生成</p>
+                                </div>
+                                <div class="absolute top-2 right-2">
+                                    <i class="fa fa-check-circle text-primary"></i>
+                                </div>
+                            </label>
+                            <label class="flex items-start p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:border-primary">
+                                <input type="checkbox" class="mt-1 mr-3" id="task_type_speech">
+                                <div class="flex-1">
+                                    <div class="flex items-center">
+                                        <span class="font-medium">话术训练</span>
+                                        <span class="tag tag-warning ml-2">可选</span>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">AI话术训练考核，支持多维度评估</p>
+                                </div>
+                            </label>
+                            <label class="flex items-start p-3 bg-white rounded-lg border border-gray-200 cursor-pointer hover:border-primary">
+                                <input type="checkbox" class="mt-1 mr-3" id="task_type_audio">
+                                <div class="flex-1">
+                                    <div class="flex items-center">
+                                        <span class="font-medium">邀约录音</span>
+                                        <span class="tag tag-warning ml-2">可选</span>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">上传真实邀约录音，AI分析标注</p>
+                                </div>
+                            </label>
+                        </div>
+                        <p class="text-xs text-gray-500 mt-3"><i class="fa fa-info-circle mr-1"></i>三个子任务并行执行，互不依赖，各自独立完成</p>
+                    </div>
+
                     <div class="grid grid-cols-2 gap-4">
                         <div class="form-item">
                             <label class="block text-sm font-medium mb-2">项目名称 <span class="text-danger">*</span></label>
