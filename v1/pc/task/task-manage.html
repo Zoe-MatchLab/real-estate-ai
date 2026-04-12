@@ -73,53 +73,6 @@
         .batch-bar.show {
             transform: translateY(0);
         }
-        /* Tab underline */
-        .tab-item {
-            position: relative;
-            padding-bottom: 12px;
-            color: #4E5969;
-            font-weight: 500;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        .tab-item:hover {
-            color: #165DFF;
-        }
-        .tab-item.active {
-            color: #165DFF;
-        }
-        .tab-item.active::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: #165DFF;
-            border-radius: 2px 2px 0 0;
-        }
-        .tab-count {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 18px;
-            height: 18px;
-            padding: 0 4px;
-            background: #F2F3F5;
-            color: #4E5969;
-            border-radius: 9px;
-            font-size: 11px;
-            font-weight: 600;
-            margin-left: 4px;
-        }
-        .tab-item.active .tab-count {
-            background: #D9E6FF;
-            color: #165DFF;
-        }
-        .tab-item:hover .tab-count {
-            background: #D9E6FF;
-            color: #165DFF;
-        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -195,37 +148,11 @@
                     // 设置任务状态筛选为待分发
                     const statusSelect = document.querySelector('select[name="taskStatus"]');
                     statusSelect.value = 'pending';
-                    // 触发Tab切换
-                    setActiveTab('pending');
+                    // 触发筛选
+                    
                     alert('已为您筛选出所有待分发的探盘任务！');
                 }
             </script>
-
-            <!-- ==================== 状态Tab切换 ==================== -->
-            <div class="bg-white rounded-xl px-5 py-4 shadow-sm border border-gray-100 mb-4">
-                <div class="flex items-center space-x-8 border-b border-gray-100 -mb-px" id="statusTabs">
-                    <div class="tab-item active" data-status="" onclick="setActiveTab('')">
-                        <span>全部</span>
-                        <span class="tab-count" id="count-all">128</span>
-                    </div>
-                    <div class="tab-item" data-status="pending" onclick="setActiveTab('pending')">
-                        <span>待下发</span>
-                        <span class="tab-count" id="count-pending">15</span>
-                    </div>
-                    <div class="tab-item" data-status="progress" onclick="setActiveTab('progress')">
-                        <span>进行中</span>
-                        <span class="tab-count" id="count-progress">68</span>
-                    </div>
-                    <div class="tab-item" data-status="completed" onclick="setActiveTab('completed')">
-                        <span>已完成</span>
-                        <span class="tab-count" id="count-completed">35</span>
-                    </div>
-                    <div class="tab-item" data-status="invalid" onclick="setActiveTab('invalid')">
-                        <span>已失效</span>
-                        <span class="tab-count" id="count-invalid">10</span>
-                    </div>
-                </div>
-            </div>
 
             <!-- 筛选区域 -->
             <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 mb-6">
@@ -607,42 +534,9 @@
         }
         applyRolePermission();
 
-        // ========== 状态Tab切换 ==========
-        let currentTabStatus = '';
-        let currentStatusFilter = '';
-
-        function setActiveTab(status) {
-            currentTabStatus = status;
-            // 更新Tab高亮
-            document.querySelectorAll('.tab-item').forEach(tab => {
-                tab.classList.remove('active');
-                if (tab.dataset.status === status) {
-                    tab.classList.add('active');
-                }
-            });
-            // 同步筛选器
-            document.getElementById('taskStatusFilter').value = status;
-            // 过滤表格行
-            filterTableByStatus(status);
-        }
-
-        function filterTableByStatus(status) {
-            const rows = document.querySelectorAll('#taskTableBody tr');
-            rows.forEach(row => {
-                if (!status || row.dataset.status === status) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-            // 更新总记录数显示
-            const visibleRows = Array.from(rows).filter(r => r.style.display !== 'none');
-            document.getElementById('totalRecords').textContent = visibleRows.length;
-        }
-
         // 筛选器联动
-        document.getElementById('taskStatusFilter').addEventListener('change', function(e) {
-            setActiveTab(e.target.value);
+document.getElementById('taskStatusFilter').addEventListener('change', function(e) {
+            
         });
 
         // ========== 批量选择 ==========
@@ -735,7 +629,7 @@
             clearSelection();
             updateSelectAllState();
             alert(`已成功删除 ${count} 个任务`);
-            updateTabCounts();
+            
         }
 
         // ========== 查看按钮 ==========
@@ -778,10 +672,8 @@
                 if (match) visibleCount++;
             });
 
-            // 更新Tab计数
-            updateVisibleCount(visibleCount);
-            setActiveTab(status);
-        }
+                        updateVisibleCount(visibleCount);
+            }
 
         function resetFilters() {
             document.getElementById('searchKeyword').value = '';
@@ -791,7 +683,6 @@
             document.getElementById('executorFilter').value = '';
             document.getElementById('startDate').value = '';
             document.getElementById('endDate').value = '';
-            setActiveTab('');
             document.querySelectorAll('#taskTableBody tr').forEach(r => r.style.display = '');
             updateVisibleCount(document.querySelectorAll('#taskTableBody tr').length);
         }
@@ -800,9 +691,7 @@
             document.getElementById('totalRecords').textContent = count;
         }
 
-        function updateTabCounts() {
-            const rows = document.querySelectorAll('#taskTableBody tr');
-            const counts = { all: rows.length, pending: 0, progress: 0, completed: 0, invalid: 0 };
+        ;
             rows.forEach(row => {
                 const s = row.dataset.status;
                 if (s) counts[s]++;
@@ -876,7 +765,7 @@
 
             // 初始化分页
             updatePagination();
-            updateTabCounts();
+            
         });
     </script>
 
