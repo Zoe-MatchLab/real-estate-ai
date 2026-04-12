@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客户管理列表 - V2.0 - 房产AI作业平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        success: '#00B42A',
+                        warning: '#FF7D00',
+                        danger: '#F53F3F',
+                        dark: '#1D2129',
+                        'gray-light': '#F2F3F5',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .tag { padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; display: inline-block; }
+        .tag-level-high { background: #E8FFEA; color: #00B42A; }
+        .tag-level-medium { background: #FFF7E8; color: #FF7D00; }
+        .tag-level-low { background: #F2F3F5; color: #86909C; }
+        .tag-level-deal { background: #E8F3FF; color: #165DFF; }
+        .tag-source-online { background: #F3E8FF; color: #722ED1; }
+        .tag-source-refer { background: #E8FFEA; color: #00B42A; }
+        .tag-source-walk { background: #FFF7E8; color: #FF7D00; }
+        .hover-row:hover { background: #f8f9fa; cursor: pointer; }
+        aside a.active { color: #165DFF; background-color: #E8F3FF; border-right: 4px solid #165DFF; }
+        /* 全局模态框样式 */
+        .global-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+        .global-modal-overlay.active { opacity: 1; pointer-events: all; }
+        .global-modal-box { background: white; border-radius: 16px; width: 380px; max-width: 90vw; box-shadow: 0 20px 60px rgba(0,0,0,0.2); transform: scale(0.9); transition: transform 0.2s; }
+        .global-modal-overlay.active .global-modal-box { transform: scale(1); }
+        .global-modal-icon { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 24px; }
+        .global-modal-icon.success { background: #E8FFEA; color: #00B42A; }
+        .global-modal-icon.error { background: #FFF1F0; color: #F53F3F; }
+        .global-modal-icon.confirm { background: #E8F3FF; color: #165DFF; }
+        .global-modal-icon.info { background: #E8F3FF; color: #165DFF; }
+        .global-modal-title { font-size: 17px; font-weight: 700; color: #1D2129; text-align: center; margin-bottom: 8px; }
+        .global-modal-body { font-size: 14px; color: #4E5969; text-align: center; line-height: 1.6; padding: 0 20px 20px; }
+        .global-modal-footer { display: flex; gap: 10px; padding: 0 20px 20px; }
+        .global-modal-footer button { flex: 1; padding: 10px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; }
+        .global-modal-footer .btn-cancel { background: #F2F3F5; color: #4E5969; }
+        .global-modal-footer .btn-cancel:hover { background: #E5E6EB; }
+        .global-modal-footer .btn-primary { background: #165DFF; color: white; }
+        .global-modal-footer .btn-primary:hover { background: #4080FF; }
+        .global-modal-footer .btn-success { background: #00B42A; color: white; }
+        .global-modal-footer .btn-success:hover { background: #00A037; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 顶部导航 -->
+    <nav class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
+        <div class="flex justify-between items-center px-6 py-3">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-home text-primary text-2xl"></i>
+                <span class="text-xl font-bold text-dark">房产AI作业平台</span>
+                <span class="text-sm text-gray-500 ml-2">管理后台</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-600 hover:text-primary relative">
+                    <i class="fa fa-bell-o text-lg"></i>
+                    <span class="absolute top-0 right-0 bg-danger text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center">管</div>
+                    <span class="text-sm font-medium">区域经理</span>
+                    <i class="fa fa-angle-down text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex pt-14">
+        <!-- 侧边栏 -->
+        <!-- 侧边栏 - 内联，不使用fetch -->
+<aside class="w-64 bg-white h-[calc(100vh-56px)] fixed left-0 shadow-sm">
+    <nav class="py-4">
+        <div class="px-4 py-2 text-xs text-gray-400 uppercase font-medium">工作台</div>
+        <a href="../../index.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-dashboard w-5 text-center"></i><span class="ml-3">数据看板</span></a>
+        <a href="../../material/material-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-home w-5 text-center"></i><span class="ml-3">新盘管理</span></a>
+        <a href="../../task/task-list.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-tasks w-5 text-center"></i><span class="ml-3">探盘任务管理</span></a>
+        <a href="../../speech/speech-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-comments w-5 text-center"></i><span class="ml-3">话术训练管理</span></a>
+        <a href="../../content/content-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-magic w-5 text-center"></i><span class="ml-3">获客内容管理</span></a>
+        <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">管理层</div>
+        <a href="../../record/record-list.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-microphone w-5 text-center"></i><span class="ml-3">录音分析</span><span class="ml-auto text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded">NEW</span></a>
+        <a href="customer-list.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 active"><i class="fa fa-user-circle w-5 text-center"></i><span class="ml-3">客户管理</span><span class="ml-auto text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded">NEW</span></a>
+        <a href="../../speech/speech-data.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-line-chart w-5 text-center"></i><span class="ml-3">训练数据中心</span><span class="ml-auto text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded">NEW</span></a>
+        <a href="../../data/data-analysis.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-bar-chart w-5 text-center"></i><span class="ml-3">数据分析</span></a>
+        <a href="../../team/team-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-users w-5 text-center"></i><span class="ml-3">团队管理</span></a>
+        <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">系统管理</div>
+        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-cog w-5 text-center"></i><span class="ml-3">系统设置</span></a>
+    </nav>
+</aside>
+
+        <!-- 主内容区 -->
+        <main class="ml-64 flex-1 p-6">
+            <!-- 页面标题 -->
+            <div class="mb-6 flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-dark">客户管理</h1>
+                    <p class="text-gray-500 mt-1">V2.0 · 经纪人客户管理 · 支持跟进记录 + 客户转移</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="openTransferModal()" class="text-sm text-gray-500 hover:text-primary border border-gray-300 rounded-lg px-3 py-2">
+                        <i class="fa fa-exchange mr-1"></i>批量转移
+                    </button>
+                    <button class="text-sm text-gray-500 hover:text-primary border border-gray-300 rounded-lg px-3 py-2">
+                        <i class="fa fa-download mr-1"></i>导出
+                    </button>
+                </div>
+            </div>
+
+            <!-- 统计卡片 -->
+            <div class="grid grid-cols-5 gap-4 mb-5">
+                <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-gray-300 cursor-pointer hover:shadow-md transition">
+                    <div class="text-2xl font-bold text-dark">128</div>
+                    <div class="text-xs text-gray-500 mt-1">客户总数</div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-green-500 cursor-pointer hover:shadow-md transition">
+                    <div class="text-2xl font-bold text-green-600">42</div>
+                    <div class="text-xs text-gray-500 mt-1">高意向</div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-orange-400 cursor-pointer hover:shadow-md transition">
+                    <div class="text-2xl font-bold text-orange-500">35</div>
+                    <div class="text-xs text-gray-500 mt-1">中等意向</div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-blue-500 cursor-pointer hover:shadow-md transition">
+                    <div class="text-2xl font-bold text-blue-600">8</div>
+                    <div class="text-xs text-gray-500 mt-1">已成交</div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-red-400 cursor-pointer hover:shadow-md transition">
+                    <div class="text-2xl font-bold text-red-500">3</div>
+                    <div class="text-xs text-gray-500 mt-1">本月新增</div>
+                </div>
+            </div>
+
+            <!-- 筛选栏 -->
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                <div class="flex flex-wrap gap-3 items-end">
+                    <div class="flex-1 min-w-[200px]">
+                        <label class="block text-xs text-gray-500 mb-1">客户姓名/手机号搜索</label>
+                        <input type="text" placeholder="搜索客户姓名或手机号..." class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
+                    </div>
+                    <div class="min-w-[160px]">
+                        <label class="block text-xs text-gray-500 mb-1">意向阶段</label>
+                        <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-white">
+                            <option value="">全部</option>
+                            <option value="high">高意向</option>
+                            <option value="medium">中等意向</option>
+                            <option value="low">初步了解</option>
+                            <option value="deal">已成交</option>
+                        </select>
+                    </div>
+                    <div class="min-w-[160px]">
+                        <label class="block text-xs text-gray-500 mb-1">客户来源</label>
+                        <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-white">
+                            <option value="">全部</option>
+                            <option value="online">线上获客</option>
+                            <option value="refer">转介绍</option>
+                            <option value="walk">自然到访</option>
+                        </select>
+                    </div>
+                    <div class="min-w-[160px]">
+                        <label class="block text-xs text-gray-500 mb-1">关联楼盘</label>
+                        <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-white">
+                            <option value="">全部楼盘</option>
+                            <option>中海汇德里</option>
+                            <option>万科翡翠公园</option>
+                        </select>
+                    </div>
+                    <div class="min-w-[160px]">
+                        <label class="block text-xs text-gray-500 mb-1">经纪人</label>
+                        <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-white">
+                            <option value="">全部经纪人</option>
+                            <option>陈佳佳</option>
+                            <option>李明</option>
+                            <option>王芳</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button class="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg text-sm">
+                            <i class="fa fa-search mr-1"></i>搜索
+                        </button>
+                        <button class="ml-2 text-gray-500 hover:text-gray-700 px-3 py-2 text-sm border border-gray-300 rounded-lg">重置</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 客户列表表格 -->
+            <div class="bg-white rounded-lg shadow-sm">
+                <div class="p-4 border-b border-gray-100 flex justify-between items-center">
+                    <div class="text-sm text-gray-600">共 <span class="font-bold text-dark">128</span> 位客户</div>
+                    <div class="flex gap-2">
+                        <label class="flex items-center gap-1 text-sm text-gray-500 cursor-pointer">
+                            <input type="checkbox" class="rounded" onchange="toggleSelectAll(this)">
+                            <span>全选</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-medium w-8"><input type="checkbox" class="rounded"></th>
+                                <th class="px-4 py-3 text-left font-medium">客户信息</th>
+                                <th class="px-4 py-3 text-left font-medium">意向楼盘</th>
+                                <th class="px-4 py-3 text-left font-medium">意向阶段</th>
+                                <th class="px-4 py-3 text-left font-medium">来源</th>
+                                <th class="px-4 py-3 text-left font-medium">经纪人</th>
+                                <th class="px-4 py-3 text-left font-medium">最近跟进</th>
+                                <th class="px-4 py-3 text-left font-medium">关联录音</th>
+                                <th class="px-4 py-3 text-left font-medium">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <!-- 客户1 -->
+                            <tr class="hover-row">
+                                <td class="px-4 py-3"><input type="checkbox" class="rounded"></td>
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold">张</div>
+                                        <div>
+                                            <div class="font-medium text-dark">张三</div>
+                                            <div class="text-xs text-gray-400">138****8821</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="text-dark text-sm">中海汇德里</div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="tag tag-level-high">高意向</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="tag tag-source-online">线上获客</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-5 h-5 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold">陈</div>
+                                        <span class="text-gray-700 text-sm">陈佳佳</span>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="text-sm text-gray-700">2026-04-10</div>
+                                    <div class="text-xs text-gray-400">电话跟进</div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="text-primary text-sm cursor-pointer hover:underline">查看(2)</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <button class="text-primary hover:text-primary/80 text-xs mr-2">详情</button>
+                                    <button class="text-gray-500 hover:text-gray-700 text-xs">跟进</button>
+                                </td>
+                            </tr>
+                            <!-- 客户2 -->
+                            <tr class="hover-row">
+                                <td class="px-4 py-3"><input type="checkbox" class="rounded"></td>
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs font-bold">李</div>
+                                        <div>
+                                            <div class="font-medium text-dark">李四</div>
+                                            <div class="text-xs text-gray-400">139****7734</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="text-dark text-sm">万科翡翠公园</div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="tag tag-level-medium">中等意向</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="tag tag-source-refer">转介绍</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-5 h-5 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs font-bold">李</div>
+                                        <span class="text-gray-700 text-sm">李明</span>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="text-sm text-gray-700">2026-04-08</div>
+                                    <div class="text-xs text-gray-400">微信沟通</div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="text-gray-400 text-sm">暂无</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <button class="text-primary hover:text-primary/80 text-xs mr-2">详情</button>
+                                    <button class="text-gray-500 hover:text-gray-700 text-xs">跟进</button>
+                                </td>
+                            </tr>
+                            <!-- 客户3 -->
+                            <tr class="hover-row">
+                                <td class="px-4 py-3"><input type="checkbox" class="rounded"></td>
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-8 h-8 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-xs font-bold">王</div>
+                                        <div>
+                                            <div class="font-medium text-dark">王五</div>
+                                            <div class="text-xs text-gray-400">136****5500</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="text-dark text-sm">龙湖天琅</div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="tag tag-level-deal">已成交</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="tag tag-source-walk">自然到访</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-5 h-5 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-xs font-bold">赵</div>
+                                        <span class="text-gray-700 text-sm">赵伟</span>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="text-sm text-gray-700">2026-04-05</div>
+                                    <div class="text-xs text-gray-400">面谈</div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="text-primary text-sm cursor-pointer hover:underline">查看(3)</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <button class="text-primary hover:text-primary/80 text-xs mr-2">详情</button>
+                                    <button class="text-gray-500 hover:text-gray-700 text-xs">跟进</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- 分页 -->
+                <div class="p-4 border-t border-gray-100 flex justify-between items-center">
+                    <div class="text-sm text-gray-500">显示 1-10 条，共 128 条</div>
+                    <div class="flex gap-1">
+                        <button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-500 hover:bg-gray-50 disabled:opacity-50" disabled>上一页</button>
+                        <button class="px-3 py-1 border border-primary bg-primary text-white rounded text-sm">1</button>
+                        <button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-600 hover:bg-gray-50">2</button>
+                        <button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-500 hover:bg-gray-50">下一页</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 客户转移弹窗 V2.0 新增 -->
+    <div id="transferModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+            <div class="p-5 border-b border-gray-100 flex justify-between items-center">
+                <h3 class="text-lg font-bold text-dark"><i class="fa fa-exchange text-primary mr-2"></i>批量转移客户</h3>
+                <button onclick="closeTransferModal()" class="text-gray-400 hover:text-gray-600 text-xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="p-5">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-dark mb-2">已选择客户</label>
+                    <div class="bg-gray-50 rounded-lg p-3 text-sm text-gray-600">
+                        已选择 <span class="font-bold text-dark">3</span> 位客户，将被转移至新经纪人
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-dark mb-2">原经纪人</label>
+                    <div class="text-sm text-gray-700">陈佳佳</div>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-dark mb-2">目标经纪人 <span class="text-danger">*</span></label>
+                    <select class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-white">
+                        <option value="">请选择目标经纪人</option>
+                        <option>陈佳佳</option>
+                        <option>李明</option>
+                        <option>王芳</option>
+                        <option>赵伟</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-dark mb-2">转移原因</label>
+                    <select class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-white">
+                        <option value="">请选择原因</option>
+                        <option>人员调动</option>
+                        <option>经纪人离职</option>
+                        <option>客户归属调整</option>
+                        <option>其他</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-dark mb-2">备注（选填）</label>
+                    <textarea rows="2" placeholder="请输入转移备注..." class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-none"></textarea>
+                </div>
+            </div>
+            <div class="p-5 border-t border-gray-100 flex justify-end gap-3">
+                <button onclick="closeTransferModal()" class="px-5 py-2.5 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 font-medium">取消</button>
+                <button onclick="confirmTransfer()" class="px-5 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-lg font-medium">
+                    <i class="fa fa-check mr-1"></i>确认转移
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openTransferModal() {
+            document.getElementById('transferModal').classList.remove('hidden');
+        }
+        function closeTransferModal() {
+            document.getElementById('transferModal').classList.add('hidden');
+        }
+        function confirmTransfer() {
+            closeTransferModal();
+            showModal('success', '转移成功', '客户转移成功！');
+        }
+        function toggleSelectAll(el) {
+            const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+            checkboxes.forEach(cb => cb.checked = el.checked);
+        }
+
+        /* ── 全局模态框系统 ── */
+        function showModal(type, title, message, duration) {
+            var overlay = document.getElementById('globalModalOverlay');
+            var iconEl = document.getElementById('globalModalIcon');
+            var titleEl = document.getElementById('globalModalTitle');
+            var bodyEl = document.getElementById('globalModalBody');
+            var footerEl = document.getElementById('globalModalFooter');
+            var iconMap = { success: '<i class="fa fa-check-circle"></i>', error: '<i class="fa fa-times-circle"></i>', info: '<i class="fa fa-info-circle"></i>', warning: '<i class="fa fa-exclamation-circle"></i>' };
+            var colorMap = { success: 'success', error: 'error', info: 'info', warning: 'warning' };
+            iconEl.innerHTML = iconMap[type] || iconMap.info;
+            iconEl.className = 'global-modal-icon ' + (colorMap[type] || 'info');
+            titleEl.textContent = title;
+            bodyEl.textContent = message;
+            footerEl.innerHTML = '<button class="btn-primary" onclick="closeGlobalModal()">知道了</button>';
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            if (duration !== false) { setTimeout(function() { closeGlobalModal(); }, duration || 2500); }
+        }
+        function closeGlobalModal() {
+            var overlay = document.getElementById('globalModalOverlay');
+            if (overlay) overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    </script>
+
+    <!-- 全局模态框 -->
+    <div id="globalModalOverlay" class="global-modal-overlay" onclick="if(event.target===this)closeGlobalModal()">
+        <div class="global-modal-box">
+            <div style="padding:28px 20px 0;text-align:center;">
+                <div id="globalModalIcon" class="global-modal-icon info"></div>
+                <div id="globalModalTitle" class="global-modal-title"></div>
+                <div id="globalModalBody" class="global-modal-body"></div>
+            </div>
+            <div id="globalModalFooter" class="global-modal-footer"></div>
+        </div>
+    </div>
+</body>
+</html>

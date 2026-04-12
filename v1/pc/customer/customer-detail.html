@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客户详情 - V2.0 - 房产AI作业平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        success: '#00B42A',
+                        warning: '#FF7D00',
+                        danger: '#F53F3F',
+                        dark: '#1D2129',
+                        'gray-light': '#F2F3F5',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .tag { padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; display: inline-block; }
+        .tag-level-high { background: #E8FFEA; color: #00B42A; }
+        .tag-level-medium { background: #FFF7E8; color: #FF7D00; }
+        .tag-source-online { background: #F3E8FF; color: #722ED1; }
+        .aside-active { color: #165DFF; background-color: #E8F3FF; border-right: 4px solid #165DFF; }
+        .follow-method { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    </style>
+    <style>
+        /* 全局模态框样式 */
+        .global-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
+        .global-modal-overlay.active { opacity: 1; pointer-events: all; }
+        .global-modal-box { background: white; border-radius: 16px; width: 380px; max-width: 90vw; box-shadow: 0 20px 60px rgba(0,0,0,0.2); transform: scale(0.9); transition: transform 0.2s; }
+        .global-modal-overlay.active .global-modal-box { transform: scale(1); }
+        .global-modal-icon { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; font-size: 24px; }
+        .global-modal-icon.success { background: #E8FFEA; color: #00B42A; }
+        .global-modal-icon.error { background: #FFF1F0; color: #F53F3F; }
+        .global-modal-icon.confirm { background: #E8F3FF; color: #165DFF; }
+        .global-modal-icon.info { background: #E8F3FF; color: #165DFF; }
+        .global-modal-title { font-size: 17px; font-weight: 700; color: #1D2129; text-align: center; margin-bottom: 8px; }
+        .global-modal-body { font-size: 14px; color: #4E5969; text-align: center; line-height: 1.6; padding: 0 20px 20px; }
+        .global-modal-footer { display: flex; gap: 10px; padding: 0 20px 20px; }
+        .global-modal-footer button { flex: 1; padding: 10px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; }
+        .global-modal-footer .btn-cancel { background: #F2F3F5; color: #4E5969; }
+        .global-modal-footer .btn-cancel:hover { background: #E5E6EB; }
+        .global-modal-footer .btn-primary { background: #165DFF; color: white; }
+        .global-modal-footer .btn-primary:hover { background: #4080FF; }
+        .global-modal-footer .btn-success { background: #00B42A; color: white; }
+        .global-modal-footer .btn-success:hover { background: #00A037; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 顶部导航 -->
+    <nav class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
+        <div class="flex justify-between items-center px-6 py-3">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-home text-primary text-2xl"></i>
+                <span class="text-xl font-bold text-dark">房产AI作业平台</span>
+                <span class="text-sm text-gray-500 ml-2">管理后台</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-600 hover:text-primary relative">
+                    <i class="fa fa-bell-o text-lg"></i>
+                    <span class="absolute top-0 right-0 bg-danger text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center">管</div>
+                    <span class="text-sm font-medium">区域经理</span>
+                    <i class="fa fa-angle-down text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex pt-14">
+        <!-- 侧边栏 -->
+        <!-- 侧边栏 - 内联，不使用fetch -->
+<aside class="w-64 bg-white h-[calc(100vh-56px)] fixed left-0 shadow-sm">
+    <nav class="py-4">
+        <div class="px-4 py-2 text-xs text-gray-400 uppercase font-medium">工作台</div>
+        <a href="../../index.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-dashboard w-5 text-center"></i><span class="ml-3">数据看板</span></a>
+        <a href="../../material/material-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-home w-5 text-center"></i><span class="ml-3">新盘管理</span></a>
+        <a href="../../task/task-list.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-tasks w-5 text-center"></i><span class="ml-3">探盘任务管理</span></a>
+        <a href="../../speech/speech-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-comments w-5 text-center"></i><span class="ml-3">话术训练管理</span></a>
+        <a href="../../content/content-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-magic w-5 text-center"></i><span class="ml-3">获客内容管理</span></a>
+        <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">管理层</div>
+        <a href="../../record/record-list.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-microphone w-5 text-center"></i><span class="ml-3">录音分析</span><span class="ml-auto text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded">NEW</span></a>
+        <a href="customer-list.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 active"><i class="fa fa-user-circle w-5 text-center"></i><span class="ml-3">客户管理</span><span class="ml-auto text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded">NEW</span></a>
+        <a href="../../speech/speech-data.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-line-chart w-5 text-center"></i><span class="ml-3">训练数据中心</span><span class="ml-auto text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded">NEW</span></a>
+        <a href="../../data/data-analysis.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-bar-chart w-5 text-center"></i><span class="ml-3">数据分析</span></a>
+        <a href="../../team/team-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-users w-5 text-center"></i><span class="ml-3">团队管理</span></a>
+        <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">系统管理</div>
+        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-cog w-5 text-center"></i><span class="ml-3">系统设置</span></a>
+    </nav>
+</aside>
+
+        <!-- 主内容区 -->
+        <main class="ml-64 flex-1 p-6">
+            <!-- 面包屑 -->
+            <div class="flex items-center text-sm text-gray-500 mb-4">
+                <a href="customer-list.html" class="hover:text-primary">客户管理</a>
+                <i class="fa fa-angle-right mx-2 text-gray-400"></i>
+                <span class="text-dark font-medium">客户详情</span>
+            </div>
+
+            <div class="grid grid-cols-3 gap-5">
+                <!-- 左侧：客户基本信息 -->
+                <div class="col-span-1 space-y-4">
+                    <!-- 客户信息卡片 -->
+                    <div class="bg-white rounded-lg shadow-sm p-5">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xl font-bold">张</div>
+                                <div>
+                                    <div class="font-bold text-dark text-lg">张三</div>
+                                    <div class="text-sm text-gray-500">138****8821</div>
+                                </div>
+                            </div>
+                            <span class="tag tag-level-high">高意向</span>
+                        </div>
+
+                        <div class="space-y-3 text-sm">
+                            <div class="flex justify-between py-2 border-b border-gray-100">
+                                <span class="text-gray-500">意向楼盘</span>
+                                <span class="text-dark font-medium">中海汇德里</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-gray-100">
+                                <span class="text-gray-500">意向区域</span>
+                                <span class="text-dark">浦东新区</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-gray-100">
+                                <span class="text-gray-500">客户来源</span>
+                                <span class="tag tag-source-online" style="font-size:11px">线上获客</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-gray-100">
+                                <span class="text-gray-500">标签</span>
+                                <div class="flex gap-1">
+                                    <span class="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-xs">投资客</span>
+                                    <span class="bg-gray-100 text-gray-600 px-1.5 py-0.5 rounded text-xs">改善型</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-gray-100">
+                                <span class="text-gray-500">经纪人</span>
+                                <div class="flex items-center gap-1">
+                                    <div class="w-5 h-5 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold">陈</div>
+                                    <span class="text-dark">陈佳佳</span>
+                                </div>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-gray-100">
+                                <span class="text-gray-500">创建时间</span>
+                                <span class="text-gray-600">2026-03-15</span>
+                            </div>
+                            <div class="flex justify-between py-2">
+                                <span class="text-gray-500">最近跟进</span>
+                                <span class="text-gray-600">2026-04-10</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 flex gap-2">
+                            <button onclick="openFollowModal()" class="flex-1 bg-primary hover:bg-primary/90 text-white rounded-lg py-2.5 text-sm font-medium">
+                                <i class="fa fa-plus mr-1"></i>添加跟进
+                            </button>
+                            <button onclick="openTransferSingleModal()" class="flex-1 border border-gray-300 text-gray-600 hover:bg-gray-50 rounded-lg py-2.5 text-sm font-medium">
+                                <i class="fa fa-exchange mr-1"></i>转移
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 需求描述 -->
+                    <div class="bg-white rounded-lg shadow-sm p-5">
+                        <h3 class="text-sm font-bold text-dark mb-3"><i class="fa fa-commenting text-primary mr-1"></i>需求描述</h3>
+                        <p class="text-sm text-gray-600 leading-relaxed">客户为改善型需求，目前住在徐汇老小区，想换一套三居室。预算800-1000万，重点关注学区资源和交通便利性。客户表示有意向在近2个月内成交。看过竞品「仁恒海上传奇」，觉得价格偏高。</p>
+                    </div>
+
+                    <!-- 关联录音 -->
+                    <div class="bg-white rounded-lg shadow-sm p-5">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="text-sm font-bold text-dark"><i class="fa fa-microphone text-primary mr-1"></i>关联录音分析</h3>
+                            <span class="text-xs text-gray-500">共2条</span>
+                        </div>
+                        <div class="space-y-2">
+                            <div class="border border-gray-100 rounded-lg p-3 hover:bg-gray-50 cursor-pointer transition">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <div class="text-sm font-medium text-dark">20260410_143020.wav</div>
+                                        <div class="text-xs text-gray-400 mt-0.5">上传：2026-04-10 · 评分：85分</div>
+                                    </div>
+                                    <button class="text-primary text-xs hover:underline">查看</button>
+                                </div>
+                            </div>
+                            <div class="border border-gray-100 rounded-lg p-3 hover:bg-gray-50 cursor-pointer transition">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <div class="text-sm font-medium text-dark">20260405_091512.wav</div>
+                                        <div class="text-xs text-gray-400 mt-0.5">上传：2026-04-05 · 评分：78分</div>
+                                    </div>
+                                    <button class="text-primary text-xs hover:underline">查看</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧：跟进记录 -->
+                <div class="col-span-2 space-y-4">
+                    <div class="bg-white rounded-lg shadow-sm p-5">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-base font-bold text-dark"><i class="fa fa-clock-o text-primary mr-1"></i>跟进记录</h3>
+                            <button onclick="openFollowModal()" class="text-sm text-primary hover:text-primary/80 border border-primary px-3 py-1.5 rounded-lg">
+                                <i class="fa fa-plus mr-1"></i>添加跟进
+                            </button>
+                        </div>
+
+                        <!-- 时间线 -->
+                        <div class="relative">
+                            <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+                            <div class="space-y-5">
+                                <!-- 跟进1 -->
+                                <div class="relative flex gap-4">
+                                    <div class="relative z-10 flex-shrink-0">
+                                        <div class="follow-method bg-blue-50 text-blue-600">
+                                            <i class="fa fa-phone text-xs"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1 pb-5">
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <span class="font-medium text-dark text-sm">电话跟进</span>
+                                                <span class="text-xs text-gray-400 ml-2">2026-04-10 14:30</span>
+                                            </div>
+                                            <span class="text-xs text-gray-400">陈佳佳</span>
+                                        </div>
+                                        <div class="mt-1 text-sm text-gray-600">与客户电话沟通，了解近期看房计划。客户表示对中海汇德里有兴趣，预约周六下午带看。客户提到竞品「仁恒海上传奇」价格较高，本盘性价比更优。</div>
+                                        <div class="mt-1.5 flex gap-1">
+                                            <span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded text-xs">预约带看</span>
+                                            <span class="bg-orange-50 text-orange-600 px-2 py-0.5 rounded text-xs">竞品对比</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 跟进2 -->
+                                <div class="relative flex gap-4">
+                                    <div class="relative z-10 flex-shrink-0">
+                                        <div class="follow-method bg-green-50 text-green-600">
+                                            <i class="fa fa-weixin text-xs"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1 pb-5">
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <span class="font-medium text-dark text-sm">微信沟通</span>
+                                                <span class="text-xs text-gray-400 ml-2">2026-04-08 10:20</span>
+                                            </div>
+                                            <span class="text-xs text-gray-400">陈佳佳</span>
+                                        </div>
+                                        <div class="mt-1 text-sm text-gray-600">客户通过微信咨询中海汇德里户型和价格信息。已发送户型图和报价单。客户反馈较满意，约定周末到访售楼处。</div>
+                                        <div class="mt-1.5 flex gap-1">
+                                            <span class="bg-green-50 text-green-600 px-2 py-0.5 rounded text-xs">发送资料</span>
+                                            <span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded text-xs">预约到访</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- 跟进3 -->
+                                <div class="relative flex gap-4">
+                                    <div class="relative z-10 flex-shrink-0">
+                                        <div class="follow-method bg-orange-50 text-orange-600">
+                                            <i class="fa fa-calendar text-xs"></i>
+                                        </div>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <span class="font-medium text-dark text-sm">面谈</span>
+                                                <span class="text-xs text-gray-400 ml-2">2026-04-01 15:00</span>
+                                            </div>
+                                            <span class="text-xs text-gray-400">陈佳佳</span>
+                                        </div>
+                                        <div class="mt-1 text-sm text-gray-600">初次接待，客户自然到访售楼处。需求三房，预算800-1000万，以改善为主。客户表示对浦东区域较为认可，已添加微信，后续保持联系。</div>
+                                        <div class="mt-1.5 flex gap-1">
+                                            <span class="bg-orange-50 text-orange-600 px-2 py-0.5 rounded text-xs">初次接待</span>
+                                            <span class="bg-gray-100 text-gray-600 px-2 py-0.5 rounded text-xs">客户建档</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 添加跟进记录弹窗 -->
+    <div id="followModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+            <div class="p-5 border-b border-gray-100 flex justify-between items-center">
+                <h3 class="text-lg font-bold text-dark"><i class="fa fa-plus text-primary mr-2"></i>添加跟进记录</h3>
+                <button onclick="closeFollowModal()" class="text-gray-400 hover:text-gray-600 text-xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="p-5 space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-dark mb-2">跟进方式 <span class="text-danger">*</span></label>
+                    <div class="flex gap-2">
+                        <button class="flex-1 border-2 border-primary bg-blue-50 text-primary rounded-lg py-2 text-sm font-medium" type="button">
+                            <i class="fa fa-phone mr-1"></i>电话
+                        </button>
+                        <button class="flex-1 border border-gray-300 text-gray-600 rounded-lg py-2 text-sm" type="button">
+                            <i class="fa fa-weixin mr-1"></i>微信
+                        </button>
+                        <button class="flex-1 border border-gray-300 text-gray-600 rounded-lg py-2 text-sm" type="button">
+                            <i class="fa fa-users mr-1"></i>面谈
+                        </button>
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-dark mb-2">跟进内容 <span class="text-danger">*</span></label>
+                    <textarea rows="4" placeholder="请详细描述本次跟进内容..." class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-none"></textarea>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-dark mb-2">标签</label>
+                    <div class="flex flex-wrap gap-2">
+                        <label class="flex items-center gap-1 text-xs text-gray-600 cursor-pointer">
+                            <input type="checkbox" class="rounded"> 预约带看
+                        </label>
+                        <label class="flex items-center gap-1 text-xs text-gray-600 cursor-pointer">
+                            <input type="checkbox" class="rounded"> 竞品对比
+                        </label>
+                        <label class="flex items-center gap-1 text-xs text-gray-600 cursor-pointer">
+                            <input type="checkbox" class="rounded"> 发送资料
+                        </label>
+                        <label class="flex items-center gap-1 text-xs text-gray-600 cursor-pointer">
+                            <input type="checkbox" class="rounded"> 价格谈判
+                        </label>
+                        <label class="flex items-center gap-1 text-xs text-gray-600 cursor-pointer">
+                            <input type="checkbox" class="rounded"> 其他
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="p-5 border-t border-gray-100 flex justify-end gap-3">
+                <button onclick="closeFollowModal()" class="px-5 py-2.5 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 font-medium">取消</button>
+                <button onclick="saveFollow()" class="px-5 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-lg font-medium">
+                    <i class="fa fa-check mr-1"></i>保存
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 客户转移弹窗 -->
+    <div id="transferSingleModal" class="fixed inset-0 bg-black/40 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
+            <div class="p-5 border-b border-gray-100 flex justify-between items-center">
+                <h3 class="text-lg font-bold text-dark"><i class="fa fa-exchange text-primary mr-2"></i>转移客户</h3>
+                <button onclick="closeTransferSingleModal()" class="text-gray-400 hover:text-gray-600 text-xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="p-5 space-y-4">
+                <div class="flex justify-between py-2 border-b border-gray-100 text-sm">
+                    <span class="text-gray-500">客户姓名</span>
+                    <span class="text-dark font-medium">张三</span>
+                </div>
+                <div class="flex justify-between py-2 border-b border-gray-100 text-sm">
+                    <span class="text-gray-500">原经纪人</span>
+                    <span class="text-dark">陈佳佳</span>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-dark mb-2">目标经纪人 <span class="text-danger">*</span></label>
+                    <select class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-white">
+                        <option value="">请选择目标经纪人</option>
+                        <option>李明</option>
+                        <option>王芳</option>
+                        <option>赵伟</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-dark mb-2">转移原因</label>
+                    <select class="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-white">
+                        <option value="">请选择原因</option>
+                        <option>人员调动</option>
+                        <option>经纪人离职</option>
+                        <option>客户归属调整</option>
+                        <option>其他</option>
+                    </select>
+                </div>
+            </div>
+            <div class="p-5 border-t border-gray-100 flex justify-end gap-3">
+                <button onclick="closeTransferSingleModal()" class="px-5 py-2.5 border border-gray-300 rounded-lg text-gray-600 hover:bg-gray-50 font-medium">取消</button>
+                <button onclick="saveTransfer()" class="px-5 py-2.5 bg-primary hover:bg-primary/90 text-white rounded-lg font-medium">
+                    <i class="fa fa-check mr-1"></i>确认转移
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openFollowModal() { document.getElementById('followModal').classList.remove('hidden'); }
+        function closeFollowModal() { document.getElementById('followModal').classList.add('hidden'); }
+        function openTransferSingleModal() { document.getElementById('transferSingleModal').classList.remove('hidden'); }
+        function closeTransferSingleModal() { document.getElementById('transferSingleModal').classList.add('hidden'); }
+        function saveFollow() {
+            closeFollowModal();
+            showModal('success', '保存成功', '跟进记录已保存！');
+        }
+        function saveTransfer() {
+            closeTransferSingleModal();
+            showModal('success', '转移成功', '客户转移成功！');
+        }
+
+        /* ── 全局模态框系统 ── */
+        function showModal(type, title, message, duration) {
+            var overlay = document.getElementById('globalModalOverlay');
+            var iconEl = document.getElementById('globalModalIcon');
+            var titleEl = document.getElementById('globalModalTitle');
+            var bodyEl = document.getElementById('globalModalBody');
+            var footerEl = document.getElementById('globalModalFooter');
+            var iconMap = { success: '<i class="fa fa-check-circle"></i>', error: '<i class="fa fa-times-circle"></i>', info: '<i class="fa fa-info-circle"></i>', warning: '<i class="fa fa-exclamation-circle"></i>' };
+            var colorMap = { success: 'success', error: 'error', info: 'info', warning: 'warning' };
+            iconEl.innerHTML = iconMap[type] || iconMap.info;
+            iconEl.className = 'global-modal-icon ' + (colorMap[type] || 'info');
+            titleEl.textContent = title;
+            bodyEl.textContent = message;
+            footerEl.innerHTML = '<button class="btn-primary" onclick="closeGlobalModal()">知道了</button>';
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            if (duration !== false) { setTimeout(function() { closeGlobalModal(); }, duration || 2500); }
+        }
+        function closeGlobalModal() {
+            var overlay = document.getElementById('globalModalOverlay');
+            if (overlay) overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    </script>
+
+    <!-- 全局模态框 -->
+    <div id="globalModalOverlay" class="global-modal-overlay" onclick="if(event.target===this)closeGlobalModal()">
+        <div class="global-modal-box">
+            <div style="padding:28px 20px 0;text-align:center;">
+                <div id="globalModalIcon" class="global-modal-icon info"></div>
+                <div id="globalModalTitle" class="global-modal-title"></div>
+                <div id="globalModalBody" class="global-modal-body"></div>
+            </div>
+            <div id="globalModalFooter" class="global-modal-footer"></div>
+        </div>
+    </div>
+</body>
+</html>

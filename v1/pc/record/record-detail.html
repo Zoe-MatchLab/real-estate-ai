@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>录音分析详情 - V2.0 - 房产AI作业平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        success: '#00B42A',
+                        warning: '#FF7D00',
+                        danger: '#F53F3F',
+                        dark: '#1D2129',
+                        'gray-light': '#F2F3F5',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .score-circle { width: 100px; height: 100px; border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 700; }
+        .dimension-bar { height: 8px; border-radius: 4px; background: #F2F3F5; overflow: hidden; }
+        .dimension-fill { height: 100%; border-radius: 4px; }
+    aside a.active { color: #165DFF; background-color: #E8F3FF; border-right: 4px solid #165DFF; }
+        </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 顶部导航 -->
+    <nav class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
+        <div class="flex justify-between items-center px-6 py-3">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-home text-primary text-2xl"></i>
+                <span class="text-xl font-bold text-dark">房产AI作业平台</span>
+                <span class="text-sm text-gray-500 ml-2">管理后台</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-600 hover:text-primary relative">
+                    <i class="fa fa-bell-o text-lg"></i>
+                    <span class="absolute top-0 right-0 bg-danger text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center">管</div>
+                    <span class="text-sm font-medium">区域经理</span>
+                    <i class="fa fa-angle-down text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex pt-14">
+        <!-- 侧边栏 -->
+        <!-- 侧边栏 - 内联，不使用fetch -->
+<aside class="w-64 bg-white h-[calc(100vh-56px)] fixed left-0 shadow-sm">
+    <nav class="py-4">
+        <div class="px-4 py-2 text-xs text-gray-400 uppercase font-medium">工作台</div>
+        <a href="../../index.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-dashboard w-5 text-center"></i><span class="ml-3">数据看板</span></a>
+        <a href="../../material/material-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-home w-5 text-center"></i><span class="ml-3">新盘管理</span></a>
+        <a href="../../task/task-list.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-tasks w-5 text-center"></i><span class="ml-3">探盘任务管理</span></a>
+        <a href="../../speech/speech-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-comments w-5 text-center"></i><span class="ml-3">话术训练管理</span></a>
+        <a href="../../content/content-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-magic w-5 text-center"></i><span class="ml-3">获客内容管理</span></a>
+        <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">管理层</div>
+        <a href="../../record/record-list.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-microphone w-5 text-center"></i><span class="ml-3">录音分析</span><span class="ml-auto text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded">NEW</span></a>
+        <a href="../../customer/customer-list.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-user-circle w-5 text-center"></i><span class="ml-3">客户管理</span><span class="ml-auto text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded">NEW</span></a>
+        <a href="../../speech/speech-data.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-line-chart w-5 text-center"></i><span class="ml-3">训练数据中心</span><span class="ml-auto text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded">NEW</span></a>
+        <a href="../../data/data-analysis.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-bar-chart w-5 text-center"></i><span class="ml-3">数据分析</span></a>
+        <a href="../../team/team-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-users w-5 text-center"></i><span class="ml-3">团队管理</span></a>
+        <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">系统管理</div>
+        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-cog w-5 text-center"></i><span class="ml-3">系统设置</span></a>
+    </nav>
+</aside>
+
+        <!-- 主内容区 -->
+        <main class="ml-64 flex-1 p-6">
+            <!-- 面包屑 -->
+            <div class="flex items-center text-sm text-gray-500 mb-4">
+                <a href="record-list.html" class="hover:text-primary">录音分析列表</a>
+                <i class="fa fa-angle-right mx-2 text-gray-400"></i>
+                <span class="text-dark font-medium">录音分析详情</span>
+            </div>
+
+            <div class="grid grid-cols-3 gap-5">
+                <!-- 左侧：录音信息 + 播放 -->
+                <div class="col-span-1 space-y-4">
+                    <!-- 录音卡片 -->
+                    <div class="bg-white rounded-lg shadow-sm p-5">
+                        <div class="text-xs text-gray-500 mb-3">录音信息</div>
+                        <div class="text-sm font-bold text-dark mb-1">20260410_143020.wav</div>
+                        <div class="text-xs text-gray-400 mb-4">3分22秒 · 4.2MB · MP3</div>
+
+                        <!-- 播放器 -->
+                        <div class="bg-gray-50 rounded-lg p-4 mb-4">
+                            <div class="flex items-center gap-3 mb-3">
+                                <button id="playBtn" onclick="togglePlay()" class="w-10 h-10 bg-primary text-white rounded-full flex items-center justify-center hover:bg-primary/90 transition">
+                                    <i class="fa fa-play"></i>
+                                </button>
+                                <div class="flex-1">
+                                    <div class="h-1 bg-gray-200 rounded-full overflow-hidden cursor-pointer" onclick="seek(event)">
+                                        <div id="playProgress" class="h-full bg-primary rounded-full transition-all" style="width:0%"></div>
+                                    </div>
+                                    <div class="flex justify-between text-xs text-gray-400 mt-1">
+                                        <span id="currentTime">00:00</span>
+                                        <span>03:22</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="flex-1 text-xs border border-gray-300 rounded py-1.5 text-gray-600 hover:bg-gray-100">
+                                    <i class="fa fa-volume-up mr-1"></i>原音
+                                </button>
+                                <button class="flex-1 text-xs border border-gray-300 rounded py-1.5 text-gray-600 hover:bg-gray-100">
+                                    <i class="fa fa-file-text mr-1"></i>转写
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">关联客户</span>
+                                <span class="text-dark font-medium">张三</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">关联楼盘</span>
+                                <span class="text-dark">中海汇德里</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">经纪人</span>
+                                <span class="text-dark">陈佳佳</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">上传时间</span>
+                                <span class="text-gray-600">2026-04-10 14:30</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-500">分析时间</span>
+                                <span class="text-gray-600">2026-04-10 14:35</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 flex gap-2">
+                            <button class="flex-1 text-sm border border-gray-300 rounded-lg py-2 text-gray-600 hover:bg-gray-50">
+                                <i class="fa fa-download mr-1"></i>下载录音
+                            </button>
+                            <button class="flex-1 text-sm border border-gray-300 rounded-lg py-2 text-gray-600 hover:bg-gray-50">
+                                <i class="fa fa-file-pdf-o mr-1"></i>导出报告
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧：分析结果 -->
+                <div class="col-span-2 space-y-4">
+                    <!-- 综合评分 -->
+                    <div class="bg-white rounded-lg shadow-sm p-5">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-base font-bold text-dark mb-4"><i class="fa fa-star text-warning mr-1"></i>综合评分</h3>
+                            </div>
+                            <div class="flex gap-2">
+                                <span class="bg-green-50 text-green-600 text-xs px-2 py-1 rounded">高意向客户</span>
+                                <span class="bg-blue-50 text-blue-600 text-xs px-2 py-1 rounded">话术优秀</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-6">
+                            <div class="score-circle bg-green-50 text-green-600 border-4 border-green-200" style="border-color:#00B42A">
+                                <span class="text-3xl">85</span>
+                                <span class="text-xs text-green-500">分</span>
+                            </div>
+                            <div class="flex-1 space-y-3">
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <span class="text-gray-500">话术技巧</span>
+                                        <span class="font-medium text-dark">88分</span>
+                                    </div>
+                                    <div class="dimension-bar">
+                                        <div class="dimension-fill bg-green-500" style="width:88%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <span class="text-gray-500">情绪把控</span>
+                                        <span class="font-medium text-dark">82分</span>
+                                    </div>
+                                    <div class="dimension-bar">
+                                        <div class="dimension-fill bg-blue-500" style="width:82%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <span class="text-gray-500">应变能力</span>
+                                        <span class="font-medium text-dark">79分</span>
+                                    </div>
+                                    <div class="dimension-bar">
+                                        <div class="dimension-fill bg-orange-400" style="width:79%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between text-xs mb-1">
+                                        <span class="text-gray-500">客户需求挖掘</span>
+                                        <span class="font-medium text-dark">85分</span>
+                                    </div>
+                                    <div class="dimension-bar">
+                                        <div class="dimension-fill bg-purple-500" style="width:85%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 分析维度详情 -->
+                    <div class="bg-white rounded-lg shadow-sm p-5">
+                        <h3 class="text-base font-bold text-dark mb-4"><i class="fa fa-clipboard text-primary mr-1"></i>分析详情</h3>
+                        <div class="space-y-4">
+                            <!-- 话术技巧 -->
+                            <div class="border border-gray-100 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-6 h-6 bg-green-100 text-green-600 rounded text-xs flex items-center justify-center font-bold">1</span>
+                                        <span class="font-medium text-dark">话术技巧</span>
+                                    </div>
+                                    <span class="text-green-600 font-bold text-sm">优秀</span>
+                                </div>
+                                <div class="text-sm text-gray-600 ml-8 space-y-1">
+                                    <p><span class="text-success font-medium">✓ 开场白规范</span>：自我介绍清晰，建立信任感良好</p>
+                                    <p><span class="text-success font-medium">✓ 需求挖掘</span>：有效询问客户预算、户型、区域偏好</p>
+                                    <p><span class="text-success font-medium">✓ 异议处理</span>：对价格抗性回应较专业</p>
+                                    <p><span class="text-warning font-medium">△ 促成技巧</span>：带看邀约稍显生硬，可加强紧迫感营造</p>
+                                </div>
+                            </div>
+
+                            <!-- 客户需求 -->
+                            <div class="border border-gray-100 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-6 h-6 bg-blue-100 text-blue-600 rounded text-xs flex items-center justify-center font-bold">2</span>
+                                        <span class="font-medium text-dark">客户需求分析</span>
+                                    </div>
+                                    <span class="text-blue-600 font-bold text-sm">中等</span>
+                                </div>
+                                <div class="text-sm text-gray-600 ml-8 space-y-1">
+                                    <p><span class="text-success font-medium">✓ 关注点</span>：户型（倾向三房）、学区、交通</p>
+                                    <p><span class="text-success font-medium">✓ 购买意向</span>：高意向，已看过2个竞品盘</p>
+                                    <p><span class="text-gray-500">△ 潜在需求</span>：投资属性未被挖掘，客户有提到"保值"</p>
+                                </div>
+                            </div>
+
+                            <!-- 情绪判断 -->
+                            <div class="border border-gray-100 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-6 h-6 bg-purple-100 text-purple-600 rounded text-xs flex items-center justify-center font-bold">3</span>
+                                        <span class="font-medium text-dark">情绪与意向判断</span>
+                                    </div>
+                                    <span class="text-purple-600 font-bold text-sm">高意向</span>
+                                </div>
+                                <div class="text-sm text-gray-600 ml-8">
+                                    <p>客户情绪积极，配合度高，提问积极。客户明确表示"价格合适就定"，购买意向明确。建议尽快安排带看，趁热打铁。</p>
+                                </div>
+                            </div>
+
+                            <!-- 改进建议 -->
+                            <div class="border border-orange-200 bg-orange-50/50 rounded-lg p-4">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-6 h-6 bg-orange-100 text-orange-600 rounded text-xs flex items-center justify-center font-bold">4</span>
+                                        <span class="font-medium text-orange-700">改进建议</span>
+                                    </div>
+                                </div>
+                                <div class="text-sm text-gray-700 ml-8 space-y-1.5">
+                                    <p>🔥 <strong>重点提升</strong>：加强投资属性话术，挖掘客户的保值/增值需求，可增加"核心资产配置"角度</p>
+                                    <p>📝 <strong>建议</strong>：下次通话增加竞品对比环节，突出本盘核心差异化卖点（地铁上盖+万科物业）</p>
+                                    <p>⏱️ <strong>注意</strong>：通话时长3分22秒，建议保持在3-5分钟，效果最佳</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        let isPlaying = false;
+        let progress = 0;
+        let interval;
+
+        function togglePlay() {
+            const btn = document.getElementById('playBtn');
+            if (isPlaying) {
+                clearInterval(interval);
+                btn.innerHTML = '<i class="fa fa-play"></i>';
+            } else {
+                btn.innerHTML = '<i class="fa fa-pause"></i>';
+                interval = setInterval(() => {
+                    progress += 0.5;
+                    if (progress >= 100) {
+                        progress = 0;
+                        clearInterval(interval);
+                        btn.innerHTML = '<i class="fa fa-play"></i>';
+                        isPlaying = false;
+                        return;
+                    }
+                    document.getElementById('playProgress').style.width = progress + '%';
+                    const mins = Math.floor(3.37 * progress / 100);
+                    const secs = Math.floor((3.37 * progress / 100 % 1) * 60);
+                    document.getElementById('currentTime').textContent = String(mins).padStart(2,'0') + ':' + String(secs).padStart(2,'0');
+                }, 1000);
+            }
+            isPlaying = !isPlaying;
+        }
+    </script>
+</body>
+</html>
