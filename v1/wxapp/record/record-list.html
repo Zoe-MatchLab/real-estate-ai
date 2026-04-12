@@ -192,7 +192,7 @@
             align-items: center;
             gap: var(--spacing-sm);
             margin-bottom: var(--spacing-sm);
-            padding-right: 40px;
+            padding-right: 52px;
         }
 
         .record-play-btn {
@@ -276,6 +276,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            padding-right: 52px;
         }
 
         .record-time {
@@ -359,7 +360,7 @@
         /* 删除按钮 */
         .delete-btn {
             position: absolute;
-            right: 0;
+            right: 10px;
             top: 50%;
             transform: translateY(-50%);
             width: 32px;
@@ -374,6 +375,7 @@
             justify-content: center;
             cursor: pointer;
             z-index: 3;
+            flex-shrink: 0;
         }
         .delete-btn:active {
             background: var(--color-danger-light, #FFE8E8);
@@ -455,6 +457,10 @@
             font-size: 14px;
             animation: toastIn 0.3s ease forwards;
             pointer-events: none;
+        }
+
+        .toast.error {
+            background: rgba(250, 81, 81, 0.92);
         }
 
         @keyframes toastIn {
