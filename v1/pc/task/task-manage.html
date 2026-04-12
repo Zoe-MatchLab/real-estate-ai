@@ -227,7 +227,6 @@
                             <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">楼盘名称</th>
                             <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">关联任务</th>
                             <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">状态</th>
-                            <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">执行人</th>
                             <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">完成进度</th>
                             <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">截止时间</th>
                             <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">提醒时间</th>
@@ -250,7 +249,6 @@
                             <td class="px-4 py-3">
                                 <span class="tag tag-danger">已失效</span>
                             </td>
-                            <td class="px-4 py-3 text-sm">王经理</td>
                             <td class="px-4 py-3 text-sm font-medium">3/5</td>
                             <td class="px-4 py-3 text-sm text-danger">2026-03-27 18:00</td>
                             <td class="px-4 py-3 text-xs text-gray-500">
@@ -258,12 +256,13 @@
                                 <div>截止前2小时</div>
                             </td>
                             <td class="px-4 py-3">
-                                <div class="flex gap-2">
-                                    <button class="text-xs text-primary">查看</button>
-                                    <button class="text-xs text-gray-400 cursor-not-allowed" disabled>下发</button>
-                                    <button class="text-xs text-gray-400 cursor-not-allowed" disabled>暂停</button>
-                                    <button class="text-xs text-gray-400 cursor-not-allowed" disabled>催办</button>
-                                    <button class="text-xs text-primary">编辑</button>
+                                <div class="flex gap-2 items-center">
+                                    <button class="text-xs text-primary btn-view">查看</button>
+                                    <span class="text-xs text-gray-300 btn-admin-only">|</span>
+                                    <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>下发</button>
+                                    <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>暂停</button>
+                                    <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>催办</button>
+                                    <button class="text-xs text-primary btn-admin-only">编辑</button>
                                 </div>
                             </td>
                         </tr>
@@ -284,7 +283,6 @@
                             <td class="px-4 py-3">
                                 <span class="tag tag-warning">进行中</span>
                             </td>
-                            <td class="px-4 py-3 text-sm">李总监</td>
                             <td class="px-4 py-3 text-sm font-medium">28/36</td>
                             <td class="px-4 py-3 text-sm">2026-04-15 18:00</td>
                             <td class="px-4 py-3 text-xs text-gray-500">
@@ -293,12 +291,13 @@
                                 <div>超时后每小时</div>
                             </td>
                             <td class="px-4 py-3">
-                                <div class="flex gap-2">
-                                    <button class="text-xs text-primary">查看</button>
-                                    <button class="text-xs text-gray-400 cursor-not-allowed" disabled>下发</button>
-                                    <button class="text-xs text-warning">暂停</button>
-                                    <button class="text-xs text-danger">催办</button>
-                                    <button class="text-xs text-gray-600">编辑</button>
+                                <div class="flex gap-2 items-center">
+                                    <button class="text-xs text-primary btn-view">查看</button>
+                                    <span class="text-xs text-gray-300 btn-admin-only">|</span>
+                                    <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>下发</button>
+                                    <button class="text-xs text-warning btn-admin-only">暂停</button>
+                                    <button class="text-xs text-danger btn-admin-only">催办</button>
+                                    <button class="text-xs text-gray-600 btn-admin-only">编辑</button>
                                 </div>
                             </td>
                         </tr>
@@ -317,19 +316,19 @@
                             <td class="px-4 py-3">
                                 <span class="tag tag-info">待下发</span>
                             </td>
-                            <td class="px-4 py-3 text-sm">张总监</td>
                             <td class="px-4 py-3 text-sm font-medium text-gray-400">0/20</td>
                             <td class="px-4 py-3 text-sm">2026-04-20 18:00</td>
                             <td class="px-4 py-3 text-xs text-gray-500">
                                 <div>截止前1小时</div>
                             </td>
                             <td class="px-4 py-3">
-                                <div class="flex gap-2">
-                                    <button class="text-xs text-primary">查看</button>
-                                    <button class="text-xs text-success">下发</button>
-                                    <button class="text-xs text-gray-400 cursor-not-allowed" disabled>暂停</button>
-                                    <button class="text-xs text-gray-400 cursor-not-allowed" disabled>催办</button>
-                                    <button class="text-xs text-primary">编辑</button>
+                                <div class="flex gap-2 items-center">
+                                    <button class="text-xs text-primary btn-view">查看</button>
+                                    <span class="text-xs text-gray-300 btn-admin-only">|</span>
+                                    <button class="text-xs text-success btn-admin-only">下发</button>
+                                    <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>暂停</button>
+                                    <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>催办</button>
+                                    <button class="text-xs text-primary btn-admin-only">编辑</button>
                                 </div>
                             </td>
                         </tr>
@@ -350,7 +349,6 @@
                             <td class="px-4 py-3">
                                 <span class="tag tag-success">已完成</span>
                             </td>
-                            <td class="px-4 py-3 text-sm">陈总监</td>
                             <td class="px-4 py-3 text-sm font-medium">38/38</td>
                             <td class="px-4 py-3 text-sm text-gray-500">2026-03-20 18:00</td>
                             <td class="px-4 py-3 text-xs text-gray-500">
@@ -358,12 +356,13 @@
                                 <div>截止前3小时</div>
                             </td>
                             <td class="px-4 py-3">
-                                <div class="flex gap-2">
-                                    <button class="text-xs text-primary">查看</button>
-                                    <button class="text-xs text-gray-400 cursor-not-allowed" disabled>下发</button>
-                                    <button class="text-xs text-gray-400 cursor-not-allowed" disabled>暂停</button>
-                                    <button class="text-xs text-gray-400 cursor-not-allowed" disabled>催办</button>
-                                    <button class="text-xs text-primary">编辑</button>
+                                <div class="flex gap-2 items-center">
+                                    <button class="text-xs text-primary btn-view">查看</button>
+                                    <span class="text-xs text-gray-300 btn-admin-only">|</span>
+                                    <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>下发</button>
+                                    <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>暂停</button>
+                                    <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>催办</button>
+                                    <button class="text-xs text-primary btn-admin-only">编辑</button>
                                 </div>
                             </td>
                         </tr>
@@ -388,6 +387,22 @@
     </div>
 
     <script>
+        // 权限模拟：true=管理员，false=普通经纪人
+        let isAdmin = true;
+
+        // 应用权限
+        function applyRolePermission() {
+            document.querySelectorAll('.btn-admin-only').forEach(el => {
+                el.style.display = isAdmin ? '' : 'none';
+            });
+        }
+
+        // 初始化权限
+        applyRolePermission();
+
+        // 切换角色（演示用，可移除）
+        // isAdmin = false; applyRolePermission(); // 注释掉，默认显示管理员视图
+
         // 全选功能
         document.getElementById('selectAll').addEventListener('change', function(e) {
             const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
