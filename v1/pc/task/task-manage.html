@@ -15,6 +15,7 @@
                         success: '#00B42A',
                         warning: '#FF7D00',
                         danger: '#F53F3F',
+                        info: '#4E5969',
                         dark: '#1D2129',
                         'gray-light': '#F2F3F5',
                     }
@@ -52,9 +53,13 @@
             background: #FFECE8;
             color: #F53F3F;
         }
-        .tag-info {
+        .tag-primary {
             background: #E8F3FF;
             color: #165DFF;
+        }
+        .tag-info {
+            background: #F2F3F5;
+            color: #4E5969;
         }
         .hover-row:hover {
             background: #f8f9fa;
@@ -106,6 +111,76 @@
 
         <!-- 主内容区 -->
         <main class="ml-64 flex-1 p-6">
+            <!-- 统计卡片 -->
+            <div class="grid grid-cols-6 gap-4 mb-6">
+                <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-500 mb-1">总数</p>
+                            <p class="text-2xl font-bold text-dark">128</p>
+                        </div>
+                        <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                            <i class="fa fa-tasks text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-500 mb-1">待领取</p>
+                            <p class="text-2xl font-bold text-info">18</p>
+                        </div>
+                        <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                            <i class="fa fa-clock-o text-info"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-500 mb-1">进行中</p>
+                            <p class="text-2xl font-bold text-primary">45</p>
+                        </div>
+                        <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
+                            <i class="fa fa-spinner text-primary"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-500 mb-1">即将到期</p>
+                            <p class="text-2xl font-bold text-warning">12</p>
+                        </div>
+                        <div class="w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center">
+                            <i class="fa fa-exclamation-triangle text-warning"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-500 mb-1">已完成</p>
+                            <p class="text-2xl font-bold text-success">50</p>
+                        </div>
+                        <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
+                            <i class="fa fa-check-circle text-success"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-xs text-gray-500 mb-1">已失效</p>
+                            <p class="text-2xl font-bold text-danger">3</p>
+                        </div>
+                        <div class="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center">
+                            <i class="fa fa-ban text-danger"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- 头部 -->
             <div class="flex justify-between items-center mb-6">
                 <div>
@@ -113,12 +188,6 @@
                     <p class="text-gray-500">管理所有探盘任务，支持新建、编辑、审核、导出操作</p>
                 </div>
                 <div class="flex items-center gap-3">
-                    <!-- 待分发任务徽章（审核/运营人员可见） -->
-                    <span class="px-4 py-1.5 bg-orange-50 border border-orange-200 text-orange-700 text-sm rounded-full flex items-center shadow-sm hover:shadow-md transition-shadow cursor-pointer" onclick="filterPendingDistribute()">
-                        <i class="fa fa-bell-o mr-2"></i> 
-                        <span class="font-medium">待分发任务</span>
-                        <span class="ml-1.5 bg-orange-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
-                    </span>
                     <button class="border border-gray-300 bg-white px-4 py-2 rounded-lg hover:bg-gray-50" onclick="window.location.href='task-tracking.html'">
                         <i class="fa fa-line-chart mr-2"></i> 查看追踪驾驶舱
                     </button>
@@ -127,18 +196,6 @@
                     </button>
                 </div>
             </div>
-            
-            <!-- 筛选待分发任务JS -->
-            <script>
-                function filterPendingDistribute() {
-                    // 设置任务状态筛选为待分发
-                    const statusSelect = document.querySelector('select[name="taskStatus"]');
-                    statusSelect.value = 'pending_distribute';
-                    // 触发筛选
-                    document.querySelector('button:has(i.fa-search)').click();
-                    alert('已为您筛选出所有待分发的探盘任务！');
-                }
-            </script>
 
             <!-- 筛选区域 -->
             <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 mb-6">
@@ -147,12 +204,11 @@
                         <label class="text-xs text-gray-500 mb-1 block">任务状态</label>
                         <select name="taskStatus" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
                             <option value="">全部</option>
-                            <option value="pending_distribute">待分发</option>
-                            <option value="pending">待执行</option>
+                            <option value="pending">待领取</option>
                             <option value="progress">进行中</option>
+                            <option value="expiring">即将到期</option>
                             <option value="completed">已完成</option>
-                            <option value="timeout">已超时</option>
-                            <option value="rejected">已打回</option>
+                            <option value="expired">已失效</option>
                         </select>
                     </div>
                     <div>
@@ -209,7 +265,7 @@
                         </div>
                     </div>
                     <div class="text-sm text-gray-500">
-                        共 <span class="text-primary font-medium">128</span> 条任务，待审核 <span class="text-danger font-medium">16</span> 个
+                        共 <span class="text-primary font-medium">128</span> 条任务，待领取 <span class="text-info font-medium">18</span> 个
                     </div>
                 </div>
             </div>
@@ -234,15 +290,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- 已超时任务 -->
-                        <tr class="border-b border-gray-100 hover-row bg-red-50/30">
+                        <!-- 待领取任务 -->
+                        <tr class="border-b border-gray-100 hover-row">
                             <td class="px-4 py-3">
                                 <input type="checkbox">
                             </td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center">
-                                    <span class="font-medium text-sm">中海汇德里3月探盘任务</span>
-                                    <span class="tag tag-danger ml-2">超时</span>
+                                    <span class="font-medium text-sm">示例任务1 - 待领取</span>
+                                    <span class="tag tag-info ml-2">待领取</span>
                                 </div>
                             </td>
                             <td class="px-4 py-3 text-sm">中海汇德里</td>
@@ -251,22 +307,22 @@
                                 <span class="tag tag-danger">紧急</span>
                             </td>
                             <td class="px-4 py-3">
-                                <span class="tag tag-danger">已超时</span>
+                                <span class="tag tag-info">待领取</span>
                             </td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center w-32">
                                     <div class="progress-bar flex-1 mr-2">
-                                        <div class="progress-value bg-danger" style="width: 40%"></div>
+                                        <div class="progress-value bg-gray-400" style="width: 0%"></div>
                                     </div>
-                                    <span class="text-xs">40%</span>
+                                    <span class="text-xs">0%</span>
                                 </div>
                             </td>
-                            <td class="px-4 py-3 text-sm text-danger">2026-03-27 18:00</td>
-                            <td class="px-4 py-3 text-sm">12/32人</td>
+                            <td class="px-4 py-3 text-sm">2026-04-20 18:00</td>
+                            <td class="px-4 py-3 text-sm">0/32人</td>
                             <td class="px-4 py-3">
                                 <div class="flex gap-2">
                                     <button class="text-xs text-primary">查看</button>
-                                    <button class="text-xs text-danger">催办</button>
+                                    <button class="text-xs text-warning">催领</button>
                                     <button class="text-xs text-gray-600">导出</button>
                                 </div>
                             </td>
@@ -279,8 +335,8 @@
                             </td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center">
-                                    <span class="font-medium text-sm">保利中央公园月度探盘</span>
-                                    <span class="tag tag-warning ml-2">高优</span>
+                                    <span class="font-medium text-sm">示例任务2 - 进行中</span>
+                                    <span class="tag tag-primary ml-2">进行中</span>
                                 </div>
                             </td>
                             <td class="px-4 py-3 text-sm">保利中央公园</td>
@@ -289,18 +345,18 @@
                                 <span class="tag tag-warning">高</span>
                             </td>
                             <td class="px-4 py-3">
-                                <span class="tag tag-warning">进行中</span>
+                                <span class="tag tag-primary">进行中</span>
                             </td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center w-32">
                                     <div class="progress-bar flex-1 mr-2">
-                                        <div class="progress-value bg-warning" style="width: 75%"></div>
+                                        <div class="progress-value" style="width: 65%"></div>
                                     </div>
-                                    <span class="text-xs">75%</span>
+                                    <span class="text-xs">65%</span>
                                 </div>
                             </td>
-                            <td class="px-4 py-3 text-sm">2026-03-28 18:00</td>
-                            <td class="px-4 py-3 text-sm">28/36人</td>
+                            <td class="px-4 py-3 text-sm">2026-04-18 18:00</td>
+                            <td class="px-4 py-3 text-sm">22/34人</td>
                             <td class="px-4 py-3">
                                 <div class="flex gap-2">
                                     <button class="text-xs text-primary">查看</button>
@@ -310,39 +366,39 @@
                             </td>
                         </tr>
 
-                        <!-- 待审核任务 -->
+                        <!-- 即将到期任务 -->
                         <tr class="border-b border-gray-100 hover-row bg-orange-50/30">
                             <td class="px-4 py-3">
                                 <input type="checkbox">
                             </td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center">
-                                    <span class="font-medium text-sm">万科城市之光新盘探盘</span>
-                                    <span class="tag tag-info ml-2">待审核</span>
+                                    <span class="font-medium text-sm">示例任务3 - 即将到期</span>
+                                    <span class="tag tag-warning ml-2">即将到期</span>
                                 </div>
                             </td>
                             <td class="px-4 py-3 text-sm">万科城市之光</td>
                             <td class="px-4 py-3 text-sm">杭州区域</td>
                             <td class="px-4 py-3">
-                                <span class="tag tag-info">中</span>
+                                <span class="tag tag-warning">高</span>
                             </td>
                             <td class="px-4 py-3">
-                                <span class="tag tag-info">待审核</span>
+                                <span class="tag tag-warning">即将到期</span>
                             </td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center w-32">
                                     <div class="progress-bar flex-1 mr-2">
-                                        <div class="progress-value bg-primary" style="width: 100%"></div>
+                                        <div class="progress-value" style="width: 80%"></div>
                                     </div>
-                                    <span class="text-xs">100%</span>
+                                    <span class="text-xs">80%</span>
                                 </div>
                             </td>
-                            <td class="px-4 py-3 text-sm">2026-03-25 18:00</td>
-                            <td class="px-4 py-3 text-sm">42/42人</td>
+                            <td class="px-4 py-3 text-sm text-warning">2026-04-13 18:00 <span class="text-xs">(仅剩24小时)</span></td>
+                            <td class="px-4 py-3 text-sm">28/35人</td>
                             <td class="px-4 py-3">
                                 <div class="flex gap-2">
-                                    <button class="text-xs text-success">审核</button>
-                                    <button class="text-xs text-primary">查看报告</button>
+                                    <button class="text-xs text-primary">查看</button>
+                                    <button class="text-xs text-danger">紧急催办</button>
                                     <button class="text-xs text-gray-600">导出</button>
                                 </div>
                             </td>
@@ -355,7 +411,7 @@
                             </td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center">
-                                    <span class="font-medium text-sm">碧桂园天玺季度探盘</span>
+                                    <span class="font-medium text-sm">示例任务4 - 已完成</span>
                                     <span class="tag tag-success ml-2">已完成</span>
                                 </div>
                             </td>
@@ -375,7 +431,7 @@
                                     <span class="text-xs">100%</span>
                                 </div>
                             </td>
-                            <td class="px-4 py-3 text-sm">2026-03-20 18:00</td>
+                            <td class="px-4 py-3 text-sm">2026-04-10 18:00</td>
                             <td class="px-4 py-3 text-sm">38/38人</td>
                             <td class="px-4 py-3">
                                 <div class="flex gap-2">
@@ -386,39 +442,39 @@
                             </td>
                         </tr>
 
-                        <!-- 已打回任务 -->
-                        <tr class="border-b border-gray-100 hover-row bg-yellow-50/30">
+                        <!-- 已失效任务 -->
+                        <tr class="border-b border-gray-100 hover-row bg-red-50/30">
                             <td class="px-4 py-3">
                                 <input type="checkbox">
                             </td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center">
-                                    <span class="font-medium text-sm">融创文旅城配套调研</span>
-                                    <span class="tag tag-warning ml-2">已打回</span>
+                                    <span class="font-medium text-sm">示例任务5 - 已失效</span>
+                                    <span class="tag tag-danger ml-2">已失效</span>
                                 </div>
                             </td>
                             <td class="px-4 py-3 text-sm">融创文旅城</td>
                             <td class="px-4 py-3 text-sm">上海区域</td>
                             <td class="px-4 py-3">
-                                <span class="tag tag-warning">中</span>
+                                <span class="tag tag-info">中</span>
                             </td>
                             <td class="px-4 py-3">
-                                <span class="tag tag-warning">整改中</span>
+                                <span class="tag tag-danger">已失效</span>
                             </td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center w-32">
                                     <div class="progress-bar flex-1 mr-2">
-                                        <div class="progress-value bg-warning" style="width: 60%"></div>
+                                        <div class="progress-value" style="width: 45%"></div>
                                     </div>
-                                    <span class="text-xs">60%</span>
+                                    <span class="text-xs">45%</span>
                                 </div>
                             </td>
-                            <td class="px-4 py-3 text-sm">2026-03-29 18:00</td>
-                            <td class="px-4 py-3 text-sm">16/28人</td>
+                            <td class="px-4 py-3 text-sm text-danger">2026-04-05 18:00</td>
+                            <td class="px-4 py-3 text-sm">16/32人</td>
                             <td class="px-4 py-3">
                                 <div class="flex gap-2">
-                                    <button class="text-xs text-primary">查看原因</button>
-                                    <button class="text-xs text-warning">催改</button>
+                                    <button class="text-xs text-primary">查看</button>
+                                    <button class="text-xs text-gray-600">归档</button>
                                     <button class="text-xs text-gray-600">导出</button>
                                 </div>
                             </td>
