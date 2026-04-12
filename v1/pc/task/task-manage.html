@@ -60,6 +60,16 @@
             background: #F2F3F5;
             color: #4E5969;
         }
+        .tag-urge {
+            background: #FFF0F0;
+            color: #F53F3F;
+            animation: pulse-urge 2s infinite;
+        }
+        @keyframes pulse-urge {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .urged-row { background: #FFF8F8 !important; }
         .hover-row:hover {
             background: #f8f9fa;
         }
@@ -694,6 +704,27 @@ document.getElementById('taskStatusFilter').addEventListener('change', function(
         function urgeTask(btn) {
             const row = btn.closest('tr');
             const taskName = row.querySelector('td:nth-child(2)').textContent.trim();
+            
+            // 检查是否已催办
+            const existingUrge = row.querySelector('.tag-urge');
+            if (existingUrge) {
+                alert('⏰ 该任务已经催办过了！');
+                return;
+            }
+            
+            // 添加已催办标签
+            const statusCell = row.querySelector('td:nth-child(4)');
+            const urgeTag = document.createElement('span');
+            urgeTag.className = 'tag tag-urge ml-1';
+            urgeTag.textContent = '已催办';
+            statusCell.appendChild(urgeTag);
+            
+            // 高亮行
+            row.classList.add('urged-row');
+            
+            // 隐藏催办按钮
+            btn.style.display = 'none';
+            
             alert(`📢 已向任务「${taskName}」的执行人发送催办通知！`);
         }
 
