@@ -140,22 +140,6 @@
             </nav>
         </aside>
 
-        <!-- 侧边栏占位 -->
-        <div class="w-64 bg-white border-r border-gray-200 fixed top-14 bottom-0 overflow-y-auto">
-            <div class="p-4">
-                <div class="text-xs text-gray-400 uppercase tracking-wider mb-3">楼盘管理</div>
-                <ul class="space-y-1">
-                    <li><a href="property-list.html" class="flex items-center px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50"><i class="fa fa-building w-5 mr-2"></i>楼盘列表</a></li>
-                    <li><a href="material-list.html" class="flex items-center px-3 py-2 rounded-lg bg-blue-50 text-primary font-medium"><i class="fa fa-cube w-5 mr-2"></i>物料管理</a></li>
-                </ul>
-                <div class="text-xs text-gray-400 uppercase tracking-wider mt-6 mb-3">任务管理</div>
-                <ul class="space-y-1">
-                    <li><a href="task-list.html" class="flex items-center px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50"><i class="fa fa-tasks w-5 mr-2"></i>任务列表</a></li>
-                    <li><a href="task-manage.html" class="flex items-center px-3 py-2 rounded-lg text-gray-600 hover:bg-gray-50"><i class="fa fa-map-marker w-5 mr-2"></i>探盘任务</a></li>
-                </ul>
-            </div>
-        </div>
-
         <!-- 主内容区 -->
         <main class="ml-64 flex-1 p-6">
             <!-- 面包屑 & 标题 -->
@@ -255,14 +239,360 @@
                         </div>
                     </div>
 
-                    <!-- 分组3：任务配置 -->
+                    <!-- 分组3：探盘路书配置（总开关控制）-->
                     <div class="section-card">
                         <div class="section-header">
                             <div class="flex items-center gap-2">
-                                <i class="fa fa-tasks text-primary"></i>
-                                <span class="font-semibold">任务配置</span>
+                                <i class="fa fa-map text-primary"></i>
+                                <span class="font-semibold">探盘路书配置</span>
+                                <span class="tag tag-info text-xs">总开关</span>
                             </div>
                         </div>
+                        <div class="section-body space-y-6">
+
+                            <!-- 3.1 路书任务总开关 -->
+                            <div>
+                                <div class="flex items-center justify-between bg-gray-50 rounded-lg p-4">
+                                    <div>
+                                        <span class="text-sm font-semibold">路书任务总开关</span>
+                                        <p class="text-xs text-gray-400 mt-1">关闭=整卡不显示；开启=展示全部子配置</p>
+                                    </div>
+                                    <label class="switch"><input type="checkbox" id="routebook-master-switch" checked onchange="toggleRoutebookMaster(this)"><span class="slider"></span></label>
+                                </div>
+                                <div id="routebook-detail-container" class="space-y-6 mt-4">
+
+                                    <!-- 3.2 打卡配置（先配置点位）-->
+                                    <div>
+                                        <div class="text-sm font-semibold text-gray-800 mb-3 flex items-center">
+                                            <span class="w-6 h-6 rounded bg-primary text-white text-xs flex items-center justify-center mr-2">1</span>
+                                            打卡配置
+                                        </div>
+                                        <div class="space-y-4 bg-gray-50 rounded-lg p-4">
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-sm font-medium">启用探盘任务</span>
+                                                <label class="switch"><input type="checkbox" checked><span class="slider"></span></label>
+                                            </div>
+                                            <div class="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">打卡范围</label>
+                                                    <div class="flex items-center">
+                                                        <input type="number" class="w-24 border border-gray-300 rounded-lg px-3 py-2 text-sm text-center" value="200" min="50">
+                                                        <span class="ml-2 text-sm text-gray-500">米</span>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <label class="block text-sm font-medium text-gray-700 mb-1">可配置拦截阈值</label>
+                                                    <div class="flex items-center">
+                                                        <input type="range" class="flex-1" min="200" max="1000" step="100" value="500" oninput="updateThreshold(this.value)">
+                                                        <span id="threshold-val" class="ml-3 text-sm font-medium w-14">500m</span>
+                                                    </div>
+                                                    <p class="text-xs text-gray-400 mt-1">可在[200m, 1000m]范围内调整，步进100m</p>
+                                                </div>
+                                            </div>
+                                            <div class="bg-white rounded border border-gray-200 p-3">
+                                                <div class="text-xs text-gray-500 mb-2">打卡偏移阈值说明：</div>
+                                                <div class="grid grid-cols-3 gap-2 text-xs">
+                                                    <div class="text-center p-2 bg-green-50 rounded">
+                                                        <div class="text-success font-medium">≤200m</div>
+                                                        <div class="text-gray-500">正常打卡</div>
+                                                    </div>
+                                                    <div class="text-center p-2 bg-yellow-50 rounded">
+                                                        <div class="text-warning font-medium">200-500m</div>
+                                                        <div class="text-gray-500">警告（记录但标记异常）</div>
+                                                    </div>
+                                                    <div class="text-center p-2 bg-red-50 rounded">
+                                                        <div class="text-danger font-medium">>500m</div>
+                                                        <div class="text-gray-500">拦截（不允许打卡）</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-sm font-medium">允许补卡</span>
+                                                <label class="switch"><input type="checkbox" id="allow-makeup" onchange="toggleMakeup(this)"><span class="slider"></span></label>
+                                            </div>
+                                            <div id="makeup-config" class="hidden grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <label class="block text-xs text-gray-500 mb-1">补卡时限（小时）</label>
+                                                    <input type="number" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" value="24" min="1">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-xs text-gray-500 mb-1">补卡次数上限</label>
+                                                    <input type="number" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" value="1" min="1">
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-gray-700 mb-2">打卡照片要求</label>
+                                                <div class="flex gap-4">
+                                                    <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                                        <input type="radio" name="photo_req" value="required" checked class="text-primary"> 必填
+                                                    </label>
+                                                    <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                                        <input type="radio" name="photo_req" value="optional" class="text-primary"> 选填
+                                                    </label>
+                                                    <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                                        <input type="radio" name="photo_req" value="none" class="text-primary"> 无需拍照
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center justify-between">
+                                                <span class="text-sm font-medium">打卡话术要求</span>
+                                                <label class="switch"><input type="checkbox" id="voice-req"><span class="slider"></span></label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- 3.3 路书内容配置 -->
+                                    <div>
+                                        <div class="text-sm font-semibold text-gray-800 mb-3 flex items-center">
+                                            <span class="w-6 h-6 rounded bg-primary text-white text-xs flex items-center justify-center mr-2">2</span>
+                                            路书内容配置
+                                        </div>
+                                        <div class="space-y-4">
+                                            <div class="flex items-center gap-6">
+                                                <span class="text-sm font-medium w-28">路书生成方式</span>
+                                                <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                                    <input type="radio" name="route_gen_type" value="auto" checked onchange="toggleRouteGenType('auto')" class="text-primary">
+                                                    <span>自动生成</span>
+                                                </label>
+                                                <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                                    <input type="radio" name="route_gen_type" value="manual" onchange="toggleRouteGenType('manual')" class="text-primary">
+                                                    <span>手动上传</span>
+                                                </label>
+                                            </div>
+                                            <div id="manual-upload-area" class="hidden">
+                                                <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                                                    <i class="fa fa-cloud-upload text-3xl text-gray-400 mb-2"></i>
+                                                    <p class="text-sm text-gray-500 mb-2">支持 PDF / Word / 图片格式</p>
+                                                    <button class="bg-primary text-white px-4 py-1.5 rounded-lg text-sm"><i class="fa fa-upload mr-1"></i>选择文件</button>
+                                                </div>
+                                            </div>
+                                            <div id="auto-gen-area">
+                                                <div class="mb-4">
+                                                    <label class="block text-sm font-medium text-gray-700 mb-2">内容生成维度 <span class="text-danger">*</span></label>
+                                                    <div class="grid grid-cols-4 gap-2">
+                                                        <label class="flex items-center gap-2 bg-gray-50 rounded px-3 py-2 cursor-pointer hover:bg-blue-50">
+                                                            <input type="checkbox" checked class="route-dim"> <span class="text-sm">项目亮点</span>
+                                                        </label>
+                                                        <label class="flex items-center gap-2 bg-gray-50 rounded px-3 py-2 cursor-pointer hover:bg-blue-50">
+                                                            <input type="checkbox" checked class="route-dim"> <span class="text-sm">户型分析</span>
+                                                        </label>
+                                                        <label class="flex items-center gap-2 bg-gray-50 rounded px-3 py-2 cursor-pointer hover:bg-blue-50">
+                                                            <input type="checkbox" checked class="route-dim"> <span class="text-sm">周边配套</span>
+                                                        </label>
+                                                        <label class="flex items-center gap-2 bg-gray-50 rounded px-3 py-2 cursor-pointer hover:bg-blue-50">
+                                                            <input type="checkbox" checked class="route-dim"> <span class="text-sm">竞品对比</span>
+                                                        </label>
+                                                        <label class="flex items-center gap-2 bg-gray-50 rounded px-3 py-2 cursor-pointer hover:bg-blue-50">
+                                                            <input type="checkbox" checked class="route-dim"> <span class="text-sm">样板间讲解</span>
+                                                        </label>
+                                                        <label class="flex items-center gap-2 bg-gray-50 rounded px-3 py-2 cursor-pointer hover:bg-blue-50">
+                                                            <input type="checkbox" checked class="route-dim"> <span class="text-sm">购房话术</span>
+                                                        </label>
+                                                        <label class="flex items-center gap-2 bg-gray-50 rounded px-3 py-2 cursor-pointer hover:bg-blue-50">
+                                                            <input type="checkbox" class="route-dim"> <span class="text-sm">物业介绍</span>
+                                                        </label>
+                                                        <label class="flex items-center gap-2 bg-gray-50 rounded px-3 py-2 cursor-pointer hover:bg-blue-50">
+                                                            <input type="checkbox" class="route-dim"> <span class="text-sm">装修标准</span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-4">
+                                                    <label class="block text-sm font-medium text-gray-700 mb-2">路书内容审核方式</label>
+                                                    <div class="flex items-center gap-6">
+                                                        <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                                            <input type="radio" name="route_audit" value="auto" checked class="text-primary">
+                                                            <span>自动通过</span>
+                                                        </label>
+                                                        <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                                            <input type="radio" name="route_audit" value="manual" class="text-primary">
+                                                            <span>人工审核</span>
+                                                        </label>
+                                                    </div>
+                                                    <p class="text-xs text-gray-400 mt-1">自动通过=AI生成后直接下发；人工审核=生成后需管理员确认再下发</p>
+                                                </div>
+                                                <div class="mb-4">
+                                                    <label class="block text-sm font-medium text-gray-700 mb-2">路书有效期</label>
+                                                    <div class="flex items-center gap-6">
+                                                        <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                                            <input type="radio" name="route_validity" value="same" checked class="text-primary" onchange="toggleCustomDate(false)">
+                                                            <span>与任务执行时间一致</span>
+                                                        </label>
+                                                        <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                                            <input type="radio" name="route_validity" value="custom" class="text-primary" onchange="toggleCustomDate(true)">
+                                                            <span>自定义结束日期</span>
+                                                        </label>
+                                                    </div>
+                                                    <div id="custom-date-area" class="hidden mt-2">
+                                                        <input type="date" class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm">
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <div class="flex justify-between items-center mb-3">
+                                                        <label class="text-sm font-semibold text-gray-700">采集点位配置 <span class="text-danger">*</span></label>
+                                                        <button class="text-xs border border-primary text-primary px-3 py-1 rounded hover:bg-blue-50">
+                                                            <i class="fa fa-refresh mr-1"></i>重置为默认模板
+                                                        </button>
+                                                    </div>
+                                                    <div id="point-list">
+                                                        <div class="point-card" draggable="true">
+                                                            <div class="flex justify-between items-start mb-3">
+                                                                <div class="flex items-center gap-2">
+                                                                    <i class="fa fa-bars text-gray-400 cursor-move text-sm"></i>
+                                                                    <span class="font-medium text-sm">1. 接待处</span>
+                                                                    <span class="tag tag-info text-xs">必打卡点</span>
+                                                                </div>
+                                                                <button class="text-xs text-danger hover:underline" onclick="removePoint(this)"><i class="fa fa-trash mr-1"></i>删除</button>
+                                                            </div>
+                                                            <div class="grid grid-cols-2 gap-3 mb-3">
+                                                                <div>
+                                                                    <label class="text-xs text-gray-500 mb-1 block">点位名称</label>
+                                                                    <input type="text" class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm" value="接待处">
+                                                                </div>
+                                                                <div>
+                                                                    <label class="text-xs text-gray-500 mb-1 block">点位类型</label>
+                                                                    <select class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm">
+                                                                        <option selected>必打卡点</option>
+                                                                        <option>选打卡点</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div>
+                                                                    <label class="text-xs text-gray-500 mb-1 block">打卡顺序</label>
+                                                                    <input type="number" class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm" value="1" min="1">
+                                                                </div>
+                                                                <div>
+                                                                    <label class="text-xs text-gray-500 mb-1 block">建议停留时长（分钟）</label>
+                                                                    <input type="number" class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm" placeholder="选填" min="0">
+                                                                </div>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label class="text-xs text-gray-500 mb-1 block">采集内容要求</label>
+                                                                <div class="flex flex-wrap gap-2 mb-2">
+                                                                    <label class="flex items-center gap-1 text-xs bg-white border border-gray-300 rounded px-2 py-1 cursor-pointer hover:border-primary">
+                                                                        <input type="checkbox" checked class="accent-primary"> 拍照
+                                                                    </label>
+                                                                    <label class="flex items-center gap-1 text-xs bg-white border border-gray-300 rounded px-2 py-1 cursor-pointer hover:border-primary">
+                                                                        <input type="checkbox" class="accent-primary"> 录制视频
+                                                                    </label>
+                                                                    <label class="flex items-center gap-1 text-xs bg-white border border-gray-300 rounded px-2 py-1 cursor-pointer hover:border-primary">
+                                                                        <input type="checkbox" checked class="accent-primary"> 填写内容
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="flex items-center gap-4">
+                                                                <div class="flex items-center gap-2">
+                                                                    <span class="text-xs text-gray-500">可下发人可删除</span>
+                                                                    <label class="switch" style="width:32px;height:18px">
+                                                                        <input type="checkbox" class="point-delete-switch">
+                                                                        <span class="slider" style="border-radius:18px"></span>
+                                                                    </label>
+                                                                </div>
+                                                                <span class="text-xs text-gray-400">关闭=不可删除，开启=可删除</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <button class="w-full border border-dashed border-gray-300 rounded py-2 text-sm text-gray-500 hover:border-primary hover:text-primary mt-2" onclick="addPoint()">
+                                                        <i class="fa fa-plus mr-1"></i>新增点位
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 分组4：话术训练配置（独立卡片）-->
+                    <div class="section-card">
+                        <div class="section-header">
+                            <div class="flex items-center gap-2">
+                                <i class="fa fa-graduation-cap text-primary"></i>
+                                <span class="font-semibold">话术训练配置</span>
+                            </div>
+                        </div>
+                        <div class="section-body space-y-4">
+                            <div class="flex items-center justify-between bg-gray-50 rounded-lg p-4">
+                                <span class="text-sm font-medium">启用话术训练</span>
+                                <label class="switch"><input type="checkbox" id="training-switch" onchange="toggleTrainingConfig(this)"><span class="slider"></span></label>
+                            </div>
+                            <div id="training-detail" class="hidden space-y-4 pt-4 border-t border-gray-200">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">训练项目选择 <span class="text-danger">*</span></label>
+                                    <div class="grid grid-cols-3 gap-2">
+                                        <label class="flex items-center gap-2 bg-white border border-gray-200 rounded px-3 py-2 cursor-pointer hover:border-primary text-sm">
+                                            <input type="checkbox" class="train-proj"> 产品知识
+                                        </label>
+                                        <label class="flex items-center gap-2 bg-white border border-gray-200 rounded px-3 py-2 cursor-pointer hover:border-primary text-sm">
+                                            <input type="checkbox" class="train-proj"> 竞品对比
+                                        </label>
+                                        <label class="flex items-center gap-2 bg-white border border-gray-200 rounded px-3 py-2 cursor-pointer hover:border-primary text-sm">
+                                            <input type="checkbox" class="train-proj"> 话术技巧
+                                        </label>
+                                        <label class="flex items-center gap-2 bg-white border border-gray-200 rounded px-3 py-2 cursor-pointer hover:border-primary text-sm">
+                                            <input type="checkbox" class="train-proj"> 户型解读
+                                        </label>
+                                        <label class="flex items-center gap-2 bg-white border border-gray-200 rounded px-3 py-2 cursor-pointer hover:border-primary text-sm">
+                                            <input type="checkbox" class="train-proj"> 政策解读
+                                        </label>
+                                        <label class="flex items-center gap-2 bg-white border border-gray-200 rounded px-3 py-2 cursor-pointer hover:border-primary text-sm">
+                                            <input type="checkbox" class="train-proj"> 销售礼仪
+                                        </label>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <label class="text-sm font-medium text-gray-700">选择题库 <span class="text-danger">*</span></label>
+                                        <button class="text-xs text-primary"><i class="fa fa-plus mr-1"></i>新建题库</button>
+                                    </div>
+                                    <div class="bg-white border border-gray-200 rounded max-h-40 overflow-y-auto p-2">
+                                        <label class="flex items-center gap-2 text-sm py-1 cursor-pointer hover:bg-blue-50 rounded px-2">
+                                            <input type="checkbox" class="train-bank"> <i class="fa fa-database text-gray-400 mr-1"></i>产品知识题库-A卷 <span class="text-xs text-gray-400">(120题)</span>
+                                        </label>
+                                        <label class="flex items-center gap-2 text-sm py-1 cursor-pointer hover:bg-blue-50 rounded px-2">
+                                            <input type="checkbox" class="train-bank"> <i class="fa fa-database text-gray-400 mr-1"></i>竞品对比题库 <span class="text-xs text-gray-400">(80题)</span>
+                                        </label>
+                                        <label class="flex items-center gap-2 text-sm py-1 cursor-pointer hover:bg-blue-50 rounded px-2">
+                                            <input type="checkbox" class="train-bank"> <i class="fa fa-database text-gray-400 mr-1"></i>话术技巧题库 <span class="text-xs text-gray-400">(60题)</span>
+                                        </label>
+                                    </div>
+                                    <p class="text-xs text-gray-400 mt-1">已选择 <span class="text-primary font-medium">0</span> 个题库</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 分组5：邀约录音上传配置（独立卡片）-->
+                    <div class="section-card">
+                        <div class="section-header">
+                            <div class="flex items-center gap-2">
+                                <i class="fa fa-microphone text-primary"></i>
+                                <span class="font-semibold">邀约录音上传配置</span>
+                            </div>
+                        </div>
+                        <div class="section-body space-y-4">
+                            <div class="flex items-center justify-between bg-gray-50 rounded-lg p-4">
+                                <span class="text-sm font-medium">启用录音分析</span>
+                                <label class="switch"><input type="checkbox" id="record-switch" onchange="toggleRecordConfig(this)"><span class="slider"></span></label>
+                            </div>
+                            <div id="record-detail" class="hidden space-y-4 pt-4 border-t border-gray-200">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">分析维度 <span class="text-danger">*</span></label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <label class="flex items-center gap-2 bg-white border border-gray-200 rounded px-3 py-2 cursor-pointer hover:border-primary text-sm">
+                                        <input type="checkbox" checked class="record-dim"> 话术规范
+                                    </label>
+                                    <label class="flex items-center gap-2 bg-white border border-gray-200 rounded px-3 py-2 cursor-pointer hover:border-primary text-sm">
+                                        <input type="checkbox" checked class="record-dim"> 情绪识别
+                                    </label>
+                                    <label class="flex items-center gap-2 bg-white border border-gray-200 rounded px-3 py-2 cursor-pointer hover:border-primary text-sm">
+                                        <input type="checkbox" checked class="record-dim"> 关键词覆盖
+                                    </label>
+                                    <label class="flex items-center gap-2 bg-white border border-gray-200 rounded px-3 py-2 cursor-pointer hover:border-primary text-sm">
+                                        <input type="checkbox" checked class="record-dim"> 邀约意向
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                         <div class="section-body space-y-6">
 
                             <!-- 3.0 任务项总开关 -->
@@ -765,7 +1095,7 @@
                         </div>
                     </div>
 
-                    <!-- 分组4：任务时间配置 -->
+                    <!-- 分组6：任务时间配置 -->
                     <div class="section-card">
                         <div class="section-header">
                             <div class="flex items-center gap-2">
@@ -841,7 +1171,7 @@
                         </div>
                     </div>
 
-                    <!-- 分组5：人员配置 -->
+                    <!-- 分组7：人员配置 -->
                     <div class="section-card">
                         <div class="section-header">
                             <div class="flex items-center gap-2">
@@ -936,7 +1266,7 @@
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-gray-500 flex items-center gap-1"><i class="fa fa-book text-gray-400"></i>路书任务</span>
-                                <span class="text-success font-medium">已启用</span>
+                                <span class="text-success font-medium" id="preview-routebook">已启用</span>
                             </div>
                             <div class="flex justify-between items-center">
                                 <span class="text-gray-500 flex items-center gap-1"><i class="fa fa-graduation-cap text-gray-400"></i>训练任务</span>
@@ -1088,18 +1418,35 @@
             if (target) target.classList.toggle('hidden', !el.checked);
         }
 
+        // 探盘路书总开关
+        function toggleRoutebookMaster(el) {
+            const container = document.getElementById('routebook-detail-container');
+            if (container) {
+                container.classList.toggle('hidden', !el.checked);
+            }
+            const preview = document.getElementById('preview-routebook');
+            if (preview) {
+                preview.textContent = el.checked ? '已启用' : '未启用';
+                preview.className = el.checked ? 'text-success font-medium' : 'text-gray-400';
+            }
+        }
+
         // 训练任务开关
         function toggleTrainingConfig(el) {
+            const detail = document.getElementById('training-detail');
+            if (detail) detail.classList.toggle('hidden', !el.checked);
             const preview = document.getElementById('preview-training');
-            if (preview) preview.textContent = el.checked ? '已启用' : '未启用';
-            preview.className = el.checked ? 'text-success font-medium' : 'text-gray-400';
+            if (preview) {
+                preview.textContent = el.checked ? '已启用' : '未启用';
+                preview.className = el.checked ? 'text-success font-medium' : 'text-gray-400';
+            }
         }
 
         // 录音任务开关
         function toggleRecordConfig(el) {
-            const container = document.getElementById('record-min-container');
+            const detail = document.getElementById('record-detail');
+            if (detail) detail.classList.toggle('hidden', !el.checked);
             const preview = document.getElementById('preview-record');
-            if (container) container.classList.toggle('hidden', !el.checked);
             if (preview) {
                 preview.textContent = el.checked ? '已启用' : '未启用';
                 preview.className = el.checked ? 'text-success font-medium' : 'text-gray-400';
