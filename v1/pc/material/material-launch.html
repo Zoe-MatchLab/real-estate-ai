@@ -329,278 +329,7 @@
                             </div>
                         </div>
 
-                        <!-- 3.1 路书任务 -->
-                        <div>
-                            <div class="text-sm font-semibold text-gray-800 mb-3 flex items-center">
-                                <span class="w-6 h-6 rounded bg-primary text-white text-xs flex items-center justify-center mr-2">1</span>
-                                路书任务
-                            </div>
-                            <div class="space-y-4">
-                                <!-- 路书生成方式 -->
-                                <div class="flex items-center gap-6">
-                                    <span class="text-sm font-medium w-28">路书生成方式</span>
-                                    <label class="flex items-center gap-2 text-sm cursor-pointer">
-                                        <input type="radio" name="route_gen_type" value="auto" checked onchange="toggleRouteGenType('auto')" class="text-primary">
-                                        <span>自动生成</span>
-                                    </label>
-                                    <label class="flex items-center gap-2 text-sm cursor-pointer">
-                                        <input type="radio" name="route_gen_type" value="manual" onchange="toggleRouteGenType('manual')" class="text-primary">
-                                        <span>手动上传</span>
-                                    </label>
-                                </div>
-
-                                <!-- 手动上传区域 -->
-                                <div id="manual-upload-area" class="hidden">
-                                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                                        <i class="fa fa-cloud-upload text-3xl text-gray-400 mb-2"></i>
-                                        <p class="text-sm text-gray-500 mb-2">支持 PDF / Word / 图片格式</p>
-                                        <button class="bg-primary text-white px-4 py-1.5 rounded-lg text-sm"><i class="fa fa-upload mr-1"></i>选择文件</button>
-                                        <div class="mt-3 space-y-2">
-                                            <div class="file-item justify-between">
-                                                <span><i class="fa fa-file-pdf-o mr-1 text-danger"></i>中海汇德里路书v1.2.pdf</span>
-                                                <button class="text-gray-400 hover:text-danger"><i class="fa fa-times"></i></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- 自动生成区域 -->
-                                <div id="auto-gen-area">
-                                    <!-- 内容生成维度 -->
-                                    <div class="mb-4">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">内容生成维度 <span class="text-danger">*</span></label>
-                                        <div class="grid grid-cols-4 gap-2">
-                                            <label class="flex items-center gap-2 bg-gray-50 rounded px-3 py-2 cursor-pointer hover:bg-blue-50">
-                                                <input type="checkbox" checked class="route-dim"> <span class="text-sm">项目亮点</span>
-                                            </label>
-                                            <label class="flex items-center gap-2 bg-gray-50 rounded px-3 py-2 cursor-pointer hover:bg-blue-50">
-                                                <input type="checkbox" checked class="route-dim"> <span class="text-sm">户型分析</span>
-                                            </label>
-                                            <label class="flex items-center gap-2 bg-gray-50 rounded px-3 py-2 cursor-pointer hover:bg-blue-50">
-                                                <input type="checkbox" checked class="route-dim"> <span class="text-sm">周边配套</span>
-                                            </label>
-                                            <label class="flex items-center gap-2 bg-gray-50 rounded px-3 py-2 cursor-pointer hover:bg-blue-50">
-                                                <input type="checkbox" checked class="route-dim"> <span class="text-sm">竞品对比</span>
-                                            </label>
-                                            <label class="flex items-center gap-2 bg-gray-50 rounded px-3 py-2 cursor-pointer hover:bg-blue-50">
-                                                <input type="checkbox" checked class="route-dim"> <span class="text-sm">样板间讲解</span>
-                                            </label>
-                                            <label class="flex items-center gap-2 bg-gray-50 rounded px-3 py-2 cursor-pointer hover:bg-blue-50">
-                                                <input type="checkbox" checked class="route-dim"> <span class="text-sm">购房话术</span>
-                                            </label>
-                                            <label class="flex items-center gap-2 bg-gray-50 rounded px-3 py-2 cursor-pointer hover:bg-blue-50">
-                                                <input type="checkbox" class="route-dim"> <span class="text-sm">物业介绍</span>
-                                            </label>
-                                            <label class="flex items-center gap-2 bg-gray-50 rounded px-3 py-2 cursor-pointer hover:bg-blue-50">
-                                                <input type="checkbox" class="route-dim"> <span class="text-sm">装修标准</span>
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <!-- 路书内容审核方式 -->
-                                    <div class="mb-4">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">路书内容审核方式</label>
-                                        <div class="flex items-center gap-6">
-                                            <label class="flex items-center gap-2 text-sm cursor-pointer">
-                                                <input type="radio" name="route_audit" value="auto" checked class="text-primary">
-                                                <span>自动通过</span>
-                                            </label>
-                                            <label class="flex items-center gap-2 text-sm cursor-pointer">
-                                                <input type="radio" name="route_audit" value="manual" class="text-primary">
-                                                <span>人工审核</span>
-                                            </label>
-                                        </div>
-                                        <p class="text-xs text-gray-400 mt-1">自动通过=AI生成后直接下发；人工审核=生成后需管理员确认再下发</p>
-                                    </div>
-
-                                    <!-- 路书有效期 -->
-                                    <div class="mb-4">
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">路书有效期</label>
-                                        <div class="flex items-center gap-6">
-                                            <label class="flex items-center gap-2 text-sm cursor-pointer">
-                                                <input type="radio" name="route_validity" value="same" checked class="text-primary" onchange="toggleCustomDate(false)">
-                                                <span>与任务执行时间一致</span>
-                                            </label>
-                                            <label class="flex items-center gap-2 text-sm cursor-pointer">
-                                                <input type="radio" name="route_validity" value="custom" class="text-primary" onchange="toggleCustomDate(true)">
-                                                <span>自定义结束日期</span>
-                                            </label>
-                                        </div>
-                                        <div id="custom-date-area" class="hidden mt-2">
-                                            <input type="date" class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm">
-                                        </div>
-                                    </div>
-
-                                    <!-- 采集点位配置 -->
-                                    <div>
-                                        <div class="flex justify-between items-center mb-3">
-                                            <label class="text-sm font-semibold text-gray-700">采集点位配置 <span class="text-danger">*</span></label>
-                                            <button class="text-xs border border-primary text-primary px-3 py-1 rounded hover:bg-blue-50">
-                                                <i class="fa fa-refresh mr-1"></i>重置为默认模板
-                                            </button>
-                                        </div>
-                                        <div id="point-list">
-                                            <!-- 点位1 -->
-                                            <div class="point-card" draggable="true">
-                                                <div class="flex justify-between items-start mb-3">
-                                                    <div class="flex items-center gap-2">
-                                                        <i class="fa fa-bars text-gray-400 cursor-move text-sm"></i>
-                                                        <span class="font-medium text-sm">1. 接待处</span>
-                                                        <span class="tag tag-info text-xs">必打卡点</span>
-                                                    </div>
-                                                    <button class="text-xs text-danger hover:underline" onclick="removePoint(this)"><i class="fa fa-trash mr-1"></i>删除</button>
-                                                </div>
-                                                <div class="grid grid-cols-2 gap-3 mb-3">
-                                                    <div>
-                                                        <label class="text-xs text-gray-500 mb-1 block">点位名称</label>
-                                                        <input type="text" class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm" value="接待处">
-                                                    </div>
-                                                    <div>
-                                                        <label class="text-xs text-gray-500 mb-1 block">点位类型</label>
-                                                        <select class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm">
-                                                            <option selected>必打卡点</option>
-                                                            <option>选打卡点</option>
-                                                        </select>
-                                                    </div>
-                                                    <div>
-                                                        <label class="text-xs text-gray-500 mb-1 block">打卡顺序</label>
-                                                        <input type="number" class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm" value="1" min="1">
-                                                    </div>
-                                                    <div>
-                                                        <label class="text-xs text-gray-500 mb-1 block">建议停留时长（分钟）</label>
-                                                        <input type="number" class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm" placeholder="选填" min="0">
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="text-xs text-gray-500 mb-1 block">采集内容要求</label>
-                                                    <div class="flex flex-wrap gap-2 mb-2">
-                                                        <label class="flex items-center gap-1 text-xs bg-white border border-gray-300 rounded px-2 py-1 cursor-pointer hover:border-primary">
-                                                            <input type="checkbox" checked class="accent-primary"> 拍照
-                                                        </label>
-                                                        <label class="flex items-center gap-1 text-xs bg-white border border-gray-300 rounded px-2 py-1 cursor-pointer hover:border-primary">
-                                                            <input type="checkbox" class="accent-primary"> 录制视频
-                                                        </label>
-                                                        <label class="flex items-center gap-1 text-xs bg-white border border-gray-300 rounded px-2 py-1 cursor-pointer hover:border-primary">
-                                                            <input type="checkbox" checked class="accent-primary"> 填写内容
-                                                        </label>
-                                                        <label class="flex items-center gap-1 text-xs bg-white border border-gray-300 rounded px-2 py-1 cursor-pointer hover:border-primary">
-                                                            <input type="checkbox" class="accent-primary"> 无需采集
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <div class="flex items-center justify-between mb-2">
-                                                        <label class="text-xs text-gray-500">物料附件（支持多文件）</label>
-                                                        <button class="text-xs text-primary" onclick="addFileItem(this)"><i class="fa fa-plus mr-1"></i>添加附件</button>
-                                                    </div>
-                                                    <div class="file-list">
-                                                        <div class="file-item justify-between">
-                                                            <span><i class="fa fa-image text-success mr-1"></i>接待处介绍物料.jpg</span>
-                                                            <button class="text-gray-400 hover:text-danger" onclick="removeFileItem(this)"><i class="fa fa-times"></i></button>
-                                                        </div>
-                                                    </div>
-                                                    <div class="border border-dashed border-gray-300 rounded p-2 text-center">
-                                                        <button class="text-xs text-gray-400 hover:text-primary"><i class="fa fa-upload mr-1"></i>上传文件</button>
-                                                        <span class="text-xs text-gray-400 mx-1">支持图片/音频/视频/文本</span>
-                                                    </div>
-                                                </div>
-                                                <div class="flex items-center gap-4">
-                                                    <div class="flex items-center gap-2">
-                                                        <span class="text-xs text-gray-500">可下发人可删除</span>
-                                                        <label class="switch" style="width:32px;height:18px">
-                                                            <input type="checkbox" class="point-delete-switch">
-                                                            <span class="slider" style="border-radius:18px"></span>
-                                                        </label>
-                                                    </div>
-                                                    <span class="text-xs text-gray-400">关闭=不可删除，开启=可删除</span>
-                                                </div>
-                                            </div>
-
-                                            <!-- 点位2 -->
-                                            <div class="point-card" draggable="true">
-                                                <div class="flex justify-between items-start mb-3">
-                                                    <div class="flex items-center gap-2">
-                                                        <i class="fa fa-bars text-gray-400 cursor-move text-sm"></i>
-                                                        <span class="font-medium text-sm">2. 沙盘区</span>
-                                                        <span class="tag tag-info text-xs">必打卡点</span>
-                                                    </div>
-                                                    <button class="text-xs text-danger hover:underline" onclick="removePoint(this)"><i class="fa fa-trash mr-1"></i>删除</button>
-                                                </div>
-                                                <div class="grid grid-cols-2 gap-3 mb-3">
-                                                    <div>
-                                                        <label class="text-xs text-gray-500 mb-1 block">点位名称</label>
-                                                        <input type="text" class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm" value="沙盘区">
-                                                    </div>
-                                                    <div>
-                                                        <label class="text-xs text-gray-500 mb-1 block">点位类型</label>
-                                                        <select class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm">
-                                                            <option selected>必打卡点</option>
-                                                            <option>选打卡点</option>
-                                                        </select>
-                                                    </div>
-                                                    <div>
-                                                        <label class="text-xs text-gray-500 mb-1 block">打卡顺序</label>
-                                                        <input type="number" class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm" value="2" min="1">
-                                                    </div>
-                                                    <div>
-                                                        <label class="text-xs text-gray-500 mb-1 block">建议停留时长（分钟）</label>
-                                                        <input type="number" class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm" placeholder="选填" min="0" value="10">
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="text-xs text-gray-500 mb-1 block">采集内容要求</label>
-                                                    <div class="flex flex-wrap gap-2 mb-2">
-                                                        <label class="flex items-center gap-1 text-xs bg-white border border-gray-300 rounded px-2 py-1 cursor-pointer hover:border-primary">
-                                                            <input type="checkbox" checked class="accent-primary"> 拍照
-                                                        </label>
-                                                        <label class="flex items-center gap-1 text-xs bg-white border border-gray-300 rounded px-2 py-1 cursor-pointer hover:border-primary">
-                                                            <input type="checkbox" checked class="accent-primary"> 录制视频
-                                                        </label>
-                                                        <label class="flex items-center gap-1 text-xs bg-white border border-gray-300 rounded px-2 py-1 cursor-pointer hover:border-primary">
-                                                            <input type="checkbox" class="accent-primary"> 填写内容
-                                                        </label>
-                                                        <label class="flex items-center gap-1 text-xs bg-white border border-gray-300 rounded px-2 py-1 cursor-pointer hover:border-primary">
-                                                            <input type="checkbox" class="accent-primary"> 无需采集
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <div class="flex items-center justify-between mb-2">
-                                                        <label class="text-xs text-gray-500">物料附件（支持多文件）</label>
-                                                        <button class="text-xs text-primary" onclick="addFileItem(this)"><i class="fa fa-plus mr-1"></i>添加附件</button>
-                                                    </div>
-                                                    <div class="file-list">
-                                                        <div class="file-item justify-between">
-                                                            <span><i class="fa fa-file-word-o text-primary mr-1"></i>沙盘讲解话术.docx</span>
-                                                            <button class="text-gray-400 hover:text-danger" onclick="removeFileItem(this)"><i class="fa fa-times"></i></button>
-                                                        </div>
-                                                    </div>
-                                                    <div class="border border-dashed border-gray-300 rounded p-2 text-center">
-                                                        <button class="text-xs text-gray-400 hover:text-primary"><i class="fa fa-upload mr-1"></i>上传文件</button>
-                                                        <span class="text-xs text-gray-400 mx-1">支持图片/音频/视频/文本</span>
-                                                    </div>
-                                                </div>
-                                                <div class="flex items-center gap-4">
-                                                    <div class="flex items-center gap-2">
-                                                        <span class="text-xs text-gray-500">可下发人可删除</span>
-                                                        <label class="switch" style="width:32px;height:18px">
-                                                            <input type="checkbox" class="point-delete-switch">
-                                                            <span class="slider" style="border-radius:18px"></span>
-                                                        </label>
-                                                    </div>
-                                                    <span class="text-xs text-gray-400">关闭=不可删除，开启=可删除</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <button class="w-full border border-dashed border-gray-300 rounded py-2 text-sm text-gray-500 hover:border-primary hover:text-primary mt-2" onclick="addPoint()">
-                                            <i class="fa fa-plus mr-1"></i>新增点位
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 3.2 打卡配置 -->
+                        <!-- 3.1 打卡配置 -->
                         <div>
                             <div class="text-sm font-semibold text-gray-800 mb-3 flex items-center">
                                 <span class="w-6 h-6 rounded bg-primary text-white text-xs flex items-center justify-center mr-2">2</span>
@@ -1317,4 +1046,285 @@
         });
     </script>
 </body>
-</html>
+</html
+
+<!-- 3.2 路书任务 -->
+                        <div>
+                            <div class="text-sm font-semibold text-gray-800 mb-3 flex items-center">
+                                <span class="w-6 h-6 rounded bg-primary text-white text-xs flex items-center justify-center mr-2">1</span>
+                                路书任务
+                            </div>
+                            <div class="space-y-4">
+                                <!-- 路书生成方式 -->
+                                <div class="flex items-center gap-6">
+                                    <span class="text-sm font-medium w-28">路书生成方式</span>
+                                    <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                        <input type="radio" name="route_gen_type" value="auto" checked onchange="toggleRouteGenType('auto')" class="text-primary">
+                                        <span>自动生成</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                        <input type="radio" name="route_gen_type" value="manual" onchange="toggleRouteGenType('manual')" class="text-primary">
+                                        <span>手动上传</span>
+                                    </label>
+                                </div>
+
+                                <!-- 手动上传区域 -->
+                                <div id="manual-upload-area" class="hidden">
+                                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                                        <i class="fa fa-cloud-upload text-3xl text-gray-400 mb-2"></i>
+                                        <p class="text-sm text-gray-500 mb-2">支持 PDF / Word / 图片格式</p>
+                                        <button class="bg-primary text-white px-4 py-1.5 rounded-lg text-sm"><i class="fa fa-upload mr-1"></i>选择文件</button>
+                                        <div class="mt-3 space-y-2">
+                                            <div class="file-item justify-between">
+                                                <span><i class="fa fa-file-pdf-o mr-1 text-danger"></i>中海汇德里路书v1.2.pdf</span>
+                                                <button class="text-gray-400 hover:text-danger"><i class="fa fa-times"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 自动生成区域 -->
+                                <div id="auto-gen-area">
+                                    <!-- 内容生成维度 -->
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">内容生成维度 <span class="text-danger">*</span></label>
+                                        <div class="grid grid-cols-4 gap-2">
+                                            <label class="flex items-center gap-2 bg-gray-50 rounded px-3 py-2 cursor-pointer hover:bg-blue-50">
+                                                <input type="checkbox" checked class="route-dim"> <span class="text-sm">项目亮点</span>
+                                            </label>
+                                            <label class="flex items-center gap-2 bg-gray-50 rounded px-3 py-2 cursor-pointer hover:bg-blue-50">
+                                                <input type="checkbox" checked class="route-dim"> <span class="text-sm">户型分析</span>
+                                            </label>
+                                            <label class="flex items-center gap-2 bg-gray-50 rounded px-3 py-2 cursor-pointer hover:bg-blue-50">
+                                                <input type="checkbox" checked class="route-dim"> <span class="text-sm">周边配套</span>
+                                            </label>
+                                            <label class="flex items-center gap-2 bg-gray-50 rounded px-3 py-2 cursor-pointer hover:bg-blue-50">
+                                                <input type="checkbox" checked class="route-dim"> <span class="text-sm">竞品对比</span>
+                                            </label>
+                                            <label class="flex items-center gap-2 bg-gray-50 rounded px-3 py-2 cursor-pointer hover:bg-blue-50">
+                                                <input type="checkbox" checked class="route-dim"> <span class="text-sm">样板间讲解</span>
+                                            </label>
+                                            <label class="flex items-center gap-2 bg-gray-50 rounded px-3 py-2 cursor-pointer hover:bg-blue-50">
+                                                <input type="checkbox" checked class="route-dim"> <span class="text-sm">购房话术</span>
+                                            </label>
+                                            <label class="flex items-center gap-2 bg-gray-50 rounded px-3 py-2 cursor-pointer hover:bg-blue-50">
+                                                <input type="checkbox" class="route-dim"> <span class="text-sm">物业介绍</span>
+                                            </label>
+                                            <label class="flex items-center gap-2 bg-gray-50 rounded px-3 py-2 cursor-pointer hover:bg-blue-50">
+                                                <input type="checkbox" class="route-dim"> <span class="text-sm">装修标准</span>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <!-- 路书内容审核方式 -->
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">路书内容审核方式</label>
+                                        <div class="flex items-center gap-6">
+                                            <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                                <input type="radio" name="route_audit" value="auto" checked class="text-primary">
+                                                <span>自动通过</span>
+                                            </label>
+                                            <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                                <input type="radio" name="route_audit" value="manual" class="text-primary">
+                                                <span>人工审核</span>
+                                            </label>
+                                        </div>
+                                        <p class="text-xs text-gray-400 mt-1">自动通过=AI生成后直接下发；人工审核=生成后需管理员确认再下发</p>
+                                    </div>
+
+                                    <!-- 路书有效期 -->
+                                    <div class="mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-2">路书有效期</label>
+                                        <div class="flex items-center gap-6">
+                                            <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                                <input type="radio" name="route_validity" value="same" checked class="text-primary" onchange="toggleCustomDate(false)">
+                                                <span>与任务执行时间一致</span>
+                                            </label>
+                                            <label class="flex items-center gap-2 text-sm cursor-pointer">
+                                                <input type="radio" name="route_validity" value="custom" class="text-primary" onchange="toggleCustomDate(true)">
+                                                <span>自定义结束日期</span>
+                                            </label>
+                                        </div>
+                                        <div id="custom-date-area" class="hidden mt-2">
+                                            <input type="date" class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm">
+                                        </div>
+                                    </div>
+
+                                    <!-- 采集点位配置 -->
+                                    <div>
+                                        <div class="flex justify-between items-center mb-3">
+                                            <label class="text-sm font-semibold text-gray-700">采集点位配置 <span class="text-danger">*</span></label>
+                                            <div class="flex items-center gap-4">
+                                                <span class="text-xs text-gray-500">已配置 <span class="text-primary font-medium" id="point-count">2</span> 个点位</span>
+                                                <div class="flex items-center gap-2">
+                                                    <span class="text-xs text-gray-500">最少需配置</span>
+                                                    <input type="number" class="w-16 border border-gray-300 rounded px-2 py-1 text-sm text-center" value="2" min="1">
+                                                    <span class="text-xs text-gray-400">个</span>
+                                                </div>
+                                            </div>
+                                            <button class="text-xs border border-primary text-primary px-3 py-1 rounded hover:bg-blue-50">
+                                                <i class="fa fa-refresh mr-1"></i>重置为默认模板
+                                            </button>
+                                        </div>
+                                        <div id="point-list">
+                                            <!-- 点位1 -->
+                                            <div class="point-card" draggable="true">
+                                                <div class="flex justify-between items-start mb-3">
+                                                    <div class="flex items-center gap-2">
+                                                        <i class="fa fa-bars text-gray-400 cursor-move text-sm"></i>
+                                                        <span class="font-medium text-sm">1. 接待处</span>
+                                                        <span class="tag tag-info text-xs">必打卡点</span>
+                                                    </div>
+                                                    <button class="text-xs text-danger hover:underline" onclick="removePoint(this)"><i class="fa fa-trash mr-1"></i>删除</button>
+                                                </div>
+                                                <div class="grid grid-cols-2 gap-3 mb-3">
+                                                    <div>
+                                                        <label class="text-xs text-gray-500 mb-1 block">点位名称</label>
+                                                        <input type="text" class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm" value="接待处">
+                                                    </div>
+                                                    <div>
+                                                        <label class="text-xs text-gray-500 mb-1 block">点位类型</label>
+                                                        <select class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm">
+                                                            <option selected>必打卡点</option>
+                                                            <option>选打卡点</option>
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <label class="text-xs text-gray-500 mb-1 block">打卡顺序</label>
+                                                        <input type="number" class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm" value="1" min="1">
+                                                    </div>
+                                                    <div>
+                                                        <label class="text-xs text-gray-500 mb-1 block">建议停留时长（分钟）</label>
+                                                        <input type="number" class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm" placeholder="选填" min="0">
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="text-xs text-gray-500 mb-1 block">采集内容要求</label>
+                                                    <div class="flex flex-wrap gap-2 mb-2">
+                                                        <label class="flex items-center gap-1 text-xs bg-white border border-gray-300 rounded px-2 py-1 cursor-pointer hover:border-primary">
+                                                            <input type="checkbox" checked class="accent-primary"> 拍照
+                                                        </label>
+                                                        <label class="flex items-center gap-1 text-xs bg-white border border-gray-300 rounded px-2 py-1 cursor-pointer hover:border-primary">
+                                                            <input type="checkbox" class="accent-primary"> 录制视频
+                                                        </label>
+                                                        <label class="flex items-center gap-1 text-xs bg-white border border-gray-300 rounded px-2 py-1 cursor-pointer hover:border-primary">
+                                                            <input type="checkbox" checked class="accent-primary"> 填写内容
+                                                        </label>
+                                                        <label class="flex items-center gap-1 text-xs bg-white border border-gray-300 rounded px-2 py-1 cursor-pointer hover:border-primary">
+                                                            <input type="checkbox" class="accent-primary"> 无需采集
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <div class="flex items-center justify-between mb-2">
+                                                        <label class="text-xs text-gray-500">物料附件（支持多文件）</label>
+                                                        <button class="text-xs text-primary" onclick="addFileItem(this)"><i class="fa fa-plus mr-1"></i>添加附件</button>
+                                                    </div>
+                                                    <div class="file-list">
+                                                        <div class="file-item justify-between">
+                                                            <span><i class="fa fa-image text-success mr-1"></i>接待处介绍物料.jpg</span>
+                                                            <button class="text-gray-400 hover:text-danger" onclick="removeFileItem(this)"><i class="fa fa-times"></i></button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="border border-dashed border-gray-300 rounded p-2 text-center">
+                                                        <button class="text-xs text-gray-400 hover:text-primary"><i class="fa fa-upload mr-1"></i>上传文件</button>
+                                                        <span class="text-xs text-gray-400 mx-1">支持图片/音频/视频/文本</span>
+                                                    </div>
+                                                </div>
+                                                <div class="flex items-center gap-4">
+                                                    <div class="flex items-center gap-2">
+                                                        <span class="text-xs text-gray-500">可下发人可删除</span>
+                                                        <label class="switch" style="width:32px;height:18px">
+                                                            <input type="checkbox" class="point-delete-switch">
+                                                            <span class="slider" style="border-radius:18px"></span>
+                                                        </label>
+                                                    </div>
+                                                    <span class="text-xs text-gray-400">关闭=不可删除，开启=可删除</span>
+                                                </div>
+                                            </div>
+
+                                            <!-- 点位2 -->
+                                            <div class="point-card" draggable="true">
+                                                <div class="flex justify-between items-start mb-3">
+                                                    <div class="flex items-center gap-2">
+                                                        <i class="fa fa-bars text-gray-400 cursor-move text-sm"></i>
+                                                        <span class="font-medium text-sm">2. 沙盘区</span>
+                                                        <span class="tag tag-info text-xs">必打卡点</span>
+                                                    </div>
+                                                    <button class="text-xs text-danger hover:underline" onclick="removePoint(this)"><i class="fa fa-trash mr-1"></i>删除</button>
+                                                </div>
+                                                <div class="grid grid-cols-2 gap-3 mb-3">
+                                                    <div>
+                                                        <label class="text-xs text-gray-500 mb-1 block">点位名称</label>
+                                                        <input type="text" class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm" value="沙盘区">
+                                                    </div>
+                                                    <div>
+                                                        <label class="text-xs text-gray-500 mb-1 block">点位类型</label>
+                                                        <select class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm">
+                                                            <option selected>必打卡点</option>
+                                                            <option>选打卡点</option>
+                                                        </select>
+                                                    </div>
+                                                    <div>
+                                                        <label class="text-xs text-gray-500 mb-1 block">打卡顺序</label>
+                                                        <input type="number" class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm" value="2" min="1">
+                                                    </div>
+                                                    <div>
+                                                        <label class="text-xs text-gray-500 mb-1 block">建议停留时长（分钟）</label>
+                                                        <input type="number" class="w-full border border-gray-300 rounded px-2 py-1.5 text-sm" placeholder="选填" min="0" value="10">
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label class="text-xs text-gray-500 mb-1 block">采集内容要求</label>
+                                                    <div class="flex flex-wrap gap-2 mb-2">
+                                                        <label class="flex items-center gap-1 text-xs bg-white border border-gray-300 rounded px-2 py-1 cursor-pointer hover:border-primary">
+                                                            <input type="checkbox" checked class="accent-primary"> 拍照
+                                                        </label>
+                                                        <label class="flex items-center gap-1 text-xs bg-white border border-gray-300 rounded px-2 py-1 cursor-pointer hover:border-primary">
+                                                            <input type="checkbox" checked class="accent-primary"> 录制视频
+                                                        </label>
+                                                        <label class="flex items-center gap-1 text-xs bg-white border border-gray-300 rounded px-2 py-1 cursor-pointer hover:border-primary">
+                                                            <input type="checkbox" class="accent-primary"> 填写内容
+                                                        </label>
+                                                        <label class="flex items-center gap-1 text-xs bg-white border border-gray-300 rounded px-2 py-1 cursor-pointer hover:border-primary">
+                                                            <input type="checkbox" class="accent-primary"> 无需采集
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <div class="flex items-center justify-between mb-2">
+                                                        <label class="text-xs text-gray-500">物料附件（支持多文件）</label>
+                                                        <button class="text-xs text-primary" onclick="addFileItem(this)"><i class="fa fa-plus mr-1"></i>添加附件</button>
+                                                    </div>
+                                                    <div class="file-list">
+                                                        <div class="file-item justify-between">
+                                                            <span><i class="fa fa-file-word-o text-primary mr-1"></i>沙盘讲解话术.docx</span>
+                                                            <button class="text-gray-400 hover:text-danger" onclick="removeFileItem(this)"><i class="fa fa-times"></i></button>
+                                                        </div>
+                                                    </div>
+                                                    <div class="border border-dashed border-gray-300 rounded p-2 text-center">
+                                                        <button class="text-xs text-gray-400 hover:text-primary"><i class="fa fa-upload mr-1"></i>上传文件</button>
+                                                        <span class="text-xs text-gray-400 mx-1">支持图片/音频/视频/文本</span>
+                                                    </div>
+                                                </div>
+                                                <div class="flex items-center gap-4">
+                                                    <div class="flex items-center gap-2">
+                                                        <span class="text-xs text-gray-500">可下发人可删除</span>
+                                                        <label class="switch" style="width:32px;height:18px">
+                                                            <input type="checkbox" class="point-delete-switch">
+                                                            <span class="slider" style="border-radius:18px"></span>
+                                                        </label>
+                                                    </div>
+                                                    <span class="text-xs text-gray-400">关闭=不可删除，开启=可删除</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button class="w-full border border-dashed border-gray-300 rounded py-2 text-sm text-gray-500 hover:border-primary hover:text-primary mt-2" onclick="addPoint()">
+                                            <i class="fa fa-plus mr-1"></i>新增点位
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        >
