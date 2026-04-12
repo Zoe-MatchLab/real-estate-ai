@@ -124,7 +124,7 @@
             <div class="flex justify-between items-center mb-6">
                 <div>
                     <h1 class="text-2xl font-bold mb-1">📋 探盘任务管理</h1>
-                    <p class="text-gray-500">管理所有探盘任务，支持新建、编辑、审核、导出操作</p>
+                    <p class="text-gray-500">管理所有探盘任务，支持查看、编辑、导出操作</p>
                 </div>
                 <div class="flex items-center gap-3">
                     <!-- 待分发任务徽章（审核/运营人员可见） -->
@@ -260,7 +260,7 @@
                                     <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>下发</button>
                                     <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>暂停</button>
                                     <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>催办</button>
-                                    <button class="text-xs text-primary btn-admin-only hover:underline">编辑</button>
+                                    <button class="text-xs text-primary btn-admin-only hover:underline" onclick="editTask(this)">编辑</button>
                                 </div>
                             </td>
                         </tr>
@@ -293,9 +293,9 @@
                                     <button class="text-xs text-primary btn-view hover:underline" onclick="viewTask(this)">查看</button>
                                     <span class="text-xs text-gray-300 btn-admin-only">|</span>
                                     <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>下发</button>
-                                    <button class="text-xs text-warning btn-admin-only hover:underline">暂停</button>
-                                    <button class="text-xs text-danger btn-admin-only hover:underline">催办</button>
-                                    <button class="text-xs text-gray-600 btn-admin-only hover:underline">编辑</button>
+                                    <button class="text-xs text-warning btn-admin-only hover:underline" onclick="pauseTask(this)">暂停</button>
+                                    <button class="text-xs text-danger btn-admin-only hover:underline" onclick="urgeTask(this)">催办</button>
+                                    <button class="text-xs text-primary btn-admin-only hover:underline" onclick="editTask(this)">编辑</button>
                                 </div>
                             </td>
                         </tr>
@@ -323,10 +323,10 @@
                                 <div class="flex gap-2 items-center">
                                     <button class="text-xs text-primary btn-view hover:underline" onclick="viewTask(this)">查看</button>
                                     <span class="text-xs text-gray-300 btn-admin-only">|</span>
-                                    <button class="text-xs text-success btn-admin-only hover:underline">下发</button>
+                                    <button class="text-xs text-success btn-admin-only hover:underline" onclick="distributeTask(this)">下发</button>
                                     <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>暂停</button>
                                     <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>催办</button>
-                                    <button class="text-xs text-primary btn-admin-only hover:underline">编辑</button>
+                                    <button class="text-xs text-primary btn-admin-only hover:underline" onclick="editTask(this)">编辑</button>
                                 </div>
                             </td>
                         </tr>
@@ -360,7 +360,7 @@
                                     <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>下发</button>
                                     <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>暂停</button>
                                     <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>催办</button>
-                                    <button class="text-xs text-primary btn-admin-only hover:underline">编辑</button>
+                                    <button class="text-xs text-primary btn-admin-only hover:underline" onclick="editTask(this)">编辑</button>
                                 </div>
                             </td>
                         </tr>
@@ -389,10 +389,10 @@
                                 <div class="flex gap-2 items-center">
                                     <button class="text-xs text-primary btn-view hover:underline" onclick="viewTask(this)">查看</button>
                                     <span class="text-xs text-gray-300 btn-admin-only">|</span>
-                                    <button class="text-xs text-success btn-admin-only hover:underline">下发</button>
+                                    <button class="text-xs text-success btn-admin-only hover:underline" onclick="distributeTask(this)">下发</button>
                                     <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>暂停</button>
                                     <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>催办</button>
-                                    <button class="text-xs text-primary btn-admin-only hover:underline">编辑</button>
+                                    <button class="text-xs text-primary btn-admin-only hover:underline" onclick="editTask(this)">编辑</button>
                                 </div>
                             </td>
                         </tr>
@@ -424,9 +424,9 @@
                                     <button class="text-xs text-primary btn-view hover:underline" onclick="viewTask(this)">查看</button>
                                     <span class="text-xs text-gray-300 btn-admin-only">|</span>
                                     <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>下发</button>
-                                    <button class="text-xs text-warning btn-admin-only hover:underline">暂停</button>
-                                    <button class="text-xs text-danger btn-admin-only hover:underline">催办</button>
-                                    <button class="text-xs text-gray-600 btn-admin-only hover:underline">编辑</button>
+                                    <button class="text-xs text-warning btn-admin-only hover:underline" onclick="pauseTask(this)">暂停</button>
+                                    <button class="text-xs text-danger btn-admin-only hover:underline" onclick="urgeTask(this)">催办</button>
+                                    <button class="text-xs text-primary btn-admin-only hover:underline" onclick="editTask(this)">编辑</button>
                                 </div>
                             </td>
                         </tr>
@@ -638,6 +638,53 @@ document.getElementById('taskStatusFilter').addEventListener('change', function(
             const taskName = row.querySelector('td:nth-child(2)').textContent.trim();
             const status = row.querySelector('.tag') ? row.querySelector('.tag').textContent.trim() : '';
             alert(`📋 任务详情页\n\n楼盘名称：${taskName}\n状态：${status}\n\n（跳转到任务详情页）`);
+        }
+
+        // ========== 下发任务 ==========
+        function distributeTask(btn) {
+            const row = btn.closest('tr');
+            const taskName = row.querySelector('td:nth-child(2)').textContent.trim();
+            if (confirm(`确定要下发任务「${taskName}」吗？\n\n下发后将通知相关执行人。`)) {
+                // 跳转到task-create.html（预填充数据）
+                window.location.href = 'task-create.html?action=distribute&task=' + encodeURIComponent(taskName);
+            }
+        }
+
+        // ========== 暂停任务 ==========
+        function pauseTask(btn) {
+            const row = btn.closest('tr');
+            const taskName = row.querySelector('td:nth-child(2)').textContent.trim();
+            if (confirm(`确定要暂停任务「${taskName}」吗？\n\n暂停后任务将变更为「待下发」状态。`)) {
+                alert(`✅ 任务「${taskName}」已暂停`);
+                // 实际应调用API变更状态并刷新列表
+                location.reload();
+            }
+        }
+
+        // ========== 催办任务 ==========
+        function urgeTask(btn) {
+            const row = btn.closest('tr');
+            const taskName = row.querySelector('td:nth-child(2)').textContent.trim();
+            alert(`📢 已向任务「${taskName}」的执行人发送催办通知！`);
+        }
+
+        // ========== 编辑任务 ==========
+        function editTask(btn) {
+            const row = btn.closest('tr');
+            const taskName = row.querySelector('td:nth-child(2)').textContent.trim();
+            // 跳转到task-create.html编辑
+            window.location.href = 'task-create.html?action=edit&task=' + encodeURIComponent(taskName);
+        }
+
+        // ========== 删除任务 ==========
+        function deleteTask(btn) {
+            const row = btn.closest('tr');
+            const taskName = row.querySelector('td:nth-child(2)').textContent.trim();
+            if (confirm(`⚠️ 确定要删除任务「${taskName}」吗？\n\n此操作不可恢复，请谨慎操作！`)) {
+                alert(`✅ 任务「${taskName}」已删除`);
+                // 实际应调用API删除并刷新列表
+                row.remove();
+            }
         }
 
         // ========== 筛选功能 ==========
