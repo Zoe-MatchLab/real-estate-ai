@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>消息通知 - 房产AI作业平台</title>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --brand-primary: #FA8C16;
+            --brand-primary-dark: #E67A0E;
+            --brand-primary-light: #FFF7E6;
+            --color-success: #00B42A;
+            --color-warning: #FF7D00;
+            --color-danger: #FA5151;
+            --color-info: #FA8C16;
+            --color-title: #1D2129;
+            --color-text: #4E5969;
+            --color-sub: #86909C;
+            --color-border: #E5E6EB;
+            --color-bg: #F7F8FA;
+            --color-card: #FFFFFF;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
+            --transition-fast: all 0.2s ease;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--color-bg); min-height: 100vh; padding-bottom: 70px; }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-primary-dark) 100%);
+            color: white;
+            padding: 16px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-title { font-size: 18px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .header-actions { display: flex; gap: 12px; margin-top: 12px; }
+        .header-btn { flex: 1; background: rgba(255,255,255,0.2); border: none; color: white; padding: 8px; border-radius: 8px; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 4px; }
+        
+        /* Tabs */
+        .tabs { background: white; padding: 12px 16px; display: flex; gap: 8px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .tabs::-webkit-scrollbar { display: none; }
+        .tab { padding: 6px 14px; border-radius: 16px; font-size: 13px; white-space: nowrap; border: none; background: var(--color-bg); color: var(--color-text); }
+        .tab.active { background: var(--brand-primary); color: white; }
+        .tab .badge { background: rgba(255,255,255,0.3); padding: 0 6px; border-radius: 8px; font-size: 11px; margin-left: 4px; }
+        .tab.active .badge { background: rgba(255,255,255,0.3); }
+        
+        /* Message List */
+        .message-list { padding: 12px 16px; }
+        .message-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+            touch-action: pan-y;
+        }
+        .message-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+        }
+        .message-card.p0::before { background: var(--color-danger); }
+        .message-card.p1::before { background: var(--color-warning); }
+        .message-card.p2::before { background: var(--brand-primary); }
+        .message-card.unread { background: #FFF8F0; }
+        .message-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+            font-size: 18px;
+        }
+        .message-icon.task { background: #FFF7E6; color: var(--brand-primary); }
+        .message-icon.content { background: #E8F3FF; color: #165DFF; }
+        .message-icon.customer { background: #E8FFEA; color: var(--color-success); }
+        .message-icon.system { background: #F2F3F5; color: var(--color-sub); }
+        .message-content { flex: 1; min-width: 0; }
+        .message-header { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+        .message-title { font-size: 15px; font-weight: 500; color: var(--color-title); }
+        .priority-tag { font-size: 10px; padding: 2px 5px; border-radius: 4px; font-weight: 500; }
+        .priority-tag.p0 { background: #FFECE8; color: var(--color-danger); }
+        .priority-tag.p1 { background: #FFF7E8; color: var(--color-warning); }
+        .priority-tag.p2 { background: #FFF0E6; color: var(--brand-primary); }
+        .unread-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--brand-primary); }
+        .message-desc { font-size: 13px; color: var(--color-text); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .message-time { font-size: 11px; color: var(--color-sub); }
+        
+        /* Swipe Actions */
+        .swipe-actions { position: absolute; right: 0; top: 0; bottom: 0; display: flex; transform: translateX(100%); transition: transform 0.2s; }
+        .swipe-btn { width: 60px; display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; font-size: 12px; }
+        .swipe-btn.read { background: var(--color-success); }
+        .swipe-btn.delete { background: var(--color-danger); }
+        
+        /* Empty */
+        .empty { text-align: center; padding: 60px 20px; color: var(--color-sub); }
+        .empty i { font-size: 48px; margin-bottom: 12px; }
+        .empty p { font-size: 14px; }
+        
+        /* Bottom Tab */
+        .bottom-tab { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; border-top: 1px solid var(--color-border); padding: 8px 0; padding-bottom: calc(8px + env(safe-area-inset-bottom)); z-index: 100; }
+        .tab-item { flex: 1; text-align: center; color: var(--color-sub); font-size: 10px; position: relative; }
+        .tab-item i { font-size: 20px; display: block; margin-bottom: 2px; }
+        .tab-item.active { color: var(--brand-primary); }
+        .tab-item .badge { position: absolute; top: -2px; right: calc(50% - 12px); background: var(--color-danger); color: white; font-size: 9px; padding: 1px 4px; border-radius: 8px; min-width: 14px; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-title">
+            <i class="fa fa-bell"></i>
+            <span>消息通知</span>
+        </div>
+        <div class="header-actions">
+            <button class="header-btn" onclick="markAllRead()">
+                <i class="fa fa-check"></i>全部已读
+            </button>
+        </div>
+    </div>
+    
+    <!-- Tabs -->
+    <div class="tabs">
+        <button class="tab active" onclick="filterMessages('all')">全部 <span class="badge" id="count-all">0</span></button>
+        <button class="tab" onclick="filterMessages('task')">任务 <span class="badge" id="count-task">0</span></button>
+        <button class="tab" onclick="filterMessages('content')">内容 <span class="badge" id="count-content">0</span></button>
+        <button class="tab" onclick="filterMessages('customer')">客户 <span class="badge" id="count-customer">0</span></button>
+        <button class="tab" onclick="filterMessages('system')">系统 <span class="badge" id="count-system">0</span></button>
+    </div>
+    
+    <!-- Message List -->
+    <div id="messageList" class="message-list"></div>
+    <div id="emptyState" class="empty" style="display:none;">
+        <i class="fa fa-bell-o"></i>
+        <p>暂无消息</p>
+    </div>
+    
+    <!-- Bottom Tab -->
+    <div class="bottom-tab">
+        <div class="tab-item" onclick="location.href='../home/my.html'">
+            <i class="fa fa-home"></i>
+            <span>首页</span>
+        </div>
+        <div class="tab-item" onclick="location.href='../home/calendar.html'">
+            <i class="fa fa-calendar"></i>
+            <span>任务</span>
+        </div>
+        <div class="tab-item" onclick="location.href='../content/content-list.html'">
+            <i class="fa fa-file-text"></i>
+            <span>内容</span>
+        </div>
+        <div class="tab-item" onclick="location.href='../customer/customer-list.html'">
+            <i class="fa fa-users"></i>
+            <span>客户</span>
+        </div>
+        <div class="tab-item active">
+            <i class="fa fa-bell"></i>
+            <span>消息</span>
+            <span class="badge" id="tabBadge">0</span>
+        </div>
+    </div>
+
+    <script>
+        const MESSAGES_KEY = 'reai_wxapp_messages';
+        let messages = [];
+        let currentFilter = 'all';
+        let startX = 0;
+        let currentSwipe = null;
+
+        function init() {
+            loadMessages();
+            renderCounts();
+            renderMessages();
+        }
+
+        function loadMessages() {
+            const stored = localStorage.getItem(MESSAGES_KEY);
+            if (stored) {
+                messages = JSON.parse(stored);
+            } else {
+                messages = [
+                    { id: 1, type: 'task', priority: 'P0', title: '新任务分配', desc: '您有一个新探盘任务：中海汇德里', time: '10分钟前', read: false },
+                    { id: 2, type: 'content', priority: 'P1', title: '文案生成完成', desc: '3篇文案已生成完毕', time: '30分钟前', read: false },
+                    { id: 3, type: 'customer', priority: 'P0', title: '客户状态变更', desc: '客户李小姐意向升级', time: '1小时前', read: false },
+                    { id: 4, type: 'system', priority: 'P2', title: '系统公告', desc: '平台功能升级通知', time: '2小时前', read: true },
+                    { id: 5, type: 'task', priority: 'P0', title: '任务截止提醒', desc: '任务即将截止', time: '3小时前', read: true },
+                ];
+                saveMessages();
+            }
+        }
+
+        function saveMessages() {
+            localStorage.setItem(MESSAGES_KEY, JSON.stringify(messages));
+        }
+
+        function renderCounts() {
+            const counts = {
+                all: messages.length,
+                task: messages.filter(m => m.type === 'task').length,
+                content: messages.filter(m => m.type === 'content').length,
+                customer: messages.filter(m => m.type === 'customer').length,
+                system: messages.filter(m => m.type === 'system').length,
+            };
+            for (const [key, val] of Object.entries(counts)) {
+                const el = document.getElementById('count-' + key);
+                if (el) el.textContent = val;
+            }
+            const unread = messages.filter(m => !m.read).length;
+            const tabBadge = document.getElementById('tabBadge');
+            if (tabBadge) {
+                if (unread > 0) {
+                    tabBadge.textContent = unread;
+                    tabBadge.style.display = 'block';
+                } else {
+                    tabBadge.style.display = 'none';
+                }
+            }
+        }
+
+        function getFiltered() {
+            if (currentFilter === 'all') return messages;
+            return messages.filter(m => m.type === currentFilter);
+        }
+
+        function getIcon(type) {
+            const icons = { task: 'fa-tasks', content: 'fa-file-text', customer: 'fa-user', system: 'fa-cog' };
+            return icons[type] || icons.system;
+        }
+
+        function renderMessages() {
+            const list = document.getElementById('messageList');
+            const empty = document.getElementById('emptyState');
+            const filtered = getFiltered();
+
+            if (filtered.length === 0) {
+                list.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+
+            empty.style.display = 'none';
+            list.innerHTML = filtered.map(m => `
+                <div class="message-card ${m.priority.toLowerCase()} ${m.read ? '' : 'unread'}" 
+                     onclick="viewMessage(${m.id})" 
+                     ontouchstart="startSwipe(event, ${m.id})" 
+                     ontouchmove="moveSwipe(event)" 
+                     ontouchend="endSwipe()">
+                    <div class="message-icon ${m.type}">
+                        <i class="fa ${getIcon(m.type)}"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-header">
+                            <span class="message-title">${m.title}</span>
+                            <span class="priority-tag ${m.priority.toLowerCase()}">${m.priority}</span>
+                            ${!m.read ? '<div class="unread-dot"></div>' : ''}
+                        </div>
+                        <div class="message-desc">${m.desc}</div>
+                        <div class="message-time">${m.time}</div>
+                    </div>
+                    <div class="swipe-actions" id="swipe-${m.id}">
+                        <div class="swipe-btn read" onclick="event.stopPropagation(); markRead(${m.id})">
+                            <i class="fa fa-check"></i>已读
+                        </div>
+                        <div class="swipe-btn delete" onclick="event.stopPropagation(); deleteMsg(${m.id})">
+                            <i class="fa fa-trash"></i>删除
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterMessages(type) {
+            currentFilter = type;
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            renderMessages();
+        }
+
+        function viewMessage(id) {
+            const msg = messages.find(m => m.id === id);
+            if (msg) {
+                msg.read = true;
+                saveMessages();
+                renderCounts();
+                renderMessages();
+            }
+        }
+
+        function markRead(id) {
+            const msg = messages.find(m => m.id === id);
+            if (msg) {
+                msg.read = true;
+                saveMessages();
+                renderCounts();
+                renderMessages();
+            }
+        }
+
+        function deleteMsg(id) {
+            messages = messages.filter(m => m.id !== id);
+            saveMessages();
+            renderCounts();
+            renderMessages();
+        }
+
+        function markAllRead() {
+            messages.forEach(m => m.read = true);
+            saveMessages();
+            renderCounts();
+            renderMessages();
+        }
+
+        // Swipe gestures
+        let swipeId = null;
+        function startSwipe(e, id) {
+            swipeId = id;
+            startX = e.touches[0].clientX;
+        }
+        function moveSwipe(e) {
+            if (!swipeId) return;
+            const diff = e.touches[0].clientX - startX;
+            const actions = document.getElementById('swipe-' + swipeId);
+            if (!actions) return;
+            if (diff < 0) {
+                actions.style.transform = 'translateX(' + Math.max(-120, diff) + 'px)';
+            }
+        }
+        function endSwipe() {
+            if (!swipeId) return;
+            const actions = document.getElementById('swipe-' + swipeId);
+            if (actions) {
+                const transform = actions.style.transform;
+                const match = transform.match(/translateX\((-?\d+)px\)/);
+                if (match && parseInt(match[1]) < -60) {
+                    actions.style.transform = 'translateX(-120px)';
+                } else {
+                    actions.style.transform = 'translateX(100%)';
+                }
+            }
+            swipeId = null;
+        }
+
+        init();
+    </script>
+</body>
+</html>
