@@ -192,6 +192,7 @@
             align-items: center;
             gap: var(--spacing-sm);
             margin-bottom: var(--spacing-sm);
+            padding-right: 40px;
         }
 
         .record-play-btn {
@@ -359,17 +360,24 @@
         .delete-btn {
             position: absolute;
             right: 0;
-            top: 0;
-            bottom: 0;
-            width: 60px;
-            background: var(--color-danger);
-            color: white;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            background: var(--color-bg);
+            color: var(--color-sub);
             border: none;
-            font-size: 13px;
+            border-radius: 50%;
+            font-size: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            z-index: 3;
+        }
+        .delete-btn:active {
+            background: var(--color-danger-light, #FFE8E8);
+            color: var(--color-danger);
         }
 
         /* 空状态 */
