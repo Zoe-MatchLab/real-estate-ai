@@ -648,9 +648,9 @@
                         ` : ''}
                         
                         ${item.status === 'pending' ? `
-                            <button onclick="editMaterial(${item.id})" class="text-gray-500 text-sm ml-3 hover:underline">编辑</button>
-                            <button onclick="withdrawReview(${item.id})" class="text-orange-500 text-sm ml-3 hover:underline">撤回</button>
-                            <button onclick="openDeleteModal(${item.id})" class="text-danger text-sm ml-3 hover:underline">删除</button>
+                            <button onclick="approveMaterial(${item.id})" class="text-success text-sm ml-3 hover:underline">通过</button>
+                            <button onclick="rejectMaterial(${item.id})" class="text-danger text-sm ml-3 hover:underline">驳回</button>
+                            <button onclick="viewDetail(${item.id})" class="text-gray-500 text-sm ml-3 hover:underline">详情</button>
                         ` : ''}
                         
                         ${item.status === 'approved' ? `
@@ -660,7 +660,7 @@
                         
                         ${item.status === 'rejected' ? `
                             <button onclick="editMaterial(${item.id})" class="text-gray-500 text-sm ml-3 hover:underline">编辑</button>
-                            <button onclick="resubmitForReview(${item.id})" class="text-primary text-sm ml-3 hover:underline">重新提交</button>
+                            <button onclick="viewDetail(${item.id})" class="text-gray-500 text-sm ml-3 hover:underline">详情</button>
                             <button onclick="openDeleteModal(${item.id})" class="text-danger text-sm ml-3 hover:underline">删除</button>
                         ` : ''}
                         
@@ -745,26 +745,29 @@
             }
         }
 
-        // 撤回审核（待审核→草稿）
-        function withdrawReview(id) {
-            if (confirm('确定要撤回审核吗？撤回后将变为草稿状态。')) {
+        // 审核通过（待审核→已上线）
+        function approveMaterial(id) {
+            if (confirm('确定要通过该楼盘的审核吗？审核通过后将进入待上线状态。')) {
                 const item = materialsData.find(m => m.id === id);
                 if (item) {
-                    item.status = 'draft';
-                    item.statusText = '草稿';
+                    item.status = 'approved';
+                    item.statusText = '审核通过';
                     renderTable(materialsData);
                 }
             }
         }
 
-        // 重新提交审核（已驳回→待审核）
-        function resubmitForReview(id) {
-            if (confirm('确定要重新提交审核吗？')) {
+        // 审核驳回（待审核→已驳回）
+        function rejectMaterial(id) {
+            const reason = prompt('请输入驳回原因：');
+            if (reason !== null) {
                 const item = materialsData.find(m => m.id === id);
                 if (item) {
-                    item.status = 'pending';
-                    item.statusText = '待审核';
+                    item.status = 'rejected';
+                    item.statusText = '已驳回';
+                    item.rejectReason = reason;
                     renderTable(materialsData);
+                    alert('已驳回，原因：' + reason + '。楼盘编辑后可重新提交审核。');
                 }
             }
         }
