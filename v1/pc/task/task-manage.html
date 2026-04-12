@@ -636,8 +636,8 @@ document.getElementById('taskStatusFilter').addEventListener('change', function(
         function viewTask(btn) {
             const row = btn.closest('tr');
             const taskName = row.querySelector('td:nth-child(2)').textContent.trim();
-            const status = row.querySelector('.tag') ? row.querySelector('.tag').textContent.trim() : '';
-            alert(`📋 任务详情页\n\n楼盘名称：${taskName}\n状态：${status}\n\n（跳转到任务详情页）`);
+            // 跳转到任务详情页
+            window.location.href = 'task-detail.html?task=' + encodeURIComponent(taskName);
         }
 
         // ========== 下发任务 ==========
