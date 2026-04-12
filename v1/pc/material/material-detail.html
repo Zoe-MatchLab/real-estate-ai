@@ -69,3 +69,783 @@
         <!-- 内联侧边栏 -->
 
         <!-- 主内容区 -->
+        
+<main class="ml-64 flex-1 p-6">
+            <!-- 面包屑 -->
+            <div class="mb-4 text-sm">
+                <a href="material-manage.html" class="text-primary hover:underline">新盘管理</a>
+                <span class="mx-2 text-gray-400">/</span>
+                <span class="text-gray-500">楼盘详情</span>
+            </div>
+
+            <!-- 页面标题 -->
+            <div class="mb-6 flex justify-between items-center">
+                <div class="flex items-center">
+                    <img src="https://picsum.photos/seed/house1/80/80" alt="楼盘封面" class="w-16 h-16 rounded-lg object-cover mr-4">
+                    <div>
+                        <h1 class="text-2xl font-bold text-dark">中海汇德里</h1>
+                        <p class="text-gray-500 mt-1">开发商：中海地产 | 区域：海淀区</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="px-3 py-1 bg-purple-100 text-purple-600 text-sm rounded-full">
+                        <i class="fa fa-cloud-upload mr-1"></i> 已上线
+                    </span>
+                    <button onclick="editMaterial()" class="px-4 py-2 border border-primary text-primary rounded-lg hover:bg-primary/10 flex items-center">
+                        <i class="fa fa-edit mr-2"></i> 编辑
+                    </button>
+                    <button onclick="openDeleteModal()" class="px-4 py-2 border border-danger text-danger rounded-lg hover:bg-red-50 flex items-center">
+                        <i class="fa fa-trash-o mr-2"></i> 删除
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tab切换 -->
+            <div class="bg-white rounded-lg shadow-sm">
+                <div class="border-b border-gray-200">
+                    <nav class="flex -mb-px">
+                        <button onclick="switchTab('info')" id="tabInfo" class="tab-btn px-6 py-3 text-sm font-medium text-primary border-b-2 border-primary">
+                            <i class="fa fa-info-circle mr-2"></i>基本信息
+                        </button>
+                        <button onclick="switchTab('images')" id="tabImages" class="tab-btn px-6 py-3 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700">
+                            <i class="fa fa-image mr-2"></i>图片库
+                        </button>
+                        <button onclick="switchTab('history')" id="tabHistory" class="tab-btn px-6 py-3 text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-700">
+                            <i class="fa fa-history mr-2"></i>审核历史
+                        </button>
+                    </nav>
+                </div>
+
+                <!-- 基本信息Tab -->
+                <div id="panelInfo" class="p-6">
+                    <!-- 基本信息 -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                            <span class="w-1 h-5 bg-primary mr-2"></span>
+                            基本信息
+                        </h3>
+                        <div class="grid grid-cols-4 gap-6">
+                            <div class="text-sm">
+                                <p class="text-gray-500">楼盘名称</p>
+                                <p class="font-medium mt-1">中海汇德里</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">楼盘别名</p>
+                                <p class="font-medium mt-1">汇德里花园</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">开发商</p>
+                                <p class="font-medium mt-1">中海地产</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">物业公司</p>
+                                <p class="font-medium mt-1">中海物业</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">物业费</p>
+                                <p class="font-medium mt-1">5.8元/㎡/月</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">开盘时间</p>
+                                <p class="font-medium mt-1">2025-12-15</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">交房时间</p>
+                                <p class="font-medium mt-1">2027-06-30</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">产权年限</p>
+                                <p class="font-medium mt-1">70年</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">总户数</p>
+                                <p class="font-medium mt-1">1200户</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">总楼栋数</p>
+                                <p class="font-medium mt-1">15栋</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">车位数量</p>
+                                <p class="font-medium mt-1">1500个</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">装修情况</p>
+                                <p class="font-medium mt-1">精装交付</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 位置信息 -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                            <span class="w-1 h-5 bg-success mr-2"></span>
+                            位置信息
+                        </h3>
+                        <div class="grid grid-cols-4 gap-6">
+                            <div class="text-sm">
+                                <p class="text-gray-500">所属区域</p>
+                                <p class="font-medium mt-1">北京市海淀区</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">所属板块</p>
+                                <p class="font-medium mt-1">中关村</p>
+                            </div>
+                            <div class="text-sm col-span-2">
+                                <p class="text-gray-500">详细地址</p>
+                                <p class="font-medium mt-1">北京市海淀区中关村大街1号院</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">纬度</p>
+                                <p class="font-medium mt-1">39.984</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">经度</p>
+                                <p class="font-medium mt-1">116.312</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">距离地铁</p>
+                                <p class="font-medium mt-1">约300米</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">最近地铁站</p>
+                                <p class="font-medium mt-1">中关村站</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 销售信息 -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                            <span class="w-1 h-5 bg-warning mr-2"></span>
+                            销售信息
+                        </h3>
+                        <div class="grid grid-cols-4 gap-6">
+                            <div class="text-sm">
+                                <p class="text-gray-500">销售状态</p>
+                                <p class="font-medium mt-1 text-green-600">在售</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">参考均价</p>
+                                <p class="font-medium mt-1">83,000元/㎡</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">总价范围</p>
+                                <p class="font-medium mt-1">680-1200万</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">定金金额</p>
+                                <p class="font-medium mt-1">5万</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">认购签约</p>
+                                <p class="font-medium mt-1">需线上签约</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">折扣方案</p>
+                                <p class="font-medium mt-1">限时98折</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">付款方式</p>
+                                <p class="font-medium mt-1">一次性/商贷/公积金</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">贷款银行</p>
+                                <p class="font-medium mt-1">中国银行、工商银行</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 建筑信息 -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                            <span class="w-1 h-5 bg-purple mr-2"></span>
+                            建筑信息
+                        </h3>
+                        <div class="grid grid-cols-4 gap-6">
+                            <div class="text-sm">
+                                <p class="text-gray-500">建筑面积</p>
+                                <p class="font-medium mt-1">150,000㎡</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">占地面积</p>
+                                <p class="font-medium mt-1">60,000㎡</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">绿化率</p>
+                                <p class="font-medium mt-1">35%</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">容积率</p>
+                                <p class="font-medium mt-1">2.5</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">建筑类型</p>
+                                <p class="font-medium mt-1">高层、板楼</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">建筑结构</p>
+                                <p class="font-medium mt-1">钢筋混凝土</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">楼层高度</p>
+                                <p class="font-medium mt-1">地上28层/地下2层</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">梯户比例</p>
+                                <p class="font-medium mt-1">2梯4户</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 户型信息 -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                            <span class="w-1 h-5 bg-cyan mr-2"></span>
+                            户型信息
+                        </h3>
+                        <div class="grid grid-cols-4 gap-6">
+                            <div class="text-sm">
+                                <p class="text-gray-500">户型一</p>
+                                <p class="font-medium mt-1">77㎡ 两室一厅</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">户型二</p>
+                                <p class="font-medium mt-1">99㎡ 三室两厅</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">户型三</p>
+                                <p class="font-medium mt-1">120㎡ 三室两厅</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">户型四</p>
+                                <p class="font-medium mt-1">140㎡ 四室两厅</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">户型五</p>
+                                <p class="font-medium mt-1">180㎡ 四室三厅</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">得房率</p>
+                                <p class="font-medium mt-1">78-82%</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">朝向</p>
+                                <p class="font-medium mt-1">南北通透</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">层高</p>
+                                <p class="font-medium mt-1">2.9米</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 周边配套 -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                            <span class="w-1 h-5 bg-orange mr-2"></span>
+                            周边配套
+                        </h3>
+                        <div class="grid grid-cols-4 gap-6">
+                            <div class="text-sm">
+                                <p class="text-gray-500">教育配套</p>
+                                <p class="font-medium mt-1">人大附中、北大附小</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">医疗配套</p>
+                                <p class="font-medium mt-1">北京大学第三医院</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">商业配套</p>
+                                <p class="font-medium mt-1">中关村购物中心</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">公园配套</p>
+                                <p class="font-medium mt-1">中关村公园、海淀公园</p>
+                            </div>
+                            <div class="text-sm col-span-4">
+                                <p class="text-gray-500">其他配套</p>
+                                <p class="font-medium mt-1">银行、超市、餐饮等生活配套齐全</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 销售道具 -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                            <span class="w-1 h-5 bg-pink mr-2"></span>
+                            销售道具
+                        </h3>
+                        <div class="grid grid-cols-4 gap-6">
+                            <div class="text-sm">
+                                <p class="text-gray-500">沙盘模型</p>
+                                <p class="font-medium mt-1"><i class="fa fa-check text-success"></i> 有</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">样板间</p>
+                                <p class="font-medium mt-1"><i class="fa fa-check text-success"></i> 有（3套）</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">户型图</p>
+                                <p class="font-medium mt-1"><i class="fa fa-check text-success"></i> 有</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">电子楼书</p>
+                                <p class="font-medium mt-1"><i class="fa fa-check text-success"></i> 有</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">不利因素</p>
+                                <p class="font-medium mt-1"><i class="fa fa-exclamation text-warning"></i> 周边有地铁经过</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">红线内外</p>
+                                <p class="font-medium mt-1">无不利因素</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">竞品对比</p>
+                                <p class="font-medium mt-1"><i class="fa fa-check text-success"></i> 已提供</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">价格走势</p>
+                                <p class="font-medium mt-1"><i class="fa fa-check text-success"></i> 已提供</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 项目亮点 -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                            <span class="w-1 h-5 bg-teal mr-2"></span>
+                            项目亮点
+                        </h3>
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="text-sm">
+                                <p class="text-gray-500">核心卖点</p>
+                                <p class="font-medium mt-1">中关村核心区、地铁上盖、精装交付、品牌开发商</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">产品优势</p>
+                                <p class="font-medium mt-1">户型方正、南北通透、高得房率</p>
+                            </div>
+                            <div class="text-sm col-span-2">
+                                <p class="text-gray-500">详细介绍</p>
+                                <p class="font-medium mt-1">中海汇德里位于中关村核心区域，是由中海地产开发的精装住宅项目。项目紧邻地铁4号线中关村站，交通便利周边配套齐全。项目采用现代简约风格设计，户型从77㎡两居到180㎡四居，满足不同家庭需求。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 政策信息 -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                            <span class="w-1 h-5 bg-indigo mr-2"></span>
+                            政策信息
+                        </h3>
+                        <div class="grid grid-cols-4 gap-6">
+                            <div class="text-sm">
+                                <p class="text-gray-500">限购政策</p>
+                                <p class="font-medium mt-1">北京市限购政策</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">公积金贷款</p>
+                                <p class="font-medium mt-1">支持公积金贷款</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">组合贷款</p>
+                                <p class="font-medium mt-1">支持组合贷款</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">贷款利率</p>
+                                <p class="font-medium mt-1">LPR+55基点</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 佣金信息 -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                            <span class="w-1 h-5 bg-yellow mr-2"></span>
+                            佣金信息
+                        </h3>
+                        <div class="grid grid-cols-4 gap-6">
+                            <div class="text-sm">
+                                <p class="text-gray-500">佣金点位</p>
+                                <p class="font-medium mt-1">3%</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">佣金金额</p>
+                                <p class="font-medium mt-1">20-36万/套</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">结佣周期</p>
+                                <p class="font-medium mt-1">签约后30天</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">佣金类型</p>
+                                <p class="font-medium mt-1">纯佣金</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 经纪人信息 -->
+                    <div class="mb-8">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                            <span class="w-1 h-5 bg-red mr-2"></span>
+                            经纪人信息
+                        </h3>
+                        <div class="grid grid-cols-4 gap-6">
+                            <div class="text-sm">
+                                <p class="text-gray-500">驻场销售</p>
+                                <p class="font-medium mt-1">张经理 138-0013-8000</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">外联人员</p>
+                                <p class="font-medium mt-1">李经理 139-0013-9000</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">渠道对接</p>
+                                <p class="font-medium mt-1">王经理 137-0013-7000</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">客服电话</p>
+                                <p class="font-medium mt-1">010-82345678</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 其他信息 -->
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                            <span class="w-1 h-5 bg-gray mr-2"></span>
+                            其他信息
+                        </h3>
+                        <div class="grid grid-cols-4 gap-6">
+                            <div class="text-sm">
+                                <p class="text-gray-500">录入人</p>
+                                <p class="font-medium mt-1">张三</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">录入时间</p>
+                                <p class="font-medium mt-1">2026-03-01</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">最后修改</p>
+                                <p class="font-medium mt-1">2026-03-20</p>
+                            </div>
+                            <div class="text-sm">
+                                <p class="text-gray-500">资料完整度</p>
+                                <p class="font-medium mt-1 text-success">95%</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 图片库Tab -->
+                <div id="panelImages" class="p-6 hidden">
+                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex items-center gap-4">
+                            <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm">全部图片</button>
+                            <button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm hover:bg-gray-200">户型图</button>
+                            <button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm hover:bg-gray-200">样板间</button>
+                            <button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm hover:bg-gray-200">效果图</button>
+                            <button class="px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm hover:bg-gray-200">实景图</button>
+                        </div>
+                        <button class="px-4 py-2 border border-primary text-primary rounded-lg text-sm hover:bg-primary/10">
+                            <i class="fa fa-upload mr-2"></i>上传图片
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-4 gap-4">
+                        <div class="relative group">
+                            <img src="https://picsum.photos/seed/apt1/300/200" alt="户型图" class="w-full h-40 object-cover rounded-lg">
+                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                                <button class="px-3 py-1 bg-white rounded text-sm mr-2"><i class="fa fa-eye mr-1"></i>预览</button>
+                                <button class="px-3 py-1 bg-white rounded text-sm text-danger"><i class="fa fa-trash mr-1"></i>删除</button>
+                            </div>
+                            <span class="absolute top-2 left-2 px-2 py-0.5 bg-blue-500 text-white text-xs rounded">户型图</span>
+                        </div>
+                        <div class="relative group">
+                            <img src="https://picsum.photos/seed/room1/300/200" alt="样板间" class="w-full h-40 object-cover rounded-lg">
+                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                                <button class="px-3 py-1 bg-white rounded text-sm mr-2"><i class="fa fa-eye mr-1"></i>预览</button>
+                                <button class="px-3 py-1 bg-white rounded text-sm text-danger"><i class="fa fa-trash mr-1"></i>删除</button>
+                            </div>
+                            <span class="absolute top-2 left-2 px-2 py-0.5 bg-green-500 text-white text-xs rounded">样板间</span>
+                        </div>
+                        <div class="relative group">
+                            <img src="https://picsum.photos/seed/render1/300/200" alt="效果图" class="w-full h-40 object-cover rounded-lg">
+                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                                <button class="px-3 py-1 bg-white rounded text-sm mr-2"><i class="fa fa-eye mr-1"></i>预览</button>
+                                <button class="px-3 py-1 bg-white rounded text-sm text-danger"><i class="fa fa-trash mr-1"></i>删除</button>
+                            </div>
+                            <span class="absolute top-2 left-2 px-2 py-0.5 bg-purple-500 text-white text-xs rounded">效果图</span>
+                        </div>
+                        <div class="relative group">
+                            <img src="https://picsum.photos/seed/real1/300/200" alt="实景图" class="w-full h-40 object-cover rounded-lg">
+                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                                <button class="px-3 py-1 bg-white rounded text-sm mr-2"><i class="fa fa-eye mr-1"></i>预览</button>
+                                <button class="px-3 py-1 bg-white rounded text-sm text-danger"><i class="fa fa-trash mr-1"></i>删除</button>
+                            </div>
+                            <span class="absolute top-2 left-2 px-2 py-0.5 bg-orange-500 text-white text-xs rounded">实景图</span>
+                        </div>
+                        <div class="relative group">
+                            <img src="https://picsum.photos/seed/apt2/300/200" alt="户型图" class="w-full h-40 object-cover rounded-lg">
+                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                                <button class="px-3 py-1 bg-white rounded text-sm mr-2"><i class="fa fa-eye mr-1"></i>预览</button>
+                                <button class="px-3 py-1 bg-white rounded text-sm text-danger"><i class="fa fa-trash mr-1"></i>删除</button>
+                            </div>
+                            <span class="absolute top-2 left-2 px-2 py-0.5 bg-blue-500 text-white text-xs rounded">户型图</span>
+                        </div>
+                        <div class="relative group">
+                            <img src="https://picsum.photos/seed/room2/300/200" alt="样板间" class="w-full h-40 object-cover rounded-lg">
+                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                                <button class="px-3 py-1 bg-white rounded text-sm mr-2"><i class="fa fa-eye mr-1"></i>预览</button>
+                                <button class="px-3 py-1 bg-white rounded text-sm text-danger"><i class="fa fa-trash mr-1"></i>删除</button>
+                            </div>
+                            <span class="absolute top-2 left-2 px-2 py-0.5 bg-green-500 text-white text-xs rounded">样板间</span>
+                        </div>
+                        <div class="relative group">
+                            <img src="https://picsum.photos/seed/render2/300/200" alt="效果图" class="w-full h-40 object-cover rounded-lg">
+                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                                <button class="px-3 py-1 bg-white rounded text-sm mr-2"><i class="fa fa-eye mr-1"></i>预览</button>
+                                <button class="px-3 py-1 bg-white rounded text-sm text-danger"><i class="fa fa-trash mr-1"></i>删除</button>
+                            </div>
+                            <span class="absolute top-2 left-2 px-2 py-0.5 bg-purple-500 text-white text-xs rounded">效果图</span>
+                        </div>
+                        <div class="relative group">
+                            <img src="https://picsum.photos/seed/real2/300/200" alt="实景图" class="w-full h-40 object-cover rounded-lg">
+                            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                                <button class="px-3 py-1 bg-white rounded text-sm mr-2"><i class="fa fa-eye mr-1"></i>预览</button>
+                                <button class="px-3 py-1 bg-white rounded text-sm text-danger"><i class="fa fa-trash mr-1"></i>删除</button>
+                            </div>
+                            <span class="absolute top-2 left-2 px-2 py-0.5 bg-orange-500 text-white text-xs rounded">实景图</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 审核历史Tab -->
+                <div id="panelHistory" class="p-6 hidden">
+                    <div class="mb-4 flex justify-between items-center">
+                        <h3 class="font-bold text-gray-800">审核流程记录</h3>
+                        <button class="px-4 py-2 bg-primary text-white rounded-lg text-sm">
+                            <i class="fa fa-plus mr-2"></i>添加审核记录
+                        </button>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute left-4 top-0 bottom-0 w-0.5 bg-gray-200"></div>
+                        <div class="space-y-6">
+                            <!-- 审核通过 -->
+                            <div class="relative flex items-start pl-10">
+                                <div class="absolute left-3 w-3 h-3 bg-success rounded-full border-2 border-white"></div>
+                                <div class="flex-1 bg-gray-50 rounded-lg p-4">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <span class="px-2 py-0.5 bg-green-100 text-green-600 text-xs rounded">审核通过</span>
+                                            <p class="font-medium text-gray-800 mt-2">楼盘信息审核通过</p>
+                                            <p class="text-sm text-gray-500 mt-1">审核意见：楼盘信息完整，符合上线标准</p>
+                                        </div>
+                                        <div class="text-right text-sm text-gray-400">
+                                            <p>2026-03-20</p>
+                                            <p>14:30</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center mt-3 text-sm text-gray-500">
+                                        <div class="w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-xs mr-2">审</div>
+                                        <span>审核人：区域经理</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 提交审核 -->
+                            <div class="relative flex items-start pl-10">
+                                <div class="absolute left-3 w-3 h-3 bg-blue-500 rounded-full border-2 border-white"></div>
+                                <div class="flex-1 bg-gray-50 rounded-lg p-4">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <span class="px-2 py-0.5 bg-blue-100 text-blue-600 text-xs rounded">提交审核</span>
+                                            <p class="font-medium text-gray-800 mt-2">提交楼盘资料</p>
+                                            <p class="text-sm text-gray-500 mt-1">提交审核备注：已完成所有资料整理</p>
+                                        </div>
+                                        <div class="text-right text-sm text-gray-400">
+                                            <p>2026-03-18</p>
+                                            <p>10:15</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center mt-3 text-sm text-gray-500">
+                                        <div class="w-6 h-6 bg-success text-white rounded-full flex items-center justify-center text-xs mr-2">张</div>
+                                        <span>提交人：张三</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 资料完善 -->
+                            <div class="relative flex items-start pl-10">
+                                <div class="absolute left-3 w-3 h-3 bg-warning rounded-full border-2 border-white"></div>
+                                <div class="flex-1 bg-gray-50 rounded-lg p-4">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <span class="px-2 py-0.5 bg-orange-100 text-orange-600 text-xs rounded">资料完善</span>
+                                            <p class="font-medium text-gray-800 mt-2">完善楼盘资料</p>
+                                            <p class="text-sm text-gray-500 mt-1">补充了户型图、样板间图片等资料</p>
+                                        </div>
+                                        <div class="text-right text-sm text-gray-400">
+                                            <p>2026-03-15</p>
+                                            <p>16:45</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center mt-3 text-sm text-gray-500">
+                                        <div class="w-6 h-6 bg-success text-white rounded-full flex items-center justify-center text-xs mr-2">张</div>
+                                        <span>操作人：张三</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 首次录入 -->
+                            <div class="relative flex items-start pl-10">
+                                <div class="absolute left-3 w-3 h-3 bg-gray-400 rounded-full border-2 border-white"></div>
+                                <div class="flex-1 bg-gray-50 rounded-lg p-4">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <span class="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded">创建</span>
+                                            <p class="font-medium text-gray-800 mt-2">创建楼盘</p>
+                                            <p class="text-sm text-gray-500 mt-1">首次录入楼盘基本信息</p>
+                                        </div>
+                                        <div class="text-right text-sm text-gray-400">
+                                            <p>2026-03-01</p>
+                                            <p>09:30</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center mt-3 text-sm text-gray-500">
+                                        <div class="w-6 h-6 bg-success text-white rounded-full flex items-center justify-center text-xs mr-2">张</div>
+                                        <span>创建人：张三</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 审核操作区域（待审核状态显示） -->
+                <div id="auditSection" class="mt-6 bg-white rounded-lg p-6 shadow-sm">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">审核操作</h3>
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">审核意见</label>
+                        <textarea id="auditOpinion" rows="3" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/50" placeholder="请输入审核意见..."></textarea>
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="approveAudit()" class="px-6 py-2 bg-success text-white rounded-lg hover:bg-success/90">
+                            <i class="fa fa-check mr-2"></i>通过
+                        </button>
+                        <button onclick="rejectAudit()" class="px-6 py-2 bg-danger text-white rounded-lg hover:bg-danger/90">
+                            <i class="fa fa-times mr-2"></i>驳回
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 预览弹窗 -->
+    <div id="previewModal" class="fixed inset-0 bg-black/80 hidden items-center justify-center z-50">
+        <button onclick="closePreview()" class="absolute top-4 right-4 text-white text-2xl">
+            <i class="fa fa-times"></i>
+        </button>
+        <img id="previewImage" src="" alt="预览" class="max-w-[90vw] max-h-[90vh] object-contain">
+    </div>
+
+    <!-- 删除确认弹窗 -->
+    <div id="deleteModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg w-[400px] p-6">
+            <div class="text-center">
+                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa fa-trash-o text-red-500 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-bold mb-2">确认删除</h3>
+                <p class="text-gray-500 mb-6">确定要将该楼盘移至回收站吗？删除后可从回收站恢复</p>
+                <div class="flex justify-center gap-3">
+                    <button onclick="closeDeleteModal()" class="px-4 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50">取消</button>
+                    <button onclick="confirmDelete()" class="px-4 py-2 bg-danger text-white rounded-lg hover:bg-danger/90">确认删除</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab切换
+        function switchTab(tab) {
+            // 隐藏所有面板
+            document.getElementById('panelInfo').classList.add('hidden');
+            document.getElementById('panelImages').classList.add('hidden');
+            document.getElementById('panelHistory').classList.add('hidden');
+            
+            // 重置所有按钮样式
+            document.getElementById('tabInfo').classList.remove('text-primary', 'border-primary');
+            document.getElementById('tabInfo').classList.add('text-gray-500', 'border-transparent');
+            document.getElementById('tabImages').classList.remove('text-primary', 'border-primary');
+            document.getElementById('tabImages').classList.add('text-gray-500', 'border-transparent');
+            document.getElementById('tabHistory').classList.remove('text-primary', 'border-primary');
+            document.getElementById('tabHistory').classList.add('text-gray-500', 'border-transparent');
+            
+            // 显示选中面板
+            document.getElementById('panel' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.remove('hidden');
+            
+            // 高亮选中按钮
+            document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.remove('text-gray-500', 'border-transparent');
+            document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('text-primary', 'border-primary');
+        }
+
+        // 编辑
+        function editMaterial() {
+            window.location.href = 'material-edit.html?id=1';
+        }
+
+        // 删除弹窗
+        function openDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('hidden');
+            document.getElementById('deleteModal').classList.add('flex');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.add('hidden');
+            document.getElementById('deleteModal').classList.remove('flex');
+        }
+
+        // 审核通过
+        function approveAudit() {
+            const opinion = document.getElementById('auditOpinion').value.trim();
+            if (!opinion) {
+                alert('请输入审核意见');
+                return;
+            }
+            if (confirm('确定要通过该楼盘的审核吗？')) {
+                alert('审核已通过，楼盘将进入待上线状态');
+                window.location.href = 'material-manage.html';
+            }
+        }
+
+        // 审核驳回
+        function rejectAudit() {
+            const opinion = document.getElementById('auditOpinion').value.trim();
+            if (!opinion) {
+                alert('请输入审核意见');
+                return;
+            }
+            if (confirm('确定要驳回该楼盘的审核吗？')) {
+                alert('审核已驳回，原因：' + opinion);
+                window.location.href = 'material-manage.html';
+            }
+        }
+
+        function confirmDelete() {
+            window.location.href = 'material-manage.html';
+        }
+
+        // 预览图片
+        function openPreview(src) {
+            document.getElementById('previewImage').src = src;
+            document.getElementById('previewModal').classList.remove('hidden');
+            document.getElementById('previewModal').classList.add('flex');
+        }
+
+        function closePreview() {
+            document.getElementById('previewModal').classList.add('hidden');
+            document.getElementById('previewModal').classList.remove('flex');
+        }
+    </script>
+</body>
+</html>
