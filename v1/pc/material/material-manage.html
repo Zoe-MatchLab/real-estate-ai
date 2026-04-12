@@ -157,7 +157,7 @@
             </div>
 
             <!-- 数据概览卡片 -->
-            <div class="grid grid-cols-5 gap-4 mb-6">
+            <div class="grid grid-cols-6 gap-4 mb-6">
                 <div class="bg-white rounded-lg shadow-sm p-5 cursor-pointer hover:shadow-md transition-all" onclick="filterByStatus('')">
                     <div class="flex justify-between items-start">
                         <div>
@@ -166,6 +166,18 @@
                         </div>
                         <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500">
                             <i class="fa fa-building-o"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- 草稿 -->
+                <div class="bg-white rounded-lg shadow-sm p-5 cursor-pointer hover:shadow-md transition-all border-l-4 border-gray-400" onclick="filterByStatus('draft')">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-sm">草稿</p>
+                            <h3 class="text-2xl font-bold mt-1">2</h3>
+                        </div>
+                        <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">
+                            <i class="fa fa-pencil-square-o"></i>
                         </div>
                     </div>
                 </div>
@@ -260,9 +272,10 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs text-gray-500 mb-1">审核状态</label>
+                        <label class="block text-xs text-gray-500 mb-1">状态</label>
                         <select id="filterStatus" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
                             <option value="">全部</option>
+                            <option value="draft">草稿</option>
                             <option value="pending">待审核</option>
                             <option value="approved">审核通过</option>
                             <option value="rejected">已驳回</option>
@@ -321,7 +334,7 @@
                                 <th class="px-4 py-3">价格</th>
                                 <th class="px-4 py-3">户型</th>
                                 <th class="px-4 py-3">销售状态</th>
-                                <th class="px-4 py-3">审核状态</th>
+                                <th class="px-4 py-3">状态</th>
                                 <th class="px-4 py-3">资料数量</th>
                                 <th class="px-4 py-3">更新时间</th>
                                 <th class="px-4 py-3 text-right">操作</th>
@@ -642,6 +655,7 @@
 
         // 状态样式映射
         const statusStyles = {
+            draft: 'bg-gray-100 text-gray-500',
             pending: 'bg-blue-100 text-blue-600',
             approved: 'bg-green-100 text-green-600',
             rejected: 'bg-red-100 text-red-600',
@@ -706,12 +720,40 @@
                         </div>
                     </td>
                     <td class="px-4 py-4 text-sm text-gray-600">${item.updateTime}</td>
-                    <td class="px-4 py-4 text-sm text-right">
+                    <td class="px-4 py-4 text-sm text-right whitespace-nowrap">
                         <button onclick="viewDetail(${item.id})" class="text-primary text-sm hover:underline">详情</button>
-                        ${item.status === 'pending' || item.status === 'rejected' ? `<button onclick="editMaterial(${item.id})" class="text-gray-500 text-sm ml-3 hover:underline">编辑</button>` : ''}
-                        ${item.status === 'approved' ? `<button onclick="openLaunch(${item.id})" class="text-success text-sm ml-3 hover:underline">上线</button>` : ''}
-                        ${item.status === 'online' ? `<button onclick="offlineMaterial(${item.id})" class="text-gray-500 text-sm ml-3 hover:underline">下线</button>` : ''}
-                        <button onclick="openDeleteModal(${item.id})" class="text-danger text-sm ml-3 hover:underline">删除</button>
+                        
+                        ${item.status === 'draft' ? `
+                            <button onclick="editMaterial(${item.id})" class="text-gray-500 text-sm ml-3 hover:underline">编辑</button>
+                            <button onclick="submitForReview(${item.id})" class="text-primary text-sm ml-3 hover:underline">提交审核</button>
+                            <button onclick="openDeleteModal(${item.id})" class="text-danger text-sm ml-3 hover:underline">删除</button>
+                        ` : ''}
+                        
+                        ${item.status === 'pending' ? `
+                            <button onclick="editMaterial(${item.id})" class="text-gray-500 text-sm ml-3 hover:underline">编辑</button>
+                            <button onclick="withdrawReview(${item.id})" class="text-orange-500 text-sm ml-3 hover:underline">撤回</button>
+                            <button onclick="openDeleteModal(${item.id})" class="text-danger text-sm ml-3 hover:underline">删除</button>
+                        ` : ''}
+                        
+                        ${item.status === 'approved' ? `
+                            <button onclick="openLaunch(${item.id})" class="text-success text-sm ml-3 hover:underline">上线</button>
+                            <button onclick="openDeleteModal(${item.id})" class="text-danger text-sm ml-3 hover:underline">删除</button>
+                        ` : ''}
+                        
+                        ${item.status === 'rejected' ? `
+                            <button onclick="editMaterial(${item.id})" class="text-gray-500 text-sm ml-3 hover:underline">编辑</button>
+                            <button onclick="resubmitForReview(${item.id})" class="text-primary text-sm ml-3 hover:underline">重新提交</button>
+                            <button onclick="openDeleteModal(${item.id})" class="text-danger text-sm ml-3 hover:underline">删除</button>
+                        ` : ''}
+                        
+                        ${item.status === 'online' ? `
+                            <button onclick="offlineMaterial(${item.id})" class="text-gray-500 text-sm ml-3 hover:underline">下线</button>
+                        ` : ''}
+                        
+                        ${item.status === 'offline' ? `
+                            <button onclick="onlineMaterial(${item.id})" class="text-success text-sm ml-3 hover:underline">上线</button>
+                            <button onclick="openDeleteModal(${item.id})" class="text-danger text-sm ml-3 hover:underline">删除</button>
+                        ` : ''}
                     </td>
                 </tr>
             `).join('');
@@ -771,6 +813,54 @@
         // 打开上线配置
         function openLaunch(id) {
             window.location.href = `material-launch.html?id=${id}`;
+        }
+
+        // 提交审核（草稿→待审核）
+        function submitForReview(id) {
+            if (confirm('确定要提交审核吗？提交后将进入待审核状态。')) {
+                const item = materialsData.find(m => m.id === id);
+                if (item) {
+                    item.status = 'pending';
+                    item.statusText = '待审核';
+                    renderTable(materialsData);
+                }
+            }
+        }
+
+        // 撤回审核（待审核→草稿）
+        function withdrawReview(id) {
+            if (confirm('确定要撤回审核吗？撤回后将变为草稿状态。')) {
+                const item = materialsData.find(m => m.id === id);
+                if (item) {
+                    item.status = 'draft';
+                    item.statusText = '草稿';
+                    renderTable(materialsData);
+                }
+            }
+        }
+
+        // 重新提交审核（已驳回→待审核）
+        function resubmitForReview(id) {
+            if (confirm('确定要重新提交审核吗？')) {
+                const item = materialsData.find(m => m.id === id);
+                if (item) {
+                    item.status = 'pending';
+                    item.statusText = '待审核';
+                    renderTable(materialsData);
+                }
+            }
+        }
+
+        // 上线楼盘（审核通过/已下线→已上线）
+        function onlineMaterial(id) {
+            if (confirm('确定要上线该楼盘吗？上线后经纪人可在小程序看到并领取任务。')) {
+                const item = materialsData.find(m => m.id === id);
+                if (item) {
+                    item.status = 'online';
+                    item.statusText = '已上线';
+                    renderTable(materialsData);
+                }
+            }
         }
 
         // 下线楼盘
