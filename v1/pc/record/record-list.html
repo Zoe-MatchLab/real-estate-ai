@@ -39,6 +39,9 @@
         .batch-bar { display: none; }
         .batch-bar.show { display: flex; }
         input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: #165DFF; }
+        .page-btn.active { background: #165DFF !important; border-color: #165DFF !important; color: white !important; font-weight: bold; box-shadow: 0 2px 8px rgba(22,93,255,0.3); }
+        .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: skeleton-loading 1.4s ease infinite; }
+        @keyframes skeleton-loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -144,7 +147,7 @@
 
             <!-- 筛选栏 -->
             <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-                <div class="flex flex-wrap gap-3 items-end">
+                <div class="grid grid-cols-5 gap-4 items-end">
                     <div class="flex-1 min-w-[200px]">
                         <label class="block text-xs text-gray-500 mb-1">经纪人/客户搜索</label>
                         <input type="text" id="searchInput" placeholder="搜索录音名称/经纪人..." class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
@@ -222,7 +225,44 @@
                                 <th class="px-4 py-3 text-left font-medium">操作</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-100">
+                        <tbody class="divide-y divide-gray-100" id="tableBody">
+                        </tbody>
+                        <!-- 骨架屏加载状态 -->
+                        <tbody class="divide-y divide-gray-100" id="skeletonBody" style="display:none">
+                            <tr>
+                                <td class="px-4 py-3"><div class="skeleton h-4 w-4 rounded"></div></td>
+                                <td class="px-4 py-3"><div class="flex items-center gap-2"><div class="skeleton h-8 w-8 rounded-full"></div><div><div class="skeleton h-4 w-32 rounded mb-1"></div><div class="skeleton h-3 w-20 rounded"></div></div></div></td>
+                                <td class="px-4 py-3"><div class="skeleton h-4 w-20 rounded mb-1"></div><div class="skeleton h-3 w-24 rounded"></div></td>
+                                <td class="px-4 py-3"><div class="skeleton h-4 w-24 rounded"></div></td>
+                                <td class="px-4 py-3"><div class="flex items-center gap-2"><div class="skeleton h-6 w-6 rounded-full"></div><div class="skeleton h-4 w-16 rounded"></div></div></td>
+                                <td class="px-4 py-3"><div class="skeleton h-5 w-16 rounded"></div></td>
+                                <td class="px-4 py-3"><div class="skeleton h-10 w-10 rounded-full"></div></td>
+                                <td class="px-4 py-3"><div class="skeleton h-4 w-20 rounded mb-1"></div><div class="skeleton h-3 w-12 rounded"></div></td>
+                                <td class="px-4 py-3"><div class="skeleton h-4 w-16 rounded"></div></td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3"><div class="skeleton h-4 w-4 rounded"></div></td>
+                                <td class="px-4 py-3"><div class="flex items-center gap-2"><div class="skeleton h-8 w-8 rounded-full"></div><div><div class="skeleton h-4 w-36 rounded mb-1"></div><div class="skeleton h-3 w-20 rounded"></div></div></div></td>
+                                <td class="px-4 py-3"><div class="skeleton h-4 w-20 rounded mb-1"></div><div class="skeleton h-3 w-24 rounded"></div></td>
+                                <td class="px-4 py-3"><div class="skeleton h-4 w-24 rounded"></div></td>
+                                <td class="px-4 py-3"><div class="flex items-center gap-2"><div class="skeleton h-6 w-6 rounded-full"></div><div class="skeleton h-4 w-16 rounded"></div></div></td>
+                                <td class="px-4 py-3"><div class="skeleton h-5 w-16 rounded"></div></td>
+                                <td class="px-4 py-3"><div class="skeleton h-10 w-10 rounded-full"></div></td>
+                                <td class="px-4 py-3"><div class="skeleton h-4 w-20 rounded mb-1"></div><div class="skeleton h-3 w-12 rounded"></div></td>
+                                <td class="px-4 py-3"><div class="skeleton h-4 w-16 rounded"></div></td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-3"><div class="skeleton h-4 w-4 rounded"></div></td>
+                                <td class="px-4 py-3"><div class="flex items-center gap-2"><div class="skeleton h-8 w-8 rounded-full"></div><div><div class="skeleton h-4 w-28 rounded mb-1"></div><div class="skeleton h-3 w-20 rounded"></div></div></div></td>
+                                <td class="px-4 py-3"><div class="skeleton h-4 w-20 rounded"></div></td>
+                                <td class="px-4 py-3"><div class="skeleton h-4 w-24 rounded"></div></td>
+                                <td class="px-4 py-3"><div class="flex items-center gap-2"><div class="skeleton h-6 w-6 rounded-full"></div><div class="skeleton h-4 w-16 rounded"></div></div></td>
+                                <td class="px-4 py-3"><div class="skeleton h-5 w-16 rounded"></div></td>
+                                <td class="px-4 py-3"><div class="skeleton h-10 w-10 rounded-full"></div></td>
+                                <td class="px-4 py-3"><div class="skeleton h-4 w-20 rounded mb-1"></div><div class="skeleton h-3 w-12 rounded"></div></td>
+                                <td class="px-4 py-3"><div class="skeleton h-4 w-16 rounded"></div></td>
+                            </tr>
+                        </tbody>
                             <!-- 已完成 -->
                             <tr class="hover:bg-gray-50" data-id="1">
                                 <td class="px-4 py-3">
@@ -445,10 +485,10 @@
                     <div class="text-sm text-gray-500">显示 1-10 条，共 156 条</div>
                     <div class="flex gap-1">
                         <button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-500 hover:bg-gray-50 disabled:opacity-50" disabled>上一页</button>
-                        <button class="px-3 py-1 border border-primary bg-primary text-white rounded text-sm">1</button>
-                        <button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-600 hover:bg-gray-50">2</button>
-                        <button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-600 hover:bg-gray-50">3</button>
-                        <button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-500 hover:bg-gray-50">下一页</button>
+                        <button class="page-btn px-3 py-1 border border-primary bg-primary text-white rounded text-sm active">1</button>
+                        <button class="page-btn px-3 py-1 border border-gray-300 rounded text-sm text-gray-600 hover:bg-gray-50">2</button>
+                        <button class="page-btn px-3 py-1 border border-gray-300 rounded text-sm text-gray-600 hover:bg-gray-50">3</button>
+                        <button class="page-btn px-3 py-1 border border-gray-300 rounded text-sm text-gray-500 hover:bg-gray-50">下一页</button>
                     </div>
                 </div>
             </div>
