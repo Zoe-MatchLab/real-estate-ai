@@ -30,6 +30,50 @@
         .tag-status-failed { background: #FFECE8; color: #F53F3F; }
         .score-ring { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; }
         aside a.active { color: #165DFF; background-color: #E8F3FF; border-right: 4px solid #165DFF; }
+        /* P0: 分页器 active 状态更明显 */
+        .page-btn { @apply px-3 py-1 border border-gray-300 rounded text-sm text-gray-600 hover:bg-gray-50 transition-colors;
+            min-width: 36px; text-align: center; }
+        .page-btn.active {
+            background: #165DFF !important;
+            border-color: #165DFF !important;
+            color: #fff !important;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(22, 93, 255, 0.35);
+            transform: scale(1.05);
+        }
+        /* P2: 骨架屏 loading 动画 */
+        @keyframes shimmer {
+            0% { background-position: -468px 0; }
+            100% { background-position: 468px 0; }
+        }
+        .skeleton {
+            background: linear-gradient(to right, #f0f0f0 8%, #e0e0e0 18%, #f0f0f0 33%);
+            background-size: 800px 104px;
+            animation: shimmer 1.4s ease-in-out infinite;
+            border-radius: 4px;
+        }
+        /* P1: 导出下拉菜单位置修正 */
+        .export-dropdown { position: relative; display: inline-block; }
+        .export-dropdown .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            z-index: 100;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            min-width: 140px;
+            padding: 4px 0;
+        }
+        .export-dropdown .dropdown-menu.show { display: block; }
+        .export-dropdown .dropdown-menu button {
+            display: block; width: 100%; text-align: left;
+            padding: 8px 14px; font-size: 13px; color: #374151;
+            background: none; border: none; cursor: pointer;
+        }
+        .export-dropdown .dropdown-menu button:hover { background: #F3F4F6; }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -121,10 +165,18 @@
                     <h1 class="text-2xl font-bold text-dark">录音分析列表</h1>
                     <p class="text-gray-500 mt-1">V3.0 · 约看录音AI分析 · 支持播放 + 导出 + Drill-Down</p>
                 </div>
-                <div class="flex gap-2">
-                    <button class="text-sm text-gray-500 hover:text-primary border border-gray-300 rounded-lg px-3 py-2">
-                        <i class="fa fa-download mr-1"></i>导出报告
-                    </button>
+                <!-- P1: 导出下拉菜单位置修正 - 包裹在 export-dropdown 中 -->
+                <div class="flex gap-2 items-center">
+                    <div class="export-dropdown">
+                        <button id="exportBtn" onclick="toggleExport()" class="text-sm text-gray-500 hover:text-primary border border-gray-300 rounded-lg px-3 py-2 bg-white">
+                            <i class="fa fa-download mr-1"></i>导出报告 <i class="fa fa-angle-down ml-1 text-xs"></i>
+                        </button>
+                        <div id="exportMenu" class="dropdown-menu">
+                            <button><i class="fa fa-file-excel-o mr-2 text-green-500"></i>导出 Excel</button>
+                            <button><i class="fa fa-file-pdf-o mr-2 text-red-400"></i>导出 PDF</button>
+                            <button><i class="fa fa-file-text mr-2 text-blue-400"></i>导出 CSV</button>
+                        </div>
+                    </div>
                     <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white">
                         <option value="">全部状态</option>
                         <option value="pending">pending（待分析）</option>
@@ -155,14 +207,16 @@
                 </div>
             </div>
 
-            <!-- 筛选栏 V3.0 -->
+            <!-- P0: 筛选栏 - 改为 grid 布局，避免筛选条件挤在一起 -->
             <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
-                <div class="flex flex-wrap gap-3 items-end">
-                    <div class="flex-1 min-w-[200px]">
+                <div class="grid grid-cols-5 gap-3 items-end">
+                    <!-- 搜索 -->
+                    <div class="col-span-2">
                         <label class="block text-xs text-gray-500 mb-1">客户姓名/经纪人搜索</label>
                         <input type="text" placeholder="搜索客户姓名或经纪人..." class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
                     </div>
-                    <div class="min-w-[160px]">
+                    <!-- 分析状态 -->
+                    <div>
                         <label class="block text-xs text-gray-500 mb-1">分析状态</label>
                         <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-white">
                             <option value="">全部</option>
@@ -172,7 +226,8 @@
                             <option value="failed">failed</option>
                         </select>
                     </div>
-                    <div class="min-w-[160px]">
+                    <!-- 关联楼盘 -->
+                    <div>
                         <label class="block text-xs text-gray-500 mb-1">关联楼盘</label>
                         <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-white">
                             <option value="">全部楼盘</option>
@@ -181,15 +236,17 @@
                             <option>龙湖天琅</option>
                         </select>
                     </div>
-                    <div class="min-w-[160px]">
+                    <!-- 上传时间 -->
+                    <div>
                         <label class="block text-xs text-gray-500 mb-1">上传时间</label>
                         <input type="date" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
                     </div>
-                    <div>
-                        <button class="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg text-sm">
+                    <!-- 操作按钮 -->
+                    <div class="flex gap-2 items-center">
+                        <button class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg text-sm whitespace-nowrap">
                             <i class="fa fa-search mr-1"></i>搜索
                         </button>
-                        <button class="ml-2 text-gray-500 hover:text-gray-700 px-3 py-2 text-sm border border-gray-300 rounded-lg">重置</button>
+                        <button class="text-gray-500 hover:text-gray-700 px-3 py-2 text-sm border border-gray-300 rounded-lg whitespace-nowrap">重置</button>
                     </div>
                 </div>
             </div>
@@ -412,15 +469,17 @@
                         </tbody>
                     </table>
                 </div>
-                <!-- 分页 -->
+                <!-- P0: 分页器 - 添加明确 active 样式 -->
                 <div class="p-4 border-t border-gray-100 flex justify-between items-center">
                     <div class="text-sm text-gray-500">显示 1-10 条，共 156 条</div>
-                    <div class="flex gap-1">
-                        <button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-500 hover:bg-gray-50 disabled:opacity-50" disabled>上一页</button>
-                        <button class="px-3 py-1 border border-primary bg-primary text-white rounded text-sm">1</button>
-                        <button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-600 hover:bg-gray-50">2</button>
-                        <button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-600 hover:bg-gray-50">3</button>
-                        <button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-500 hover:bg-gray-50">下一页</button>
+                    <div class="flex gap-1 items-center">
+                        <button class="page-btn" disabled><i class="fa fa-chevron-left text-xs"></i></button>
+                        <button class="page-btn active">1</button>
+                        <button class="page-btn">2</button>
+                        <button class="page-btn">3</button>
+                        <button class="page-btn">4</button>
+                        <button class="page-btn">5</button>
+                        <button class="page-btn"><i class="fa fa-chevron-right text-xs"></i></button>
                     </div>
                 </div>
             </div>
@@ -430,6 +489,36 @@
     <script>
         function filterStatus(status) {
             // 模拟筛选
+        }
+
+        // P1: 导出下拉菜单
+        function toggleExport() {
+            const menu = document.getElementById('exportMenu');
+            menu.classList.toggle('show');
+        }
+        document.addEventListener('click', function(e) {
+            const btn = document.getElementById('exportBtn');
+            const menu = document.getElementById('exportMenu');
+            if (!btn.contains(e.target)) {
+                menu.classList.remove('show');
+            }
+        });
+
+        // P2: 模拟 loading 状态（点击搜索时显示骨架屏）
+        function simulateLoading() {
+            const tbody = document.querySelector('tbody');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8" class="p-0">
+                        <div class="p-4 space-y-3">
+                            <div class="skeleton h-12 w-full"></div>
+                            <div class="skeleton h-12 w-full"></div>
+                            <div class="skeleton h-12 w-full"></div>
+                            <div class="skeleton h-12 w-full"></div>
+                            <div class="skeleton h-12 w-full"></div>
+                        </div>
+                    </td>
+                </tr>`;
         }
     </script>
 </body>
