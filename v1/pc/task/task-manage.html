@@ -86,27 +86,23 @@
 
     <div class="flex pt-14">
         <!-- 侧边栏 -->
-        <!-- 侧边栏容器 - 动态加载公共组件 -->
-        <div id="sidebar-container"></div>
-
-        <!-- 动态加载公共侧边栏 -->
-        <script>
-        // 加载公共侧边栏组件
-        document.addEventListener('DOMContentLoaded', async function() {
-            try {
-                const res = await fetch('../../components/sidebar.component.html');
-                const sidebarHtml = await res.text();
-                document.getElementById('sidebar-container').innerHTML = sidebarHtml;
-                
-                // 修复侧边栏链接路径
-                if (window.fixSidebarLinks) window.fixSidebarLinks();
-                // 初始化高亮
-                if (window.initSidebar) window.initSidebar();
-            } catch (e) {
-                console.error('侧边栏加载失败:', e);
-            }
-        });
-        </script>
+        <aside class="w-64 bg-white h-[calc(100vh-56px)] fixed left-0 shadow-sm">
+            <nav class="py-4">
+                <div class="px-4 py-2 text-xs text-gray-400 uppercase font-medium">工作台</div>
+                <a href="../material/material-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-home w-5 text-center"></i>
+                    <span class="ml-3">新盘管理</span>
+                </a>
+                <a href="../generation/material-generation.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-magic w-5 text-center"></i>
+                    <span class="ml-3">物料生成管理</span>
+                </a>
+                <a href="task-manage.html" class="flex items-center px-4 py-3 text-primary bg-blue-50 border-r-4 border-primary">
+                    <i class="fa fa-tasks w-5 text-center"></i>
+                    <span class="ml-3">探盘任务</span>
+                </a>
+            </nav>
+        </aside>
 
         <!-- 主内容区 -->
         <main class="ml-64 flex-1 p-6">
