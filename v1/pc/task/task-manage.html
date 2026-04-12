@@ -73,6 +73,28 @@
         .batch-bar.show {
             transform: translateY(0);
         }
+
+        /* 根据状态显示/隐藏操作按钮 */
+        tr[data-status="progress"] .btn-edit,
+        tr[data-status="invalid"] .btn-edit,
+        tr[data-status="completed"] .btn-edit {
+            display: none;
+        }
+        tr[data-status="progress"] .btn-delete,
+        tr[data-status="invalid"] .btn-delete,
+        tr[data-status="completed"] .btn-delete,
+        tr[data-status="progress"] .btn-distribute,
+        tr[data-status="completed"] .btn-distribute,
+        tr[data-status="invalid"] .btn-distribute {
+            display: none;
+        }
+        tr[data-status="pending"] .btn-pause,
+        tr[data-status="pending"] .btn-urge,
+        tr[data-status="pending"] .btn-distribute,
+        tr[data-status="progress"] .btn-distribute {
+            display: none;
+        }
+
     </style>
 </head>
 <body class="bg-gray-50">
@@ -257,10 +279,10 @@
                                 <div class="flex gap-2 items-center">
                                     <button class="text-xs text-primary btn-view hover:underline" onclick="viewTask(this)">查看</button>
                                     <span class="text-xs text-gray-300 btn-admin-only">|</span>
-                                    <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>下发</button>
-                                    <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>暂停</button>
-                                    <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>催办</button>
-                                    <button class="text-xs text-primary btn-admin-only hover:underline" onclick="editTask(this)">编辑</button>
+                                    <button class="text-xs text-success btn-admin-only btn-distribute" style="display:none" onclick="distributeTask(this)">下发</button>
+                                    <button class="text-xs text-warning btn-admin-only btn-pause" style="display:none" onclick="pauseTask(this)">暂停</button>
+                                    <button class="text-xs text-danger btn-admin-only btn-urge" style="display:none" onclick="urgeTask(this)">催办</button>
+                                    <button class="text-xs text-primary btn-admin-only hover:underline btn-edit" onclick="editTask(this)">编辑</button>
                                 </div>
                             </td>
                         </tr>
@@ -292,10 +314,10 @@
                                 <div class="flex gap-2 items-center">
                                     <button class="text-xs text-primary btn-view hover:underline" onclick="viewTask(this)">查看</button>
                                     <span class="text-xs text-gray-300 btn-admin-only">|</span>
-                                    <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>下发</button>
-                                    <button class="text-xs text-warning btn-admin-only hover:underline" onclick="pauseTask(this)">暂停</button>
-                                    <button class="text-xs text-danger btn-admin-only hover:underline" onclick="urgeTask(this)">催办</button>
-                                    <button class="text-xs text-primary btn-admin-only hover:underline" onclick="editTask(this)">编辑</button>
+                                    <button class="text-xs text-success btn-admin-only btn-distribute" style="display:none" onclick="distributeTask(this)">下发</button>
+                                    <button class="text-xs text-warning btn-admin-only btn-pause" onclick="pauseTask(this)">暂停</button>
+                                    <button class="text-xs text-danger btn-admin-only btn-urge" onclick="urgeTask(this)">催办</button>
+                                    <button class="text-xs text-primary btn-admin-only hover:underline btn-edit" onclick="editTask(this)">编辑</button>
                                 </div>
                             </td>
                         </tr>
@@ -323,10 +345,11 @@
                                 <div class="flex gap-2 items-center">
                                     <button class="text-xs text-primary btn-view hover:underline" onclick="viewTask(this)">查看</button>
                                     <span class="text-xs text-gray-300 btn-admin-only">|</span>
-                                    <button class="text-xs text-success btn-admin-only hover:underline" onclick="distributeTask(this)">下发</button>
-                                    <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>暂停</button>
-                                    <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>催办</button>
-                                    <button class="text-xs text-primary btn-admin-only hover:underline" onclick="editTask(this)">编辑</button>
+                                    <button class="text-xs text-success btn-admin-only btn-distribute" onclick="distributeTask(this)">下发</button>
+                                    <button class="text-xs text-warning btn-admin-only btn-pause" style="display:none" onclick="pauseTask(this)">暂停</button>
+                                    <button class="text-xs text-danger btn-admin-only btn-urge" style="display:none" onclick="urgeTask(this)">催办</button>
+                                    <button class="text-xs text-primary btn-admin-only hover:underline btn-edit" onclick="editTask(this)">编辑</button>
+                                    <button class="text-xs text-danger btn-admin-only hover:underline btn-delete ml-2" onclick="deleteTask(this)">删除</button>
                                 </div>
                             </td>
                         </tr>
@@ -357,11 +380,10 @@
                                 <div class="flex gap-2 items-center">
                                     <button class="text-xs text-primary btn-view hover:underline" onclick="viewTask(this)">查看</button>
                                     <span class="text-xs text-gray-300 btn-admin-only">|</span>
-                                    <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>下发</button>
-                                    <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>暂停</button>
-                                    <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>催办</button>
-                                    <button class="text-xs text-primary btn-admin-only hover:underline" onclick="editTask(this)">编辑</button>
-                                </div>
+                                    <button class="text-xs text-success btn-admin-only btn-distribute" style="display:none" onclick="distributeTask(this)">下发</button>
+                                    <button class="text-xs text-warning btn-admin-only btn-pause" style="display:none" onclick="pauseTask(this)">暂停</button>
+                                    <button class="text-xs text-danger btn-admin-only btn-urge" style="display:none" onclick="urgeTask(this)">催办</button>
+                                    </div>
                             </td>
                         </tr>
 
@@ -389,10 +411,11 @@
                                 <div class="flex gap-2 items-center">
                                     <button class="text-xs text-primary btn-view hover:underline" onclick="viewTask(this)">查看</button>
                                     <span class="text-xs text-gray-300 btn-admin-only">|</span>
-                                    <button class="text-xs text-success btn-admin-only hover:underline" onclick="distributeTask(this)">下发</button>
-                                    <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>暂停</button>
-                                    <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>催办</button>
-                                    <button class="text-xs text-primary btn-admin-only hover:underline" onclick="editTask(this)">编辑</button>
+                                    <button class="text-xs text-success btn-admin-only btn-distribute" onclick="distributeTask(this)">下发</button>
+                                    <button class="text-xs text-warning btn-admin-only btn-pause" style="display:none" onclick="pauseTask(this)">暂停</button>
+                                    <button class="text-xs text-danger btn-admin-only btn-urge" style="display:none" onclick="urgeTask(this)">催办</button>
+                                    <button class="text-xs text-primary btn-admin-only hover:underline btn-edit" onclick="editTask(this)">编辑</button>
+                                    <button class="text-xs text-danger btn-admin-only hover:underline btn-delete ml-2" onclick="deleteTask(this)">删除</button>
                                 </div>
                             </td>
                         </tr>
@@ -423,10 +446,10 @@
                                 <div class="flex gap-2 items-center">
                                     <button class="text-xs text-primary btn-view hover:underline" onclick="viewTask(this)">查看</button>
                                     <span class="text-xs text-gray-300 btn-admin-only">|</span>
-                                    <button class="text-xs text-gray-400 cursor-not-allowed btn-admin-only" disabled>下发</button>
-                                    <button class="text-xs text-warning btn-admin-only hover:underline" onclick="pauseTask(this)">暂停</button>
-                                    <button class="text-xs text-danger btn-admin-only hover:underline" onclick="urgeTask(this)">催办</button>
-                                    <button class="text-xs text-primary btn-admin-only hover:underline" onclick="editTask(this)">编辑</button>
+                                    <button class="text-xs text-success btn-admin-only btn-distribute" style="display:none" onclick="distributeTask(this)">下发</button>
+                                    <button class="text-xs text-warning btn-admin-only btn-pause" onclick="pauseTask(this)">暂停</button>
+                                    <button class="text-xs text-danger btn-admin-only btn-urge" onclick="urgeTask(this)">催办</button>
+                                    <button class="text-xs text-primary btn-admin-only hover:underline btn-edit" onclick="editTask(this)">编辑</button>
                                 </div>
                             </td>
                         </tr>
@@ -748,7 +771,7 @@ document.getElementById('taskStatusFilter').addEventListener('change', function(
             document.getElementById('count-progress').textContent = counts.progress;
             document.getElementById('count-completed').textContent = counts.completed;
             document.getElementById('count-invalid').textContent = counts.invalid;
-        }
+        
 
         // ========== 分页功能 ==========
         let currentPage = 1;
