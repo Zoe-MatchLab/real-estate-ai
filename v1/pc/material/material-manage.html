@@ -648,8 +648,7 @@
                         ` : ''}
                         
                         ${item.status === 'pending' ? `
-                            <button onclick="approveMaterial(${item.id})" class="text-success text-sm ml-3 hover:underline">通过</button>
-                            <button onclick="rejectMaterial(${item.id})" class="text-danger text-sm ml-3 hover:underline">驳回</button>
+                            <button onclick="openAudit(${item.id})" class="text-primary text-sm ml-3 hover:underline">审核</button>
                             <button onclick="viewDetail(${item.id})" class="text-gray-500 text-sm ml-3 hover:underline">详情</button>
                         ` : ''}
                         
@@ -745,31 +744,9 @@
             }
         }
 
-        // 审核通过（待审核→已上线）
-        function approveMaterial(id) {
-            if (confirm('确定要通过该楼盘的审核吗？审核通过后将进入待上线状态。')) {
-                const item = materialsData.find(m => m.id === id);
-                if (item) {
-                    item.status = 'approved';
-                    item.statusText = '审核通过';
-                    renderTable(materialsData);
-                }
-            }
-        }
-
-        // 审核驳回（待审核→已驳回）
-        function rejectMaterial(id) {
-            const reason = prompt('请输入驳回原因：');
-            if (reason !== null) {
-                const item = materialsData.find(m => m.id === id);
-                if (item) {
-                    item.status = 'rejected';
-                    item.statusText = '已驳回';
-                    item.rejectReason = reason;
-                    renderTable(materialsData);
-                    alert('已驳回，原因：' + reason + '。楼盘编辑后可重新提交审核。');
-                }
-            }
+        // 打开审核页面
+        function openAudit(id) {
+            window.location.href = `material-audit.html?id=${id}`;
         }
 
         // 上线楼盘（审核通过/已下线→已上线）
