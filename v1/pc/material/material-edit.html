@@ -630,31 +630,203 @@
                     </div>
                 </div>
 
-                <!-- 图片上传 -->
+                <!-- 图片库 -->
                 <div class="bg-white rounded-lg shadow-sm p-6 section-card">
                     <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
-                        <i class="fa fa-image text-gray mr-2"></i>
-                        图片上传
+                        <i class="fa fa-images text-primary mr-2"></i>
+                        图片库
                     </h3>
-                    <div class="grid grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm text-gray-600 mb-2">楼盘封面图</label>
-                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary transition-colors cursor-pointer">
-                                <i class="fa fa-cloud-upload text-4xl text-gray-400 mb-2"></i>
-                                <p class="text-sm text-gray-500">点击或拖拽上传封面图</p>
-                                <p class="text-xs text-gray-400 mt-1">支持 JPG、PNG，建议尺寸 800x600</p>
+                    
+                    <!-- 图片分类Tab -->
+                    <div class="flex flex-wrap gap-2 mb-4 border-b pb-3">
+                        <button onclick="switchImageCategory('location')" class="image-tab px-3 py-1.5 text-sm rounded-lg bg-primary text-white" data-category="location">
+                            区位图
+                        </button>
+                        <button onclick="switchImageCategory('sandtable')" class="image-tab px-3 py-1.5 text-sm rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200" data-category="sandtable">
+                            沙盘图
+                        </button>
+                        <button onclick="switchImageCategory('floorplan')" class="image-tab px-3 py-1.5 text-sm rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200" data-category="floorplan">
+                            户型图
+                        </button>
+                        <button onclick="switchImageCategory('sample')" class="image-tab px-3 py-1.5 text-sm rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200" data-category="sample">
+                            样板间图
+                        </button>
+                        <button onclick="switchImageCategory('garden')" class="image-tab px-3 py-1.5 text-sm rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200" data-category="garden">
+                            园林效果图/实景图
+                        </button>
+                        <button onclick="switchImageCategory('facade')" class="image-tab px-3 py-1.5 text-sm rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200" data-category="facade">
+                            建筑立面效果图/实景图
+                        </button>
+                        <button onclick="switchImageCategory('surrounding')" class="image-tab px-3 py-1.5 text-sm rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200" data-category="surrounding">
+                            周边配套图
+                        </button>
+                        <button onclick="switchImageCategory('team')" class="image-tab px-3 py-1.5 text-sm rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200" data-category="team">
+                            物业团队图片
+                        </button>
+                    </div>
+                    
+                    <!-- 当前分类图片 -->
+                    <div id="imageCategoryContent">
+                        <!-- 区位图 -->
+                        <div id="category-location" class="image-category-content">
+                            <div class="flex justify-between items-center mb-3">
+                                <p class="text-sm text-gray-500">支持 JPG、PNG，每张不超过 5MB</p>
+                                <span class="text-xs text-gray-400">已上传 <span id="count-location">0</span> 张</span>
                             </div>
-                        </div>
-                        <div>
-                            <label class="block text-sm text-gray-600 mb-2">楼盘相册</label>
-                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary transition-colors cursor-pointer">
-                                <i class="fa fa-cloud-upload text-4xl text-gray-400 mb-2"></i>
-                                <p class="text-sm text-gray-500">点击或拖拽上传多张图片</p>
-                                <p class="text-xs text-gray-400 mt-1">支持 JPG、PNG，每张不超过 5MB</p>
+                            <div class="grid grid-cols-4 gap-4" id="imageGrid-location">
+                                <!-- 示例图片占位 -->
+                            </div>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary transition-colors cursor-pointer mt-4" onclick="openImageUpload('location')">
+                                <i class="fa fa-cloud-upload text-3xl text-gray-400 mb-2"></i>
+                                <p class="text-sm text-gray-500">点击或拖拽上传区位图</p>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <style>
+                    .image-tab.active {
+                        background-color: #165DFF !important;
+                        color: white !important;
+                    }
+                </style>
+
+                <script>
+                    // 图片库数据
+                    const imageLibrary = {
+                        location: [],
+                        sandtable: [],
+                        floorplan: [],
+                        sample: [],
+                        garden: [],
+                        facade: [],
+                        surrounding: [],
+                        team: []
+                    };
+
+                    let currentImageCategory = 'location';
+
+                    // 切换图片分类
+                    function switchImageCategory(category) {
+                        currentImageCategory = category;
+                        
+                        // 更新Tab样式
+                        document.querySelectorAll('.image-tab').forEach(tab => {
+                            tab.classList.remove('active');
+                            tab.classList.remove('bg-primary');
+                            tab.classList.remove('text-white');
+                            tab.classList.add('bg-gray-100');
+                            tab.classList.add('text-gray-600');
+                        });
+                        const activeTab = document.querySelector(`[data-category="${category}"]`);
+                        if (activeTab) {
+                            activeTab.classList.add('active');
+                        }
+                        
+                        // 隐藏所有分类内容
+                        document.querySelectorAll('.image-category-content').forEach(content => {
+                            content.style.display = 'none';
+                        });
+                        
+                        // 显示当前分类内容
+                        const categoryContent = document.getElementById(`category-${category}`);
+                        if (categoryContent) {
+                            categoryContent.style.display = 'block';
+                        }
+                        
+                        // 更新计数
+                        const count = imageLibrary[category] ? imageLibrary[category].length : 0;
+                        const countEl = document.getElementById(`count-${category}`);
+                        if (countEl) {
+                            countEl.textContent = count;
+                        }
+                        
+                        // 渲染图片网格
+                        renderImageGrid(category);
+                    }
+
+                    // 渲染图片网格
+                    function renderImageGrid(category) {
+                        const grid = document.getElementById(`imageGrid-${category}`);
+                        if (!grid) return;
+                        
+                        const images = imageLibrary[category] || [];
+                        if (images.length === 0) {
+                            grid.innerHTML = '<div class="col-span-4 text-center text-gray-400 py-8">暂无图片，请上传</div>';
+                            return;
+                        }
+                        
+                        grid.innerHTML = images.map((img, index) => `
+                            <div class="relative group">
+                                <div class="aspect-[4/3] bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
+                                    <img src="${img.url || img}" alt="" class="w-full h-full object-cover">
+                                </div>
+                                <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 rounded-lg">
+                                    <button onclick="previewImage('${category}', ${index})" class="w-8 h-8 bg-white rounded-full flex items-center justify-center hover:bg-gray-100">
+                                        <i class="fa fa-eye text-gray-600"></i>
+                                    </button>
+                                    <button onclick="deleteImage('${category}', ${index})" class="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center hover:bg-red-600">
+                                        <i class="fa fa-trash text-white"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('');
+                    }
+
+                    // 打开图片上传
+                    function openImageUpload(category) {
+                        const input = document.createElement('input');
+                        input.type = 'file';
+                        input.accept = 'image/*';
+                        input.multiple = true;
+                        input.onchange = (e) => {
+                            const files = e.target.files;
+                            for (let file of files) {
+                                if (file.size > 5 * 1024 * 1024) {
+                                    alert('图片大小不能超过 5MB');
+                                    continue;
+                                }
+                                const reader = new FileReader();
+                                reader.onload = (e) => {
+                                    imageLibrary[category].push(e.target.result);
+                                    renderImageGrid(category);
+                                    updateImageCount(category);
+                                };
+                                reader.readAsDataURL(file);
+                            }
+                        };
+                        input.click();
+                    }
+
+                    // 删除图片
+                    function deleteImage(category, index) {
+                        if (confirm('确定要删除这张图片吗？')) {
+                            imageLibrary[category].splice(index, 1);
+                            renderImageGrid(category);
+                            updateImageCount(category);
+                        }
+                    }
+
+                    // 预览图片
+                    function previewImage(category, index) {
+                        const img = imageLibrary[category][index];
+                        window.open(img.url || img, '_blank');
+                    }
+
+                    // 更新图片计数
+                    function updateImageCount(category) {
+                        const count = imageLibrary[category] ? imageLibrary[category].length : 0;
+                        const countEl = document.getElementById(`count-${category}`);
+                        if (countEl) {
+                            countEl.textContent = count;
+                        }
+                    }
+
+                    // 初始化
+                    document.addEventListener('DOMContentLoaded', function() {
+                        switchImageCategory('location');
+                    });
+                </script>
 
                 <!-- 底部操作 -->
                 <div class="bg-white rounded-lg shadow-sm p-6 flex justify-end gap-3">
