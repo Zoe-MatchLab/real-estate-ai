@@ -418,6 +418,35 @@
             cursor: not-allowed;
         }
 
+        .submit-btn .btn-text-loading {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .submit-btn .btn-spinner {
+            display: none;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .submit-btn.loading .btn-spinner { display: inline-block; }
+        .submit-btn.loading .btn-text { display: none; }
+        .submit-btn.loading .btn-text-loading { display: inline-flex; }
+
+        /* 成功Toast */
+        .toast.success-toast {
+            background: rgba(0, 180, 42, 0.9);
+        }
+
+        .toast.success-toast i {
+            margin-right: 6px;
+        }
+
         .submit-btn:active:not(:disabled) {
             transform: scale(0.98);
             opacity: 0.9;
@@ -560,7 +589,8 @@
         <!-- 提交按钮 -->
         <div class="submit-section" id="submitSection">
             <button class="submit-btn" id="submitBtn" disabled onclick="submitAnalysis()">
-                提交分析
+                <span class="btn-text">提交分析</span>
+                <span class="btn-text-loading" style="display:none"><span class="btn-spinner"></span>提交中...</span>
             </button>
         </div>
     </div>
@@ -675,13 +705,14 @@
             if (!selectedFile) return;
 
             const progressSection = document.getElementById('progressSection');
-            const relationSection = document.getElementById('relationSection');
-            const submitSection = document.getElementById('submitSection');
             const submitBtn = document.getElementById('submitBtn');
 
-            progressSection.classList.add('show');
+            // 设置按钮loading状态
+            submitBtn.classList.add('loading');
             submitBtn.disabled = true;
             isUploading = true;
+
+            progressSection.classList.add('show');
 
             // 模拟上传进度
             let progress = 0;
@@ -701,10 +732,11 @@
                     clearInterval(interval);
                     document.getElementById('progressSub').textContent = '上传完成，正在提交分析...';
                     setTimeout(() => {
-                        showToast('提交成功！分析完成后将通知您');
+                        submitBtn.classList.remove('loading');
+                        showSuccessToast();
                         setTimeout(() => {
                             window.location.href = 'record-list.html';
-                        }, 1500);
+                        }, 2000);
                     }, 800);
                 }
             }, 200);
@@ -716,6 +748,19 @@
             const t = document.createElement('div');
             t.className = 'toast';
             t.textContent = msg;
+            document.body.appendChild(t);
+            setTimeout(() => {
+                t.style.opacity = '0';
+                setTimeout(() => t.remove(), 200);
+            }, 2000);
+        }
+
+        function showSuccessToast() {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const t = document.createElement('div');
+            t.className = 'toast success-toast';
+            t.innerHTML = '<i class="fa fa-check-circle"></i><span>上传成功！正在跳转...</span>';
             document.body.appendChild(t);
             setTimeout(() => {
                 t.style.opacity = '0';

@@ -313,6 +313,48 @@
             color: var(--color-danger);
         }
 
+        /* 进度条动画 */
+        .progress-bar-wrap {
+            width: 60px;
+            height: 4px;
+            background: var(--color-bg);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: var(--radius-full);
+            background: var(--color-warning);
+            width: 0%;
+        }
+
+        .progress-bar.active {
+            animation: progressAnimation 1.5s ease-in-out infinite;
+        }
+
+        @keyframes progressAnimation {
+            0% { width: 0%; }
+            50% { width: 85%; }
+            100% { width: 100%; }
+        }
+
+        /* 统计数字动画 */
+        .stat-num {
+            transition: color 0.3s;
+        }
+
+        .stat-num.animate-count {
+            animation: countPulse 0.3s ease forwards;
+        }
+
+        @keyframes countPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
         /* 删除按钮 */
         .delete-btn {
             position: absolute;
@@ -488,6 +530,25 @@
         .delay-1 { animation-delay: 0.05s; opacity: 0; }
         .delay-2 { animation-delay: 0.1s; opacity: 0; }
         .delay-3 { animation-delay: 0.15s; opacity: 0; }
+
+        /* 重试按钮 */
+        .retry-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: var(--color-danger);
+            color: white;
+            border: none;
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .retry-btn:active {
+            opacity: 0.8;
+        }
     </style>
 </head>
 <body>
@@ -643,6 +704,44 @@
         let deleteTargetId = null;
         let touchStartX = 0;
 
+        function animateCount(elId, target) {
+            const el = document.getElementById(elId);
+            const start = 0;
+            const duration = 600;
+            const startTime = performance.now();
+            el.classList.add('animate-count');
+            function step(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                el.textContent = Math.round(start + (target - start) * eased);
+                if (progress < 1) requestAnimationFrame(step);
+                else {
+                    el.textContent = target;
+                    setTimeout(() => el.classList.remove('animate-count'), 300);
+                }
+            }
+            requestAnimationFrame(step);
+        }
+
+        function animateAvgScore(elId, target) {
+            if (!target || target === '--') {
+                document.getElementById(elId).textContent = '--';
+                return;
+            }
+            const el = document.getElementById(elId);
+            animateCount(elId, target);
+        }
+
+        function retryRecord(id) {
+            const record = recordData.find(r => r.id === id);
+            if (!record) return;
+            record.status = 'processing';
+            record.score = null;
+            renderList();
+            showToast('已重新提交分析');
+        }
+
         function formatTime(date) {
             const now = new Date();
             const diff = now - date;
@@ -680,9 +779,9 @@
                 ? Math.round(completedRecords.reduce((sum, r) => sum + r.score, 0) / completedRecords.length)
                 : 0;
 
-            document.getElementById('statTotal').textContent = recordData.length;
-            document.getElementById('statPending').textContent = pendingCount;
-            document.getElementById('statAvg').textContent = avgScore || '--';
+            animateCount('statTotal', recordData.length);
+            animateCount('statPending', pendingCount);
+            animateAvgScore('statAvg', avgScore);
             document.getElementById('listCount').textContent = '共 ' + recordData.length + ' 条';
 
             if (recordData.length === 0) {
@@ -702,6 +801,12 @@
                 const playDisabled = !canPlay ? 'disabled' : '';
                 const statusDots = r.status === 'processing'
                     ? '<span class="loading"><i class="fa fa-spinner"></i></span>'
+                    : '';
+                const progressBar = r.status === 'processing'
+                    ? '<div class="progress-bar-wrap"><div class="progress-bar active"></div></div>'
+                    : '';
+                const retryBtn = r.status === 'failed'
+                    ? '<button class="retry-btn" onclick="event.stopPropagation();retryRecord(\'' + r.id + '\')"><i class="fa fa-refresh"></i> 重试</button>'
                     : '';
 
                 return '<div class="record-item animate-in delay-' + ((idx % 3) + 1) + '" ' +
@@ -724,7 +829,9 @@
                     '</div>' +
                     '<div class="record-footer">' +
                     '<span class="record-time">' + formatTime(r.time) + '</span>' +
-                    '<span class="status-tag ' + statusClass + '">' + statusDots + getStatusLabel(r.status) + '</span>' +
+                    (r.status === 'processing'
+                        ? '<span class="status-tag processing"><span class="loading"><i class="fa fa-spinner"></i></span>分析中</span></div><div class="record-footer" style="margin-top:8px">' + progressBar + retryBtn
+                        : '<span class="status-tag ' + statusClass + '">' + statusDots + getStatusLabel(r.status) + '</span>') +
                     '</div>' +
                     '<button class="delete-btn" onclick="event.stopPropagation();showDeleteDialog(\'' + r.id + '\')">' +
                     '<i class="fa fa-trash-o"></i></button>' +

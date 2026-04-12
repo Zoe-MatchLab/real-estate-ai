@@ -152,6 +152,27 @@
 
         .audio-wave.playing span { opacity: 1; }
 
+        /* 播放波形动画 */
+        @keyframes wave {
+            0% { transform: scaleY(0.4); }
+            100% { transform: scaleY(1.2); }
+        }
+
+        .audio-wave.playing span {
+            animation: wave 0.5s ease-in-out infinite alternate;
+        }
+
+        .audio-wave.playing span:nth-child(1) { animation-delay: 0s; }
+        .audio-wave.playing span:nth-child(2) { animation-delay: 0.1s; }
+        .audio-wave.playing span:nth-child(3) { animation-delay: 0.05s; }
+        .audio-wave.playing span:nth-child(4) { animation-delay: 0.15s; }
+        .audio-wave.playing span:nth-child(5) { animation-delay: 0.08s; }
+        .audio-wave.playing span:nth-child(6) { animation-delay: 0.12s; }
+        .audio-wave.playing span:nth-child(7) { animation-delay: 0.03s; }
+        .audio-wave.playing span:nth-child(8) { animation-delay: 0.18s; }
+        .audio-wave.playing span:nth-child(9) { animation-delay: 0.07s; }
+        .audio-wave.playing span:nth-child(10) { animation-delay: 0.14s; }
+
         /* 综合评分 */
         .score-card {
             margin: 0 var(--spacing-md) var(--spacing-md);
