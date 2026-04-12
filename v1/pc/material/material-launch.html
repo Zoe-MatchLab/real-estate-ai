@@ -286,10 +286,10 @@
                     </div>
                     <div id="routebook-detail-container" class="section-body space-y-5">
 
-                        <!-- 3.1 打卡配置 -->
+                        <!-- 3.0 打卡配置 -->
                         <div class="sub-section">
                             <div class="sub-section-title">
-                                <span class="w-6 h-6 rounded bg-primary text-white text-xs flex items-center justify-center">1</span>
+                                <span class="w-6 h-6 rounded bg-primary text-white text-xs flex items-center justify-center">0</span>
                                 打卡配置
                             </div>
                             <div class="space-y-4">
@@ -365,10 +365,10 @@
                             </div>
                         </div>
 
-                        <!-- 3.2 采集点位配置 -->
+                        <!-- 3.1 采集点位配置 -->
                         <div class="sub-section">
                             <div class="sub-section-title">
-                                <span class="w-6 h-6 rounded bg-primary text-white text-xs flex items-center justify-center">2</span>
+                                <span class="w-6 h-6 rounded bg-primary text-white text-xs flex items-center justify-center">1</span>
                                 采集点位配置
                             </div>
                             <div>
@@ -384,6 +384,14 @@
                                     <button class="text-xs border border-primary text-primary px-3 py-1 rounded hover:bg-blue-50">
                                         <i class="fa fa-refresh mr-1"></i>重置为默认模板
                                     </button>
+                                </div>
+                                <!-- AI自动审核开关 -->
+                                <div class="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-3 mb-3 border border-gray-200">
+                                    <div>
+                                        <div class="text-sm font-medium">AI自动审核</div>
+                                        <div class="text-xs text-gray-400 mt-0.5">开启后，上传的物料（图片、视频等）会自动进行AI质量检测</div>
+                                    </div>
+                                    <label class="switch"><input type="checkbox" id="ai-audit-switch"><span class="slider"></span></label>
                                 </div>
                                 <div id="point-list">
                                     <!-- 点位1 -->
@@ -541,113 +549,6 @@
                                 <button class="w-full border border-dashed border-gray-300 rounded py-2 text-sm text-gray-500 hover:border-primary hover:text-primary mt-2" onclick="addPoint()">
                                     <i class="fa fa-plus mr-1"></i>新增点位
                                 </button>
-                            </div>
-                        </div>
-
-                        <!-- 3.3 路书任务配置 -->
-                        <div class="sub-section">
-                            <div class="sub-section-title">
-                                <span class="w-6 h-6 rounded bg-primary text-white text-xs flex items-center justify-center">3</span>
-                                路书任务配置
-                            </div>
-                            <div class="space-y-4">
-                                <!-- 路书生成方式 -->
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">路书生成方式</label>
-                                    <div class="flex items-center gap-6">
-                                        <label class="flex items-center gap-2 text-sm cursor-pointer">
-                                            <input type="radio" name="route_gen_type" value="auto" checked onchange="toggleRouteGenType('auto')" class="text-primary">
-                                            <span>自动生成</span>
-                                        </label>
-                                        <label class="flex items-center gap-2 text-sm cursor-pointer">
-                                            <input type="radio" name="route_gen_type" value="manual" onchange="toggleRouteGenType('manual')" class="text-primary">
-                                            <span>手动上传</span>
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <!-- 手动上传区域 -->
-                                <div id="manual-upload-area" class="hidden">
-                                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                                        <i class="fa fa-cloud-upload text-3xl text-gray-400 mb-2"></i>
-                                        <p class="text-sm text-gray-500 mb-2">支持 PDF / Word / 图片格式</p>
-                                        <button class="bg-primary text-white px-4 py-1.5 rounded-lg text-sm"><i class="fa fa-upload mr-1"></i>选择文件</button>
-                                        <div class="mt-3 space-y-2">
-                                            <div class="file-item justify-between">
-                                                <span><i class="fa fa-file-pdf-o mr-1 text-danger"></i>中海汇德里路书v1.2.pdf</span>
-                                                <button class="text-gray-400 hover:text-danger"><i class="fa fa-times"></i></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- 自动生成区域 -->
-                                <div id="auto-gen-area">
-                                    <!-- 内容生成维度 -->
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2">内容生成维度 <span class="text-danger">*</span></label>
-                                        <div class="grid grid-cols-4 gap-2">
-                                            <label class="flex items-center gap-2 bg-white border border-gray-200 rounded px-3 py-2 cursor-pointer hover:border-primary text-sm">
-                                                <input type="checkbox" checked class="route-dim"> 项目亮点
-                                            </label>
-                                            <label class="flex items-center gap-2 bg-white border border-gray-200 rounded px-3 py-2 cursor-pointer hover:border-primary text-sm">
-                                                <input type="checkbox" checked class="route-dim"> 户型分析
-                                            </label>
-                                            <label class="flex items-center gap-2 bg-white border border-gray-200 rounded px-3 py-2 cursor-pointer hover:border-primary text-sm">
-                                                <input type="checkbox" checked class="route-dim"> 周边配套
-                                            </label>
-                                            <label class="flex items-center gap-2 bg-white border border-gray-200 rounded px-3 py-2 cursor-pointer hover:border-primary text-sm">
-                                                <input type="checkbox" checked class="route-dim"> 竞品对比
-                                            </label>
-                                            <label class="flex items-center gap-2 bg-white border border-gray-200 rounded px-3 py-2 cursor-pointer hover:border-primary text-sm">
-                                                <input type="checkbox" checked class="route-dim"> 样板间讲解
-                                            </label>
-                                            <label class="flex items-center gap-2 bg-white border border-gray-200 rounded px-3 py-2 cursor-pointer hover:border-primary text-sm">
-                                                <input type="checkbox" checked class="route-dim"> 购房话术
-                                            </label>
-                                            <label class="flex items-center gap-2 bg-white border border-gray-200 rounded px-3 py-2 cursor-pointer hover:border-primary text-sm">
-                                                <input type="checkbox" class="route-dim"> 物业介绍
-                                            </label>
-                                            <label class="flex items-center gap-2 bg-white border border-gray-200 rounded px-3 py-2 cursor-pointer hover:border-primary text-sm">
-                                                <input type="checkbox" class="route-dim"> 装修标准
-                                            </label>
-                                        </div>
-                                    </div>
-
-                                    <!-- 路书内容审核方式 -->
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2 mt-4">路书内容审核方式</label>
-                                        <div class="flex items-center gap-6">
-                                            <label class="flex items-center gap-2 text-sm cursor-pointer">
-                                                <input type="radio" name="route_audit" value="auto" checked class="text-primary">
-                                                <span>自动通过</span>
-                                            </label>
-                                            <label class="flex items-center gap-2 text-sm cursor-pointer">
-                                                <input type="radio" name="route_audit" value="manual" class="text-primary">
-                                                <span>人工审核</span>
-                                            </label>
-                                        </div>
-                                        <p class="text-xs text-gray-400 mt-1">自动通过=AI生成后直接下发；人工审核=生成后需管理员确认再下发</p>
-                                    </div>
-
-                                    <!-- 路书有效期 -->
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700 mb-2 mt-4">路书有效期</label>
-                                        <div class="flex items-center gap-6">
-                                            <label class="flex items-center gap-2 text-sm cursor-pointer">
-                                                <input type="radio" name="route_validity" value="same" checked class="text-primary" onchange="toggleCustomDate(false)">
-                                                <span>与任务执行时间一致</span>
-                                            </label>
-                                            <label class="flex items-center gap-2 text-sm cursor-pointer">
-                                                <input type="radio" name="route_validity" value="custom" class="text-primary" onchange="toggleCustomDate(true)">
-                                                <span>自定义结束日期</span>
-                                            </label>
-                                        </div>
-                                        <div id="custom-date-area" class="hidden mt-2">
-                                            <input type="date" class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm">
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
 
