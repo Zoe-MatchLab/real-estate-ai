@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>审核管理 - 房产AI作业平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        success: '#00B42A',
+                        warning: '#FF7D00',
+                        danger: '#F53F3F',
+                        purple: '#9B5DE5',
+                        dark: '#1D2129',
+                        'gray-light': '#F2F3F5',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+    <!-- 顶部导航 -->
+    <nav class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
+        <div class="flex justify-between items-center px-6 py-3">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-home text-primary text-2xl"></i>
+                <span class="text-xl font-bold text-dark">房产AI作业平台</span>
+                <span class="text-sm text-gray-500 ml-2">管理后台</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-600 hover:text-primary">
+                    <i class="fa fa-bell-o text-lg"></i>
+                    <span class="absolute top-2 right-16 bg-danger text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center">管</div>
+                    <span class="text-sm font-medium">区域经理</span>
+                    <i class="fa fa-angle-down text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex pt-14">
+        <!-- 内联侧边栏 -->
+        <aside class="w-64 bg-white h-[calc(100vh-56px)] fixed left-0 shadow-sm">
+            <nav class="py-4">
+                <div class="px-4 py-2 text-xs text-gray-400 uppercase font-medium">工作台</div>
+                <a href="index.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-dashboard w-5 text-center"></i>
+                    <span class="ml-3">数据看板</span>
+                </a>
+                <a href="material-manage.html" class="flex items-center px-4 py-3 text-primary bg-blue-50 border-r-4 border-primary">
+                    <i class="fa fa-home w-5 text-center"></i>
+                    <span class="ml-3">新盘管理</span>
+                </a>
+                <a href="../task/task-list.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-tasks w-5 text-center"></i>
+                    <span class="ml-3">探盘任务管理</span>
+                </a>
+                <a href="../training/training-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-graduation-cap w-5 text-center"></i>
+                    <span class="ml-3">产品力训练</span>
+                </a>
+                <a href="../speech/speech-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-comments w-5 text-center"></i>
+                    <span class="ml-3">话术训练管理</span>
+                </a>
+                <a href="../content/content-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-magic w-5 text-center"></i>
+                    <span class="ml-3">获客内容管理</span>
+                </a>
+                <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">管理层</div>
+                <a href="../data/data-analysis.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-bar-chart w-5 text-center"></i>
+                    <span class="ml-3">数据分析</span>
+                </a>
+                <a href="../board/board-chairman.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-trophy w-5 text-center"></i>
+                    <span class="ml-3">总部决策看板一</span>
+                </a>
+                <a href="../board/board-chairman-2.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-area-chart w-5 text-center"></i>
+                    <span class="ml-3">总部决策看板二</span>
+                </a>
+                <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">系统管理</div>
+                <a href="../team/team-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-users w-5 text-center"></i>
+                    <span class="ml-3">团队管理</span>
+                </a>
+                <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-cog w-5 text-center"></i>
+                    <span class="ml-3">系统设置</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="ml-64 flex-1 p-6">
+            <!-- 页面标题 -->
+            <div class="mb-6 flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-dark">审核管理</h1>
+                    <p class="text-gray-500 mt-1">审核新盘资料，确保信息准确完整</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="window.location.href='material-manage.html'" class="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 flex items-center">
+                        <i class="fa fa-arrow-left mr-2"></i> 返回列表
+                    </button>
+                </div>
+            </div>
+
+            <!-- 统计卡片 -->
+            <div class="grid grid-cols-4 gap-4 mb-6">
+                <div class="bg-white rounded-lg shadow-sm p-5 border-l-4 border-orange-500">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-sm">待审核</p>
+                            <h3 class="text-2xl font-bold mt-1">4</h3>
+                        </div>
+                        <div class="w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center text-orange-500">
+                            <i class="fa fa-clock-o"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-5 border-l-4 border-green-500">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-sm">本月已审核</p>
+                            <h3 class="text-2xl font-bold mt-1">12</h3>
+                        </div>
+                        <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center text-green-500">
+                            <i class="fa fa-check-circle"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-5 border-l-4 border-red-500">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-sm">本月驳回</p>
+                            <h3 class="text-2xl font-bold mt-1">2</h3>
+                        </div>
+                        <div class="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center text-red-500">
+                            <i class="fa fa-times-circle"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-5 border-l-4 border-blue-500">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-sm">审核通过率</p>
+                            <h3 class="text-2xl font-bold mt-1">85.7%</h3>
+                        </div>
+                        <div class="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center text-blue-500">
+                            <i class="fa fa-percent"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 待审核列表 -->
+            <div class="bg-white rounded-lg shadow-sm">
+                <div class="p-4 border-b border-gray-100">
+                    <h3 class="font-bold text-gray-700">待审核楼盘 <span class="text-gray-400 font-normal text-sm ml-2">共4个</span></h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="text-left text-gray-500 text-sm bg-gray-50">
+                                <th class="px-4 py-3">楼盘信息</th>
+                                <th class="px-4 py-3">区域位置</th>
+                                <th class="px-4 py-3">价格</th>
+                                <th class="px-4 py-3">提交时间</th>
+                                <th class="px-4 py-3">提交人</th>
+                                <th class="px-4 py-3">资料完整度</th>
+                                <th class="px-4 py-3 text-right">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="auditTableBody">
+                            <!-- 数据通过JS渲染 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- 审核详情面板 -->
+            <div id="auditPanel" class="bg-white rounded-lg shadow-sm mt-6 hidden">
+                <div class="p-4 border-b border-gray-100 flex justify-between items-center">
+                    <h3 class="font-bold text-gray-700">审核详情 - <span id="auditMaterialName">未来城</span></h3>
+                    <button onclick="closeAuditPanel()" class="text-gray-400 hover:text-gray-600">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+                <div class="p-6">
+                    <!-- 楼盘基本信息 -->
+                    <div class="grid grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <div class="flex items-center mb-4">
+                                <img id="auditCover" src="https://picsum.photos/seed/house2/80/80" alt="楼盘封面" class="w-16 h-16 rounded-lg object-cover mr-4">
+                                <div>
+                                    <h4 id="auditName" class="text-lg font-bold">未来城</h4>
+                                    <p id="auditDeveloper" class="text-gray-500">开发商：万科地产</p>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3 text-sm">
+                                <div>
+                                    <p class="text-gray-500">区域</p>
+                                    <p id="auditRegion" class="font-medium">昌平区</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-500">均价</p>
+                                    <p id="auditPrice" class="font-medium text-primary">5.2万/㎡</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-500">户型</p>
+                                    <p class="font-medium">85-118㎡</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-500">开盘时间</p>
+                                    <p class="font-medium">2026-06-01</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 class="font-medium text-gray-800 mb-3">审核要点</h4>
+                            <div class="space-y-2">
+                                <label class="flex items-center p-2 bg-gray-50 rounded">
+                                    <input type="checkbox" class="mr-3"> 基本信息完整
+                                </label>
+                                <label class="flex items-center p-2 bg-gray-50 rounded">
+                                    <input type="checkbox" class="mr-3"> 价格信息准确
+                                </label>
+                                <label class="flex items-center p-2 bg-gray-50 rounded">
+                                    <input type="checkbox" class="mr-3"> 户型图已上传
+                                </label>
+                                <label class="flex items-center p-2 bg-gray-50 rounded">
+                                    <input type="checkbox" class="mr-3"> 样板间照片齐全
+                                </label>
+                                <label class="flex items-center p-2 bg-gray-50 rounded">
+                                    <input type="checkbox" class="mr-3"> 周边配套已标注
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 审核操作 -->
+                    <div class="border-t border-gray-200 pt-6">
+                        <h4 class="font-medium text-gray-800 mb-3">审核意见</h4>
+                        <div class="mb-4">
+                            <textarea id="auditComment" rows="4" placeholder="请输入审核意见" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"></textarea>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="text-sm text-gray-500">
+                                <span class="text-warning mr-1">*</span>
+                                <span>审核通过后将通知提交人</span>
+                            </div>
+                            <div class="flex gap-3">
+                                <button onclick="rejectMaterial()" class="px-6 py-2 border border-danger text-danger rounded-lg hover:bg-red-50">
+                                    <i class="fa fa-times mr-2"></i> 驳回
+                                </button>
+                                <button onclick="approveMaterial()" class="px-6 py-2 bg-success text-white rounded-lg hover:bg-success/90">
+                                    <i class="fa fa-check mr-2"></i> 审核通过
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 驳回确认弹窗 -->
+    <div id="rejectModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg w-[500px] p-6">
+            <div class="text-center">
+                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa fa-times-circle text-red-500 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-bold mb-2">确认驳回</h3>
+                <p class="text-gray-500 mb-4">驳回后提交人可修改资料重新提交</p>
+                
+                <div class="text-left mb-4">
+                    <label class="block text-sm text-gray-600 mb-2">驳回原因 <span class="text-red-500">*</span></label>
+                    <textarea id="rejectReason" rows="4" placeholder="请输入驳回原因，以便提交人修改" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"></textarea>
+                </div>
+                
+                <div class="text-left mb-4">
+                    <label class="block text-sm text-gray-600 mb-2">驳回类型</label>
+                    <div class="flex gap-4">
+                        <label class="flex items-center">
+                            <input type="radio" name="rejectType" value="info" checked class="mr-2"> 信息错误
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="rejectType" value="missing" class="mr-2"> 资料缺失
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="rejectType" value="other" class="mr-2"> 其他
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="flex justify-center gap-3">
+                    <button onclick="closeRejectModal()" class="px-4 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50">取消</button>
+                    <button onclick="confirmReject()" class="px-4 py-2 bg-danger text-white rounded-lg hover:bg-danger/90">确认驳回</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 审核通过确认弹窗 -->
+    <div id="approveModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg w-[450px] p-6">
+            <div class="text-center">
+                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa fa-check-circle text-green-500 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-bold mb-2">确认审核通过</h3>
+                <p class="text-gray-500 mb-4">审核通过后可进入上线配置阶段</p>
+                
+                <div class="bg-gray-50 rounded-lg p-4 mb-4 text-left">
+                    <p class="text-sm text-gray-600 mb-2">审核意见：</p>
+                    <p id="approveCommentPreview" class="text-sm text-gray-800">楼盘信息完整，符合上线标准</p>
+                </div>
+                
+                <div class="flex justify-center gap-3">
+                    <button onclick="closeApproveModal()" class="px-4 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50">取消</button>
+                    <button onclick="confirmApprove()" class="px-4 py-2 bg-success text-white rounded-lg hover:bg-success/90">确认通过</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 待审核数据
+        const pendingMaterials = [
+            {
+                id: 1,
+                name: '未来城',
+                developer: '万科地产',
+                cover: 'https://picsum.photos/seed/house2/60/60',
+                region: '昌平区',
+                address: '未来科学城',
+                price: '5.2万/㎡',
+                totalPrice: '420万起',
+                submitTime: '2026-03-15 10:30',
+                submitter: '李四',
+                completeness: 85,
+                status: 'pending'
+            },
+            {
+                id: 2,
+                name: '招商公园1872',
+                developer: '招商蛇口',
+                cover: 'https://picsum.photos/seed/house7/60/60',
+                region: '朝阳区',
+                address: '东四环窑口湖',
+                price: '6.8万/㎡',
+                totalPrice: '600万起',
+                submitTime: '2026-03-18 14:20',
+                submitter: '王五',
+                completeness: 92,
+                status: 'pending'
+            },
+            {
+                id: 3,
+                name: '金地中央特区',
+                developer: '金地集团',
+                cover: 'https://picsum.photos/seed/house9/60/60',
+                region: '海淀区',
+                address: '上地信息路',
+                price: '7.5万/㎡',
+                totalPrice: '680万起',
+                submitTime: '2026-03-19 09:15',
+                submitter: '赵六',
+                completeness: 78,
+                status: 'pending'
+            },
+            {
+                id: 4,
+                name: '保利罗兰公馆',
+                developer: '保利发展',
+                cover: 'https://picsum.photos/seed/house10/60/60',
+                region: '西城区',
+                address: '德胜门外大街',
+                price: '11.5万/㎡',
+                totalPrice: '980万起',
+                submitTime: '2026-03-20 16:45',
+                submitter: '孙七',
+                completeness: 88,
+                status: 'pending'
+            }
+        ];
+
+        let currentAuditId = null;
+
+        // 渲染待审核列表
+        function renderAuditTable() {
+            const tbody = document.getElementById('auditTableBody');
+            tbody.innerHTML = pendingMaterials.map(item => `
+                <tr class="border-b border-gray-100 hover:bg-gray-50">
+                    <td class="px-4 py-4 text-sm">
+                        <div class="flex items-center">
+                            <img src="${item.cover}" alt="楼盘封面" class="w-12 h-12 rounded object-cover mr-3">
+                            <div>
+                                <p class="font-medium text-gray-700 cursor-pointer hover:text-primary" onclick="openAuditDetail(${item.id})">${item.name}</p>
+                                <p class="text-xs text-gray-500 mt-0.5">${item.developer}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-4 py-4 text-sm text-gray-600">${item.region}<br><span class="text-xs text-gray-400">${item.address}</span></td>
+                    <td class="px-4 py-4 text-sm">
+                        <span class="font-medium">${item.price}</span>
+                        <p class="text-xs text-gray-500">${item.totalPrice}</p>
+                    </td>
+                    <td class="px-4 py-4 text-sm text-gray-600">${item.submitTime}</td>
+                    <td class="px-4 py-4 text-sm text-gray-600">${item.submitter}</td>
+                    <td class="px-4 py-4 text-sm">
+                        <div class="flex items-center">
+                            <div class="w-24 h-2 bg-gray-200 rounded-full mr-2">
+                                <div class="h-full ${item.completeness >= 90 ? 'bg-success' : item.completeness >= 70 ? 'bg-warning' : 'bg-danger'} rounded-full" style="width: ${item.completeness}%"></div>
+                            </div>
+                            <span class="text-xs ${item.completeness >= 90 ? 'text-success' : item.completeness >= 70 ? 'text-warning' : 'text-danger'}">${item.completeness}%</span>
+                        </div>
+                    </td>
+                    <td class="px-4 py-4 text-sm text-right">
+                        <button onclick="openAuditDetail(${item.id})" class="text-primary text-sm hover:underline">审核</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // 打开审核详情
+        function openAuditDetail(id) {
+            const material = pendingMaterials.find(m => m.id === id);
+            if (!material) return;
+
+            currentAuditId = id;
+
+            document.getElementById('auditMaterialName').textContent = material.name;
+            document.getElementById('auditCover').src = material.cover;
+            document.getElementById('auditName').textContent = material.name;
+            document.getElementById('auditDeveloper').textContent = '开发商：' + material.developer;
+            document.getElementById('auditRegion').textContent = material.region;
+            document.getElementById('auditPrice').textContent = material.price;
+            document.getElementById('auditComment').value = '';
+            
+            document.getElementById('auditPanel').classList.remove('hidden');
+            document.getElementById('auditPanel').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // 关闭审核详情
+        function closeAuditPanel() {
+            document.getElementById('auditPanel').classList.add('hidden');
+            currentAuditId = null;
+        }
+
+        // 驳回
+        function rejectMaterial() {
+            document.getElementById('rejectModal').classList.remove('hidden');
+            document.getElementById('rejectModal').classList.add('flex');
+        }
+
+        function closeRejectModal() {
+            document.getElementById('rejectModal').classList.add('hidden');
+            document.getElementById('rejectModal').classList.remove('flex');
+        }
+
+        function confirmReject() {
+            const reason = document.getElementById('rejectReason').value;
+            if (!reason.trim()) {
+                alert('请输入驳回原因');
+                return;
+            }
+            
+            if (currentAuditId) {
+                const index = pendingMaterials.findIndex(m => m.id === currentAuditId);
+                if (index > -1) {
+                    pendingMaterials.splice(index, 1);
+                    renderAuditTable();
+                }
+            }
+            
+            closeRejectModal();
+            closeAuditPanel();
+            alert('已驳回该楼盘，提交人可修改后重新提交');
+        }
+
+        // 审核通过
+        function approveMaterial() {
+            const comment = document.getElementById('auditComment').value || '楼盘信息完整，符合上线标准';
+            document.getElementById('approveCommentPreview').textContent = comment;
+            document.getElementById('approveModal').classList.remove('hidden');
+            document.getElementById('approveModal').classList.add('flex');
+        }
+
+        function closeApproveModal() {
+            document.getElementById('approveModal').classList.add('hidden');
+            document.getElementById('approveModal').classList.remove('flex');
+        }
+
+        function confirmApprove() {
+            if (currentAuditId) {
+                const index = pendingMaterials.findIndex(m => m.id === currentAuditId);
+                if (index > -1) {
+                    pendingMaterials.splice(index, 1);
+                    renderAuditTable();
+                }
+            }
+            
+            closeApproveModal();
+            closeAuditPanel();
+            alert('审核通过！可进入上线配置阶段');
+            window.location.href = 'material-launch.html?id=' + currentAuditId;
+        }
+
+        // 页面加载
+        document.addEventListener('DOMContentLoaded', function() {
+            renderAuditTable();
+        });
+    </script>
+</body>
+</html>

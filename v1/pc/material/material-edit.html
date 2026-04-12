@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编辑楼盘 - 房产AI作业平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        success: '#00B42A',
+                        warning: '#FF7D00',
+                        danger: '#F53F3F',
+                        purple: '#9B5DE5',
+                        dark: '#1D2129',
+                        'gray-light': '#F2F3F5',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .section-card { border-left: 3px solid #165DFF; }
+        .required-field::after { content: ' *'; color: #F53F3F; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 顶部导航 -->
+    <nav class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
+        <div class="flex justify-between items-center px-6 py-3">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-home text-primary text-2xl"></i>
+                <span class="text-xl font-bold text-dark">房产AI作业平台</span>
+                <span class="text-sm text-gray-500 ml-2">管理后台</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-600 hover:text-primary">
+                    <i class="fa fa-bell-o text-lg"></i>
+                    <span class="absolute top-2 right-16 bg-danger text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center">管</div>
+                    <span class="text-sm font-medium">区域经理</span>
+                    <i class="fa fa-angle-down text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex pt-14">
+        <!-- 内联侧边栏 -->
+        <aside class="w-64 bg-white h-[calc(100vh-56px)] fixed left-0 shadow-sm overflow-y-auto">
+            <nav class="py-4">
+                <div class="px-4 py-2 text-xs text-gray-400 uppercase font-medium">工作台</div>
+                <a href="index.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-dashboard w-5 text-center"></i>
+                    <span class="ml-3">数据看板</span>
+                </a>
+                <a href="material-manage.html" class="flex items-center px-4 py-3 text-primary bg-blue-50 border-r-4 border-primary">
+                    <i class="fa fa-home w-5 text-center"></i>
+                    <span class="ml-3">新盘管理</span>
+                </a>
+                <a href="../task/task-list.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-tasks w-5 text-center"></i>
+                    <span class="ml-3">探盘任务管理</span>
+                </a>
+                <a href="../training/training-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-graduation-cap w-5 text-center"></i>
+                    <span class="ml-3">产品力训练</span>
+                </a>
+                <a href="../speech/speech-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-comments w-5 text-center"></i>
+                    <span class="ml-3">话术训练管理</span>
+                </a>
+                <a href="../content/content-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-magic w-5 text-center"></i>
+                    <span class="ml-3">获客内容管理</span>
+                </a>
+                <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">管理层</div>
+                <a href="../data/data-analysis.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-bar-chart w-5 text-center"></i>
+                    <span class="ml-3">数据分析</span>
+                </a>
+                <a href="../board/board-chairman.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-trophy w-5 text-center"></i>
+                    <span class="ml-3">总部决策看板一</span>
+                </a>
+                <a href="../board/board-chairman-2.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-area-chart w-5 text-center"></i>
+                    <span class="ml-3">总部决策看板二</span>
+                </a>
+                <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">系统管理</div>
+                <a href="../team/team-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-users w-5 text-center"></i>
+                    <span class="ml-3">团队管理</span>
+                </a>
+                <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-cog w-5 text-center"></i>
+                    <span class="ml-3">系统设置</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="ml-64 flex-1 p-6">
+            <!-- 面包屑 -->
+            <div class="mb-4 text-sm">
+                <a href="material-manage.html" class="text-primary hover:underline">新盘管理</a>
+                <span class="mx-2 text-gray-400">/</span>
+                <span class="text-gray-500">编辑楼盘</span>
+            </div>
+
+            <!-- 页面标题 -->
+            <div class="mb-6 flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-dark">编辑楼盘</h1>
+                    <p class="text-gray-500 mt-1">完善楼盘信息，提交审核后即可上线</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="saveDraft()" class="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 flex items-center">
+                        <i class="fa fa-save mr-2"></i> 保存草稿
+                    </button>
+                    <button onclick="submitAudit()" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 flex items-center">
+                        <i class="fa fa-paper-plane mr-2"></i> 提交审核
+                    </button>
+                </div>
+            </div>
+
+            <!-- 进度指示 -->
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium">1</div>
+                        <span class="ml-2 text-sm font-medium text-primary">基本信息</span>
+                    </div>
+                    <div class="flex-1 h-0.5 bg-gray-200 mx-4"><div class="h-full bg-primary w-1/3"></div></div>
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center text-sm font-medium">2</div>
+                        <span class="ml-2 text-sm text-gray-500">位置配套</span>
+                    </div>
+                    <div class="flex-1 h-0.5 bg-gray-200 mx-4"></div>
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center text-sm font-medium">3</div>
+                        <span class="ml-2 text-sm text-gray-500">销售信息</span>
+                    </div>
+                    <div class="flex-1 h-0.5 bg-gray-200 mx-4"></div>
+                    <div class="flex items-center">
+                        <div class="w-8 h-8 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center text-sm font-medium">4</div>
+                        <span class="ml-2 text-sm text-gray-500">完成</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 表单区域 -->
+            <div class="space-y-6">
+                <!-- 基本信息 -->
+                <div class="bg-white rounded-lg shadow-sm p-6 section-card">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fa fa-info-circle text-primary mr-2"></i>
+                        基本信息
+                    </h3>
+                    <div class="grid grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1 required-field">楼盘名称</label>
+                            <input type="text" value="中海汇德里" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">楼盘别名</label>
+                            <input type="text" placeholder="选填" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1 required-field">开发商</label>
+                            <input type="text" value="中海地产" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">物业公司</label>
+                            <input type="text" placeholder="选填" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">物业费</label>
+                            <div class="flex">
+                                <input type="number" placeholder="5.8" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm rounded-r-none">
+                                <span class="px-3 py-2 border border-l-0 border-gray-200 rounded-r-lg bg-gray-50 text-sm text-gray-500">元/㎡/月</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1 required-field">开盘时间</label>
+                            <input type="date" value="2025-12-15" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1 required-field">交房时间</label>
+                            <input type="date" value="2027-06-30" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">产权年限</label>
+                            <select class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                                <option value="70" selected>70年</option>
+                                <option value="50">50年</option>
+                                <option value="40">40年</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">总户数</label>
+                            <input type="number" placeholder="1200" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">总楼栋数</label>
+                            <input type="number" placeholder="15" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">车位数量</label>
+                            <input type="number" placeholder="1500" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">装修情况</label>
+                            <select class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                                <option value="精装" selected>精装交付</option>
+                                <option value="毛坯">毛坯交付</option>
+                                <option value="简装">简装交付</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 位置信息 -->
+                <div class="bg-white rounded-lg shadow-sm p-6 section-card">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fa fa-map-marker text-success mr-2"></i>
+                        位置信息
+                    </h3>
+                    <div class="grid grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1 required-field">所属区域</label>
+                            <select class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                                <option value="hd" selected>海淀区</option>
+                                <option value="cy">朝阳区</option>
+                                <option value="xc">西城区</option>
+                                <option value="dc">东城区</option>
+                                <option value="cp">昌平区</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">所属板块</label>
+                            <input type="text" placeholder="中关村" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-sm text-gray-600 mb-1 required-field">详细地址</label>
+                            <input type="text" value="北京市海淀区中关村大街1号院" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">纬度</label>
+                            <input type="text" placeholder="39.984" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">经度</label>
+                            <input type="text" placeholder="116.312" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">距离地铁</label>
+                            <div class="flex">
+                                <input type="number" placeholder="300" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm rounded-r-none">
+                                <span class="px-3 py-2 border border-l-0 border-gray-200 rounded-r-lg bg-gray-50 text-sm text-gray-500">米</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">最近地铁站</label>
+                            <input type="text" placeholder="中关村站" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 销售信息 -->
+                <div class="bg-white rounded-lg shadow-sm p-6 section-card">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fa fa-yen text-warning mr-2"></i>
+                        销售信息
+                    </h3>
+                    <div class="grid grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1 required-field">销售状态</label>
+                            <select class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                                <option value="pre">待开盘</option>
+                                <option value="onsale" selected>在售</option>
+                                <option value="last">尾盘</option>
+                                <option value="soldout">售罄</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1 required-field">参考均价</label>
+                            <div class="flex">
+                                <input type="number" placeholder="83000" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm rounded-r-none">
+                                <span class="px-3 py-2 border border-l-0 border-gray-200 rounded-r-lg bg-gray-50 text-sm text-gray-500">元/㎡</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">总价范围</label>
+                            <input type="text" placeholder="680-1200万" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">定金金额</label>
+                            <div class="flex">
+                                <input type="number" placeholder="5" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm rounded-r-none">
+                                <span class="px-3 py-2 border border-l-0 border-gray-200 rounded-r-lg bg-gray-50 text-sm text-gray-500">万</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">认购签约</label>
+                            <select class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                                <option value="online" selected>需线上签约</option>
+                                <option value="offline">线下签约</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">折扣方案</label>
+                            <input type="text" placeholder="限时98折" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">付款方式</label>
+                            <select class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                                <option value="all" selected>一次性/商贷/公积金</option>
+                                <option value="loan">仅商贷</option>
+                                <option value="fund">仅公积金</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">贷款银行</label>
+                            <input type="text" placeholder="中国银行、工商银行" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 建筑信息 -->
+                <div class="bg-white rounded-lg shadow-sm p-6 section-card">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fa fa-building text-purple mr-2"></i>
+                        建筑信息
+                    </h3>
+                    <div class="grid grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">建筑面积</label>
+                            <div class="flex">
+                                <input type="number" placeholder="150000" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm rounded-r-none">
+                                <span class="px-3 py-2 border border-l-0 border-gray-200 rounded-r-lg bg-gray-50 text-sm text-gray-500">㎡</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">占地面积</label>
+                            <div class="flex">
+                                <input type="number" placeholder="60000" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm rounded-r-none">
+                                <span class="px-3 py-2 border border-l-0 border-gray-200 rounded-r-lg bg-gray-50 text-sm text-gray-500">㎡</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">绿化率</label>
+                            <div class="flex">
+                                <input type="number" placeholder="35" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm rounded-r-none">
+                                <span class="px-3 py-2 border border-l-0 border-gray-200 rounded-r-lg bg-gray-50 text-sm text-gray-500">%</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">容积率</label>
+                            <input type="number" step="0.1" placeholder="2.5" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">建筑类型</label>
+                            <input type="text" placeholder="高层、板楼" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">建筑结构</label>
+                            <input type="text" placeholder="钢筋混凝土" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">楼层高度</label>
+                            <input type="text" placeholder="地上28层/地下2层" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">梯户比例</label>
+                            <input type="text" placeholder="2梯4户" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 户型信息 -->
+                <div class="bg-white rounded-lg shadow-sm p-6 section-card">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fa fa-th-large text-cyan mr-2"></i>
+                        户型信息
+                    </h3>
+                    <div class="grid grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">户型一</label>
+                            <input type="text" placeholder="77㎡ 两室一厅" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">户型二</label>
+                            <input type="text" placeholder="99㎡ 三室两厅" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">户型三</label>
+                            <input type="text" placeholder="120㎡ 三室两厅" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">户型四</label>
+                            <input type="text" placeholder="140㎡ 四室两厅" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">户型五</label>
+                            <input type="text" placeholder="180㎡ 四室三厅" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">得房率</label>
+                            <input type="text" placeholder="78-82%" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">朝向</label>
+                            <input type="text" placeholder="南北通透" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">层高</label>
+                            <div class="flex">
+                                <input type="number" placeholder="2.9" step="0.1" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm rounded-r-none">
+                                <span class="px-3 py-2 border border-l-0 border-gray-200 rounded-r-lg bg-gray-50 text-sm text-gray-500">米</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 周边配套 -->
+                <div class="bg-white rounded-lg shadow-sm p-6 section-card">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fa fa-hospital-o text-orange mr-2"></i>
+                        周边配套
+                    </h3>
+                    <div class="grid grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">教育配套</label>
+                            <input type="text" placeholder="人大附中、北大附小" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">医疗配套</label>
+                            <input type="text" placeholder="北京大学第三医院" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">商业配套</label>
+                            <input type="text" placeholder="中关村购物中心" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">公园配套</label>
+                            <input type="text" placeholder="中关村公园、海淀公园" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div class="col-span-4">
+                            <label class="block text-sm text-gray-600 mb-1">其他配套</label>
+                            <textarea rows="2" placeholder="请输入其他配套信息" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 销售道具 -->
+                <div class="bg-white rounded-lg shadow-sm p-6 section-card">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fa fa-file-text-o text-pink mr-2"></i>
+                        销售道具
+                    </h3>
+                    <div class="grid grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">沙盘模型</label>
+                            <div class="flex items-center mt-2">
+                                <label class="flex items-center mr-4">
+                                    <input type="radio" name="model" value="1" checked class="mr-1"> 有
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="model" value="0" class="mr-1"> 无
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">样板间</label>
+                            <div class="flex items-center mt-2">
+                                <label class="flex items-center mr-4">
+                                    <input type="radio" name="showroom" value="1" checked class="mr-1"> 有
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="showroom" value="0" class="mr-1"> 无
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">户型图</label>
+                            <div class="flex items-center mt-2">
+                                <label class="flex items-center mr-4">
+                                    <input type="radio" name="floorplan" value="1" checked class="mr-1"> 有
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="floorplan" value="0" class="mr-1"> 无
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">电子楼书</label>
+                            <div class="flex items-center mt-2">
+                                <label class="flex items-center mr-4">
+                                    <input type="radio" name="ebook" value="1" checked class="mr-1"> 有
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="ebook" value="0" class="mr-1"> 无
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">不利因素</label>
+                            <input type="text" placeholder="请输入不利因素" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">红线内外</label>
+                            <input type="text" placeholder="请输入红线内外情况" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">竞品对比</label>
+                            <div class="flex items-center mt-2">
+                                <label class="flex items-center mr-4">
+                                    <input type="radio" name="compare" value="1" checked class="mr-1"> 已提供
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="compare" value="0" class="mr-1"> 未提供
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">价格走势</label>
+                            <div class="flex items-center mt-2">
+                                <label class="flex items-center mr-4">
+                                    <input type="radio" name="pricechart" value="1" checked class="mr-1"> 已提供
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="pricechart" value="0" class="mr-1"> 未提供
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 项目亮点 -->
+                <div class="bg-white rounded-lg shadow-sm p-6 section-card">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fa fa-star text-teal mr-2"></i>
+                        项目亮点
+                    </h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">核心卖点</label>
+                            <textarea rows="2" placeholder="请输入核心卖点（多个用逗号分隔）" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">中关村核心区、地铁上盖、精装交付、品牌开发商</textarea>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">产品优势</label>
+                            <textarea rows="2" placeholder="请输入产品优势（多个用逗号分隔）" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">户型方正、南北通透、高得房率</textarea>
+                        </div>
+                        <div class="col-span-2">
+                            <label class="block text-sm text-gray-600 mb-1">详细介绍</label>
+                            <textarea rows="3" placeholder="请输入楼盘详细介绍" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">中海汇德里位于中关村核心区域，是由中海地产开发的精装住宅项目。项目紧邻地铁4号线中关村站，交通便利周边配套齐全。项目采用现代简约风格设计，户型从77㎡两居到180㎡四居，满足不同家庭需求。</textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 政策信息 -->
+                <div class="bg-white rounded-lg shadow-sm p-6 section-card">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fa fa-file-text text-indigo mr-2"></i>
+                        政策信息
+                    </h3>
+                    <div class="grid grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">限购政策</label>
+                            <input type="text" value="北京市限购政策" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">公积金贷款</label>
+                            <select class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                                <option value="1" selected>支持公积金贷款</option>
+                                <option value="0">不支持公积金贷款</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">组合贷款</label>
+                            <select class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                                <option value="1" selected>支持组合贷款</option>
+                                <option value="0">不支持组合贷款</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">贷款利率</label>
+                            <input type="text" placeholder="LPR+55基点" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 佣金信息 -->
+                <div class="bg-white rounded-lg shadow-sm p-6 section-card">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fa fa-money text-yellow mr-2"></i>
+                        佣金信息
+                    </h3>
+                    <div class="grid grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">佣金点位</label>
+                            <div class="flex">
+                                <input type="number" step="0.1" placeholder="3" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm rounded-r-none">
+                                <span class="px-3 py-2 border border-l-0 border-gray-200 rounded-r-lg bg-gray-50 text-sm text-gray-500">%</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">佣金金额</label>
+                            <input type="text" placeholder="20-36万/套" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">结佣周期</label>
+                            <input type="text" placeholder="签约后30天" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">佣金类型</label>
+                            <select class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                                <option value="pure" selected>纯佣金</option>
+                                <option value="mixed">佣金+奖金</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 经纪人信息 -->
+                <div class="bg-white rounded-lg shadow-sm p-6 section-card">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fa fa-user text-red mr-2"></i>
+                        经纪人信息
+                    </h3>
+                    <div class="grid grid-cols-4 gap-4">
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">驻场销售</label>
+                            <input type="text" placeholder="姓名 电话" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">外联人员</label>
+                            <input type="text" placeholder="姓名 电话" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">渠道对接</label>
+                            <input type="text" placeholder="姓名 电话" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-1">客服电话</label>
+                            <input type="text" placeholder="010-82345678" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 图片上传 -->
+                <div class="bg-white rounded-lg shadow-sm p-6 section-card">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fa fa-image text-gray mr-2"></i>
+                        图片上传
+                    </h3>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-2">楼盘封面图</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary transition-colors cursor-pointer">
+                                <i class="fa fa-cloud-upload text-4xl text-gray-400 mb-2"></i>
+                                <p class="text-sm text-gray-500">点击或拖拽上传封面图</p>
+                                <p class="text-xs text-gray-400 mt-1">支持 JPG、PNG，建议尺寸 800x600</p>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm text-gray-600 mb-2">楼盘相册</label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary transition-colors cursor-pointer">
+                                <i class="fa fa-cloud-upload text-4xl text-gray-400 mb-2"></i>
+                                <p class="text-sm text-gray-500">点击或拖拽上传多张图片</p>
+                                <p class="text-xs text-gray-400 mt-1">支持 JPG、PNG，每张不超过 5MB</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 底部操作 -->
+                <div class="bg-white rounded-lg shadow-sm p-6 flex justify-end gap-3">
+                    <button onclick="window.location.href='material-manage.html'" class="px-6 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50">
+                        取消
+                    </button>
+                    <button onclick="saveDraft()" class="px-6 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50">
+                        保存草稿
+                    </button>
+                    <button onclick="submitAudit()" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90">
+                        提交审核
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 提交审核确认弹窗 -->
+    <div id="submitModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg w-[450px] p-6">
+            <div class="text-center">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa fa-paper-plane text-blue-500 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-bold mb-2">确认提交审核</h3>
+                <p class="text-gray-500 mb-6">提交后将由审核人员进行检查，通过后即可上线</p>
+                <div class="mb-4">
+                    <label class="block text-sm text-gray-600 mb-2 text-left">提交备注（选填）</label>
+                    <textarea rows="3" placeholder="请输入提交备注" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"></textarea>
+                </div>
+                <div class="flex justify-center gap-3">
+                    <button onclick="closeSubmitModal()" class="px-4 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50">取消</button>
+                    <button onclick="confirmSubmit()" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90">确认提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 保存草稿
+        function saveDraft() {
+            alert('草稿保存成功');
+        }
+
+        // 提交审核
+        function submitAudit() {
+            document.getElementById('submitModal').classList.remove('hidden');
+            document.getElementById('submitModal').classList.add('flex');
+        }
+
+        function closeSubmitModal() {
+            document.getElementById('submitModal').classList.add('hidden');
+            document.getElementById('submitModal').classList.remove('flex');
+        }
+
+        function confirmSubmit() {
+            window.location.href = 'material-manage.html';
+        }
+    </script>
+</body>
+</html>

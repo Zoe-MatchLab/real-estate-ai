@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>回收站 - 房产AI作业平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        success: '#00B42A',
+                        warning: '#FF7D00',
+                        danger: '#F53F3F',
+                        purple: '#9B5DE5',
+                        dark: '#1D2129',
+                        'gray-light': '#F2F3F5',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+    <!-- 顶部导航 -->
+    <nav class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
+        <div class="flex justify-between items-center px-6 py-3">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-home text-primary text-2xl"></i>
+                <span class="text-xl font-bold text-dark">房产AI作业平台</span>
+                <span class="text-sm text-gray-500 ml-2">管理后台</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-600 hover:text-primary">
+                    <i class="fa fa-bell-o text-lg"></i>
+                    <span class="absolute top-2 right-16 bg-danger text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center">管</div>
+                    <span class="text-sm font-medium">区域经理</span>
+                    <i class="fa fa-angle-down text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex pt-14">
+        <!-- 内联侧边栏 -->
+        <aside class="w-64 bg-white h-[calc(100vh-56px)] fixed left-0 shadow-sm">
+            <nav class="py-4">
+                <div class="px-4 py-2 text-xs text-gray-400 uppercase font-medium">工作台</div>
+                <a href="index.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-dashboard w-5 text-center"></i>
+                    <span class="ml-3">数据看板</span>
+                </a>
+                <a href="material-manage.html" class="flex items-center px-4 py-3 text-primary bg-blue-50 border-r-4 border-primary">
+                    <i class="fa fa-home w-5 text-center"></i>
+                    <span class="ml-3">新盘管理</span>
+                </a>
+                <a href="../task/task-list.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-tasks w-5 text-center"></i>
+                    <span class="ml-3">探盘任务管理</span>
+                </a>
+                <a href="../training/training-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-graduation-cap w-5 text-center"></i>
+                    <span class="ml-3">产品力训练</span>
+                </a>
+                <a href="../speech/speech-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-comments w-5 text-center"></i>
+                    <span class="ml-3">话术训练管理</span>
+                </a>
+                <a href="../content/content-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-magic w-5 text-center"></i>
+                    <span class="ml-3">获客内容管理</span>
+                </a>
+                <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">管理层</div>
+                <a href="../data/data-analysis.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-bar-chart w-5 text-center"></i>
+                    <span class="ml-3">数据分析</span>
+                </a>
+                <a href="../board/board-chairman.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-trophy w-5 text-center"></i>
+                    <span class="ml-3">总部决策看板一</span>
+                </a>
+                <a href="../board/board-chairman-2.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-area-chart w-5 text-center"></i>
+                    <span class="ml-3">总部决策看板二</span>
+                </a>
+                <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">系统管理</div>
+                <a href="../team/team-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-users w-5 text-center"></i>
+                    <span class="ml-3">团队管理</span>
+                </a>
+                <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-cog w-5 text-center"></i>
+                    <span class="ml-3">系统设置</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="ml-64 flex-1 p-6">
+            <!-- 面包屑 -->
+            <div class="mb-4 text-sm">
+                <a href="material-manage.html" class="text-primary hover:underline">新盘管理</a>
+                <span class="mx-2 text-gray-400">/</span>
+                <span class="text-gray-500">回收站</span>
+            </div>
+
+            <!-- 页面标题 -->
+            <div class="mb-6 flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-dark">回收站</h1>
+                    <p class="text-gray-500 mt-1">已删除的楼盘可在此恢复或彻底删除</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="window.location.href='material-manage.html'" class="px-4 py-2 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 flex items-center">
+                        <i class="fa fa-arrow-left mr-2"></i> 返回列表
+                    </button>
+                </div>
+            </div>
+
+            <!-- 提示信息 -->
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                <div class="flex items-center">
+                    <i class="fa fa-exclamation-triangle text-yellow-500 mr-3"></i>
+                    <div class="text-sm text-yellow-700">
+                        <p><strong>温馨提示：</strong></p>
+                        <ul class="list-disc ml-5 mt-1 space-y-0.5">
+                            <li>回收站中的楼盘数据会在 <strong>30天后自动清除</strong></li>
+                            <li>彻底删除后数据将无法恢复，请谨慎操作</li>
+                            <li>恢复后的楼盘需要重新提交审核</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 统计卡片 -->
+            <div class="grid grid-cols-3 gap-4 mb-6">
+                <div class="bg-white rounded-lg shadow-sm p-5">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-sm">回收站总数</p>
+                            <h3 class="text-2xl font-bold mt-1">3</h3>
+                        </div>
+                        <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center text-gray-500">
+                            <i class="fa fa-trash"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-5">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-sm">本月删除</p>
+                            <h3 class="text-2xl font-bold mt-1">2</h3>
+                        </div>
+                        <div class="w-10 h-10 bg-orange-50 rounded-lg flex items-center justify-center text-orange-500">
+                            <i class="fa fa-calendar-minus-o"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-5">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-sm">即将过期</p>
+                            <h3 class="text-2xl font-bold mt-1">0</h3>
+                        </div>
+                        <div class="w-10 h-10 bg-red-50 rounded-lg flex items-center justify-center text-red-500">
+                            <i class="fa fa-clock-o"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 操作栏 -->
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-6 flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <label class="flex items-center text-sm text-gray-600">
+                        <input type="checkbox" id="selectAll" onchange="toggleSelectAll()" class="mr-2 rounded border-gray-300"> 全选
+                    </label>
+                    <button onclick="restoreSelected()" class="px-3 py-1.5 bg-success text-white rounded text-sm hover:bg-success/90 disabled:opacity-50" disabled id="restoreBtn">
+                        <i class="fa fa-undo mr-1"></i> 批量恢复
+                    </button>
+                    <button onclick="deleteSelected()" class="px-3 py-1.5 bg-danger text-white rounded text-sm hover:bg-danger/90 disabled:opacity-50" disabled id="deleteBtn">
+                        <i class="fa fa-trash mr-1"></i> 彻底删除
+                    </button>
+                </div>
+                <div class="flex items-center gap-2 text-sm text-gray-500">
+                    <span>排序：</span>
+                    <select class="border border-gray-200 rounded px-2 py-1 text-sm">
+                        <option value="time">按删除时间</option>
+                        <option value="name">按楼盘名称</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 回收站列表 -->
+            <div class="bg-white rounded-lg shadow-sm">
+                <div class="p-4 border-b border-gray-100">
+                    <h3 class="font-bold text-gray-700">已删除楼盘 <span class="text-gray-400 font-normal text-sm ml-2">共3条</span></h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="text-left text-gray-500 text-sm bg-gray-50">
+                                <th class="px-4 py-3 w-12"></th>
+                                <th class="px-4 py-3">楼盘信息</th>
+                                <th class="px-4 py-3">删除时间</th>
+                                <th class="px-4 py-3">删除人</th>
+                                <th class="px-4 py-3">过期时间</th>
+                                <th class="px-4 py-3">删除前状态</th>
+                                <th class="px-4 py-3 text-right">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recycleTableBody">
+                            <!-- 数据通过JS渲染 -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 空状态 -->
+                <div id="emptyState" class="hidden p-12 text-center">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fa fa-trash-o text-3xl text-gray-400"></i>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-600 mb-2">回收站为空</h3>
+                    <p class="text-gray-400 mb-4">暂无已删除的楼盘</p>
+                    <button onclick="window.location.href='material-manage.html'" class="px-4 py-2 bg-primary text-white rounded-lg text-sm">
+                        返回楼盘列表
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 恢复确认弹窗 -->
+    <div id="restoreModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg w-[450px] p-6">
+            <div class="text-center">
+                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa fa-undo text-green-500 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-bold mb-2">确认恢复</h3>
+                <p class="text-gray-500 mb-4">恢复后楼盘将回到列表，需重新提交审核</p>
+                
+                <div class="bg-gray-50 rounded-lg p-4 mb-4 text-left">
+                    <p class="text-sm"><span class="text-gray-500">楼盘名称：</span><span id="restoreName" class="font-medium">远洋lavie</span></p>
+                    <p class="text-sm mt-1"><span class="text-gray-500">删除时间：</span><span id="restoreTime" class="text-gray-600">2026-02-28</span></p>
+                </div>
+                
+                <div class="flex justify-center gap-3">
+                    <button onclick="closeRestoreModal()" class="px-4 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50">取消</button>
+                    <button onclick="confirmRestore()" class="px-4 py-2 bg-success text-white rounded-lg hover:bg-success/90">确认恢复</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 彻底删除确认弹窗 -->
+    <div id="permanentDeleteModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg w-[450px] p-6">
+            <div class="text-center">
+                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa fa-exclamation-triangle text-red-500 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-bold mb-2">彻底删除</h3>
+                <p class="text-gray-500 mb-4">此操作不可逆，删除后数据将无法恢复！</p>
+                
+                <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-4 text-left">
+                    <p class="text-sm text-red-600"><strong>警告：</strong></p>
+                    <ul class="text-sm text-red-500 mt-1 space-y-0.5">
+                        <li>• 所有楼盘资料将被永久删除</li>
+                        <li>• 关联的录音、图片等文件也将被删除</li>
+                        <li>• 此操作无法撤销</li>
+                    </ul>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-sm text-gray-600 mb-2 text-left">请输入 "<span id="deleteConfirmName" class="font-medium text-danger">确认删除</span>" 以确认：</label>
+                    <input type="text" id="deleteConfirmInput" placeholder="输入确认文字" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                </div>
+                
+                <div class="flex justify-center gap-3">
+                    <button onclick="closePermanentDeleteModal()" class="px-4 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50">取消</button>
+                    <button onclick="confirmPermanentDelete()" class="px-4 py-2 bg-danger text-white rounded-lg hover:bg-danger/90 disabled:opacity-50" disabled id="confirmDeleteBtn">确认删除</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 批量删除确认弹窗 -->
+    <div id="batchDeleteModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg w-[450px] p-6">
+            <div class="text-center">
+                <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa fa-exclamation-triangle text-red-500 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-bold mb-2">批量彻底删除</h3>
+                <p class="text-gray-500 mb-4">确定要彻底删除选中的 <span id="batchDeleteCount" class="text-danger font-medium">0</span> 个楼盘吗？</p>
+                
+                <div class="flex justify-center gap-3">
+                    <button onclick="closeBatchDeleteModal()" class="px-4 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50">取消</button>
+                    <button onclick="doBatchDelete()" class="px-4 py-2 bg-danger text-white rounded-lg hover:bg-danger/90">确认删除</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 回收站数据
+        let recycledMaterials = [
+            {
+                id: 1,
+                name: '远洋lavie',
+                developer: '远洋地产',
+                cover: 'https://picsum.photos/seed/house6/60/60',
+                region: '海淀区',
+                deleteTime: '2026-02-28 10:30',
+                deleter: '李四',
+                expireTime: '2026-03-30',
+                previousStatus: '已下线',
+                previousStatusClass: 'bg-gray-100 text-gray-500'
+            },
+            {
+                id: 2,
+                name: '绿地海珀',
+                developer: '绿地集团',
+                cover: 'https://picsum.photos/seed/house11/60/60',
+                region: '朝阳区',
+                deleteTime: '2026-03-05 14:20',
+                deleter: '张三',
+                expireTime: '2026-04-04',
+                previousStatus: '待审核',
+                previousStatusClass: 'bg-blue-100 text-blue-600'
+            },
+            {
+                id: 3,
+                name: '阳光城檀悦',
+                developer: '阳光城集团',
+                cover: 'https://picsum.photos/seed/house12/60/60',
+                region: '东城区',
+                deleteTime: '2026-03-10 09:15',
+                deleter: '王五',
+                expireTime: '2026-04-09',
+                previousStatus: '已驳回',
+                previousStatusClass: 'bg-red-100 text-red-600'
+            }
+        ];
+
+        let selectedIds = new Set();
+        let currentDeleteId = null;
+
+        // 渲染列表
+        function renderTable() {
+            const tbody = document.getElementById('recycleTableBody');
+            const emptyState = document.getElementById('emptyState');
+
+            if (recycledMaterials.length === 0) {
+                tbody.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            tbody.innerHTML = recycledMaterials.map(item => `
+                <tr class="border-b border-gray-100 hover:bg-gray-50 ${selectedIds.has(item.id) ? 'bg-blue-50' : ''}">
+                    <td class="px-4 py-4">
+                        <input type="checkbox" ${selectedIds.has(item.id) ? 'checked' : ''} onchange="toggleSelect(${item.id})" class="rounded border-gray-300">
+                    </td>
+                    <td class="px-4 py-4 text-sm">
+                        <div class="flex items-center">
+                            <img src="${item.cover}" alt="楼盘封面" class="w-12 h-12 rounded object-cover mr-3 opacity-60">
+                            <div>
+                                <p class="font-medium text-gray-700">${item.name}</p>
+                                <p class="text-xs text-gray-500 mt-0.5">${item.developer}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-4 py-4 text-sm text-gray-600">${item.deleteTime}</td>
+                    <td class="px-4 py-4 text-sm text-gray-600">${item.deleter}</td>
+                    <td class="px-4 py-4 text-sm">
+                        <span class="text-gray-500">${item.expireTime}</span>
+                    </td>
+                    <td class="px-4 py-4 text-sm">
+                        <span class="px-2 py-1 ${item.previousStatusClass} text-xs rounded">${item.previousStatus}</span>
+                    </td>
+                    <td class="px-4 py-4 text-sm text-right">
+                        <button onclick="openRestoreModal(${item.id})" class="text-success text-sm hover:underline mr-3">
+                            <i class="fa fa-undo mr-1"></i>恢复
+                        </button>
+                        <button onclick="openPermanentDeleteModal(${item.id})" class="text-danger text-sm hover:underline">
+                            <i class="fa fa-trash mr-1"></i>彻底删除
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // 全选/取消全选
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+            
+            if (selectAll.checked) {
+                selectedIds = new Set(recycledMaterials.map(m => m.id));
+                checkboxes.forEach(cb => cb.checked = true);
+            } else {
+                selectedIds.clear();
+                checkboxes.forEach(cb => cb.checked = false);
+            }
+            
+            updateBatchButtons();
+        }
+
+        // 选择单个
+        function toggleSelect(id) {
+            if (selectedIds.has(id)) {
+                selectedIds.delete(id);
+            } else {
+                selectedIds.add(id);
+            }
+            
+            // 更新全选状态
+            const selectAll = document.getElementById('selectAll');
+            selectAll.checked = selectedIds.size === recycledMaterials.length;
+            
+            updateBatchButtons();
+            renderTable();
+        }
+
+        // 更新批量按钮状态
+        function updateBatchButtons() {
+            const restoreBtn = document.getElementById('restoreBtn');
+            const deleteBtn = document.getElementById('deleteBtn');
+            
+            if (selectedIds.size > 0) {
+                restoreBtn.disabled = false;
+                deleteBtn.disabled = false;
+            } else {
+                restoreBtn.disabled = true;
+                deleteBtn.disabled = true;
+            }
+        }
+
+        // 恢复单个
+        function openRestoreModal(id) {
+            const item = recycledMaterials.find(m => m.id === id);
+            if (!item) return;
+
+            document.getElementById('restoreName').textContent = item.name;
+            document.getElementById('restoreTime').textContent = item.deleteTime.split(' ')[0];
+            currentDeleteId = id;
+
+            document.getElementById('restoreModal').classList.remove('hidden');
+            document.getElementById('restoreModal').classList.add('flex');
+        }
+
+        function closeRestoreModal() {
+            currentDeleteId = null;
+            document.getElementById('restoreModal').classList.add('hidden');
+            document.getElementById('restoreModal').classList.remove('flex');
+        }
+
+        function confirmRestore() {
+            if (currentDeleteId) {
+                const index = recycledMaterials.findIndex(m => m.id === currentDeleteId);
+                if (index > -1) {
+                    recycledMaterials.splice(index, 1);
+                    selectedIds.delete(currentDeleteId);
+                    renderTable();
+                    updateBatchButtons();
+                }
+            }
+            closeRestoreModal();
+            alert('楼盘已恢复，可前往列表查看');
+        }
+
+        // 彻底删除单个
+        function openPermanentDeleteModal(id) {
+            const item = recycledMaterials.find(m => m.id === id);
+            if (!item) return;
+
+            currentDeleteId = id;
+            document.getElementById('deleteConfirmName').textContent = item.name;
+            document.getElementById('deleteConfirmInput').value = '';
+            document.getElementById('confirmDeleteBtn').disabled = true;
+
+            document.getElementById('permanentDeleteModal').classList.remove('hidden');
+            document.getElementById('permanentDeleteModal').classList.add('flex');
+
+            // 监听输入
+            document.getElementById('deleteConfirmInput').oninput = function() {
+                const confirmBtn = document.getElementById('confirmDeleteBtn');
+                confirmBtn.disabled = this.value !== '确认删除';
+            };
+        }
+
+        function closePermanentDeleteModal() {
+            currentDeleteId = null;
+            document.getElementById('permanentDeleteModal').classList.add('hidden');
+            document.getElementById('permanentDeleteModal').classList.remove('flex');
+        }
+
+        function confirmPermanentDelete() {
+            const input = document.getElementById('deleteConfirmInput').value;
+            if (input !== '确认删除') {
+                alert('请输入正确的确认文字');
+                return;
+            }
+
+            if (currentDeleteId) {
+                const index = recycledMaterials.findIndex(m => m.id === currentDeleteId);
+                if (index > -1) {
+                    recycledMaterials.splice(index, 1);
+                    selectedIds.delete(currentDeleteId);
+                    renderTable();
+                    updateBatchButtons();
+                }
+            }
+            closePermanentDeleteModal();
+            alert('楼盘已彻底删除');
+        }
+
+        // 批量恢复
+        function restoreSelected() {
+            if (selectedIds.size === 0) return;
+            
+            const count = selectedIds.size;
+            selectedIds.clear();
+            // 模拟恢复
+            recycledMaterials = [];
+            renderTable();
+            updateBatchButtons();
+            document.getElementById('selectAll').checked = false;
+            
+            alert(`已恢复 ${count} 个楼盘`);
+        }
+
+        // 批量删除
+        function deleteSelected() {
+            if (selectedIds.size === 0) return;
+
+            document.getElementById('batchDeleteCount').textContent = selectedIds.size;
+            document.getElementById('batchDeleteModal').classList.remove('hidden');
+            document.getElementById('batchDeleteModal').classList.add('flex');
+        }
+
+        function closeBatchDeleteModal() {
+            document.getElementById('batchDeleteModal').classList.add('hidden');
+            document.getElementById('batchDeleteModal').classList.remove('flex');
+        }
+
+        function doBatchDelete() {
+            const count = selectedIds.size;
+            selectedIds.clear();
+            // 模拟删除
+            recycledMaterials = [];
+            renderTable();
+            updateBatchButtons();
+            document.getElementById('selectAll').checked = false;
+            
+            closeBatchDeleteModal();
+            alert(`已彻底删除 ${count} 个楼盘`);
+        }
+
+        // 页面加载
+        document.addEventListener('DOMContentLoaded', function() {
+            renderTable();
+        });
+    </script>
+</body>
+</html>

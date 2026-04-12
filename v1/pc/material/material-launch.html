@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>上线配置 - 房产AI作业平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        success: '#00B42A',
+                        warning: '#FF7D00',
+                        danger: '#F53F3F',
+                        purple: '#9B5DE5',
+                        dark: '#1D2129',
+                        'gray-light': '#F2F3F5',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-50">
+    <!-- 顶部导航 -->
+    <nav class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
+        <div class="flex justify-between items-center px-6 py-3">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-home text-primary text-2xl"></i>
+                <span class="text-xl font-bold text-dark">房产AI作业平台</span>
+                <span class="text-sm text-gray-500 ml-2">管理后台</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-600 hover:text-primary">
+                    <i class="fa fa-bell-o text-lg"></i>
+                    <span class="absolute top-2 right-16 bg-danger text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center">管</div>
+                    <span class="text-sm font-medium">区域经理</span>
+                    <i class="fa fa-angle-down text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex pt-14">
+        <!-- 内联侧边栏 -->
+        <aside class="w-64 bg-white h-[calc(100vh-56px)] fixed left-0 shadow-sm overflow-y-auto">
+            <nav class="py-4">
+                <div class="px-4 py-2 text-xs text-gray-400 uppercase font-medium">工作台</div>
+                <a href="index.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-dashboard w-5 text-center"></i>
+                    <span class="ml-3">数据看板</span>
+                </a>
+                <a href="material-manage.html" class="flex items-center px-4 py-3 text-primary bg-blue-50 border-r-4 border-primary">
+                    <i class="fa fa-home w-5 text-center"></i>
+                    <span class="ml-3">新盘管理</span>
+                </a>
+                <a href="../task/task-list.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-tasks w-5 text-center"></i>
+                    <span class="ml-3">探盘任务管理</span>
+                </a>
+                <a href="../training/training-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-graduation-cap w-5 text-center"></i>
+                    <span class="ml-3">产品力训练</span>
+                </a>
+                <a href="../speech/speech-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-comments w-5 text-center"></i>
+                    <span class="ml-3">话术训练管理</span>
+                </a>
+                <a href="../content/content-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-magic w-5 text-center"></i>
+                    <span class="ml-3">获客内容管理</span>
+                </a>
+                <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">管理层</div>
+                <a href="../data/data-analysis.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-bar-chart w-5 text-center"></i>
+                    <span class="ml-3">数据分析</span>
+                </a>
+                <a href="../board/board-chairman.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-trophy w-5 text-center"></i>
+                    <span class="ml-3">总部决策看板一</span>
+                </a>
+                <a href="../board/board-chairman-2.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-area-chart w-5 text-center"></i>
+                    <span class="ml-3">总部决策看板二</span>
+                </a>
+                <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">系统管理</div>
+                <a href="../team/team-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-users w-5 text-center"></i>
+                    <span class="ml-3">团队管理</span>
+                </a>
+                <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50">
+                    <i class="fa fa-cog w-5 text-center"></i>
+                    <span class="ml-3">系统设置</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="ml-64 flex-1 p-6">
+            <!-- 面包屑 -->
+            <div class="mb-4 text-sm">
+                <a href="material-manage.html" class="text-primary hover:underline">新盘管理</a>
+                <span class="mx-2 text-gray-400">/</span>
+                <a href="material-detail.html" class="text-primary hover:underline">中海汇德里</a>
+                <span class="mx-2 text-gray-400">/</span>
+                <span class="text-gray-500">上线配置</span>
+            </div>
+
+            <!-- 页面标题 -->
+            <div class="mb-6 flex justify-between items-center">
+                <div class="flex items-center">
+                    <img src="https://picsum.photos/seed/house1/60/60" alt="楼盘封面" class="w-12 h-12 rounded-lg object-cover mr-4">
+                    <div>
+                        <h1 class="text-2xl font-bold text-dark">中海汇德里 - 上线配置</h1>
+                        <p class="text-gray-500 mt-1">配置楼盘上线信息，设置可下发任务人员和知情人员</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="px-3 py-1 bg-green-100 text-green-600 text-sm rounded-full">
+                        <i class="fa fa-check-circle mr-1"></i> 审核通过
+                    </span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-6">
+                <!-- 左侧配置区 -->
+                <div class="col-span-2 space-y-6">
+                    <!-- 可下发任务人 -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                            <i class="fa fa-user-plus text-primary mr-2"></i>
+                            可下发任务人 <span class="text-red-500 text-sm ml-1">*</span>
+                        </h3>
+                        <p class="text-sm text-gray-500 mb-4">选择可接收新盘上线通知并下发探盘任务的人员</p>
+                        
+                        <!-- 组织架构选择器 -->
+                        <div class="border border-gray-200 rounded-lg">
+                            <!-- 搜索栏 -->
+                            <div class="p-3 border-b border-gray-200 bg-gray-50">
+                                <div class="flex gap-2">
+                                    <div class="flex-1 relative">
+                                        <input type="text" id="searchAssignee" placeholder="搜索人员姓名或部门" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm pl-9">
+                                        <i class="fa fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+                                    </div>
+                                    <button onclick="toggleTree()" class="px-3 py-2 border border-gray-200 rounded-lg bg-white text-sm hover:bg-gray-50">
+                                        <i class="fa fa-sitemap mr-1"></i> 部门树
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- 部门树形结构 -->
+                            <div id="deptTree" class="border-b border-gray-200 p-3 hidden">
+                                <div class="space-y-1">
+                                    <div class="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer" onclick="toggleDept(this)">
+                                        <i class="fa fa-chevron-right text-xs text-gray-400 mr-2 dept-arrow"></i>
+                                        <i class="fa fa-building text-primary mr-2"></i>
+                                        <span class="text-sm">总公司</span>
+                                    </div>
+                                    <div class="ml-6 space-y-1">
+                                        <div class="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer pl-4" onclick="toggleDept(this)">
+                                            <i class="fa fa-chevron-right text-xs text-gray-400 mr-2 dept-arrow"></i>
+                                            <i class="fa fa-building text-success mr-2"></i>
+                                            <span class="text-sm">北京分公司</span>
+                                        </div>
+                                        <div class="ml-6 space-y-1">
+                                            <div class="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer pl-4">
+                                                <input type="checkbox" class="mr-2"> <i class="fa fa-users text-orange mr-2"></i>
+                                                <span class="text-sm">海淀事业部</span>
+                                            </div>
+                                            <div class="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer pl-4">
+                                                <input type="checkbox" class="mr-2"> <i class="fa fa-users text-orange mr-2"></i>
+                                                <span class="text-sm">朝阳事业部</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer pl-4" onclick="toggleDept(this)">
+                                            <i class="fa fa-chevron-right text-xs text-gray-400 mr-2 dept-arrow"></i>
+                                            <i class="fa fa-building text-success mr-2"></i>
+                                            <span class="text-sm">上海分公司</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 人员列表 -->
+                            <div class="p-3 max-h-64 overflow-y-auto">
+                                <div class="text-xs text-gray-400 mb-2">建议选择区域经理或业务骨干</div>
+                                <div class="space-y-2">
+                                    <label class="flex items-center p-2 hover:bg-blue-50 rounded cursor-pointer">
+                                        <input type="checkbox" name="assignee" value="1" class="mr-3">
+                                        <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-xs mr-2">张</div>
+                                        <div>
+                                            <p class="text-sm font-medium">张明</p>
+                                            <p class="text-xs text-gray-400">海淀事业部 - 区域经理</p>
+                                        </div>
+                                    </label>
+                                    <label class="flex items-center p-2 hover:bg-blue-50 rounded cursor-pointer">
+                                        <input type="checkbox" name="assignee" value="2" class="mr-3">
+                                        <div class="w-8 h-8 bg-success text-white rounded-full flex items-center justify-center text-xs mr-2">李</div>
+                                        <div>
+                                            <p class="text-sm font-medium">李华</p>
+                                            <p class="text-xs text-gray-400">朝阳事业部 - 业务主管</p>
+                                        </div>
+                                    </label>
+                                    <label class="flex items-center p-2 hover:bg-blue-50 rounded cursor-pointer">
+                                        <input type="checkbox" name="assignee" value="3" class="mr-3">
+                                        <div class="w-8 h-8 bg-warning text-white rounded-full flex items-center justify-center text-xs mr-2">王</div>
+                                        <div>
+                                            <p class="text-sm font-medium">王强</p>
+                                            <p class="text-xs text-gray-400">海淀事业部 - 业务骨干</p>
+                                        </div>
+                                    </label>
+                                    <label class="flex items-center p-2 hover:bg-blue-50 rounded cursor-pointer">
+                                        <input type="checkbox" name="assignee" value="4" class="mr-3">
+                                        <div class="w-8 h-8 bg-purple text-white rounded-full flex items-center justify-center text-xs mr-2">赵</div>
+                                        <div>
+                                            <p class="text-sm font-medium">赵丽</p>
+                                            <p class="text-xs text-gray-400">朝阳事业部 - 区域经理</p>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 已选择人员 -->
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600 mb-2">已选择 <span id="assigneeCount" class="text-primary font-medium">0</span> 人</p>
+                            <div id="selectedAssignees" class="flex flex-wrap gap-2"></div>
+                        </div>
+                    </div>
+
+                    <!-- 知情人员 -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                            <i class="fa fa-eye text-success mr-2"></i>
+                            知情人员（仅通知）
+                        </h3>
+                        <p class="text-sm text-gray-500 mb-4">选择仅接收新盘上线通知的人员，无下发任务权限</p>
+                        
+                        <div class="border border-gray-200 rounded-lg">
+                            <div class="p-3 border-b border-gray-200 bg-gray-50">
+                                <input type="text" placeholder="搜索人员姓名或部门" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                            </div>
+                            <div class="p-3 max-h-48 overflow-y-auto">
+                                <div class="space-y-2">
+                                    <label class="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer">
+                                        <input type="checkbox" name="observer" value="1" class="mr-3">
+                                        <div class="w-8 h-8 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center text-xs mr-2">陈</div>
+                                        <div>
+                                            <p class="text-sm font-medium">陈静</p>
+                                            <p class="text-xs text-gray-400">总部 - 运营总监</p>
+                                        </div>
+                                    </label>
+                                    <label class="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer">
+                                        <input type="checkbox" name="observer" value="2" class="mr-3">
+                                        <div class="w-8 h-8 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center text-xs mr-2">周</div>
+                                        <div>
+                                            <p class="text-sm font-medium">周涛</p>
+                                            <p class="text-xs text-gray-400">总部 - 产品总监</p>
+                                        </div>
+                                    </label>
+                                    <label class="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer">
+                                        <input type="checkbox" name="observer" value="3" class="mr-3">
+                                        <div class="w-8 h-8 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center text-xs mr-2">吴</div>
+                                        <div>
+                                            <p class="text-sm font-medium">吴磊</p>
+                                            <p class="text-xs text-gray-400">海淀事业部 - 销售经理</p>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <p class="text-sm text-gray-600 mb-2">已选择 <span id="observerCount" class="text-success font-medium">0</span> 人</p>
+                            <div id="selectedObservers" class="flex flex-wrap gap-2"></div>
+                        </div>
+                    </div>
+
+                    <!-- 项目政策 -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                            <i class="fa fa-file-text text-warning mr-2"></i>
+                            项目政策
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-1">政策有效期开始</label>
+                                    <input type="date" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-sm text-gray-600 mb-1">政策有效期结束</label>
+                                    <input type="date" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-1">政策描述</label>
+                                <textarea rows="3" placeholder="请输入项目政策说明，如佣金政策、结佣条件等" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"></textarea>
+                            </div>
+                            <div>
+                                <label class="block text-sm text-gray-600 mb-1">特殊说明</label>
+                                <textarea rows="2" placeholder="如有特殊注意事项请在此说明" class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 训练配置 -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                            <i class="fa fa-graduation-cap text-purple mr-2"></i>
+                            训练配置
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                <div>
+                                    <p class="font-medium text-gray-800">AI讲盘训练</p>
+                                    <p class="text-sm text-gray-500">自动生成AI讲盘录音供经纪人学习</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                <div>
+                                    <p class="font-medium text-gray-800">话术训练</p>
+                                    <p class="text-sm text-gray-500">自动创建楼盘话术训练任务</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" checked class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                </label>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                <div>
+                                    <p class="font-medium text-gray-800">知识问答</p>
+                                    <p class="text-sm text-gray-500">自动生成楼盘知识问答测试</p>
+                                </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer">
+                                    <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 右侧预览区 -->
+                <div class="space-y-6">
+                    <!-- 楼盘信息卡片 -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">楼盘信息</h3>
+                        <div class="space-y-3">
+                            <div class="flex items-center">
+                                <img src="https://picsum.photos/seed/house1/80/80" alt="楼盘封面" class="w-16 h-16 rounded-lg object-cover mr-3">
+                                <div>
+                                    <p class="font-medium">中海汇德里</p>
+                                    <p class="text-sm text-gray-500">中海地产</p>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 text-sm">
+                                <div class="text-gray-500">区域</div>
+                                <div class="text-right">海淀区</div>
+                                <div class="text-gray-500">均价</div>
+                                <div class="text-right text-primary font-medium">8.3万/㎡</div>
+                                <div class="text-gray-500">户型</div>
+                                <div class="text-right">77-180㎡</div>
+                                <div class="text-gray-500">状态</div>
+                                <div class="text-right"><span class="px-2 py-0.5 bg-green-100 text-green-600 text-xs rounded">审核通过</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 上线预览 -->
+                    <div class="bg-white rounded-lg shadow-sm p-6">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">上线预览</h3>
+                        <div class="bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg p-4 text-white mb-4">
+                            <div class="flex items-center mb-2">
+                                <i class="fa fa-bullhorn mr-2"></i>
+                                <span class="font-bold">新盘上线通知</span>
+                            </div>
+                            <p class="text-sm opacity-90">中海汇德里已上线！</p>
+                            <p class="text-xs opacity-75 mt-1">区域经理张明可下发探盘任务</p>
+                        </div>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex items-center text-gray-600">
+                                <i class="fa fa-users w-5 mr-2 text-center"></i>
+                                <span>可下发任务人</span>
+                                <span id="previewAssigneeCount" class="ml-auto text-primary">0</span>
+                            </div>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fa fa-eye w-5 mr-2 text-center"></i>
+                                <span>知情人员</span>
+                                <span id="previewObserverCount" class="ml-auto text-success">0</span>
+                            </div>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fa fa-clock w-5 mr-2 text-center"></i>
+                                <span>有效期</span>
+                                <span class="ml-auto text-gray-400">未设置</span>
+                            </div>
+                            <div class="flex items-center text-gray-600">
+                                <i class="fa fa-microphone w-5 mr-2 text-center"></i>
+                                <span>AI讲盘</span>
+                                <span class="ml-auto text-success">开启</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 操作按钮 -->
+                    <div class="bg-white rounded-lg shadow-sm p-6 space-y-3">
+                        <button onclick="saveConfig()" class="w-full px-4 py-3 border border-primary text-primary rounded-lg hover:bg-primary/10 flex items-center justify-center">
+                            <i class="fa fa-save mr-2"></i> 保存配置
+                        </button>
+                        <button onclick="launchOnline()" class="w-full px-4 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 flex items-center justify-center">
+                            <i class="fa fa-cloud-upload mr-2"></i> 确认上线
+                        </button>
+                        <button onclick="window.location.href='material-detail.html'" class="w-full px-4 py-3 border border-gray-300 text-gray-600 rounded-lg hover:bg-gray-50 flex items-center justify-center">
+                            <i class="fa fa-arrow-left mr-2"></i> 返回详情
+                        </button>
+                    </div>
+
+                    <!-- 下线确认 -->
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <h4 class="text-red-600 font-medium mb-2">危险操作</h4>
+                        <button onclick="confirmOffline()" class="w-full px-4 py-2 border border-danger text-danger rounded-lg hover:bg-red-100 text-sm">
+                            <i class="fa fa-cloud-download mr-2"></i> 下线该楼盘
+                        </button>
+                        <p class="text-xs text-red-500 mt-2">下线后可重新上线</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 上线确认弹窗 -->
+    <div id="launchModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg w-[500px] p-6">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa fa-cloud-upload text-purple-500 text-2xl"></i>
+                </div>
+                <h3 class="text-lg font-bold mb-2">确认上线</h3>
+                <p class="text-gray-500 mb-4">楼盘上线后将通知所有相关人员</p>
+                
+                <div class="bg-gray-50 rounded-lg p-4 mb-4 text-left">
+                    <div class="grid grid-cols-2 gap-2 text-sm">
+                        <div class="text-gray-500">楼盘</div>
+                        <div class="text-right font-medium">中海汇德里</div>
+                        <div class="text-gray-500">可下发任务人</div>
+                        <div id="modalAssigneeCount" class="text-right text-primary">0人</div>
+                        <div class="text-gray-500">知情人员</div>
+                        <div id="modalObserverCount" class="text-right text-success">0人</div>
+                    </div>
+                </div>
+                
+                <div class="flex justify-center gap-3">
+                    <button onclick="closeLaunchModal()" class="px-4 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50">取消</button>
+                    <button onclick="confirmLaunch()" class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90">确认上线</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 下线确认弹窗 -->
+    <div id="offlineModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+        <div class="bg-white rounded-lg w-[400px] p-6">
+            <div class="text-center">
+                <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fa fa-cloud-download text-orange-500 text-xl"></i>
+                </div>
+                <h3 class="text-lg font-bold mb-2">确认下线</h3>
+                <p class="text-gray-500 mb-6">下线后该楼盘将不再显示，可随时重新上线</p>
+                <div class="flex justify-center gap-3">
+                    <button onclick="closeOfflineModal()" class="px-4 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50">取消</button>
+                    <button onclick="doOffline()" class="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600">确认下线</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 切换部门树
+        function toggleTree() {
+            const tree = document.getElementById('deptTree');
+            tree.classList.toggle('hidden');
+        }
+
+        // 切换部门
+        function toggleDept(element) {
+            const arrow = element.querySelector('.dept-arrow');
+            const nextSibling = element.nextElementSibling;
+            if (nextSibling && nextSibling.classList.contains('ml-6')) {
+                nextSibling.classList.toggle('hidden');
+                if (arrow) {
+                    arrow.classList.toggle('fa-chevron-right');
+                    arrow.classList.toggle('fa-chevron-down');
+                }
+            }
+        }
+
+        // 更新计数
+        function updateCounts() {
+            const assignees = document.querySelectorAll('input[name="assignee"]:checked');
+            const observers = document.querySelectorAll('input[name="observer"]:checked');
+            
+            document.getElementById('assigneeCount').textContent = assignees.length;
+            document.getElementById('observerCount').textContent = observers.length;
+            document.getElementById('previewAssigneeCount').textContent = assignees.length;
+            document.getElementById('previewObserverCount').textContent = observers.length;
+            document.getElementById('modalAssigneeCount').textContent = assignees.length + '人';
+            document.getElementById('modalObserverCount').textContent = observers.length + '人';
+        }
+
+        // 监听复选框变化
+        document.querySelectorAll('input[name="assignee"], input[name="observer"]').forEach(checkbox => {
+            checkbox.addEventListener('change', updateCounts);
+        });
+
+        // 保存配置
+        function saveConfig() {
+            alert('配置保存成功');
+        }
+
+        // 上线
+        function launchOnline() {
+            document.getElementById('launchModal').classList.remove('hidden');
+            document.getElementById('launchModal').classList.add('flex');
+        }
+
+        function closeLaunchModal() {
+            document.getElementById('launchModal').classList.add('hidden');
+            document.getElementById('launchModal').classList.remove('flex');
+        }
+
+        function confirmLaunch() {
+            window.location.href = 'material-detail.html';
+        }
+
+        // 下线
+        function confirmOffline() {
+            document.getElementById('offlineModal').classList.remove('hidden');
+            document.getElementById('offlineModal').classList.add('flex');
+        }
+
+        function closeOfflineModal() {
+            document.getElementById('offlineModal').classList.add('hidden');
+            document.getElementById('offlineModal').classList.remove('flex');
+        }
+
+        function doOffline() {
+            window.location.href = 'material-manage.html';
+        }
+
+        // 初始化
+        updateCounts();
+    </script>
+</body>
+</html>
