@@ -120,7 +120,7 @@
                             <i class="fa fa-trash-o"></i>批量删除 (<span id="batchSelectedCount">0</span>)
                         </button>
                     </div>
-                    <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white">
+                    <select id="statusFilter" class="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white">
                         <option>全部状态</option>
                         <option>待分析</option>
                         <option>分析中</option>
@@ -159,7 +159,7 @@
                     </div>
                     <div class="min-w-[160px]">
                         <label class="block text-xs text-gray-500 mb-1">分析状态</label>
-                        <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-white">
+                        <select id="statusFilter" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-white">
                             <option value="">全部</option>
                             <option value="pending">待分析</option>
                             <option value="processing">分析中</option>
@@ -232,13 +232,13 @@
                         </thead>
                         <tbody class="divide-y divide-gray-100">
                             <!-- 已完成 -->
-                            <tr class="hover:bg-gray-50">
+                            <tr class="hover:bg-gray-50" data-id="1">
                                 <td class="px-4 py-3">
                                     <input type="checkbox" class="row-checkbox" onchange="onRowCheckboxChange()">
                                 </td>
                                 <td class="px-4 py-3">
                                     <div class="flex items-center gap-2">
-                                        <button class="w-8 h-8 bg-primary/10 text-primary rounded-full flex items-center justify-center hover:bg-primary/20 transition">
+                                        <button class="btn-play w-8 h-8 bg-primary/10 text-primary rounded-full flex items-center justify-center hover:bg-primary/20 transition cursor-pointer">
                                             <i class="fa fa-play text-xs"></i>
                                         </button>
                                         <div>
@@ -269,12 +269,12 @@
                                     <div class="text-xs text-gray-400">14:30</div>
                                 </td>
                                 <td class="px-4 py-3">
-                                    <button class="text-primary hover:text-primary/80 text-xs mr-2">查看详情</button>
+                                    <button class="btn-view text-primary hover:text-primary/80 text-xs mr-2">查看详情</button>
                                     <button class="text-gray-500 hover:text-gray-700 text-xs">导出</button>
                                 </td>
                             </tr>
                             <!-- 分析中（带进度） -->
-                            <tr class="hover:bg-gray-50">
+                            <tr class="hover:bg-gray-50" data-id="2">
                                 <td class="px-4 py-3">
                                     <input type="checkbox" class="row-checkbox" onchange="onRowCheckboxChange()">
                                 </td>
@@ -322,7 +322,7 @@
                                 </td>
                             </tr>
                             <!-- 待分析 -->
-                            <tr class="hover:bg-gray-50">
+                            <tr class="hover:bg-gray-50" data-id="3">
                                 <td class="px-4 py-3">
                                     <input type="checkbox" class="row-checkbox" onchange="onRowCheckboxChange()">
                                 </td>
@@ -361,7 +361,7 @@
                                 </td>
                             </tr>
                             <!-- 分析失败 -->
-                            <tr class="hover:bg-gray-50">
+                            <tr class="hover:bg-gray-50" data-id="4">
                                 <td class="px-4 py-3">
                                     <input type="checkbox" class="row-checkbox" onchange="onRowCheckboxChange()">
                                 </td>
@@ -387,7 +387,7 @@
                                         <span class="text-gray-700 text-sm">周涛</span>
                                     </div>
                                 </td>
-                                <td class="px-4 py-3">
+                                <td class="px-4 py-3 status-cell">
                                     <div>
                                         <span class="tag tag-status-failed">分析失败</span>
                                         <div class="text-xs text-danger mt-0.5">ASR识别失败，请检查音频质量</div>
@@ -399,12 +399,12 @@
                                     <div class="text-xs text-gray-400">08:15</div>
                                 </td>
                                 <td class="px-4 py-3">
-                                    <button class="text-danger hover:text-danger/80 text-xs mr-2">重新分析</button>
+                                    <button class="btn-reanalyze text-danger hover:text-danger/80 text-xs mr-2">重新分析</button>
                                     <button class="text-gray-500 hover:text-gray-700 text-xs">查看详情</button>
                                 </td>
                             </tr>
                             <!-- 已完成 高分 -->
-                            <tr class="hover:bg-gray-50">
+                            <tr class="hover:bg-gray-50" data-id="5">
                                 <td class="px-4 py-3">
                                     <input type="checkbox" class="row-checkbox" onchange="onRowCheckboxChange()">
                                 </td>
@@ -572,8 +572,96 @@
             updateBatchUI();
         }
 
-        // Init
-        onDimensionChange();
+        // ---- 播放/查看按钮 ----
+        document.querySelectorAll('.btn-play').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const row = btn.closest('tr');
+                const id = row.dataset.id || '1';
+                window.location.href = 'record-detail.html?id=' + id;
+            });
+        });
+
+        document.querySelectorAll('.btn-view').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const row = btn.closest('tr');
+                const id = row.dataset.id || '1';
+                window.location.href = 'record-detail.html?id=' + id;
+            });
+        });
+
+        // ---- 重新分析按钮 ----
+        document.querySelectorAll('.btn-reanalyze').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const row = btn.closest('tr');
+                const statusCell = row.querySelector('.status-cell');
+                
+                alert('已重新提交分析');
+                // 状态变更为分析中
+                statusCell.innerHTML = '<div><span class="tag tag-status-processing">分析中</span><div class="mt-1 flex items-center gap-1"><div class="w-24 h-1.5 bg-gray-200 rounded-full overflow-hidden"><div class="h-full bg-warning rounded-full transition-all" style="width: 10%"></div></div><span class="text-xs text-warning font-medium">10%</span></div><div class="text-xs text-gray-400 mt-0.5">正在处理...</div></div>';
+                // 禁用重新分析按钮
+                btn.classList.add('text-gray-400', 'cursor-not-allowed');
+                btn.classList.remove('text-danger', 'hover:text-danger/80');
+                btn.textContent = '分析中';
+                btn.disabled = true;
+            });
+        });
+
+        // ---- 状态筛选 ----
+        document.getElementById('statusFilter').addEventListener('change', function() {
+            filterTable();
+        });
+
+        // ---- 搜索功能 ----
+        document.getElementById('searchInput').addEventListener('input', function() {
+            filterTable();
+        });
+
+        function filterTable() {
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+            
+            document.querySelectorAll('tbody tr').forEach(row => {
+                const text = row.textContent.toLowerCase();
+                const statusText = row.querySelector('.tag')?.textContent || '';
+                
+                let show = true;
+                
+                // 搜索过滤
+                if (searchText && !text.includes(searchText)) {
+                    show = false;
+                }
+                
+                // 状态过滤
+                if (statusFilter) {
+                    const statusMap = {
+                        'pending': '待分析',
+                        'processing': '分析中',
+                        'completed': '已完成',
+                        'failed': '分析失败'
+                    };
+                    if (!statusText.includes(statusMap[statusFilter])) {
+                        show = false;
+                    }
+                }
+                
+                row.style.display = show ? '' : 'none';
+            });
+            
+            // 更新结果计数
+            updateResultCount();
+        }
+
+        function updateResultCount() {
+            const visibleRows = document.querySelectorAll('tbody tr:not([style*="display: none"]), tbody tr[style=""]').length;
+            const totalRows = document.querySelectorAll('tbody tr').length;
+            document.querySelector('.font-bold.text-dark').textContent = visibleRows;
+            if (visibleRows !== totalRows) {
+                document.querySelector('.font-bold.text-dark').textContent = visibleRows + ' / ' + totalRows;
+            }
+        }
     </script>
 </body>
 </html>
