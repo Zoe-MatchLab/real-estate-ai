@@ -30,6 +30,15 @@
         .tag-status-failed { background: #FFECE8; color: #F53F3F; }
         aside a.active { color: #165DFF; background-color: #E8F3FF; border-right: 4px solid #165DFF; }
         .score-ring { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; }
+        .dropdown-menu { display: none; position: absolute; right: 0; top: calc(100% + 4px); background: white; border: 1px solid #E5E6EB; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); min-width: 160px; z-index: 100; }
+        .dropdown-menu.show { display: block; }
+        .dropdown-item { padding: 10px 14px; font-size: 14px; color: #4E5969; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: background 0.15s; }
+        .dropdown-item:hover { background: #F7F8FA; color: #165DFF; }
+        .dropdown-item.disabled { color: #C9CDD4; cursor: not-allowed; pointer-events: none; }
+        .dropdown-divider { height: 1px; background: #E5E6EB; margin: 4px 0; }
+        .batch-bar { display: none; }
+        .batch-bar.show { display: flex; }
+        input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; accent-color: #165DFF; }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -86,14 +95,37 @@
                     <p class="text-gray-500 mt-1">V2.0 · 约看录音AI分析 · 支持播放 + 导出 + Drill-Down</p>
                 </div>
                 <div class="flex gap-2">
-                    <button class="text-sm text-gray-500 hover:text-primary border border-gray-300 rounded-lg px-3 py-2">
-                        <i class="fa fa-download mr-1"></i>导出报告
-                    </button>
+                    <!-- 导出按钮 + 下拉菜单 -->
+                    <div class="relative" id="exportDropdownWrapper">
+                        <button id="exportBtn" class="text-sm text-gray-500 hover:text-primary border border-gray-300 rounded-lg px-3 py-2 flex items-center gap-1">
+                            <i class="fa fa-download mr-1"></i>导出报告
+                            <i class="fa fa-angle-down text-xs ml-1"></i>
+                        </button>
+                        <div class="dropdown-menu" id="exportDropdown">
+                            <div class="dropdown-item" onclick="exportCurrentPage()">
+                                <i class="fa fa-file-o"></i>导出当前页
+                            </div>
+                            <div class="dropdown-item" onclick="exportAll()">
+                                <i class="fa fa-database"></i>导出全部
+                            </div>
+                            <div class="dropdown-divider"></div>
+                            <div class="dropdown-item disabled" id="exportSelectedItem" onclick="exportSelected()">
+                                <i class="fa fa-check-square-o"></i>导出选中项 (<span id="selectedCount">0</span>)
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 批量删除按钮（选中后显示） -->
+                    <div class="batch-bar" id="batchBar">
+                        <button class="text-sm text-white bg-danger border border-danger rounded-lg px-3 py-2 flex items-center gap-1 hover:bg-danger/90" onclick="batchDelete()">
+                            <i class="fa fa-trash-o"></i>批量删除 (<span id="batchSelectedCount">0</span>)
+                        </button>
+                    </div>
                     <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm bg-white">
                         <option>全部状态</option>
                         <option>待分析</option>
                         <option>分析中</option>
                         <option>已完成</option>
+                        <option>分析失败</option>
                     </select>
                 </div>
             </div>
@@ -123,7 +155,7 @@
                 <div class="flex flex-wrap gap-3 items-end">
                     <div class="flex-1 min-w-[200px]">
                         <label class="block text-xs text-gray-500 mb-1">经纪人/客户搜索</label>
-                        <input type="text" placeholder="搜索经纪人或客户姓名..." class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
+                        <input type="text" id="searchInput" placeholder="搜索录音名称/经纪人..." class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
                     </div>
                     <div class="min-w-[160px]">
                         <label class="block text-xs text-gray-500 mb-1">分析状态</label>
@@ -132,6 +164,7 @@
                             <option value="pending">待分析</option>
                             <option value="processing">分析中</option>
                             <option value="completed">已完成</option>
+                            <option value="failed">分析失败</option>
                         </select>
                     </div>
                     <div class="min-w-[160px]">
@@ -142,15 +175,35 @@
                             <option>万科翡翠公园</option>
                         </select>
                     </div>
-                    <div class="min-w-[200px]">
-                        <label class="block text-xs text-gray-500 mb-1">上传时间</label>
-                        <input type="date" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
+                    <!-- 时间维度选择 -->
+                    <div class="min-w-[120px]">
+                        <label class="block text-xs text-gray-500 mb-1">时间维度</label>
+                        <select id="timeDimension" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-white" onchange="onDimensionChange()">
+                            <option value="day">按日</option>
+                            <option value="week">按周</option>
+                            <option value="month">按月</option>
+                        </select>
+                    </div>
+                    <!-- 日：单日期 -->
+                    <div class="min-w-[160px]" id="dayRange">
+                        <label class="block text-xs text-gray-500 mb-1">选择日期</label>
+                        <input type="date" id="dayInput" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
+                    </div>
+                    <!-- 周：周选择 -->
+                    <div class="min-w-[160px]" id="weekRange" style="display:none">
+                        <label class="block text-xs text-gray-500 mb-1">选择周</label>
+                        <input type="week" id="weekInput" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
+                    </div>
+                    <!-- 月：月选择 -->
+                    <div class="min-w-[160px]" id="monthRange" style="display:none">
+                        <label class="block text-xs text-gray-500 mb-1">选择月份</label>
+                        <input type="month" id="monthInput" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
                     </div>
                     <div>
                         <button class="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg text-sm">
                             <i class="fa fa-search mr-1"></i>搜索
                         </button>
-                        <button class="ml-2 text-gray-500 hover:text-gray-700 px-3 py-2 text-sm border border-gray-300 rounded-lg">重置</button>
+                        <button class="ml-2 text-gray-500 hover:text-gray-700 px-3 py-2 text-sm border border-gray-300 rounded-lg" onclick="resetFilters()">重置</button>
                     </div>
                 </div>
             </div>
@@ -158,12 +211,15 @@
             <!-- 列表表格 -->
             <div class="bg-white rounded-lg shadow-sm">
                 <div class="p-4 border-b border-gray-100">
-                    <div class="text-sm text-gray-600">共 <span class="font-bold text-dark">156</span> 条录音记录</div>
+                    <div class="text-sm text-gray-600">共 <span class="font-bold text-dark">156</span> 条录音记录<span class="ml-2 text-gray-400">|</span> <span class="ml-2" id="selectionStatus"></span></div>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm">
                         <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
                             <tr>
+                                <th class="px-4 py-3 text-left font-medium w-10">
+                                    <input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)">
+                                </th>
                                 <th class="px-4 py-3 text-left font-medium">录音信息</th>
                                 <th class="px-4 py-3 text-left font-medium">关联客户</th>
                                 <th class="px-4 py-3 text-left font-medium">关联楼盘</th>
@@ -177,6 +233,9 @@
                         <tbody class="divide-y divide-gray-100">
                             <!-- 已完成 -->
                             <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-3">
+                                    <input type="checkbox" class="row-checkbox" onchange="onRowCheckboxChange()">
+                                </td>
                                 <td class="px-4 py-3">
                                     <div class="flex items-center gap-2">
                                         <button class="w-8 h-8 bg-primary/10 text-primary rounded-full flex items-center justify-center hover:bg-primary/20 transition">
@@ -214,8 +273,11 @@
                                     <button class="text-gray-500 hover:text-gray-700 text-xs">导出</button>
                                 </td>
                             </tr>
-                            <!-- 分析中 -->
+                            <!-- 分析中（带进度） -->
                             <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-3">
+                                    <input type="checkbox" class="row-checkbox" onchange="onRowCheckboxChange()">
+                                </td>
                                 <td class="px-4 py-3">
                                     <div class="flex items-center gap-2">
                                         <button class="w-8 h-8 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center cursor-not-allowed">
@@ -239,7 +301,16 @@
                                     </div>
                                 </td>
                                 <td class="px-4 py-3">
-                                    <span class="tag tag-status-processing">分析中 <span class="animate-pulse">...</span></span>
+                                    <div>
+                                        <span class="tag tag-status-processing">分析中</span>
+                                        <div class="mt-1 flex items-center gap-1">
+                                            <div class="w-24 h-1.5 bg-gray-200 rounded-full overflow-hidden">
+                                                <div class="h-full bg-warning rounded-full transition-all" style="width: 67%"></div>
+                                            </div>
+                                            <span class="text-xs text-warning font-medium">67%</span>
+                                        </div>
+                                        <div class="text-xs text-gray-400 mt-0.5">预计剩余 1分30秒</div>
+                                    </div>
                                 </td>
                                 <td class="px-4 py-3 text-gray-400 text-sm">—</td>
                                 <td class="px-4 py-3">
@@ -252,6 +323,9 @@
                             </tr>
                             <!-- 待分析 -->
                             <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-3">
+                                    <input type="checkbox" class="row-checkbox" onchange="onRowCheckboxChange()">
+                                </td>
                                 <td class="px-4 py-3">
                                     <div class="flex items-center gap-2">
                                         <button class="w-8 h-8 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center cursor-not-allowed">
@@ -286,8 +360,54 @@
                                     <button class="text-gray-500 hover:text-gray-700 text-xs">查看详情</button>
                                 </td>
                             </tr>
+                            <!-- 分析失败 -->
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-3">
+                                    <input type="checkbox" class="row-checkbox" onchange="onRowCheckboxChange()">
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center gap-2">
+                                        <button class="w-8 h-8 bg-danger/10 text-danger rounded-full flex items-center justify-center hover:bg-danger/20 transition">
+                                            <i class="fa fa-exclamation text-xs"></i>
+                                        </button>
+                                        <div>
+                                            <div class="font-medium text-dark text-sm">20260409_081500.wav</div>
+                                            <div class="text-xs text-gray-400">1分08秒 · 1.3MB</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="text-dark font-medium text-sm">赵六</div>
+                                    <div class="text-xs text-gray-400">150****3341</div>
+                                </td>
+                                <td class="px-4 py-3 text-gray-600 text-sm">绿地海珀外滩</td>
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-6 h-6 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-xs font-bold">周</div>
+                                        <span class="text-gray-700 text-sm">周涛</span>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div>
+                                        <span class="tag tag-status-failed">分析失败</span>
+                                        <div class="text-xs text-danger mt-0.5">ASR识别失败，请检查音频质量</div>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3 text-gray-400 text-sm">—</td>
+                                <td class="px-4 py-3">
+                                    <div class="text-gray-700 text-sm">2026-04-09</div>
+                                    <div class="text-xs text-gray-400">08:15</div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <button class="text-danger hover:text-danger/80 text-xs mr-2">重新分析</button>
+                                    <button class="text-gray-500 hover:text-gray-700 text-xs">查看详情</button>
+                                </td>
+                            </tr>
                             <!-- 已完成 高分 -->
                             <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-3">
+                                    <input type="checkbox" class="row-checkbox" onchange="onRowCheckboxChange()">
+                                </td>
                                 <td class="px-4 py-3">
                                     <div class="flex items-center gap-2">
                                         <button class="w-8 h-8 bg-primary/10 text-primary rounded-full flex items-center justify-center hover:bg-primary/20 transition">
@@ -342,5 +462,118 @@
             </div>
         </main>
     </div>
+
+    <script>
+        // ---- 导出下拉菜单 ----
+        const exportBtn = document.getElementById('exportBtn');
+        const exportDropdown = document.getElementById('exportDropdown');
+
+        exportBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            exportDropdown.classList.toggle('show');
+        });
+
+        document.addEventListener('click', function() {
+            exportDropdown.classList.remove('show');
+        });
+
+        function exportCurrentPage() {
+            alert('正在导出当前页...');
+            exportDropdown.classList.remove('show');
+        }
+
+        function exportAll() {
+            alert('正在导出全部 156 条记录...');
+            exportDropdown.classList.remove('show');
+        }
+
+        function exportSelected() {
+            const count = getSelectedCount();
+            if (count === 0) return;
+            alert('正在导出选中的 ' + count + ' 条记录...');
+            exportDropdown.classList.remove('show');
+        }
+
+        // ---- 批量选择 ----
+        function getSelectedCount() {
+            return document.querySelectorAll('.row-checkbox:checked').length;
+        }
+
+        function onRowCheckboxChange() {
+            updateBatchUI();
+        }
+
+        function toggleSelectAll(el) {
+            document.querySelectorAll('.row-checkbox').forEach(cb => {
+                cb.checked = el.checked;
+            });
+            updateBatchUI();
+        }
+
+        function updateBatchUI() {
+            const count = getSelectedCount();
+            const batchBar = document.getElementById('batchBar');
+            const selectedCountEl = document.getElementById('selectedCount');
+            const batchSelectedCountEl = document.getElementById('batchSelectedCount');
+            const exportSelectedItem = document.getElementById('exportSelectedItem');
+            const selectionStatus = document.getElementById('selectionStatus');
+
+            selectedCountEl.textContent = count;
+            batchSelectedCountEl.textContent = count;
+
+            if (count > 0) {
+                batchBar.classList.add('show');
+                exportSelectedItem.classList.remove('disabled');
+                selectionStatus.textContent = '已选中 ' + count + ' 项';
+            } else {
+                batchBar.classList.remove('show');
+                exportSelectedItem.classList.add('disabled');
+                selectionStatus.textContent = '';
+            }
+
+            // sync selectAll checkbox
+            const allCheckboxes = document.querySelectorAll('.row-checkbox');
+            const selectAllCheckbox = document.getElementById('selectAll');
+            const checkedCount = document.querySelectorAll('.row-checkbox:checked').length;
+            selectAllCheckbox.checked = checkedCount === allCheckboxes.length && allCheckboxes.length > 0;
+        }
+
+        function batchDelete() {
+            const count = getSelectedCount();
+            if (count === 0) return;
+            if (confirm('确定要删除选中的 ' + count + ' 条录音记录吗？此操作不可恢复。')) {
+                alert('已删除选中的 ' + count + ' 条记录（示例）');
+                // In real app: call API then refresh list
+                document.querySelectorAll('.row-checkbox:checked').forEach(cb => {
+                    cb.checked = false;
+                });
+                document.getElementById('selectAll').checked = false;
+                updateBatchUI();
+            }
+        }
+
+        // ---- 时间维度切换 ----
+        function onDimensionChange() {
+            const dim = document.getElementById('timeDimension').value;
+            document.getElementById('dayRange').style.display = dim === 'day' ? 'block' : 'none';
+            document.getElementById('weekRange').style.display = dim === 'week' ? 'block' : 'none';
+            document.getElementById('monthRange').style.display = dim === 'month' ? 'block' : 'none';
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('timeDimension').value = 'day';
+            document.getElementById('dayInput').value = '';
+            document.getElementById('weekInput').value = '';
+            document.getElementById('monthInput').value = '';
+            onDimensionChange();
+            document.querySelectorAll('.row-checkbox').forEach(cb => cb.checked = false);
+            document.getElementById('selectAll').checked = false;
+            updateBatchUI();
+        }
+
+        // Init
+        onDimensionChange();
+    </script>
 </body>
 </html>
