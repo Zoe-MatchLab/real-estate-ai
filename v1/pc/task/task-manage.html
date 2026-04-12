@@ -151,12 +151,10 @@
                         <label class="text-xs text-gray-500 mb-1 block">任务状态</label>
                         <select name="taskStatus" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
                             <option value="">全部</option>
-                            <option value="pending_distribute">待分发</option>
-                            <option value="pending">待执行</option>
+                            <option value="pending">待下发</option>
                             <option value="progress">进行中</option>
+                            <option value="invalid">已失效</option>
                             <option value="completed">已完成</option>
-                            <option value="timeout">已超时</option>
-                            <option value="rejected">已打回</option>
                         </select>
                     </div>
                     <div>
@@ -226,52 +224,46 @@
                             <th class="w-12 text-left px-4 py-3 text-xs text-gray-500 font-medium">
                                 <input type="checkbox">
                             </th>
-                            <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">任务名称</th>
-                            <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">所属项目</th>
-                            <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">所属区域</th>
-                            <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">优先级</th>
+                            <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">楼盘名称</th>
+                            <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">关联任务</th>
                             <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">状态</th>
+                            <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">执行人</th>
                             <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">完成进度</th>
                             <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">截止时间</th>
-                            <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">完成人数</th>
+                            <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">提醒时间</th>
                             <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">操作</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- 已超时任务 -->
-                        <tr class="border-b border-gray-100 hover-row bg-red-50/30">
+                        <!-- 已失效任务 -->
+                        <tr class="border-b border-gray-100 hover-row bg-gray-50/50">
                             <td class="px-4 py-3">
                                 <input type="checkbox">
                             </td>
+                            <td class="px-4 py-3 text-sm font-medium">中海汇德里</td>
                             <td class="px-4 py-3">
-                                <div class="flex items-center">
-                                    <span class="font-medium text-sm">中海汇德里3月探盘任务</span>
-                                    <span class="tag tag-danger ml-2">超时</span>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-50 text-orange-600">探盘路书🟠</span>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-600">话术训练🔵</span>
                                 </div>
                             </td>
-                            <td class="px-4 py-3 text-sm">中海汇德里</td>
-                            <td class="px-4 py-3 text-sm">苏州区域</td>
                             <td class="px-4 py-3">
-                                <span class="tag tag-danger">紧急</span>
+                                <span class="tag tag-danger">已失效</span>
                             </td>
-                            <td class="px-4 py-3">
-                                <span class="tag tag-danger">已超时</span>
-                            </td>
-                            <td class="px-4 py-3">
-                                <div class="flex items-center w-32">
-                                    <div class="progress-bar flex-1 mr-2">
-                                        <div class="progress-value bg-danger" style="width: 40%"></div>
-                                    </div>
-                                    <span class="text-xs">40%</span>
-                                </div>
-                            </td>
+                            <td class="px-4 py-3 text-sm">王经理</td>
+                            <td class="px-4 py-3 text-sm font-medium">3/5</td>
                             <td class="px-4 py-3 text-sm text-danger">2026-03-27 18:00</td>
-                            <td class="px-4 py-3 text-sm">12/32人</td>
+                            <td class="px-4 py-3 text-xs text-gray-500">
+                                <div>下发时通知</div>
+                                <div>截止前2小时</div>
+                            </td>
                             <td class="px-4 py-3">
                                 <div class="flex gap-2">
                                     <button class="text-xs text-primary">查看</button>
-                                    <button class="text-xs text-danger">催办</button>
-                                    <button class="text-xs text-gray-600">导出</button>
+                                    <button class="text-xs text-gray-400 cursor-not-allowed" disabled>下发</button>
+                                    <button class="text-xs text-gray-400 cursor-not-allowed" disabled>暂停</button>
+                                    <button class="text-xs text-gray-400 cursor-not-allowed" disabled>催办</button>
+                                    <button class="text-xs text-primary">编辑</button>
                                 </div>
                             </td>
                         </tr>
@@ -281,73 +273,63 @@
                             <td class="px-4 py-3">
                                 <input type="checkbox">
                             </td>
+                            <td class="px-4 py-3 text-sm font-medium">保利中央公园</td>
                             <td class="px-4 py-3">
-                                <div class="flex items-center">
-                                    <span class="font-medium text-sm">保利中央公园月度探盘</span>
-                                    <span class="tag tag-warning ml-2">高优</span>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-50 text-orange-600">探盘路书🟠</span>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-600">话术训练🔵</span>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-50 text-purple-600">邀约录音🟣</span>
                                 </div>
-                            </td>
-                            <td class="px-4 py-3 text-sm">保利中央公园</td>
-                            <td class="px-4 py-3 text-sm">上海区域</td>
-                            <td class="px-4 py-3">
-                                <span class="tag tag-warning">高</span>
                             </td>
                             <td class="px-4 py-3">
                                 <span class="tag tag-warning">进行中</span>
                             </td>
-                            <td class="px-4 py-3">
-                                <div class="flex items-center w-32">
-                                    <div class="progress-bar flex-1 mr-2">
-                                        <div class="progress-value bg-warning" style="width: 75%"></div>
-                                    </div>
-                                    <span class="text-xs">75%</span>
-                                </div>
+                            <td class="px-4 py-3 text-sm">李总监</td>
+                            <td class="px-4 py-3 text-sm font-medium">28/36</td>
+                            <td class="px-4 py-3 text-sm">2026-04-15 18:00</td>
+                            <td class="px-4 py-3 text-xs text-gray-500">
+                                <div>下发时通知</div>
+                                <div>截止前2小时</div>
+                                <div>超时后每小时</div>
                             </td>
-                            <td class="px-4 py-3 text-sm">2026-03-28 18:00</td>
-                            <td class="px-4 py-3 text-sm">28/36人</td>
                             <td class="px-4 py-3">
                                 <div class="flex gap-2">
                                     <button class="text-xs text-primary">查看</button>
-                                    <button class="text-xs text-warning">提醒</button>
-                                    <button class="text-xs text-gray-600">导出</button>
+                                    <button class="text-xs text-gray-400 cursor-not-allowed" disabled>下发</button>
+                                    <button class="text-xs text-warning">暂停</button>
+                                    <button class="text-xs text-danger">催办</button>
+                                    <button class="text-xs text-gray-600">编辑</button>
                                 </div>
                             </td>
                         </tr>
 
-                        <!-- 待审核任务 -->
-                        <tr class="border-b border-gray-100 hover-row bg-orange-50/30">
+                        <!-- 待下发任务 -->
+                        <tr class="border-b border-gray-100 hover-row bg-blue-50/30">
                             <td class="px-4 py-3">
                                 <input type="checkbox">
                             </td>
+                            <td class="px-4 py-3 text-sm font-medium">万科城市之光</td>
                             <td class="px-4 py-3">
-                                <div class="flex items-center">
-                                    <span class="font-medium text-sm">万科城市之光新盘探盘</span>
-                                    <span class="tag tag-info ml-2">待审核</span>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-50 text-orange-600">探盘路书🟠</span>
                                 </div>
                             </td>
-                            <td class="px-4 py-3 text-sm">万科城市之光</td>
-                            <td class="px-4 py-3 text-sm">杭州区域</td>
                             <td class="px-4 py-3">
-                                <span class="tag tag-info">中</span>
+                                <span class="tag tag-info">待下发</span>
                             </td>
-                            <td class="px-4 py-3">
-                                <span class="tag tag-info">待审核</span>
+                            <td class="px-4 py-3 text-sm">张总监</td>
+                            <td class="px-4 py-3 text-sm font-medium text-gray-400">0/20</td>
+                            <td class="px-4 py-3 text-sm">2026-04-20 18:00</td>
+                            <td class="px-4 py-3 text-xs text-gray-500">
+                                <div>截止前1小时</div>
                             </td>
-                            <td class="px-4 py-3">
-                                <div class="flex items-center w-32">
-                                    <div class="progress-bar flex-1 mr-2">
-                                        <div class="progress-value bg-primary" style="width: 100%"></div>
-                                    </div>
-                                    <span class="text-xs">100%</span>
-                                </div>
-                            </td>
-                            <td class="px-4 py-3 text-sm">2026-03-25 18:00</td>
-                            <td class="px-4 py-3 text-sm">42/42人</td>
                             <td class="px-4 py-3">
                                 <div class="flex gap-2">
-                                    <button class="text-xs text-success">审核</button>
-                                    <button class="text-xs text-primary">查看报告</button>
-                                    <button class="text-xs text-gray-600">导出</button>
+                                    <button class="text-xs text-primary">查看</button>
+                                    <button class="text-xs text-success">下发</button>
+                                    <button class="text-xs text-gray-400 cursor-not-allowed" disabled>暂停</button>
+                                    <button class="text-xs text-gray-400 cursor-not-allowed" disabled>催办</button>
+                                    <button class="text-xs text-primary">编辑</button>
                                 </div>
                             </td>
                         </tr>
@@ -357,73 +339,31 @@
                             <td class="px-4 py-3">
                                 <input type="checkbox">
                             </td>
+                            <td class="px-4 py-3 text-sm font-medium">碧桂园天玺</td>
                             <td class="px-4 py-3">
-                                <div class="flex items-center">
-                                    <span class="font-medium text-sm">碧桂园天玺季度探盘</span>
-                                    <span class="tag tag-success ml-2">已完成</span>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-50 text-orange-600">探盘路书🟠</span>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-600">话术训练🔵</span>
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-50 text-purple-600">邀约录音🟣</span>
                                 </div>
-                            </td>
-                            <td class="px-4 py-3 text-sm">碧桂园天玺</td>
-                            <td class="px-4 py-3 text-sm">南京区域</td>
-                            <td class="px-4 py-3">
-                                <span class="tag tag-success">低</span>
                             </td>
                             <td class="px-4 py-3">
                                 <span class="tag tag-success">已完成</span>
                             </td>
-                            <td class="px-4 py-3">
-                                <div class="flex items-center w-32">
-                                    <div class="progress-bar flex-1 mr-2">
-                                        <div class="progress-value bg-success" style="width: 100%"></div>
-                                    </div>
-                                    <span class="text-xs">100%</span>
-                                </div>
+                            <td class="px-4 py-3 text-sm">陈总监</td>
+                            <td class="px-4 py-3 text-sm font-medium">38/38</td>
+                            <td class="px-4 py-3 text-sm text-gray-500">2026-03-20 18:00</td>
+                            <td class="px-4 py-3 text-xs text-gray-500">
+                                <div>下发时通知</div>
+                                <div>截止前3小时</div>
                             </td>
-                            <td class="px-4 py-3 text-sm">2026-03-20 18:00</td>
-                            <td class="px-4 py-3 text-sm">38/38人</td>
                             <td class="px-4 py-3">
                                 <div class="flex gap-2">
                                     <button class="text-xs text-primary">查看</button>
-                                    <button class="text-xs text-gray-600">复制任务</button>
-                                    <button class="text-xs text-gray-600">导出</button>
-                                </div>
-                            </td>
-                        </tr>
-
-                        <!-- 已打回任务 -->
-                        <tr class="border-b border-gray-100 hover-row bg-yellow-50/30">
-                            <td class="px-4 py-3">
-                                <input type="checkbox">
-                            </td>
-                            <td class="px-4 py-3">
-                                <div class="flex items-center">
-                                    <span class="font-medium text-sm">融创文旅城配套调研</span>
-                                    <span class="tag tag-warning ml-2">已打回</span>
-                                </div>
-                            </td>
-                            <td class="px-4 py-3 text-sm">融创文旅城</td>
-                            <td class="px-4 py-3 text-sm">上海区域</td>
-                            <td class="px-4 py-3">
-                                <span class="tag tag-warning">中</span>
-                            </td>
-                            <td class="px-4 py-3">
-                                <span class="tag tag-warning">整改中</span>
-                            </td>
-                            <td class="px-4 py-3">
-                                <div class="flex items-center w-32">
-                                    <div class="progress-bar flex-1 mr-2">
-                                        <div class="progress-value bg-warning" style="width: 60%"></div>
-                                    </div>
-                                    <span class="text-xs">60%</span>
-                                </div>
-                            </td>
-                            <td class="px-4 py-3 text-sm">2026-03-29 18:00</td>
-                            <td class="px-4 py-3 text-sm">16/28人</td>
-                            <td class="px-4 py-3">
-                                <div class="flex gap-2">
-                                    <button class="text-xs text-primary">查看原因</button>
-                                    <button class="text-xs text-warning">催改</button>
-                                    <button class="text-xs text-gray-600">导出</button>
+                                    <button class="text-xs text-gray-400 cursor-not-allowed" disabled>下发</button>
+                                    <button class="text-xs text-gray-400 cursor-not-allowed" disabled>暂停</button>
+                                    <button class="text-xs text-gray-400 cursor-not-allowed" disabled>催办</button>
+                                    <button class="text-xs text-primary">编辑</button>
                                 </div>
                             </td>
                         </tr>
