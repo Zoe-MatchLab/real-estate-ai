@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>探盘任务列表 - 房产AI作业平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        success: '#00B42A',
+                        warning: '#FF7D00',
+                        danger: '#F53F3F',
+                        dark: '#1D2129',
+                        'gray-light': '#F2F3F5',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .progress-bar {
+            height: 6px;
+            border-radius: 3px;
+            background: #f0f0f0;
+            overflow: hidden;
+        }
+        .progress-value {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #165DFF, #4080FF);
+        }
+        .tag {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .tag-success {
+            background: #E8FFEA;
+            color: #00B42A;
+        }
+        .tag-warning {
+            background: #FFF7E8;
+            color: #FF7D00;
+        }
+        .tag-danger {
+            background: #FFECE8;
+            color: #F53F3F;
+        }
+        .tag-info {
+            background: #E8F3FF;
+            color: #165DFF;
+        }
+        .tag-purple {
+            background: #F0E8FF;
+            color: #722ED1;
+        }
+        .hover-row:hover {
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 顶部导航 -->
+    <nav class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
+        <div class="flex justify-between items-center px-6 py-3">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-home text-primary text-2xl"></i>
+                <span class="text-xl font-bold text-dark">房产AI作业平台</span>
+                <span class="text-sm text-gray-500 ml-2">管理后台</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-600 hover:text-primary relative">
+                    <i class="fa fa-bell-o text-lg"></i>
+                    <span class="absolute top-0 right-0 bg-danger text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">5</span>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center">管</div>
+                    <span class="text-sm font-medium">华东区总监</span>
+                    <i class="fa fa-angle-down text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex pt-14">
+        <!-- 侧边栏容器 -->
+        <div id="sidebar-container"></div>
+
+        <!-- 主内容区 -->
+        <main class="ml-64 flex-1 p-6">
+            <!-- 头部 -->
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h1 class="text-2xl font-bold mb-1">📋 探盘任务列表</h1>
+                    <p class="text-gray-500">管理所有探盘任务，支持新建、编辑、审核、导出操作</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button class="border border-gray-300 bg-white px-4 py-2 rounded-lg hover:bg-gray-50" onclick="window.location.href='task-tracking.html'">
+                        <i class="fa fa-line-chart mr-2"></i> 查看追踪驾驶舱
+                    </button>
+                    <button class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg" onclick="window.location.href='task-create.html'">
+                        <i class="fa fa-plus-circle mr-2"></i> 新建探盘任务
+                    </button>
+                </div>
+            </div>
+
+            <!-- 筛选区域 -->
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 mb-6">
+                <div class="grid grid-cols-6 gap-4">
+                    <div>
+                        <label class="text-xs text-gray-500 mb-1 block">任务状态</label>
+                        <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                            <option value="">全部</option>
+                            <option value="pending_claim">待领取</option>
+                            <option value="in_progress">进行中</option>
+                            <option value="completed">已完成</option>
+                            <option value="expired">已失效</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500 mb-1 block">任务类型</label>
+                        <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                            <option value="">全部</option>
+                            <option value="roadbook">探盘路书</option>
+                            <option value="speech">话术训练</option>
+                            <option value="audio">邀约录音</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500 mb-1 block">楼盘名称</label>
+                        <input type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" placeholder="输入楼盘名称">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500 mb-1 block">领取人</label>
+                        <input type="text" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm" placeholder="输入领取人姓名">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500 mb-1 block">时间范围</label>
+                        <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm">
+                            <option value="month">本月</option>
+                            <option value="week">本周</option>
+                            <option value="quarter">本季度</option>
+                            <option value="all">全部</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button class="w-full bg-primary text-white rounded-lg px-3 py-2 text-sm hover:bg-primary/90">
+                            <i class="fa fa-search mr-1"></i> 搜索
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 任务统计卡片 -->
+            <div class="grid grid-cols-4 gap-4 mb-6">
+                <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center mr-3">
+                            <i class="fa fa-list text-primary"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold">128</p>
+                            <p class="text-xs text-gray-500">总任务数</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-orange-50 rounded-full flex items-center justify-center mr-3">
+                            <i class="fa fa-clock-o text-warning"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold">23</p>
+                            <p class="text-xs text-gray-500">待领取</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-green-50 rounded-full flex items-center justify-center mr-3">
+                            <i class="fa fa-spinner text-success"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold">67</p>
+                            <p class="text-xs text-gray-500">进行中</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-gray-50 rounded-full flex items-center justify-center mr-3">
+                            <i class="fa fa-check-circle text-gray-500"></i>
+                        </div>
+                        <div>
+                            <p class="text-2xl font-bold">38</p>
+                            <p class="text-xs text-gray-500">已完成</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 任务列表 -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <table class="w-full">
+                    <thead>
+                        <tr class="bg-gray-50 border-b border-gray-100">
+                            <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium w-12">
+                                <input type="checkbox">
+                            </th>
+                            <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">楼盘名称</th>
+                            <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">任务类型</th>
+                            <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">状态</th>
+                            <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">领取人</th>
+                            <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">截止时间</th>
+                            <th class="text-left px-4 py-3 text-xs text-gray-500 font-medium">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- 待领取任务 -->
+                        <tr class="border-b border-gray-100 hover-row">
+                            <td class="px-4 py-3">
+                                <input type="checkbox">
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="font-medium text-sm">中海汇德里3月探盘任务</div>
+                                <p class="text-xs text-gray-500 mt-1">上海市浦东新区 | 住宅</p>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="tag tag-info">探盘路书</span>
+                                    <span class="tag tag-purple">话术训练</span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <span class="tag tag-warning">待领取</span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="text-sm">待分配</div>
+                                <p class="text-xs text-gray-500">0/32人</p>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="text-sm">2026-03-30 18:00</div>
+                                <p class="text-xs text-gray-500">还剩3天</p>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex gap-2">
+                                    <button class="text-xs text-primary">分配</button>
+                                    <button class="text-xs text-gray-600">编辑</button>
+                                    <button class="text-xs text-gray-400">查看</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- 进行中任务 - 探盘路书 -->
+                        <tr class="border-b border-gray-100 hover-row">
+                            <td class="px-4 py-3">
+                                <input type="checkbox">
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="font-medium text-sm">保利中央公园月度探盘</div>
+                                <p class="text-xs text-gray-500 mt-1">上海市浦东新区 | 住宅</p>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="tag tag-info">探盘路书</span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <span class="tag tag-warning">进行中</span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex items-center">
+                                    <div class="w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-xs mr-2">李</div>
+                                    <div>
+                                        <div class="text-sm">李明</div>
+                                        <p class="text-xs text-gray-500">28/36人完成</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="text-sm">2026-03-28 18:00</div>
+                                <p class="text-xs text-warning">今天截止</p>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex gap-2">
+                                    <button class="text-xs text-primary">催办</button>
+                                    <button class="text-xs text-gray-600">详情</button>
+                                    <button class="text-xs text-gray-400">导出</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- 进行中任务 - 多类型 -->
+                        <tr class="border-b border-gray-100 hover-row">
+                            <td class="px-4 py-3">
+                                <input type="checkbox">
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="font-medium text-sm">万科城市之光新盘探盘</div>
+                                <p class="text-xs text-gray-500 mt-1">杭州市西湖区 | 住宅</p>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="tag tag-info">探盘路书</span>
+                                    <span class="tag tag-purple">话术训练</span>
+                                    <span class="tag tag-success">邀约录音</span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex flex-col gap-1">
+                                    <span class="tag tag-info w-fit">路书进行中</span>
+                                    <span class="tag tag-warning w-fit">话术待领取</span>
+                                    <span class="tag tag-success w-fit">录音已完成</span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex items-center">
+                                    <div class="w-6 h-6 bg-success text-white rounded-full flex items-center justify-center text-xs mr-2">王</div>
+                                    <div>
+                                        <div class="text-sm">王芳</div>
+                                        <p class="text-xs text-gray-500">42/42人完成</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="text-sm">2026-03-25 18:00</div>
+                                <p class="text-xs text-danger">已超时</p>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex gap-2">
+                                    <button class="text-xs text-primary">催办</button>
+                                    <button class="text-xs text-gray-600">详情</button>
+                                    <button class="text-xs text-gray-400">导出</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- 已完成任务 -->
+                        <tr class="border-b border-gray-100 hover-row bg-green-50/30">
+                            <td class="px-4 py-3">
+                                <input type="checkbox">
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="font-medium text-sm">碧桂园天玺季度探盘</div>
+                                <p class="text-xs text-gray-500 mt-1">南京市建邺区 | 住宅</p>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="tag tag-info">探盘路书</span>
+                                    <span class="tag tag-purple">话术训练</span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <span class="tag tag-success">已完成</span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex items-center">
+                                    <div class="w-6 h-6 bg-success text-white rounded-full flex items-center justify-center text-xs mr-2">张</div>
+                                    <div>
+                                        <div class="text-sm">张伟</div>
+                                        <p class="text-xs text-gray-500">38/38人完成</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="text-sm">2026-03-20 18:00</div>
+                                <p class="text-xs text-success">已完成</p>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex gap-2">
+                                    <button class="text-xs text-primary">查看报告</button>
+                                    <button class="text-xs text-gray-600">复制任务</button>
+                                    <button class="text-xs text-gray-400">导出</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- 已失效任务 -->
+                        <tr class="border-b border-gray-100 hover-row bg-red-50/30">
+                            <td class="px-4 py-3">
+                                <input type="checkbox">
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="font-medium text-sm text-gray-500">融创文旅城配套调研</div>
+                                <p class="text-xs text-gray-400 mt-1">上海市浦东新区 | 商业</p>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="tag tag-info">探盘路书</span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <span class="tag tag-danger">已失效</span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="text-sm text-gray-500">已失效</div>
+                                <p class="text-xs text-gray-400">16/28人完成</p>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="text-sm text-danger">2026-03-15 18:00</div>
+                                <p class="text-xs text-danger">已逾期5天</p>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex gap-2">
+                                    <button class="text-xs text-gray-600">查看记录</button>
+                                    <button class="text-xs text-gray-400">复制任务</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- 仅话术训练任务 -->
+                        <tr class="border-b border-gray-100 hover-row">
+                            <td class="px-4 py-3">
+                                <input type="checkbox">
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="font-medium text-sm">龙湖天街话术训练任务</div>
+                                <p class="text-xs text-gray-500 mt-1">杭州市余杭区 | 商业</p>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="tag tag-purple">话术训练</span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <span class="tag tag-warning">进行中</span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex items-center">
+                                    <div class="w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-xs mr-2">陈</div>
+                                    <div>
+                                        <div class="text-sm">陈静</div>
+                                        <p class="text-xs text-gray-500">15/20人完成</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="text-sm">2026-04-05 18:00</div>
+                                <p class="text-xs text-gray-500">还剩5天</p>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex gap-2">
+                                    <button class="text-xs text-primary">催办</button>
+                                    <button class="text-xs text-gray-600">详情</button>
+                                    <button class="text-xs text-gray-400">导出</button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- 仅邀约录音任务 -->
+                        <tr class="border-b border-gray-100 hover-row">
+                            <td class="px-4 py-3">
+                                <input type="checkbox">
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="font-medium text-sm">绿城翡翠城邀约录音任务</div>
+                                <p class="text-xs text-gray-500 mt-1">苏州市姑苏区 | 住宅</p>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="tag tag-success">邀约录音</span>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <span class="tag tag-success">已完成</span>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex items-center">
+                                    <div class="w-6 h-6 bg-success text-white rounded-full flex items-center justify-center text-xs mr-2">刘</div>
+                                    <div>
+                                        <div class="text-sm">刘洋</div>
+                                        <p class="text-xs text-gray-500">25/25人完成</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="text-sm">2026-03-18 18:00</div>
+                                <p class="text-xs text-success">已完成</p>
+                            </td>
+                            <td class="px-4 py-3">
+                                <div class="flex gap-2">
+                                    <button class="text-xs text-primary">查看报告</button>
+                                    <button class="text-xs text-gray-600">复制任务</button>
+                                    <button class="text-xs text-gray-400">导出</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- 分页 -->
+                <div class="p-4 border-t border-gray-100 flex justify-between items-center">
+                    <div class="flex items-center">
+                        <input type="checkbox" id="selectAll" class="mr-2">
+                        <label for="selectAll" class="text-sm text-gray-600 mr-4">全选</label>
+                        <button class="text-xs border border-gray-300 rounded px-3 py-1 hover:bg-gray-50 mr-2">
+                            <i class="fa fa-bell-o mr-1"></i> 批量催办
+                        </button>
+                        <button class="text-xs border border-gray-300 rounded px-3 py-1 hover:bg-gray-50">
+                            <i class="fa fa-download mr-1"></i> 批量导出
+                        </button>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <p class="text-xs text-gray-500">共 128 条记录</p>
+                        <div class="flex gap-1 ml-4">
+                            <button class="text-xs border border-gray-300 rounded px-3 py-1 hover:bg-gray-50" disabled>上一页</button>
+                            <button class="text-xs border border-primary bg-primary text-white rounded px-3 py-1">1</button>
+                            <button class="text-xs border border-gray-300 rounded px-3 py-1 hover:bg-gray-50">2</button>
+                            <button class="text-xs border border-gray-300 rounded px-3 py-1 hover:bg-gray-50">3</button>
+                            <button class="text-xs border border-gray-300 rounded px-3 py-1 hover:bg-gray-50">...</button>
+                            <button class="text-xs border border-gray-300 rounded px-3 py-1 hover:bg-gray-50">7</button>
+                            <button class="text-xs border border-gray-300 rounded px-3 py-1 hover:bg-gray-50">下一页</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // 全选功能
+        document.getElementById('selectAll').addEventListener('change', function(e) {
+            const checkboxes = document.querySelectorAll('tbody input[type="checkbox"]');
+            checkboxes.forEach(cb => {
+                cb.checked = e.target.checked;
+            });
+        });
+
+        // 状态筛选联动
+        document.querySelectorAll('select')[0].addEventListener('change', function() {
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const statusTag = row.querySelector('.tag');
+                if (!statusTag) return;
+                
+                if (this.value === '') {
+                    row.style.display = '';
+                } else {
+                    const statusMap = {
+                        'pending_claim': '待领取',
+                        'in_progress': '进行中',
+                        'completed': '已完成',
+                        'expired': '已失效'
+                    };
+                    row.style.display = statusTag.textContent === statusMap[this.value] ? '' : 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

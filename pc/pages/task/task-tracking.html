@@ -242,6 +242,154 @@
                 </div>
             </div>
 
+            <!-- 三个子任务并行进度展示 -->
+            <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100 mb-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-medium">📊 三任务并行进度（探盘任务A - 保利中央公园）</h3>
+                    <span class="text-xs text-gray-500">实时更新</span>
+                </div>
+                <div class="grid grid-cols-3 gap-4">
+                    <!-- 探盘路书 -->
+                    <div class="p-4 bg-blue-50 rounded-lg border border-blue-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white mr-3">
+                                    <i class="fa fa-map-marker"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium">探盘路书</h4>
+                                    <p class="text-xs text-gray-500">必选任务</p>
+                                </div>
+                            </div>
+                            <span class="tag tag-info">进行中</span>
+                        </div>
+                        <div class="mb-3">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>完成率</span>
+                                <span class="font-medium">75%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-value bg-primary" style="width: 75%"></div>
+                            </div>
+                        </div>
+                        <!-- 探盘路书4阶段进度 -->
+                        <div class="space-y-2">
+                            <div class="flex items-center text-sm">
+                                <div class="w-6 h-6 rounded-full bg-success text-white flex items-center justify-center text-xs mr-2">
+                                    <i class="fa fa-check"></i>
+                                </div>
+                                <span class="text-success">定位打卡</span>
+                                <span class="text-xs text-gray-500 ml-auto">已完成</span>
+                            </div>
+                            <div class="flex items-center text-sm">
+                                <div class="w-6 h-6 rounded-full bg-success text-white flex items-center justify-center text-xs mr-2">
+                                    <i class="fa fa-check"></i>
+                                </div>
+                                <span class="text-success">点位采集</span>
+                                <span class="text-xs text-gray-500 ml-auto">已完成</span>
+                            </div>
+                            <div class="flex items-center text-sm">
+                                <div class="w-6 h-6 rounded-full bg-primary text-white flex items-center justify-center text-xs mr-2">
+                                    3
+                                </div>
+                                <span class="text-primary">文案确认</span>
+                                <span class="text-xs text-primary ml-auto">进行中</span>
+                            </div>
+                            <div class="flex items-center text-sm">
+                                <div class="w-6 h-6 rounded-full bg-gray-300 text-gray-500 flex items-center justify-center text-xs mr-2">
+                                    4
+                                </div>
+                                <span class="text-gray-400">AI内容生成</span>
+                                <span class="text-xs text-gray-400 ml-auto">等待中</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 话术训练 -->
+                    <div class="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white mr-3">
+                                    <i class="fa fa-microphone"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium">话术训练</h4>
+                                    <p class="text-xs text-gray-500">可选任务</p>
+                                </div>
+                            </div>
+                            <span class="tag tag-warning">待领取</span>
+                        </div>
+                        <div class="mb-3">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>完成率</span>
+                                <span class="font-medium">0%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-value bg-purple-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-2 text-sm text-gray-400">
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-gray-300 text-gray-500 flex items-center justify-center text-xs mr-2">
+                                    <i class="fa fa-clock-o"></i>
+                                </div>
+                                <span>等待领取</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2">该任务尚未被领取，请提醒相关人员</p>
+                        </div>
+                    </div>
+                    <!-- 邀约录音 -->
+                    <div class="p-4 bg-green-50 rounded-lg border border-green-200">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-success rounded-full flex items-center justify-center text-white mr-3">
+                                    <i class="fa fa-file-audio-o"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium">邀约录音</h4>
+                                    <p class="text-xs text-gray-500">可选任务</p>
+                                </div>
+                            </div>
+                            <span class="tag tag-success">已完成</span>
+                        </div>
+                        <div class="mb-3">
+                            <div class="flex justify-between text-sm mb-1">
+                                <span>完成率</span>
+                                <span class="font-medium">100%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-value bg-success" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-success text-white flex items-center justify-center text-xs mr-2">
+                                    <i class="fa fa-check"></i>
+                                </div>
+                                <span class="text-success">录音上传</span>
+                                <span class="text-xs text-gray-500 ml-auto">已完成</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-success text-white flex items-center justify-center text-xs mr-2">
+                                    <i class="fa fa-check"></i>
+                                </div>
+                                <span class="text-success">AI分析标注</span>
+                                <span class="text-xs text-gray-500 ml-auto">已完成</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-6 h-6 rounded-full bg-success text-white flex items-center justify-center text-xs mr-2">
+                                    <i class="fa fa-check"></i>
+                                </div>
+                                <span class="text-success">结果确认</span>
+                                <span class="text-xs text-gray-500 ml-auto">已完成</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 p-3 bg-gray-50 rounded-lg">
+                    <p class="text-sm text-gray-600"><i class="fa fa-info-circle mr-1"></i>三个子任务<strong>并行执行</strong>，互不依赖，各自独立完成。整个探盘任务完成 = 探盘路书 + 话术训练 + 邀约录音<strong>全部完成</strong>才算完成。</p>
+                </div>
+            </div>
+
             <!-- 区域完成率排行 -->
             <div class="grid grid-cols-3 gap-6 mb-6">
                 <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
