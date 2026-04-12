@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据分析 - 房产AI作业平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        success: '#00B42A',
+                        warning: '#FF7D00',
+                        danger: '#F53F3F',
+                        dark: '#1D2129',
+                        'gray-light': '#F2F3F5',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .progress-bar {
+            height: 6px;
+            border-radius: 3px;
+            background: #f0f0f0;
+            overflow: hidden;
+        }
+        .progress-value {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, #165DFF, #4080FF);
+        }
+        .tag {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .tag-success {
+            background: #E8FFEA;
+            color: #00B42A;
+        }
+        .tag-warning {
+            background: #FFF7E8;
+            color: #FF7D00;
+        }
+        .tag-danger {
+            background: #FFECE8;
+            color: #F53F3F;
+        }
+        .tag-info {
+            background: #E8F3FF;
+            color: #165DFF;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 顶部导航 -->
+    <nav class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
+        <div class="flex justify-between items-center px-6 py-3">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-home text-primary text-2xl"></i>
+                <span class="text-xl font-bold text-dark">房产AI作业平台</span>
+                <span class="text-sm text-gray-500 ml-2">管理后台</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-600 hover:text-primary relative">
+                    <i class="fa fa-bell-o text-lg"></i>
+                    <span class="absolute top-0 right-0 bg-danger text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">2</span>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center">管</div>
+                    <span class="text-sm font-medium">运营管理员</span>
+                    <i class="fa fa-angle-down text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex pt-14">
+        <!-- 侧边栏容器 - 动态加载公共组件 -->
+        <div id="sidebar-container"></div>
+
+        <!-- 动态加载公共侧边栏 -->
+        <script>
+        // 加载公共侧边栏组件
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const res = await fetch('../../components/sidebar.component.html');
+                const sidebarHtml = await res.text();
+                document.getElementById('sidebar-container').innerHTML = sidebarHtml;
+                
+                // 修复侧边栏链接路径
+                if (window.fixSidebarLinks) window.fixSidebarLinks();
+                // 初始化高亮
+                if (window.initSidebar) window.initSidebar();
+            } catch (e) {
+                console.error('侧边栏加载失败:', e);
+            }
+        });
+        </script>
+
+        <!-- 主内容区 -->
+        <main class="ml-64 flex-1 p-6 min-h-[calc(100vh-56px)]">
+            <!-- 头部 -->
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h1 class="text-2xl font-bold mb-1">📊 数据分析</h1>
+                    <p class="text-gray-500">全维度业务数据分析，支持多维度筛选和导出</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <select class="border border-gray-300 bg-white px-3 py-2 rounded-lg text-sm">
+                        <option>近7天</option>
+                        <option>近30天</option>
+                        <option selected>本月</option>
+                        <option>本季度</option>
+                        <option>本年</option>
+                    </select>
+                    <button class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg">
+                        <i class="fa fa-download mr-2"></i> 导出报告
+                    </button>
+                </div>
+            </div>
+
+            <!-- 数据概览卡片 -->
+            <div class="grid grid-cols-4 gap-6 mb-6">
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-sm">总业绩</p>
+                            <h3 class="text-3xl font-bold mt-2">¥ 2.68亿</h3>
+                            <p class="text-success text-sm mt-1 flex items-center">
+                                <i class="fa fa-arrow-up mr-1"></i> 同比 +18.6%
+                            </p>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center text-primary">
+                            <i class="fa fa-line-chart text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-sm">成交套数</p>
+                            <h3 class="text-3xl font-bold mt-2">386套</h3>
+                            <p class="text-success text-sm mt-1 flex items-center">
+                                <i class="fa fa-arrow-up mr-1"></i> 同比 +12.3%
+                            </p>
+                        </div>
+                        <div class="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center text-success">
+                            <i class="fa fa-home text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-sm">平均成交周期</p>
+                            <h3 class="text-3xl font-bold mt-2">28天</h3>
+                            <p class="text-danger text-sm mt-1 flex items-center">
+                                <i class="fa fa-arrow-down mr-1"></i> 同比 -3.2天
+                            </p>
+                        </div>
+                        <div class="w-12 h-12 bg-orange-50 rounded-lg flex items-center justify-center text-orange-500">
+                            <i class="fa fa-clock-o text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-500 text-sm">客单价</p>
+                            <h3 class="text-3xl font-bold mt-2">¥ 69.4万</h3>
+                            <p class="text-success text-sm mt-1 flex items-center">
+                                <i class="fa fa-arrow-up mr-1"></i> 同比 +5.8%
+                            </p>
+                        </div>
+                        <div class="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center text-purple-500">
+                            <i class="fa fa-yen text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第一行图表 -->
+            <div class="grid grid-cols-2 gap-6 mb-6">
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-lg">业绩趋势</h3>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 text-xs bg-primary text-white rounded">总业绩</button>
+                            <button class="px-3 py-1 text-xs bg-gray-100 text-gray-600 rounded">成交量</button>
+                        </div>
+                    </div>
+                    <div class="h-64">
+                        <canvas id="performanceTrendChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-lg">项目贡献排名</h3>
+                        <select class="text-sm border border-gray-200 rounded px-2 py-1">
+                            <option>TOP 5</option>
+                            <option>TOP 10</option>
+                            <option>TOP 20</option>
+                        </select>
+                    </div>
+                    <div class="h-64">
+                        <canvas id="projectRankChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 第二行图表 -->
+            <div class="grid grid-cols-2 gap-6 mb-6">
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-medium">获客渠道分析</h3>
+                    </div>
+                    <div class="h-64">
+                        <canvas id="channelChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-medium">团队业绩排行</h3>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <span class="w-6 h-6 bg-yellow-100 text-yellow-700 rounded-full flex items-center justify-center text-xs font-bold mr-2">1</span>
+                                <span>浦东一区</span>
+                            </div>
+                            <span class="font-medium">¥ 5,680万</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <span class="w-6 h-6 bg-gray-100 text-gray-700 rounded-full flex items-center justify-center text-xs font-bold mr-2">2</span>
+                                <span>徐汇大区</span>
+                            </div>
+                            <span class="font-medium">¥ 4,850万</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <span class="w-6 h-6 bg-orange-100 text-orange-700 rounded-full flex items-center justify-center text-xs font-bold mr-2">3</span>
+                                <span>松江区域</span>
+                            </div>
+                            <span class="font-medium">¥ 4,230万</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <span class="w-6 h-6 bg-gray-100 text-gray-700 rounded-full flex items-center justify-center text-xs font-bold mr-2">4</span>
+                                <span>嘉定区域</span>
+                            </div>
+                            <span class="font-medium">¥ 3,890万</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <span class="w-6 h-6 bg-gray-100 text-gray-700 rounded-full flex items-center justify-center text-xs font-bold mr-2">5</span>
+                                <span>青浦区域</span>
+                            </div>
+                            <span class="font-medium">¥ 3,210万</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 业绩趋势折线图
+            const performanceTrendCtx = document.getElementById('performanceTrendChart').getContext('2d');
+            new Chart(performanceTrendCtx, {
+                type: 'line',
+                data: {
+                    labels: ['1月', '2月', '3月', '4月', '5月', '6月'],
+                    datasets: [{
+                        label: '总业绩',
+                        data: [3200, 3800, 4200, 4600, 4900, 5200],
+                        borderColor: '#165DFF',
+                        backgroundColor: 'rgba(22, 93, 255, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: '目标业绩',
+                        data: [3500, 4000, 4500, 5000, 5500, 6000],
+                        borderColor: '#9CA3AF',
+                        borderDash: [5, 5],
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value/1000 + '千万';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 项目贡献排名柱状图
+            const projectRankCtx = document.getElementById('projectRankChart').getContext('2d');
+            new Chart(projectRankCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['中海汇德里', '保利中央公园', '万科城市之光', '碧桂园天玺', '融创文旅城'],
+                    datasets: [{
+                        label: '业绩贡献',
+                        data: [12800, 9600, 8500, 7200, 6800],
+                        backgroundColor: [
+                            'rgba(22, 93, 255, 0.8)',
+                            'rgba(22, 93, 255, 0.6)',
+                            'rgba(22, 93, 255, 0.5)',
+                            'rgba(22, 93, 255, 0.4)',
+                            'rgba(22, 93, 255, 0.3)'
+                        ],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return value/1000 + '千万';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 获客渠道分析饼图
+            const channelCtx = document.getElementById('channelChart').getContext('2d');
+            new Chart(channelCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['抖音', '小红书', '微信朋友圈', '转介绍', '线下活动', '其他'],
+                    datasets: [{
+                        data: [32, 24, 18, 15, 7, 4],
+                        backgroundColor: [
+                            '#165DFF',
+                            '#F53F3F',
+                            '#00B42A',
+                            '#FF7D00',
+                            '#722ED1',
+                            '#86909C'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

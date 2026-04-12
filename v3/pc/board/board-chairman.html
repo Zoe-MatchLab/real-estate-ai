@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>总部决策看板一 - 房产AI作业平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        success: '#00B42A',
+                        warning: '#FF7D00',
+                        danger: '#F53F3F',
+                        dark: '#1D2129',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .card {
+            background: linear-gradient(145deg, #1f2937, #1a1f2e);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .metric-up {
+            color: #52c41a;
+        }
+        .metric-down {
+            color: #f5222d;
+        }
+        .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.1);
+            overflow: hidden;
+        }
+        .progress-value {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, #fa8c16, #ff7a45);
+        }
+        .risk-item {
+            border-left: 3px solid #f5222d;
+            padding-left: 12px;
+        }
+        .good-item {
+            border-left: 3px solid #52c41a;
+            padding-left: 12px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 顶部导航 -->
+    <nav class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
+        <div class="flex justify-between items-center px-6 py-3">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-home text-primary text-2xl"></i>
+                <span class="text-xl font-bold text-dark">房产AI作业平台</span>
+                <span class="text-sm text-gray-500 ml-2">管理后台</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-600 hover:text-primary">
+                    <i class="fa fa-bell-o text-lg"></i>
+                    <span class="absolute top-2 right-16 bg-danger text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center">总</div>
+                    <span class="text-sm font-medium">董事长</span>
+                    <i class="fa fa-angle-down text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex pt-14">
+        <!-- 侧边栏容器 - 动态加载公共组件 -->
+        <div id="sidebar-container"></div>
+
+        <!-- 动态加载公共侧边栏 -->
+        <script>
+        // 加载公共侧边栏组件
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                const res = await fetch('../../components/sidebar.component.html');
+                const sidebarHtml = await res.text();
+                document.getElementById('sidebar-container').innerHTML = sidebarHtml;
+                
+                // 修复侧边栏链接路径
+                if (window.fixSidebarLinks) window.fixSidebarLinks();
+                // 初始化高亮
+                if (window.initSidebar) window.initSidebar();
+            } catch (e) {
+                console.error('侧边栏加载失败:', e);
+            }
+        });
+        </script>
+
+        <!-- 主内容区 -->
+        <div class="ml-64 flex-1 p-6 bg-[#111827] min-h-[calc(100vh-56px)]">
+            <!-- 头部 -->
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h1 class="text-3xl font-bold mb-1 text-white">董事长决策看板</h1>
+                    <p class="text-gray-400">数据更新时间：2026-03-27 21:30 | 统计范围：全公司所有项目</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <select class="bg-gray-600 border border-white/30 rounded-lg px-4 py-2 text-white">
+                        <option>今日</option>
+                        <option>本周</option>
+                        <option selected>本月</option>
+                        <option>本季度</option>
+                        <option>本年</option>
+                    </select>
+                    <button class="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg">
+                        <i class="fa fa-download mr-2"></i> 导出报告
+                    </button>
+                </div>
+            </div>
+
+            <!-- 核心KPI概览 -->
+            <div class="grid grid-cols-4 gap-4 mb-6">
+                <div class="card p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-400 text-sm mb-1">本月认购金额</p>
+                            <h3 class="text-3xl font-bold">¥ 12.86亿</h3>
+                            <p class="metric-up text-sm mt-2"><i class="fa fa-arrow-up"></i> 18.2% 同比</p>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center text-blue-400 text-xl">
+                            <i class="fa fa-line-chart"></i>
+                        </div>
+                    </div>
+                    <div class="progress-bar mt-3">
+                        <div class="progress-value" style="width: 72%"></div>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-1 text-right">目标完成率：72%</p>
+                </div>
+                <div class="card p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-400 text-sm mb-1">本月签约金额</p>
+                            <h3 class="text-3xl font-bold">¥ 9.75亿</h3>
+                            <p class="metric-up text-sm mt-2"><i class="fa fa-arrow-up"></i> 12.5% 同比</p>
+                        </div>
+                        <div class="w-12 h-12 bg-green-500/20 rounded-full flex items-center justify-center text-green-400 text-xl">
+                            <i class="fa fa-handshake-o"></i>
+                        </div>
+                    </div>
+                    <div class="progress-bar mt-3">
+                        <div class="progress-value bg-green-500" style="width: 68%"></div>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-1 text-right">目标完成率：68%</p>
+                </div>
+                <div class="card p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-400 text-sm mb-1">本月回款金额</p>
+                            <h3 class="text-3xl font-bold">¥ 8.32亿</h3>
+                            <p class="metric-up text-sm mt-2"><i class="fa fa-arrow-up"></i> 24.8% 同比</p>
+                        </div>
+                        <div class="w-12 h-12 bg-yellow-500/20 rounded-full flex items-center justify-center text-yellow-400 text-xl">
+                            <i class="fa fa-money"></i>
+                        </div>
+                    </div>
+                    <div class="progress-bar mt-3">
+                        <div class="progress-value bg-yellow-500" style="width: 81%"></div>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-1 text-right">目标完成率：81%</p>
+                </div>
+                <div class="card p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-gray-400 text-sm mb-1">整体到访认购率</p>
+                            <h3 class="text-3xl font-bold">9.2%</h3>
+                            <p class="metric-up text-sm mt-2"><i class="fa fa-arrow-up"></i> 2.1pct 同比</p>
+                        </div>
+                        <div class="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center text-red-400 text-xl">
+                            <i class="fa fa-percent"></i>
+                        </div>
+                    </div>
+                    <div class="progress-bar mt-3">
+                        <div class="progress-value bg-red-500" style="width: 92%"></div>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-1 text-right">行业平均：7.5%</p>
+                </div>
+            </div>
+
+            <!-- 业绩趋势+AI赋能效果 -->
+            <div class="grid grid-cols-2 gap-6 mb-6">
+                <div class="card p-6">
+                    <h3 class="font-medium text-white mb-4">近3个月业绩趋势</h3>
+                    <div class="h-64">
+                        <canvas id="performanceChart"></canvas>
+                    </div>
+                </div>
+                <div class="card p-6">
+                    <h3 class="font-medium text-white mb-4">AI赋能效果指标</h3>
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-sm text-gray-300">探盘效率提升</span>
+                                <span class="text-sm text-green-400">+65%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-value bg-green-500" style="width: 65%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-sm text-gray-300">内容产出效率提升</span>
+                                <span class="text-sm text-green-400">+120%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-value bg-green-500" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-sm text-gray-300">新人转正周期缩短</span>
+                                <span class="text-sm text-green-400">-50%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-value bg-green-500" style="width: 50%"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-sm text-gray-300">人均产能提升</span>
+                                <span class="text-sm text-green-400">+42%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-value bg-green-500" style="width: 42%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 重点项目+风险预警 -->
+            <div class="grid grid-cols-2 gap-6 mb-6">
+                <div class="card p-6">
+                    <h3 class="font-medium text-white mb-4">重点项目去化情况</h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm">中海汇德里</span>
+                                <span class="text-sm text-green-400">去化率 82%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-value bg-green-500" style="width: 82%"></div>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1">剩余货值：2.6亿 | 去化速度优于预期</p>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm">保利中央公园</span>
+                                <span class="text-sm text-yellow-400">去化率 56%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-value bg-yellow-500" style="width: 56%"></div>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1">剩余货值：6.8亿 | 建议加大营销投入</p>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-sm">万科城市之光</span>
+                                <span class="text-sm text-red-400">去化率 32%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-value bg-red-500" style="width: 32%"></div>
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1">剩余货值：8.5亿 | 去化严重滞后，需要重点关注</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card p-6">
+                    <h3 class="font-medium text-white mb-4">风险预警</h3>
+                    <div class="space-y-4">
+                        <div class="risk-item">
+                            <p class="text-white font-medium">万科城市之光去化率不足预期</p>
+                            <p class="text-xs text-gray-400 mt-1">实际去化32%，低于目标60%，建议调整定价策略或加大营销力度</p>
+                        </div>
+                        <div class="risk-item">
+                            <p class="text-white font-medium">上海区域3月探盘任务超时率18%</p>
+                            <p class="text-xs text-gray-400 mt-1">12个任务超时，需督促区域经理及时跟进，避免影响后续营销节奏</p>
+                        </div>
+                        <div class="risk-item">
+                            <p class="text-white font-medium">产品力训练完成率仅58%</p>
+                            <p class="text-xs text-gray-400 mt-1">本月训练任务完成率偏低，建议加强宣导，和业绩考核挂钩提升参与度</p>
+                        </div>
+                        <div class="good-item mt-6">
+                            <p class="text-white font-medium">上海区域本月人均产能提升12%</p>
+                            <p class="text-xs text-gray-400 mt-1">AI工具使用覆盖率达到90%，效果显著，建议全公司推广经验</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 团队效能 -->
+            <div class="card p-6">
+                <h3 class="font-medium text-white mb-4">团队效能核心指标</h3>
+                <div class="grid grid-cols-4 gap-4">
+                    <div class="text-center">
+                        <h4 class="text-2xl font-bold text-white">128人</h4>
+                        <p class="text-sm text-gray-400 mt-1">总在职人数</p>
+                    </div>
+                    <div class="text-center">
+                        <h4 class="text-2xl font-bold text-white">28天</h4>
+                        <p class="text-sm text-gray-400 mt-1">新人平均转正周期</p>
+                    </div>
+                    <div class="text-center">
+                        <h4 class="text-2xl font-bold text-white">960万</h4>
+                        <p class="text-sm text-gray-400 mt-1">人均月认购业绩</p>
+                    </div>
+                    <div class="text-center">
+                        <h4 class="text-2xl font-bold text-white">4.2%</h4>
+                        <p class="text-sm text-gray-400 mt-1">月人员流失率</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 业绩趋势图
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['1月', '2月', '3月'],
+                datasets: [
+                    {
+                        label: '认购金额(亿)',
+                        data: [9.8, 10.6, 12.86],
+                        borderColor: '#165DFF',
+                        backgroundColor: '#165DFF20',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: '签约金额(亿)',
+                        data: [8.2, 8.8, 9.75],
+                        borderColor: '#52c41a',
+                        backgroundColor: '#52c41a20',
+                        tension: 0.4,
+                        fill: true
+                    },
+                    {
+                        label: '回款金额(亿)',
+                        data: [6.5, 7.2, 8.32],
+                        borderColor: '#faad14',
+                        backgroundColor: '#faad1420',
+                        tension: 0.4,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            color: 'white'
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)'
+                        },
+                        ticks: {
+                            color: 'rgba(255,255,255,0.7)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)'
+                        },
+                        ticks: {
+                            color: 'rgba(255,255,255,0.7)'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

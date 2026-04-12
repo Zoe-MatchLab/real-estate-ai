@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>客户详情 - V2.0 - 房产AI助手</title>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --brand-primary: #FA8C16;
+      --brand-primary-dark: #E67A0E;
+      --color-success: #00B42A;
+      --color-warning: #FF7D00;
+      --color-danger: #FA5151;
+      --color-info: #007AFF;
+      --color-title: #1D2129;
+      --color-text: #4E5969;
+      --color-sub: #86909C;
+      --color-border: #E5E6EB;
+      --color-bg: #F7F8FA;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: var(--color-bg);
+      color: var(--color-title);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 80px;
+    }
+
+    /* 顶部导航 */
+    .top-nav {
+      background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
+      padding: 12px 15px 16px;
+      color: white;
+    }
+    .top-nav .nav-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .top-nav .nav-title { font-size: 17px; font-weight: 600; }
+    .top-nav .nav-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-decoration: none;
+    }
+
+    /* 客户头部卡片 */
+    .customer-header-card {
+      background: white;
+      margin: 12px 15px;
+      border-radius: 16px;
+      padding: 18px 16px;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    }
+    .customer-header-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .customer-avatar-lg {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand-primary), #FF9500);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 22px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .customer-header-info { flex: 1; }
+    .customer-name-lg {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--color-title);
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .customer-phone-lg { font-size: 13px; color: var(--color-sub); margin-bottom: 6px; }
+    .customer-tags-row { display: flex; gap: 6px; flex-wrap: wrap; }
+    .level-tag {
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .level-high { background: #E8FFEA; color: #00B42A; }
+    .level-medium { background: #FFF7E8; color: #FF7D00; }
+    .source-tag {
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      background: var(--color-bg);
+      color: var(--color-sub);
+    }
+
+    /* 信息区 */
+    .info-section {
+      background: white;
+      margin: 0 15px 12px;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .info-row {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .info-row:last-child { border-bottom: none; }
+    .info-label {
+      width: 80px;
+      font-size: 13px;
+      color: var(--color-sub);
+      flex-shrink: 0;
+    }
+    .info-value {
+      flex: 1;
+      font-size: 13px;
+      color: var(--color-title);
+      text-align: right;
+    }
+    .info-value.highlight { color: var(--brand-primary); font-weight: 600; }
+
+    /* 操作按钮区 */
+    .action-row {
+      display: flex;
+      gap: 10px;
+      margin: 0 15px 12px;
+    }
+    .action-btn {
+      flex: 1;
+      height: 44px;
+      border-radius: 22px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .action-btn:active { transform: scale(0.97); }
+    .action-btn-primary {
+      background: linear-gradient(135deg, var(--brand-primary), #FF9500);
+      color: white;
+    }
+    .action-btn-outline {
+      background: white;
+      color: var(--brand-primary);
+      border: 1.5px solid var(--brand-primary);
+    }
+
+    /* 跟进记录区 */
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 15px 8px;
+    }
+    .section-title-text {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--color-title);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .section-title-text i { color: var(--brand-primary); }
+    .section-more {
+      font-size: 12px;
+      color: var(--color-sub);
+      cursor: pointer;
+    }
+
+    /* 时间线 */
+    .timeline { padding: 0 15px; }
+    .timeline-item {
+      display: flex;
+      gap: 12px;
+      padding-bottom: 16px;
+      position: relative;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 11px;
+      top: 26px;
+      bottom: 0;
+      width: 1.5px;
+      background: var(--color-border);
+    }
+    .timeline-item:last-child::before { display: none; }
+    .timeline-dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      flex-shrink: 0;
+      color: white;
+      position: relative;
+      z-index: 1;
+    }
+    .timeline-dot.phone { background: #007AFF; }
+    .timeline-dot.wechat { background: #00B42A; }
+    .timeline-dot.face { background: #FA8C16; }
+    .timeline-content { flex: 1; background: white; border-radius: 10px; padding: 12px 14px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .timeline-type {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-title);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .timeline-time { font-size: 11px; color: var(--color-sub); }
+    .timeline-body { font-size: 13px; color: var(--color-text); line-height: 1.6; }
+    .timeline-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+    .timeline-tag {
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-size: 11px;
+    }
+    .tag-reserve { background: #E8F3FF; color: #165DFF; }
+    .tag-compete { background: #FFF7E8; color: #FF7D00; }
+    .tag-send { background: #E8FFEA; color: #00B42A; }
+
+    /* 关联录音 -->
+    .record-list { padding: 0 15px; }
+    .record-card {
+      background: white;
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .record-play {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand-primary), #FF9500);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 13px;
+      flex-shrink: 0;
+      border: none;
+      cursor: pointer;
+    }
+    .record-info { flex: 1; }
+    .record-name { font-size: 13px; font-weight: 500; color: var(--color-title); }
+    .record-meta { font-size: 11px; color: var(--color-sub); margin-top: 2px; }
+    .record-score {
+      font-size: 16px;
+      font-weight: 700;
+      color: #00B42A;
+    }
+
+    /* 底部操作栏 */
+    .bottom-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: white;
+      padding: 10px 15px;
+      padding-bottom: calc(10px + env(safe-area-inset-bottom));
+      box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
+      display: flex;
+      gap: 10px;
+      z-index: 100;
+    }
+    .bottom-bar .action-btn {
+      flex: 1;
+      height: 44px;
+      border-radius: 22px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-call {
+      background: var(--color-success);
+      color: white;
+      flex: 0.6;
+    }
+    .btn-follow {
+      background: linear-gradient(135deg, var(--brand-primary), #FF9500);
+      color: white;
+      flex: 1;
+    }
+    .btn-edit {
+      background: var(--color-bg);
+      color: var(--color-text);
+      border: 1.5px solid var(--color-border);
+      flex: 0.6;
+    }
+
+    /* 添加跟进弹窗 */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal-sheet {
+      background: white;
+      width: 100%;
+      border-radius: 16px 16px 0 0;
+      padding: 16px;
+      padding-bottom: calc(16px + env(safe-area-inset-bottom));
+      transform: translateY(100%);
+      transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+    }
+    .modal-overlay.show .modal-sheet { transform: translateY(0); }
+    .modal-handle {
+      width: 36px;
+      height: 4px;
+      background: #ddd;
+      border-radius: 2px;
+      margin: 0 auto 14px;
+    }
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-title);
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .follow-method-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .method-btn {
+      flex: 1;
+      height: 42px;
+      border-radius: 21px;
+      border: 1.5px solid var(--color-border);
+      background: white;
+      color: var(--color-text);
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      transition: all 0.2s;
+    }
+    .method-btn.active {
+      border-color: var(--brand-primary);
+      background: #FFF7ED;
+      color: var(--brand-primary);
+    }
+    .follow-textarea {
+      width: 100%;
+      border: 1.5px solid var(--color-border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+      min-height: 100px;
+      box-sizing: border-box;
+      font-family: inherit;
+    }
+    .follow-textarea:focus { border-color: var(--brand-primary); }
+    .modal-submit {
+      width: 100%;
+      height: 48px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, var(--brand-primary), #FF9500);
+      color: white;
+      border: none;
+      font-size: 16px;
+      font-weight: 700;
+      margin-top: 14px;
+      cursor: pointer;
+    }
+    /* Toast通知 */
+    .toast-notification {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(29, 33, 41, 0.9);
+      color: white;
+      padding: 12px 20px;
+      border-radius: 24px;
+      font-size: 14px;
+      z-index: 10000;
+      opacity: 0;
+      transition: all 0.3s ease;
+      pointer-events: none;
+      white-space: nowrap;
+      max-width: 85vw;
+    }
+    .toast-notification.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .toast-notification.success { background: rgba(0, 180, 42, 0.95); }
+    .toast-notification.error { background: rgba(250, 81, 81, 0.95); }
+    .toast-notification.warning { background: rgba(255, 125, 0, 0.95); }
+  </style>
+</head>
+<body>
+  <div class="top-nav">
+    <div class="nav-row">
+      <a href="customer-list.html" class="nav-btn"><i class="fa fa-angle-left" style="font-size:22px"></i></a>
+      <span class="nav-title">客户详情</span>
+      <a href="#" class="nav-btn"><i class="fa fa-ellipsis-h"></i></a>
+    </div>
+  </div>
+
+  <!-- 客户头部 -->
+  <div class="customer-header-card">
+    <div class="customer-header-top">
+      <div class="customer-avatar-lg">张</div>
+      <div class="customer-header-info">
+        <div class="customer-name-lg">
+          张三
+          <span class="level-tag level-high">高意向</span>
+        </div>
+        <div class="customer-phone-lg">138****8821</div>
+        <div class="customer-tags-row">
+          <span class="source-tag">线上获客</span>
+          <span class="source-tag">投资客</span>
+          <span class="source-tag">改善型</span>
+        </div>
+      </div>
+    </div>
+    <div style="font-size:12px;color:var(--color-sub);background:var(--color-bg);border-radius:8px;padding:8px 12px">
+      <i class="fa fa-info-circle" style="color:var(--brand-primary);margin-right:4px"></i>
+      客户需求：想买三房，预算800-1000万，关注学区和交通。看过竞品「仁恒海上传奇」，觉得价格偏高。
+    </div>
+  </div>
+
+  <!-- 基本信息 -->
+  <div class="info-section">
+    <div class="info-row">
+      <div class="info-label">意向楼盘</div>
+      <div class="info-value highlight">中海汇德里</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">意向区域</div>
+      <div class="info-value">浦东新区</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">客户来源</div>
+      <div class="info-value">线上获客</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">创建时间</div>
+      <div class="info-value">2026-03-15</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">最近跟进</div>
+      <div class="info-value">2026-04-10</div>
+    </div>
+  </div>
+
+  <!-- 操作按钮 -->
+  <div class="action-row">
+    <button class="action-btn action-btn-primary" onclick="openFollowModal()">
+      <i class="fa fa-plus"></i>添加跟进
+    </button>
+    <button class="action-btn action-btn-outline" onclick="goRecordUpload()">
+      <i class="fa fa-microphone"></i>录音分析
+    </button>
+  </div>
+
+  <!-- 跟进记录 -->
+  <div class="section-title">
+    <div class="section-title-text"><i class="fa fa-history"></i>跟进记录</div>
+    <div class="section-more">共3条 <i class="fa fa-angle-right"></i></div>
+  </div>
+  <div class="timeline">
+    <!-- 跟进1：电话 -->
+    <div class="timeline-item">
+      <div class="timeline-dot phone"><i class="fa fa-phone"></i></div>
+      <div class="timeline-content">
+        <div class="timeline-header">
+          <div class="timeline-type"><i class="fa fa-phone" style="font-size:11px"></i> 电话跟进</div>
+          <div class="timeline-time">04-10 14:30</div>
+        </div>
+        <div class="timeline-body">与客户电话沟通，了解近期看房计划。客户表示对中海汇德里有兴趣，预约周六下午带看。客户提到竞品「仁恒海上传奇」价格较高，本盘性价比更优。</div>
+        <div class="timeline-tags">
+          <span class="timeline-tag tag-reserve">预约带看</span>
+          <span class="timeline-tag tag-compete">竞品对比</span>
+        </div>
+      </div>
+    </div>
+    <!-- 跟进2：微信 -->
+    <div class="timeline-item">
+      <div class="timeline-dot wechat"><i class="fa fa-weixin"></i></div>
+      <div class="timeline-content">
+        <div class="timeline-header">
+          <div class="timeline-type"><i class="fa fa-weixin" style="font-size:11px"></i> 微信沟通</div>
+          <div class="timeline-time">04-08 10:20</div>
+        </div>
+        <div class="timeline-body">客户通过微信咨询中海汇德里户型和价格信息。已发送户型图和报价单。客户反馈较满意，约定周末到访售楼处。</div>
+        <div class="timeline-tags">
+          <span class="timeline-tag tag-send">发送资料</span>
+          <span class="timeline-tag tag-reserve">预约到访</span>
+        </div>
+      </div>
+    </div>
+    <!-- 跟进3：面谈 -->
+    <div class="timeline-item">
+      <div class="timeline-dot face"><i class="fa fa-users"></i></div>
+      <div class="timeline-content">
+        <div class="timeline-header">
+          <div class="timeline-type"><i class="fa fa-users" style="font-size:11px"></i> 面谈</div>
+          <div class="timeline-time">04-01 15:00</div>
+        </div>
+        <div class="timeline-body">初次接待，客户自然到访售楼处。需求三房，预算800-1000万，以改善为主。客户表示对浦东区域较为认可，已添加微信，后续保持联系。</div>
+        <div class="timeline-tags">
+          <span class="timeline-tag" style="background:#FFF7E8;color:#FF7D00">初次接待</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 关联录音 -->
+  <div class="section-title" style="margin-top:16px">
+    <div class="section-title-text"><i class="fa fa-microphone"></i>关联录音</div>
+    <div class="section-more" onclick="goRecordUpload()">添加录音 <i class="fa fa-plus"></i></div>
+  </div>
+  <div class="record-list">
+    <div class="record-card">
+      <button class="record-play"><i class="fa fa-play"></i></button>
+      <div class="record-info">
+        <div class="record-name">20260410_143020.wav</div>
+        <div class="record-meta">04-10 14:30 上传 · 3分22秒</div>
+      </div>
+      <div style="text-align:right">
+        <div class="record-score">85分</div>
+        <div style="font-size:10px;color:var(--color-sub)">综合评分</div>
+      </div>
+    </div>
+    <div class="record-card">
+      <button class="record-play"><i class="fa fa-play"></i></button>
+      <div class="record-info">
+        <div class="record-name">20260405_091512.wav</div>
+        <div class="record-meta">04-05 09:15 上传 · 4分05秒</div>
+      </div>
+      <div style="text-align:right">
+        <div class="record-score">78分</div>
+        <div style="font-size:10px;color:var(--color-sub)">综合评分</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 底部操作栏 -->
+  <div class="bottom-bar">
+    <button class="action-btn btn-call">
+      <i class="fa fa-phone"></i>拨打电话
+    </button>
+    <button class="action-btn btn-follow" onclick="openFollowModal()">
+      <i class="fa fa-edit"></i>添加跟进
+    </button>
+    <button class="action-btn btn-edit">
+      <i class="fa fa-pencil"></i>编辑
+    </button>
+  </div>
+
+  <!-- 添加跟进弹窗 -->
+  <div class="modal-overlay" id="followModal">
+    <div class="modal-sheet">
+      <div class="modal-handle"></div>
+      <div class="modal-title">添加跟进记录</div>
+      <div class="follow-method-row">
+        <button class="method-btn active" id="methodPhone" onclick="setFollowMethod('phone', this)">
+          <i class="fa fa-phone"></i>电话
+        </button>
+        <button class="method-btn" id="methodWechat" onclick="setFollowMethod('wechat', this)">
+          <i class="fa fa-weixin"></i>微信
+        </button>
+        <button class="method-btn" id="methodFace" onclick="setFollowMethod('face', this)">
+          <i class="fa fa-users"></i>面谈
+        </button>
+      </div>
+      <textarea class="follow-textarea" id="followContent" placeholder="请详细描述本次跟进内容..."></textarea>
+      <button class="modal-submit" onclick="saveFollow()">
+        <i class="fa fa-check"></i> 保存
+      </button>
+    </div>
+  </div>
+
+  <script>
+    function openFollowModal() {
+      document.getElementById('followModal').classList.add('show');
+    }
+    function closeFollowModal() {
+      document.getElementById('followModal').classList.remove('show');
+    }
+    function setFollowMethod(method, btn) {
+      document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+    function saveFollow() {
+      const content = document.getElementById('followContent').value;
+      if (!content.trim()) {
+        showToast('请填写跟进内容', 'error');
+        return;
+      }
+      closeFollowModal();
+      showToast('跟进记录已保存！', 'success');
+    }
+    function goRecordUpload() {
+      window.location.href = '../home/record-upload.html';
+    }
+    /* ── Toast通知系统 ── */
+    function showToast(message, type, duration) {
+      var toast = document.getElementById('globalToast');
+      if (!toast) return;
+      toast.className = 'toast-notification ' + (type || '');
+      toast.textContent = message;
+      toast.classList.add('show');
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(function() {
+        toast.classList.remove('show');
+      }, duration || 2200);
+    }
+  </script>
+
+  <!-- 全局Toast通知 -->
+  <div id="globalToast" class="toast-notification"></div>
+</body>
+</html>

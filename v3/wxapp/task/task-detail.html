@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>探盘任务详情</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#fa8c16',
+                        warning: '#FF9D2B',
+                        danger: '#FA5151',
+                        success: '#00B42A',
+                        gray: {
+                            50: '#F7F8FA',
+                            100: '#EDEEF2',
+                            200: '#D8D9DD',
+                            300: '#B4B5B9',
+                            400: '#86878B',
+                            500: '#4E5969',
+                            600: '#272E3B',
+                            700: '#1D2129',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --brand-primary: #FA8C16;
+            --brand-primary-dark: #E67A0E;
+            --brand-primary-light: #FFF7E6;
+            --color-success: #00B42A;
+            --color-success-light: #E8FFEA;
+            --color-warning: #FF7D00;
+            --color-warning-light: #FFF7E6;
+            --color-danger: #FA5151;
+            --color-danger-light: #FFECE8;
+            --color-title: #1D2129;
+            --color-text: #4E5969;
+            --color-sub: #86909C;
+            --color-border: #E5E6EB;
+            --color-bg: #F7F8FA;
+            --color-card: #FFFFFF;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+            --font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html, body {
+            height: 100%;
+            font-family: var(--font-family);
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--color-text);
+            background: var(--color-bg);
+            -webkit-font-smoothing: antialiased;
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+
+        /* ===== 页面容器 ===== */
+        .page {
+            min-height: 100vh;
+            padding-bottom: calc(32px + env(safe-area-inset-bottom));
+            background: var(--color-bg);
+        }
+
+        /* ===== 顶部导航栏 ===== */
+        .nav-bar {
+            background: var(--color-card);
+            padding: calc(12px + env(safe-area-inset-top)) var(--spacing-md) 12px;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .nav-back {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-bg);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            color: var(--color-title);
+            border: none;
+            transition: background 0.15s;
+        }
+        .nav-back:hover { background: var(--color-border); }
+        .nav-back:active { background: var(--color-border); transform: scale(0.95); }
+        .nav-title {
+            flex: 1;
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--color-title);
+            text-align: center;
+        }
+        .nav-more {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-sub);
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        /* ===== 楼盘信息区 ===== */
+        .house-info {
+            background: var(--color-card);
+            padding: var(--spacing-lg) var(--spacing-md);
+        }
+        .house-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--color-title);
+            margin-bottom: var(--spacing-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        .house-name .icon { color: var(--brand-primary); }
+        .house-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .house-meta-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: 13px;
+            color: var(--color-text);
+        }
+        .house-meta-item i { color: var(--brand-primary); width: 16px; text-align: center; }
+        .house-meta-item.danger i { color: var(--color-danger); }
+        .house-meta-item.danger { color: var(--color-danger); }
+
+        /* ===== 总进度条 ===== */
+        .progress-section {
+            padding: var(--spacing-md);
+            background: var(--color-card);
+            border-top: 1px solid var(--color-border);
+        }
+        .progress-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-sm);
+        }
+        .progress-label {
+            font-size: 13px;
+            color: var(--color-sub);
+        }
+        .progress-value {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--brand-primary);
+        }
+        .progress-track {
+            height: 6px;
+            background: var(--color-bg);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: var(--radius-full);
+            background: linear-gradient(90deg, var(--brand-primary) 0%, #FF9500 100%);
+            transition: width 0.4s ease;
+        }
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 6px;
+        }
+        .progress-step-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--color-border);
+            transition: all 0.3s;
+        }
+        .progress-step-dot.completed { background: var(--color-success); }
+        .progress-step-dot.active { background: var(--brand-primary); transform: scale(1.3); }
+
+        /* ===== 阶段列表 ===== */
+        .stage-list {
+            padding: var(--spacing-md);
+        }
+        .stage-card {
+            background: var(--color-card);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .stage-card:active {
+            transform: translateY(1px);
+            box-shadow: 0 1px 6px rgba(0,0,0,0.08);
+            opacity: 0.9;
+        }
+        .stage-card:last-child { margin-bottom: 0; }
+
+        /* 阶段行：图标 + 名称 + 描述 + 操作 */
+        .stage-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .stage-title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .stage-badge {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1D2129;
+        }
+        .stage-status-icon {
+            font-size: 15px;
+            line-height: 1;
+        }
+        .stage-desc {
+            font-size: 12px;
+            color: #86909C;
+            flex: 1;
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .stage-desc.success { color: #00B42A; }
+        .stage-action {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+            color: #fa8c16;
+            flex-shrink: 0;
+        }
+        .stage-action i { font-size: 12px; }
+        .stage-action.gray { color: #86909C; }
+
+        /* 阶段操作按钮（右侧图标按钮） */
+        .stage-action-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: #FFF7E6;
+            color: #fa8c16;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            transition: all 0.15s;
+            flex-shrink: 0;
+        }
+        .stage-action-btn:active {
+            background: #FFE7CC;
+            transform: scale(0.9);
+        }
+        .stage-action-btn i { font-size: 11px; }
+
+        /* 阶段状态色调 */
+        .stage-card.completed { border-left: 3px solid #00B42A; }
+        .stage-card.active { border-left: 3px solid #fa8c16; }
+        .stage-card.pending { border-left: 3px solid #E5E6EB; }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.75);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            z-index: 99999;
+            font-size: 14px;
+            animation: toastIn 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            pointer-events: none;
+        }
+        @keyframes toastIn {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.85); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- 顶部导航栏 -->
+        <div class="nav-bar">
+            <button class="nav-back" onclick="goBack()">
+                <i class="fa fa-angle-left text-lg"></i>
+            </button>
+            <h1 class="nav-title">探盘任务详情</h1>
+            <button class="nav-more" onclick="showMoreMenu()">
+                <i class="fa fa-ellipsis-v text-lg"></i>
+            </button>
+        </div>
+
+        <!-- 楼盘信息区 -->
+        <div class="house-info">
+            <div class="house-name">
+                <span class="icon">🏠</span>
+                <span id="houseName"></span>
+            </div>
+            <div class="house-meta">
+                <div class="house-meta-item">
+                    <i class="fa fa-map-marker"></i>
+                    <span id="houseAddress"></span>
+                </div>
+                <div class="house-meta-item danger">
+                    <i class="fa fa-clock-o"></i>
+                    <span id="houseDeadline"></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 总进度条 -->
+        <div class="progress-section">
+            <div class="progress-header">
+                <span class="progress-label">完成进度</span>
+                <span class="progress-value" id="progressText"></span>
+            </div>
+            <div class="progress-track">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-steps" id="progressSteps"></div>
+        </div>
+
+        <!-- 阶段入口列表 -->
+        <div class="stage-list" id="stageList"></div>
+    </div>
+
+    <script>
+        // ===== URL参数解析 =====
+        function getQueryParam(name) {
+            const params = new URLSearchParams(window.location.search);
+            return params.get(name);
+        }
+
+        // ===== 模拟数据 =====
+        const taskData = {
+            houseName: '中海汇德里',
+            address: '浦东新区张江高科技园区',
+            deadline: '2026-04-08 18:00',
+            currentStage: parseInt(getQueryParam('step')) || 0,  // 0=初始状态,1=阶段1完成,2=阶段2完成...
+            taskId: getQueryParam('task') || 'TASK001'
+        };
+
+        // 根据当前阶段计算各阶段状态
+        // step参数表示最后完成的阶段，完成后下一个阶段是active
+        function calculateStages() {
+            const current = taskData.currentStage;
+            return [
+                { id: 1, name: '打卡', status: current >= 1 ? 'completed' : (current === 0 ? 'pending' : 'active'), time: current >= 1 ? '10:30:00' : '' },
+                { id: 2, name: '上传', status: current >= 2 ? 'completed' : (current >= 1 ? 'active' : 'pending') },
+                { id: 3, name: '文案确认', status: current >= 3 ? 'completed' : (current >= 2 ? 'active' : 'pending') },
+                { id: 4, name: '成果生成', status: current >= 4 ? 'completed' : (current >= 3 ? 'active' : 'pending') }
+            ];
+        }
+
+        // ===== 工具函数 =====
+        function showToast(msg) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const t = document.createElement('div');
+            t.className = 'toast';
+            t.textContent = msg;
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 2000);
+        }
+
+        function formatDeadline(deadline) {
+            const d = new Date(deadline);
+            const month = d.getMonth() + 1;
+            const day = d.getDate();
+            const hours = d.getHours().toString().padStart(2, '0');
+            const minutes = d.getMinutes().toString().padStart(2, '0');
+            return `${month}月${day}日 ${hours}:${minutes}截止`;
+        }
+
+        function getStageStatusIcon(status) {
+            if (status === 'completed') return '✅';
+            if (status === 'active') return '🔄';
+            return '⬜';
+        }
+
+        function getStageCardClass(status) {
+            if (status === 'completed') return 'completed';
+            if (status === 'active') return 'active';
+            return 'pending';
+        }
+
+        function getCompletedCount() {
+            return calculateStages().filter(s => s.status === 'completed').length;
+        }
+
+        // ===== 渲染函数 =====
+        function renderHouseInfo() {
+            document.getElementById('houseName').textContent = taskData.houseName;
+            document.getElementById('houseAddress').textContent = taskData.address;
+            document.getElementById('houseDeadline').textContent = formatDeadline(taskData.deadline);
+        }
+
+        function renderProgress() {
+            const stages = calculateStages();
+            const total = stages.length;
+            const completed = getCompletedCount();
+            const percent = Math.round((completed / total) * 100);
+
+            document.getElementById('progressText').textContent = `${completed}/${total} (${percent}%)`;
+            document.getElementById('progressFill').style.width = percent + '%';
+
+            const stepsEl = document.getElementById('progressSteps');
+            stepsEl.innerHTML = '';
+            stages.forEach((stage, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'progress-step-dot';
+                if (stage.status === 'completed') dot.classList.add('completed');
+                else if (stage.status === 'active') dot.classList.add('active');
+                stepsEl.appendChild(dot);
+            });
+        }
+
+        function renderStages() {
+            const container = document.getElementById('stageList');
+            container.innerHTML = '';
+
+            const stages = calculateStages();
+            stages.forEach(stage => {
+                const card = document.createElement('div');
+                card.className = `stage-card ${getStageCardClass(stage.status)}`;
+
+                let actionHtml = '';
+                let descHtml = '';
+
+                if (stage.status === 'completed') {
+                    // 已完成阶段：状态+描述在左，操作按钮在右
+                    const icon = getStageStatusIcon(stage.status);
+                    if (stage.id === 1) {
+                        descHtml = `<span class="stage-desc success">${icon} 已签到 ${stage.time || '10:30:00'}</span>`;
+                        actionHtml = `<button class="stage-action-btn" onclick="event.stopPropagation(); goCheckin()"><i class="fa fa-refresh"></i></button>`;
+                    } else if (stage.id === 2) {
+                        descHtml = `<span class="stage-desc success">${icon} 已上传 4个点位</span>`;
+                        actionHtml = `<button class="stage-action-btn" onclick="event.stopPropagation(); goUpload()"><i class="fa fa-refresh"></i></button>`;
+                    } else if (stage.id === 3) {
+                        descHtml = `<span class="stage-desc success">${icon} 文案已确认</span>`;
+                        actionHtml = `<button class="stage-action-btn" onclick="event.stopPropagation(); goConfirm()"><i class="fa fa-edit"></i></button>`;
+                    } else if (stage.id === 4) {
+                        descHtml = `<span class="stage-desc success">${icon} 封面图+视频已生成</span>`;
+                        actionHtml = `<button class="stage-action-btn" onclick="event.stopPropagation(); goResult()"><i class="fa fa-eye"></i></button>`;
+                    }
+                } else if (stage.status === 'active') {
+                    // 进行中阶段
+                    if (stage.id === 1) {
+                        actionHtml = `<div class="stage-action" onclick="event.stopPropagation(); goCheckin()">去打卡 <i class="fa fa-angle-right"></i></div>`;
+                    } else if (stage.id === 2) {
+                        actionHtml = `<div class="stage-action" onclick="event.stopPropagation(); goUpload()">进入上传 <i class="fa fa-angle-right"></i></div>`;
+                    } else if (stage.id === 3) {
+                        actionHtml = `<div class="stage-action" onclick="event.stopPropagation(); goConfirm()">去确认 <i class="fa fa-angle-right"></i></div>`;
+                    } else if (stage.id === 4) {
+                        actionHtml = `<div class="stage-action" onclick="event.stopPropagation(); goResult()">查看成果 <i class="fa fa-angle-right"></i></div>`;
+                    }
+                } else if (stage.id === 1) {
+                    descHtml = `<span class="stage-desc">请到达楼盘现场进行定位打卡</span>`;
+                    actionHtml = `<div class="stage-action" onclick="event.stopPropagation(); goCheckin()">去打卡 <i class="fa fa-angle-right"></i></div>`;
+                } else if (stage.id === 2) {
+                    descHtml = `<span class="stage-desc">请先完成定位打卡</span>`;
+                    actionHtml = `<div class="stage-action gray"><i class="fa fa-lock"></i> 需完成阶段1</div>`;
+                } else if (stage.id === 3) {
+                    descHtml = `<span class="stage-desc">请先完成素材上传</span>`;
+                    actionHtml = `<div class="stage-action gray"><i class="fa fa-lock"></i> 需完成阶段2</div>`;
+                } else if (stage.id === 4) {
+                    descHtml = `<span class="stage-desc">请先确认文案脚本</span>`;
+                    actionHtml = `<div class="stage-action gray"><i class="fa fa-lock"></i> 需完成阶段3</div>`;
+                }
+
+                card.innerHTML = `
+                    <div class="stage-row">
+                        <div class="stage-title">
+                            <span class="stage-status-icon">${getStageStatusIcon(stage.status)}</span>
+                            <span class="stage-badge">【阶段${stage.id}】${stage.name}</span>
+                        </div>
+                        ${descHtml}
+                        ${actionHtml}
+                    </div>
+                `;
+
+                // 点击卡片跳转（仅对 active 阶段生效）
+                if (stage.status === 'active') {
+                    card.addEventListener('click', () => goUpload());
+                }
+
+                container.appendChild(card);
+            });
+        }
+
+        // ===== 跳转函数 =====
+        function goBack() {
+            window.location.href = '../home/calendar.html';
+        }
+
+        function goCheckin() {
+            window.location.href = 'checkin-location.html';
+        }
+
+        function goUpload() {
+            window.location.href = 'checkin-point.html';
+        }
+
+        function goConfirm() {
+            window.location.href = 'confirm-script.html';
+        }
+
+        function goResult() {
+            window.location.href = 'result-generate.html';
+        }
+
+        // 更多菜单
+        function showMoreMenu() {
+            const action = confirm('请选择操作：\n\n确定：联系客服\n取消：分享任务');
+            if (action) {
+                // 联系客服
+                showToast('客服电话：400-xxx-xxxx');
+            } else {
+                // 分享
+                if (navigator.share) {
+                    navigator.share({
+                        title: taskData.houseName + '探盘任务',
+                        text: '我正在执行' + taskData.houseName + '的探盘任务',
+                        url: window.location.href
+                    });
+                } else {
+                    showToast('已复制分享链接');
+                }
+            }
+        }
+
+        // ===== 初始化 =====
+        function init() {
+            renderHouseInfo();
+            renderProgress();
+            renderStages();
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

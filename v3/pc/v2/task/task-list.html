@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>探盘任务列表 - V2.0 - 房产AI作业平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        success: '#00B42A',
+                        warning: '#FF7D00',
+                        danger: '#F53F3F',
+                        dark: '#1D2129',
+                        'gray-light': '#F2F3F5',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .tag { padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 500; display: inline-block; }
+        .tag-source-pc { background: #F2F3F5; color: #4E5969; }
+        .tag-source-mini { background: #FFF7E8; color: #FA8C16; }
+        .tag-status-pending { background: #F2F3F5; color: #4E5969; }
+        .tag-status-progress { background: #E8F3FF; color: #165DFF; }
+        .tag-status-submitted { background: #FFF7E8; color: #FF7D00; }
+        .tag-status-completed { background: #E8FFEA; color: #00B42A; }
+        .tag-status-rejected { background: #FFECE8; color: #F53F3F; }
+        .tag-status-overdue { background: #FFECE8; color: #F53F3F; }
+        .hover-row:hover { background: #f8f9fa; cursor: pointer; }
+        aside a.active { color: #165DFF; background-color: #E8F3FF; border-right: 4px solid #165DFF; }
+        aside a.active { color: #165DFF; background-color: #E8F3FF; border-right: 4px solid #165DFF; }
+        .progress-bar { height: 6px; background: #F2F3F5; border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 3px; background: linear-gradient(90deg, #165DFF, #4080FF); }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- 顶部导航 -->
+    <nav class="bg-white shadow-sm fixed top-0 left-0 right-0 z-50">
+        <div class="flex justify-between items-center px-6 py-3">
+            <div class="flex items-center space-x-2">
+                <i class="fa fa-home text-primary text-2xl"></i>
+                <span class="text-xl font-bold text-dark">房产AI作业平台</span>
+                <span class="text-sm text-gray-500 ml-2">管理后台</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-600 hover:text-primary relative">
+                    <i class="fa fa-bell-o text-lg"></i>
+                    <span class="absolute top-0 right-0 bg-danger text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
+                </button>
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center">管</div>
+                    <span class="text-sm font-medium">区域经理</span>
+                    <i class="fa fa-angle-down text-gray-400"></i>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="flex pt-14">
+        <!-- 侧边栏 -->
+        <!-- 侧边栏 - 内联，不使用fetch -->
+<aside class="w-64 bg-white h-[calc(100vh-56px)] fixed left-0 shadow-sm">
+    <nav class="py-4">
+        <div class="px-4 py-2 text-xs text-gray-400 uppercase font-medium">工作台</div>
+        <a href="../../v1/pc/index.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-dashboard w-5 text-center"></i><span class="ml-3">数据看板</span></a>
+        <a href="../../v1/pc/material/material-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-home w-5 text-center"></i><span class="ml-3">新盘管理</span></a>
+        <a href="task-list.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50 active"><i class="fa fa-tasks w-5 text-center"></i><span class="ml-3">探盘任务管理</span></a>
+        <a href="../../v1/pc/speech/speech-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-comments w-5 text-center"></i><span class="ml-3">话术训练管理</span></a>
+        <a href="../../v1/pc/content/content-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-magic w-5 text-center"></i><span class="ml-3">获客内容管理</span></a>
+        <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">管理层</div>
+        <a href="record/record-list.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-microphone w-5 text-center"></i><span class="ml-3">录音分析</span><span class="ml-auto text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded">NEW</span></a>
+        <a href="customer/customer-list.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-user-circle w-5 text-center"></i><span class="ml-3">客户管理</span><span class="ml-auto text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded">NEW</span></a>
+        <a href="speech/speech-data.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-line-chart w-5 text-center"></i><span class="ml-3">训练数据中心</span><span class="ml-auto text-xs bg-orange-100 text-orange-600 px-2 py-0.5 rounded">NEW</span></a>
+        <a href="../../v1/pc/data/data-analysis.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-bar-chart w-5 text-center"></i><span class="ml-3">数据分析</span></a>
+        <a href="../../v1/pc/team/team-manage.html" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-users w-5 text-center"></i><span class="ml-3">团队管理</span></a>
+        <div class="px-4 py-2 mt-4 text-xs text-gray-400 uppercase font-medium">系统管理</div>
+        <a href="#" class="flex items-center px-4 py-3 text-gray-600 hover:bg-gray-50"><i class="fa fa-cog w-5 text-center"></i><span class="ml-3">系统设置</span></a>
+    </nav>
+</aside>
+
+        <!-- 主内容区 -->
+        <main class="ml-64 flex-1 p-6">
+            <!-- 页面标题 -->
+            <div class="mb-6 flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-dark">探盘任务列表</h1>
+                    <p class="text-gray-500 mt-1">V2.0 · 支持来源筛选 + 状态筛选 + 任务类型筛选</p>
+                </div>
+                <button class="bg-primary hover:bg-primary/90 text-white px-5 py-2.5 rounded-lg font-medium">
+                    <i class="fa fa-plus mr-2"></i>新建任务
+                </button>
+            </div>
+
+            <!-- 筛选栏 V2.0 新增：来源筛选 -->
+            <div class="bg-white rounded-lg shadow-sm p-4 mb-4">
+                <div class="flex flex-wrap gap-3 items-end">
+                    <!-- 楼盘名称搜索 -->
+                    <div class="flex-1 min-w-[200px]">
+                        <label class="block text-xs text-gray-500 mb-1">楼盘名称</label>
+                        <input type="text" placeholder="搜索楼盘名称..." class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
+                    </div>
+                    <!-- 来源筛选 V2.0 新增 -->
+                    <div class="min-w-[160px]">
+                        <label class="block text-xs text-gray-500 mb-1">任务来源</label>
+                        <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-white">
+                            <option value="">全部来源</option>
+                            <option value="pc">PC端下发</option>
+                            <option value="miniapp">小程序下发</option>
+                        </select>
+                    </div>
+                    <!-- 状态筛选 V2.0 新增 -->
+                    <div class="min-w-[160px]">
+                        <label class="block text-xs text-gray-500 mb-1">任务状态</label>
+                        <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-white">
+                            <option value="">全部状态</option>
+                            <option value="pending">待分发</option>
+                            <option value="pending_execute">待执行</option>
+                            <option value="progress">进行中</option>
+                            <option value="submitted">已提交</option>
+                            <option value="completed">已完成</option>
+                            <option value="rejected">已驳回</option>
+                            <option value="overdue">已逾期</option>
+                        </select>
+                    </div>
+                    <!-- 任务类型 -->
+                    <div class="min-w-[160px]">
+                        <label class="block text-xs text-gray-500 mb-1">任务类型</label>
+                        <select class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary bg-white">
+                            <option value="">全部类型</option>
+                            <option value="exploration">探盘任务</option>
+                            <option value="training">话术训练</option>
+                            <option value="recording">约看录音</option>
+                        </select>
+                    </div>
+                    <!-- 时间范围 -->
+                    <div class="min-w-[200px]">
+                        <label class="block text-xs text-gray-500 mb-1">下发时间</label>
+                        <input type="date" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary">
+                    </div>
+                    <!-- 搜索按钮 -->
+                    <div>
+                        <button class="bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg text-sm">
+                            <i class="fa fa-search mr-1"></i>搜索
+                        </button>
+                        <button class="ml-2 text-gray-500 hover:text-gray-700 px-3 py-2 text-sm border border-gray-300 rounded-lg">重置</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 统计卡片 V2.0 新增 -->
+            <div class="grid grid-cols-5 gap-4 mb-4">
+                <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-gray-300 cursor-pointer hover:shadow-md transition" onclick="filterByStatus('')">
+                    <div class="text-2xl font-bold text-dark">28</div>
+                    <div class="text-xs text-gray-500 mt-1">全部任务</div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-blue-500 cursor-pointer hover:shadow-md transition" onclick="filterByStatus('progress')">
+                    <div class="text-2xl font-bold text-blue-600">12</div>
+                    <div class="text-xs text-gray-500 mt-1">进行中</div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-orange-400 cursor-pointer hover:shadow-md transition" onclick="filterByStatus('submitted')">
+                    <div class="text-2xl font-bold text-orange-500">6</div>
+                    <div class="text-xs text-gray-500 mt-1">已提交</div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-green-500 cursor-pointer hover:shadow-md transition" onclick="filterByStatus('completed')">
+                    <div class="text-2xl font-bold text-green-600">8</div>
+                    <div class="text-xs text-gray-500 mt-1">已完成</div>
+                </div>
+                <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-red-500 cursor-pointer hover:shadow-md transition" onclick="filterByStatus('overdue')">
+                    <div class="text-2xl font-bold text-red-500">2</div>
+                    <div class="text-xs text-gray-500 mt-1">已逾期</div>
+                </div>
+            </div>
+
+            <!-- 任务列表表格 -->
+            <div class="bg-white rounded-lg shadow-sm">
+                <div class="p-4 border-b border-gray-100 flex justify-between items-center">
+                    <div class="text-sm text-gray-600">
+                        共 <span class="font-bold text-dark">28</span> 条任务记录
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="text-sm text-gray-500 hover:text-primary border border-gray-300 rounded px-3 py-1.5">
+                            <i class="fa fa-download mr-1"></i>导出
+                        </button>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm">
+                        <thead class="bg-gray-50 text-gray-500 text-xs uppercase">
+                            <tr>
+                                <th class="px-4 py-3 text-left font-medium">任务信息</th>
+                                <th class="px-4 py-3 text-left font-medium">楼盘信息</th>
+                                <th class="px-4 py-3 text-left font-medium">来源</th>
+                                <th class="px-4 py-3 text-left font-medium">执行人</th>
+                                <th class="px-4 py-3 text-left font-medium">状态</th>
+                                <th class="px-4 py-3 text-left font-medium">进度</th>
+                                <th class="px-4 py-3 text-left font-medium">截止时间</th>
+                                <th class="px-4 py-3 text-left font-medium">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <!-- 任务行1 - 进行中 -->
+                            <tr class="hover-row">
+                                <td class="px-4 py-3">
+                                    <div class="font-medium text-dark">中海汇德里新盘探盘</div>
+                                    <div class="text-xs text-gray-400 mt-0.5">下发时间：2026-04-10 09:00</div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="text-dark font-medium">中海汇德里</div>
+                                    <div class="text-xs text-gray-400">浦东新区 · 8.5万/㎡</div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="tag tag-source-pc">PC</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-bold">陈</div>
+                                        <span class="text-gray-700">陈佳佳</span>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="tag tag-status-progress">进行中</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div>
+                                        <div class="text-xs text-gray-500 mb-1">阶段2 · 点位采集</div>
+                                        <div class="progress-bar w-24">
+                                            <div class="progress-fill" style="width:50%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="text-gray-700">2026-04-15 18:00</div>
+                                    <div class="text-xs text-gray-400">剩余3天</div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <button class="text-primary hover:text-primary/80 text-xs mr-2">查看详情</button>
+                                    <button class="text-gray-500 hover:text-gray-700 text-xs">催办</button>
+                                </td>
+                            </tr>
+                            <!-- 任务行2 - 已提交 -->
+                            <tr class="hover-row">
+                                <td class="px-4 py-3">
+                                    <div class="font-medium text-dark">万科翡翠公园新盘探盘</div>
+                                    <div class="text-xs text-gray-400 mt-0.5">下发时间：2026-04-08 14:30</div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="text-dark font-medium">万科翡翠公园</div>
+                                    <div class="text-xs text-gray-400">徐汇区 · 12.0万/㎡</div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="tag tag-source-mini">小程序</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-6 h-6 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-xs font-bold">李</div>
+                                        <span class="text-gray-700">李明</span>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="tag tag-status-submitted">已提交</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div>
+                                        <div class="text-xs text-gray-500 mb-1">已提交审核</div>
+                                        <div class="progress-bar w-24">
+                                            <div class="progress-fill bg-gradient-to-r from-orange-400 to-orange-500" style="width:75%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="text-gray-700">2026-04-12 18:00</div>
+                                    <div class="text-xs text-gray-400">剩余1天</div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <button class="text-primary hover:text-primary/80 text-xs mr-2">去审核</button>
+                                    <button class="text-gray-500 hover:text-gray-700 text-xs">查看详情</button>
+                                </td>
+                            </tr>
+                            <!-- 任务行3 - 已完成 -->
+                            <tr class="hover-row">
+                                <td class="px-4 py-3">
+                                    <div class="font-medium text-dark">华润外滩九里新盘探盘</div>
+                                    <div class="text-xs text-gray-400 mt-0.5">下发时间：2026-04-05 10:00</div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="text-dark font-medium">华润外滩九里</div>
+                                    <div class="text-xs text-gray-400">黄浦区 · 18.0万/㎡</div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="tag tag-source-pc">PC</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-6 h-6 bg-purple-100 text-purple-600 rounded-full flex items-center justify-center text-xs font-bold">王</div>
+                                        <span class="text-gray-700">王芳</span>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="tag tag-status-completed">已完成</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div>
+                                        <div class="text-xs text-green-600 font-medium mb-1">已完成</div>
+                                        <div class="progress-bar w-24">
+                                            <div class="progress-fill bg-gradient-to-r from-green-500 to-green-400" style="width:100%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="text-gray-700">2026-04-10 18:00</div>
+                                    <div class="text-xs text-gray-400">已完成</div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <button class="text-primary hover:text-primary/80 text-xs mr-2">查看详情</button>
+                                </td>
+                            </tr>
+                            <!-- 任务行4 - 已逾期 -->
+                            <tr class="hover-row bg-red-50/30">
+                                <td class="px-4 py-3">
+                                    <div class="font-medium text-dark">龙湖天琅新盘探盘</div>
+                                    <div class="text-xs text-gray-400 mt-0.5">下发时间：2026-04-01 09:00</div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="text-dark font-medium">龙湖天琅</div>
+                                    <div class="text-xs text-gray-400">闵行区 · 9.8万/㎡</div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="tag tag-source-mini">小程序</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-6 h-6 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-xs font-bold">赵</div>
+                                        <span class="text-gray-700">赵伟</span>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <span class="tag tag-status-overdue">已逾期</span>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div>
+                                        <div class="text-xs text-red-500 font-medium mb-1">阶段1 · 打卡</div>
+                                        <div class="progress-bar w-24">
+                                            <div class="progress-fill bg-red-400" style="width:15%"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <div class="text-red-500 font-medium">2026-04-08 18:00</div>
+                                    <div class="text-xs text-red-400">已逾期3天</div>
+                                </td>
+                                <td class="px-4 py-3">
+                                    <button class="text-primary hover:text-primary/80 text-xs mr-2">查看详情</button>
+                                    <button class="text-danger hover:text-danger/80 text-xs">催办</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- 分页 -->
+                <div class="p-4 border-t border-gray-100 flex justify-between items-center">
+                    <div class="text-sm text-gray-500">显示 1-10 条，共 28 条</div>
+                    <div class="flex gap-1">
+                        <button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-500 hover:bg-gray-50 disabled:opacity-50" disabled>上一页</button>
+                        <button class="px-3 py-1 border border-primary bg-primary text-white rounded text-sm">1</button>
+                        <button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-600 hover:bg-gray-50">2</button>
+                        <button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-600 hover:bg-gray-50">3</button>
+                        <button class="px-3 py-1 border border-gray-300 rounded text-sm text-gray-500 hover:bg-gray-50">下一页</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function filterByStatus(status) {
+            // 模拟筛选
+            // console.log('筛选状态:', status);
+        }
+    </script>
+</body>
+</html>

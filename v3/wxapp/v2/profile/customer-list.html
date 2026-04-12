@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <title>客户列表 - V2.0 - 房产AI助手</title>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+  <style>
+    :root {
+      --brand-primary: #FA8C16;
+      --brand-primary-dark: #E67A0E;
+      --color-success: #00B42A;
+      --color-warning: #FF7D00;
+      --color-danger: #FA5151;
+      --color-info: #007AFF;
+      --color-title: #1D2129;
+      --color-text: #4E5969;
+      --color-sub: #86909C;
+      --color-border: #E5E6EB;
+      --color-bg: #F7F8FA;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      background: var(--color-bg);
+      color: var(--color-title);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      padding-bottom: 90px;
+    }
+
+    /* 顶部导航 */
+    .top-nav {
+      background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
+      padding: 12px 15px 16px;
+      color: white;
+    }
+    .top-nav .nav-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .top-nav .nav-title { font-size: 17px; font-weight: 600; }
+    .top-nav .nav-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      text-decoration: none;
+    }
+
+    /* 搜索栏 */
+    .search-bar {
+      background: white;
+      padding: 10px 15px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .search-input-wrap {
+      flex: 1;
+      background: var(--color-bg);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      padding: 6px 14px;
+      gap: 8px;
+    }
+    .search-input-wrap input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      outline: none;
+      color: var(--color-text);
+    }
+    .search-input-wrap input::placeholder { color: var(--color-sub); }
+
+    /* 筛选Tab */
+    .filter-tabs {
+      background: white;
+      display: flex;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--color-border);
+      scrollbar-width: none;
+    }
+    .filter-tabs::-webkit-scrollbar { display: none; }
+    .filter-tab {
+      flex-shrink: 0;
+      padding: 12px 16px;
+      font-size: 14px;
+      color: var(--color-sub);
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-tab.active {
+      color: var(--brand-primary);
+      border-bottom-color: var(--brand-primary);
+      font-weight: 600;
+    }
+
+    /* 客户统计 */
+    .stats-row {
+      background: white;
+      padding: 14px 15px;
+      display: flex;
+      gap: 12px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .stat-item {
+      flex: 1;
+      text-align: center;
+      padding: 8px 0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .stat-item:hover { background: var(--color-bg); }
+    .stat-num {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--color-title);
+    }
+    .stat-label { font-size: 11px; color: var(--color-sub); margin-top: 2px; }
+
+    /* 客户列表 */
+    .customer-list { padding: 10px 15px; }
+    .customer-card {
+      background: white;
+      border-radius: 12px;
+      padding: 14px 15px;
+      margin-bottom: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1.5px solid transparent;
+    }
+    .customer-card:active {
+      transform: scale(0.98);
+      opacity: 0.9;
+    }
+    .customer-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+    .customer-info { flex: 1; min-width: 0; }
+    .customer-name-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    .customer-name {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-title);
+    }
+    .customer-phone { font-size: 12px; color: var(--color-sub); }
+    .customer-detail {
+      font-size: 12px;
+      color: var(--color-text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 3px;
+    }
+    .customer-tags {
+      display: flex;
+      gap: 4px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+    .level-tag {
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .level-high { background: #E8FFEA; color: #00B42A; }
+    .level-medium { background: #FFF7E8; color: #FF7D00; }
+    .level-low { background: #F2F3F5; color: #86909C; }
+    .level-deal { background: #E8F3FF; color: #165DFF; }
+    .source-tag {
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      background: var(--color-bg);
+      color: var(--color-sub);
+    }
+    .customer-arrow {
+      color: var(--color-sub);
+      font-size: 14px;
+      align-self: center;
+      flex-shrink: 0;
+    }
+
+    /* 底部TabBar */
+    .tabbar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(29, 33, 41, 0.96);
+      backdrop-filter: blur(20px);
+      display: flex;
+      padding: 6px 0;
+      padding-bottom: calc(6px + env(safe-area-inset-bottom));
+      z-index: 100;
+    }
+    .tabbar-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: 4px 0;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      font-size: 10px;
+      transition: color 0.2s;
+    }
+    .tabbar-item.active { color: var(--brand-primary); }
+    .tabbar-item i { font-size: 22px; }
+  </style>
+</head>
+<body>
+  <div class="top-nav">
+    <div class="nav-row">
+      <a href="javascript:history.back()" class="nav-btn"><i class="fa fa-angle-left" style="font-size:22px"></i></a>
+      <span class="nav-title">客户管理</span>
+      <a href="#" class="nav-btn"><i class="fa fa-plus"></i></a>
+    </div>
+  </div>
+
+  <!-- 搜索栏 -->
+  <div class="search-bar">
+    <div class="search-input-wrap">
+      <i class="fa fa-search" style="color:#86909C;font-size:14px"></i>
+      <input type="text" placeholder="搜索客户姓名或手机号...">
+    </div>
+  </div>
+
+  <!-- 筛选Tab -->
+  <div class="filter-tabs">
+    <div class="filter-tab active" onclick="switchFilter('all', this)">全部 128</div>
+    <div class="filter-tab" onclick="switchFilter('high', this)">高意向 42</div>
+    <div class="filter-tab" onclick="switchFilter('medium', this)">中等意向 35</div>
+    <div class="filter-tab" onclick="switchFilter('low', this)">初步了解 43</div>
+    <div class="filter-tab" onclick="switchFilter('deal', this)">已成交 8</div>
+  </div>
+
+  <!-- 统计 -->
+  <div class="stats-row">
+    <div class="stat-item" onclick="switchFilter('all', document.querySelectorAll('.filter-tab')[0])">
+      <div class="stat-num">128</div>
+      <div class="stat-label">全部客户</div>
+    </div>
+    <div class="stat-item" onclick="switchFilter('high', document.querySelectorAll('.filter-tab')[1])">
+      <div class="stat-num" style="color:#00B42A">42</div>
+      <div class="stat-label">高意向</div>
+    </div>
+    <div class="stat-item" onclick="switchFilter('deal', document.querySelectorAll('.filter-tab')[4])">
+      <div class="stat-num" style="color:#165DFF">8</div>
+      <div class="stat-label">已成交</div>
+    </div>
+  </div>
+
+  <!-- 客户列表 -->
+  <div class="customer-list" id="customerList">
+    <!-- 客户1: 高意向 -->
+    <div class="customer-card" onclick="goDetail('张三')">
+      <div class="customer-avatar" style="background:linear-gradient(135deg,#FA8C16,#FF9500)">张</div>
+      <div class="customer-info">
+        <div class="customer-name-row">
+          <span class="customer-name">张三</span>
+          <span class="level-tag level-high">高意向</span>
+        </div>
+        <div class="customer-phone">138****8821</div>
+        <div class="customer-detail">🏠 意向楼盘：中海汇德里 · 📍 浦东新区</div>
+        <div class="customer-tags">
+          <span class="source-tag">线上获客</span>
+          <span class="source-tag">投资客</span>
+        </div>
+      </div>
+      <div class="customer-arrow"><i class="fa fa-angle-right"></i></div>
+    </div>
+
+    <!-- 客户2: 中等意向 -->
+    <div class="customer-card" onclick="goDetail('李四')">
+      <div class="customer-avatar" style="background:linear-gradient(135deg,#00B42A,#00A037)">李</div>
+      <div class="customer-info">
+        <div class="customer-name-row">
+          <span class="customer-name">李四</span>
+          <span class="level-tag level-medium">中等意向</span>
+        </div>
+        <div class="customer-phone">139****7734</div>
+        <div class="customer-detail">🏠 意向楼盘：万科翡翠公园 · 📍 徐汇区</div>
+        <div class="customer-tags">
+          <span class="source-tag">转介绍</span>
+          <span class="source-tag">改善型</span>
+        </div>
+      </div>
+      <div class="customer-arrow"><i class="fa fa-angle-right"></i></div>
+    </div>
+
+    <!-- 客户3: 已成交 -->
+    <div class="customer-card" onclick="goDetail('王五')">
+      <div class="customer-avatar" style="background:linear-gradient(135deg,#165DFF,#5AC8FA)">王</div>
+      <div class="customer-info">
+        <div class="customer-name-row">
+          <span class="customer-name">王五</span>
+          <span class="level-tag level-deal">已成交</span>
+        </div>
+        <div class="customer-phone">136****5500</div>
+        <div class="customer-detail">🏠 成交楼盘：龙湖天琅 · 📍 闵行区</div>
+        <div class="customer-tags">
+          <span class="source-tag">自然到访</span>
+          <span class="source-tag">首套房</span>
+        </div>
+      </div>
+      <div class="customer-arrow"><i class="fa fa-angle-right"></i></div>
+    </div>
+
+    <!-- 客户4: 低意向 -->
+    <div class="customer-card" onclick="goDetail('赵六')">
+      <div class="customer-avatar" style="background:linear-gradient(135deg,#86909C,#6B7280)">赵</div>
+      <div class="customer-info">
+        <div class="customer-name-row">
+          <span class="customer-name">赵六</span>
+          <span class="level-tag level-low">初步了解</span>
+        </div>
+        <div class="customer-phone">137****2211</div>
+        <div class="customer-detail">🏠 意向楼盘：华润外滩九里 · 📍 黄浦区</div>
+        <div class="customer-tags">
+          <span class="source-tag">线上获客</span>
+        </div>
+      </div>
+      <div class="customer-arrow"><i class="fa fa-angle-right"></i></div>
+    </div>
+
+    <!-- 客户5: 高意向 -->
+    <div class="customer-card" onclick="goDetail('孙七')">
+      <div class="customer-avatar" style="background:linear-gradient(135deg,#722ED1,#9B59B6)">孙</div>
+      <div class="customer-info">
+        <div class="customer-name-row">
+          <span class="customer-name">孙七</span>
+          <span class="level-tag level-high">高意向</span>
+        </div>
+        <div class="customer-phone">135****6677</div>
+        <div class="customer-detail">🏠 意向楼盘：万科翡翠公园 · 📍 浦东新区</div>
+        <div class="customer-tags">
+          <span class="source-tag">转介绍</span>
+          <span class="source-tag">投资客</span>
+        </div>
+      </div>
+      <div class="customer-arrow"><i class="fa fa-angle-right"></i></div>
+    </div>
+  </div>
+
+  <!-- 底部TabBar -->
+  <div class="tabbar">
+    <a href="../home/index.html" class="tabbar-item">
+      <i class="fa fa-home"></i>
+      <span>首页</span>
+    </a>
+    <a href="../home/tools.html" class="tabbar-item">
+      <i class="fa fa-rocket"></i>
+      <span>功能</span>
+    </a>
+    <a href="../other/ai-design.html" class="tabbar-item">
+      <i class="fa fa-magic"></i>
+      <span>AI设计</span>
+    </a>
+    <a href="../home/calendar.html" class="tabbar-item">
+      <i class="fa fa-calendar"></i>
+      <span>日历</span>
+    </a>
+    <a href="../home/my.html" class="tabbar-item active">
+      <i class="fa fa-user"></i>
+      <span>我的</span>
+    </a>
+  </div>
+
+  <script>
+    function switchFilter(filter, el) {
+      document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+      el.classList.add('active');
+    }
+    function goDetail(name) {
+      window.location.href = 'customer-detail.html?name=' + encodeURIComponent(name);
+    }
+  </script>
+</body>
+</html>

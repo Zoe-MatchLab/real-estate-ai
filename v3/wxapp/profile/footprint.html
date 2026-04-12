@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>我的足迹 - 房产AI助手</title>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --brand-primary: #FA8C16;
+            --brand-primary-light: #FFF7E6;
+            --color-success: #00B42A;
+            --color-success-light: #E8FFEA;
+            --color-warning: #FF7D00;
+            --color-warning-light: #FFF7E6;
+            --color-info: #165DFF;
+            --color-info-light: #E8F3FF;
+            --color-purple: #722ED1;
+            --color-purple-light: #F7F0FF;
+            --color-title: #1D2129;
+            --color-text: #4E5969;
+            --color-sub: #86909C;
+            --color-border: #E5E6EB;
+            --color-bg: #F7F8FA;
+            --color-card: #FFFFFF;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+            --font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.25s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        button:focus-visible, a:focus-visible { outline: 2px solid var(--brand-primary); outline-offset: 2px; }
+
+        html, body {
+            font-family: var(--font-family);
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--color-text);
+            background: var(--color-bg);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body { min-height: 100vh; }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+        }
+
+        /* 头部导航栏 */
+        .header {
+            background: white;
+            padding: calc(12px + env(safe-area-inset-top)) var(--spacing-md) var(--spacing-md);
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .back-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-bg);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            color: var(--color-text);
+            text-decoration: none;
+        }
+
+        .header-title {
+            flex: 1;
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--color-title);
+            text-align: center;
+            margin: 0 36px;
+        }
+
+        .page-content { min-height: calc(100vh - 60px); padding: var(--spacing-md); }
+
+        .date-group { margin-bottom: var(--spacing-lg); }
+
+        .date-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--color-title);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .record-card {
+            background: var(--color-card);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .record-card:active { transform: scale(0.99); box-shadow: var(--shadow-md); }
+
+        .record-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--brand-primary-light);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .record-info { flex: 1; min-width: 0; }
+
+        .record-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--color-title);
+            margin-bottom: 2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .record-time { font-size: 12px; color: var(--color-sub); }
+
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.75);
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--radius-lg);
+            z-index: 99999;
+            font-size: 14px;
+            animation: toastIn 0.3s ease forwards;
+            pointer-events: none;
+        }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="javascript:history.back()" class="back-btn" aria-label="返回">
+            <i class="fa fa-angle-left" style="font-size: 22px"></i>
+        </a>
+        <span class="header-title">我的足迹</span>
+    </div>
+
+    <div class="page-content">
+        <div class="date-group">
+            <div class="date-title">今天</div>
+            <div class="record-card" onclick="showToast('查看详情')">
+                <div class="record-icon">📋</div>
+                <div class="record-info">
+                    <div class="record-title">完成探盘任务 - 中海汇德里</div>
+                    <div class="record-time">14:30</div>
+                </div>
+            </div>
+            <div class="record-card" onclick="showToast('查看详情')">
+                <div class="record-icon" style="background: var(--color-info-light);">🎤</div>
+                <div class="record-info">
+                    <div class="record-title">完成话术训练 - 议价谈判</div>
+                    <div class="record-time">10:15</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="date-group">
+            <div class="date-title">昨天</div>
+            <div class="record-card" onclick="showToast('查看详情')">
+                <div class="record-icon" style="background: var(--color-success-light);">✨</div>
+                <div class="record-info">
+                    <div class="record-title">发布朋友圈文案</div>
+                    <div class="record-time">16:45</div>
+                </div>
+            </div>
+            <div class="record-card" onclick="showToast('查看详情')">
+                <div class="record-icon" style="background: var(--color-purple-light);">📚</div>
+                <div class="record-info">
+                    <div class="record-title">学习课程 - 逼定技巧</div>
+                    <div class="record-time">15:20</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="date-group">
+            <div class="date-title">本周</div>
+            <div class="record-card" onclick="showToast('查看详情')">
+                <div class="record-icon">🏠</div>
+                <div class="record-info">
+                    <div class="record-title">收藏楼盘 - 万科翡翠公园</div>
+                    <div class="record-time">周一</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showToast(message) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
+    </script>
+</body>
+</html>

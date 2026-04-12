@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>我的 - 房产AI助手</title>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --brand-primary: #FA8C16;
+            --brand-primary-dark: #E67A0E;
+            --brand-primary-light: #FFF7E6;
+            --color-success: #00B42A;
+            --color-success-light: #F6FFED;
+            --color-warning: #FF7D00;
+            --color-warning-light: #FFF7E6;
+            --color-danger: #FA5151;
+            --color-danger-light: #FFF1F0;
+            --color-info: #007AFF;
+            --color-info-light: #E8F3FF;
+            --color-purple: #722ED1;
+            --color-purple-light: #F7F0FF;
+            --color-gold: #BF9B5F;
+            --color-gold-light: #FFF8E7;
+            --color-title: #1D2129;
+            --color-text: #4E5969;
+            --color-sub: #86909C;
+            --color-border: #E5E6EB;
+            --color-bg: #F7F8FA;
+            --color-card: #FFFFFF;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+            --shadow-tabbar: 0 12px 40px rgba(0,0,0,0.25);
+            --font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.25s ease;
+            --transition-slow: 0.35s ease;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* Focus 样式 - 可访问性 */
+        button:focus-visible,
+        a:focus-visible,
+        input:focus-visible,
+        select:focus-visible,
+        textarea:focus-visible {
+            outline: 2px solid var(--brand-primary);
+            outline-offset: 2px;
+        }
+        html, body {
+            font-family: var(--font-family);
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--color-text);
+            background: var(--color-bg);
+            -webkit-font-smoothing: antialiased;
+        }
+        .page { min-height: 100vh; padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+        /* 会员卡 */
+        .member-card {
+            margin: var(--spacing-md);
+            background: linear-gradient(135deg, #1D2129 0%, #2D3748 100%);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-lg);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .member-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -30%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255,193,7,0.3) 0%, transparent 70%);
+        }
+        .member-card::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -20%;
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle, rgba(191,155,95,0.2) 0%, transparent 70%);
+        }
+        .member-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-lg);
+            position: relative;
+            z-index: 1;
+        }
+        .member-logo {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+        .member-logo-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--color-gold) 0%, #D4AF37 100%);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        .member-logo-text {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .member-level {
+            padding: 4px 12px;
+            background: linear-gradient(135deg, var(--color-gold) 0%, #D4AF37 100%);
+            border-radius: var(--radius-full);
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .member-info {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            position: relative;
+            z-index: 1;
+        }
+        .member-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+        .member-desc {
+            font-size: 11px;
+            opacity: 0.7;
+        }
+        .member-balance {
+            text-align: right;
+        }
+        .member-balance-label {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-bottom: 2px;
+        }
+        .member-balance-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--color-gold);
+        }
+        .member-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-lg);
+            position: relative;
+            z-index: 1;
+        }
+        .member-btn {
+            flex: 1;
+            padding: 8px;
+            background: rgba(255,255,255,0.15);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: var(--radius-lg);
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-xs);
+            transition: all var(--transition-fast);
+        }
+        .member-btn:active {
+            background: rgba(255,255,255,0.25);
+            transform: scale(0.98);
+        }
+        .member-btn.primary {
+            background: linear-gradient(135deg, var(--color-gold) 0%, #D4AF37 100%);
+            border: none;
+        }
+        /* 算力卡片 */
+        .compute-card {
+            margin: 0 var(--spacing-md) var(--spacing-md);
+            background: linear-gradient(135deg, var(--color-purple) 0%, #8B5CF6 100%);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        .compute-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,0.2);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        .compute-info { flex: 1; }
+        .compute-title { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+        .compute-desc { font-size: 11px; opacity: 0.8; }
+        .compute-value {
+            text-align: right;
+        }
+        .compute-value-num {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        .compute-value-unit {
+            font-size: 11px;
+            opacity: 0.8;
+        }
+        /* 快捷功能区 */
+        .section { margin: 0 var(--spacing-md) var(--spacing-md); }
+        .section-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-title);
+            margin-bottom: var(--spacing-sm);
+        }
+        /* 足迹/收藏/活动入口 */
+        .entry-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-sm);
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+        }
+        .entry-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-xs);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-md);
+        }
+        .entry-item:hover { background: var(--color-bg); }
+        .entry-item:active { transform: scale(0.95); }
+        .entry-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
+        .entry-icon.blue { background: var(--color-info-light); color: var(--color-info); }
+        .entry-icon.purple { background: var(--color-purple-light); color: var(--color-purple); }
+        .entry-icon.orange { background: var(--brand-primary-light); color: var(--brand-primary); }
+        .entry-icon.green { background: var(--color-success-light); color: var(--color-success); }
+        .entry-icon.red { background: var(--color-danger-light); color: var(--color-danger); }
+        .entry-icon.gold { background: var(--color-gold-light); color: var(--color-gold); }
+        .entry-label { font-size: 12px; color: var(--color-text); }
+        .entry-badge {
+            position: absolute;
+            top: 0;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: var(--color-danger);
+            border-radius: 50%;
+        }
+        .entry-item { position: relative; }
+        /* 活动中心 */
+        .activity-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+        .activity-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--color-border);
+        }
+        .activity-title {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-title);
+        }
+        .activity-title i { color: var(--brand-primary); }
+        .activity-more {
+            font-size: 12px;
+            color: var(--color-sub);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .activity-list { padding: var(--spacing-sm); }
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: background var(--transition-fast);
+        }
+        .activity-item:hover { background: var(--color-bg); }
+        .activity-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+        .activity-icon.invite { background: #FFF0F5; }
+        .activity-icon.checkin { background: #F0F5FF; }
+        .activity-info { flex: 1; }
+        .activity-name { font-size: 14px; font-weight: 500; color: var(--color-title); margin-bottom: 2px; }
+        .activity-desc { font-size: 11px; color: var(--color-sub); }
+        .activity-action {
+            padding: 6px 12px;
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .activity-action.enable {
+            background: var(--brand-primary);
+            color: white;
+        }
+        .activity-action.done {
+            background: var(--color-success-light);
+            color: var(--color-success);
+        }
+        .activity-action.disabled {
+            background: var(--color-bg);
+            color: var(--color-sub);
+        }
+        /* 今日业绩 */
+        .today-card {
+            background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        .today-card::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 100px;
+            height: 100px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+        }
+        .today-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+        .today-title { font-size: 15px; font-weight: 600; }
+        .today-date {
+            font-size: 11px;
+            padding: 2px 10px;
+            background: rgba(255,255,255,0.25);
+            border-radius: var(--radius-full);
+        }
+        .today-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-sm);
+            text-align: center;
+        }
+        .today-value { font-size: 24px; font-weight: 700; margin-bottom: 2px; }
+        .today-label { font-size: 11px; opacity: 0.85; }
+        /* 数据统计 */
+        .stats-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-sm);
+            text-align: center;
+        }
+        .stat-value { font-size: 18px; font-weight: 700; color: var(--color-title); margin-bottom: 2px; }
+        .stat-label { font-size: 11px; color: var(--color-sub); }
+        .stats-divider {
+            grid-column: span 4;
+            height: 1px;
+            background: var(--color-border);
+            margin: var(--spacing-sm) 0;
+        }
+        .stats-progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .progress-info { flex: 1; }
+        .progress-title { font-size: 13px; font-weight: 500; color: var(--color-title); margin-bottom: 2px; }
+        .progress-desc { font-size: 11px; color: var(--color-sub); }
+        .progress-percent { font-size: 16px; font-weight: 700; color: var(--brand-primary); }
+        .progress-bar {
+            width: 80px;
+            height: 6px;
+            background: var(--color-bg);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+            margin-top: 6px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--brand-primary), #FF9500);
+            border-radius: var(--radius-full);
+        }
+        /* 常用功能 */
+        .quick-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: var(--spacing-sm);
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+        }
+        .quick-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--spacing-xs);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            padding: var(--spacing-xs);
+            border-radius: var(--radius-md);
+        }
+        .quick-item:hover { background: var(--color-bg); }
+        .quick-item:active { transform: scale(0.95); }
+        .quick-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+        .quick-icon.blue { background: #E8F3FF; color: #165DFF; }
+        .quick-icon.purple { background: #F7F0FF; color: #722ED1; }
+        .quick-icon.orange { background: var(--brand-primary-light); color: var(--brand-primary); }
+        .quick-icon.green { background: #F6FFED; color: var(--color-success); }
+        .quick-icon.red { background: #FFF1F0; color: var(--color-danger); }
+        .quick-icon.indigo { background: #F0F5FF; color: #2F54EB; }
+        .quick-icon.pink { background: #FFF0F5; color: #EB2F96; }
+        .quick-icon.gray { background: #F7F8FA; color: #4E5969; }
+        .quick-label { font-size: 12px; color: var(--color-text); margin-top: 4px; }
+        .quick-badge {
+            position: absolute;
+            top: -4px;
+            right: 8px;
+            font-size: 9px;
+            padding: 2px 4px;
+            border-radius: 4px;
+            color: white;
+        }
+        .quick-item { position: relative; }
+        .quick-badge.coming-soon { background: var(--color-warning); }
+        .quick-badge.new { background: var(--color-danger); }
+        .quick-badge.hot { background: #FF2F4B; }
+        /* 菜单列表 */
+        .menu-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: var(--spacing-md);
+            cursor: pointer;
+            transition: background var(--transition-fast);
+            position: relative;
+        }
+        .menu-item:hover { background: var(--color-bg); }
+        .menu-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: var(--spacing-md);
+            right: var(--spacing-md);
+            height: 1px;
+            background: var(--color-border);
+        }
+        .menu-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: var(--spacing-md);
+            font-size: 16px;
+        }
+        .menu-icon.blue { background: #E8F3FF; color: #165DFF; }
+        .menu-icon.purple { background: #F7F0FF; color: #722ED1; }
+        .menu-icon.green { background: #F6FFED; color: var(--color-success); }
+        .menu-icon.orange { background: var(--brand-primary-light); color: var(--brand-primary); }
+        .menu-icon.red { background: #FFF1F0; color: var(--color-danger); }
+        .menu-icon.cyan { background: #E8FFFB; color: #00B5A4; }
+        .menu-icon.indigo { background: #F0F5FF; color: #2F54EB; }
+        .menu-text { flex: 1; font-size: 14px; color: var(--color-title); }
+        .menu-badge {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            margin-right: var(--spacing-sm);
+        }
+        .menu-badge.red { background: #FFF1F0; color: var(--color-danger); }
+        .menu-badge.orange { background: var(--brand-primary-light); color: var(--brand-primary); }
+        .menu-badge.gray { background: #F7F8FA; color: var(--color-sub); }
+        .menu-arrow { color: var(--color-sub); font-size: 14px; }
+        /* 退出按钮 */
+        .logout-btn {
+            display: block;
+            width: calc(100% - 32px);
+            margin: var(--spacing-lg) var(--spacing-md);
+            padding: var(--spacing-md);
+            background: white;
+            border: none;
+            border-radius: var(--radius-xl);
+            font-size: 14px;
+            color: var(--color-danger);
+            text-align: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-fast);
+        }
+        .logout-btn:hover { background: #FFF1F0; }
+        .logout-btn:active { transform: scale(0.98); }
+        /* TabBar */
+        .tab-bar {
+            position: fixed;
+            bottom: calc(16px + env(safe-area-inset-bottom));
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(29, 33, 41, 0.96);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 28px;
+            padding: 8px 20px;
+            z-index: 9999;
+            box-shadow: var(--shadow-tabbar);
+            display: flex;
+            gap: 4px;
+        }
+        .tab-item {
+            width: 44px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 18px;
+            color: rgba(255,255,255,0.5);
+            transition: all var(--transition-normal);
+            text-decoration: none;
+        }
+        .tab-item i { font-size: 20px; }
+        .tab-item.active {
+            background: rgba(250, 140, 22, 0.2);
+            color: var(--brand-primary);
+        }
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.75);
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--radius-lg);
+            z-index: 99999;
+            font-size: 14px;
+            animation: toastIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            pointer-events: none;
+        }
+        @keyframes toastIn {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        @keyframes toastOut {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+        }
+        .toast.hiding { animation: toastOut 0.2s ease forwards; }
+        /* 设置弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 10000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity var(--transition-normal);
+        }
+        .modal-overlay.show { opacity: 1; pointer-events: auto; }
+        .modal-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            z-index: 10001;
+            transform: translateY(100%);
+            transition: transform var(--transition-slow) cubic-bezier(0.32, 0.72, 0, 1);
+            padding: var(--spacing-lg);
+            padding-bottom: calc(var(--spacing-lg) + env(safe-area-inset-bottom));
+        }
+        .modal-overlay.show .modal-sheet { transform: translateY(0); }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+        }
+        .modal-title { font-size: 17px; font-weight: 600; color: var(--color-title); }
+        .modal-close {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-sub);
+            cursor: pointer;
+            border-radius: var(--radius-full);
+        }
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md) 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .setting-item:last-child { border-bottom: none; }
+        .setting-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+        .setting-left i { color: var(--color-sub); width: 20px; text-align: center; }
+        .setting-label { font-size: 14px; color: var(--color-title); }
+        .setting-value { font-size: 13px; color: var(--color-sub); }
+        .toggle {
+            width: 44px;
+            height: 26px;
+            background: #E5E6EB;
+            border-radius: 13px;
+            position: relative;
+            cursor: pointer;
+            transition: background var(--transition-fast);
+            border: none;
+        }
+        .toggle.active { background: var(--brand-primary); }
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform var(--transition-fast);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .toggle.active::after { transform: translateX(18px); }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- 会员卡 -->
+        <div class="member-card">
+            <div class="member-header">
+                <div class="member-logo">
+                    <div class="member-logo-icon">🏅</div>
+                    <span class="member-logo-text">房产AI会员</span>
+                </div>
+                <span class="member-level">VIP GOLD</span>
+            </div>
+            <div class="member-info">
+                <div>
+                    <div class="member-name">张三</div>
+                    <div class="member-desc">会员有效期至 2027-03-31</div>
+                </div>
+                <div class="member-balance">
+                    <div class="member-balance-label">剩余积分</div>
+                    <div class="member-balance-value">2,860</div>
+                </div>
+            </div>
+            <div class="member-actions">
+                <button class="member-btn" onclick="showToast('跳转积分商城')">
+                    <i class="fa fa-gift"></i> 积分商城
+                </button>
+                <button class="member-btn" onclick="showToast('查看会员权益')">
+                    <i class="fa fa-star"></i> 会员权益
+                </button>
+                <button class="member-btn primary" onclick="showToast('续费会员')">
+                    <i class="fa fa-crown"></i> 续费
+                </button>
+            </div>
+        </div>
+
+        <!-- 算力卡片 -->
+        <div class="compute-card" onclick="location.href='power-detail.html'">
+            <div class="compute-icon">⚡</div>
+            <div class="compute-info">
+                <div class="compute-title">我的算力</div>
+                <div class="compute-desc">AI功能消耗算力，充值可加速</div>
+            </div>
+            <div class="compute-value">
+                <div class="compute-value-num">580</div>
+                <div class="compute-value-unit">算力值</div>
+            </div>
+        </div>
+
+        <!-- 足迹/收藏/活动入口 -->
+        <div class="section">
+            <div class="entry-grid">
+                <div class="entry-item" onclick="location.href='footprint.html'">
+                    <div class="entry-icon blue"><i class="fa fa-map-marker"></i></div>
+                    <span class="entry-label">足迹</span>
+                    <span class="entry-badge"></span>
+                </div>
+                <div class="entry-item" onclick="location.href='favorites.html'">
+                    <div class="entry-icon orange"><i class="fa fa-heart"></i></div>
+                    <span class="entry-label">收藏</span>
+                </div>
+                <div class="entry-item" onclick="location.href='activity.html'">
+                    <div class="entry-icon gold"><i class="fa fa-gift"></i></div>
+                    <span class="entry-label">活动中心</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 今日业绩 -->
+        <div class="section">
+            <div class="today-card">
+                <div class="today-header">
+                    <span class="today-title">今日业绩概览</span>
+                    <span class="today-date" id="todayDate"></span>
+                </div>
+                <div class="today-grid">
+                    <div>
+                        <div class="today-value">2</div>
+                        <div class="today-label">待完成探盘</div>
+                    </div>
+                    <div>
+                        <div class="today-value">85</div>
+                        <div class="today-label">产品力得分</div>
+                    </div>
+                    <div>
+                        <div class="today-value">3</div>
+                        <div class="today-label">已发布内容</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据统计 -->
+        <div class="section">
+            <div class="stats-card">
+                <div class="stats-grid">
+                    <div>
+                        <div class="stat-value">128</div>
+                        <div class="stat-label">探盘任务</div>
+                    </div>
+                    <div>
+                        <div class="stat-value">86</div>
+                        <div class="stat-label">训练完成</div>
+                    </div>
+                    <div>
+                        <div class="stat-value">326</div>
+                        <div class="stat-label">内容发布</div>
+                    </div>
+                    <div>
+                        <div class="stat-value">85</div>
+                        <div class="stat-label">平均得分</div>
+                    </div>
+                    <div class="stats-divider"></div>
+                    <div class="stats-progress" style="grid-column: span 4;">
+                        <div class="progress-info">
+                            <div class="progress-title">本月业绩</div>
+                            <div class="progress-desc">目标：20套 · 已完成：12套</div>
+                        </div>
+                        <div class="progress-percent">60%</div>
+                        <div class="progress-bar"><div class="progress-fill" style="width: 60%;"></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 活动中心 -->
+        <div class="section">
+            <div class="section-title">活动中心</div>
+            <div class="activity-card">
+                <div class="activity-header">
+                    <div class="activity-title">
+                        <i class="fa fa-bullhorn"></i>
+                        <span>进行中的活动</span>
+                    </div>
+                    <span class="activity-more">查看全部 <i class="fa fa-angle-right"></i></span>
+                </div>
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon invite">🎁</div>
+                        <div class="activity-info">
+                            <div class="activity-name">邀请好友得算力</div>
+                            <div class="activity-desc">每邀请1位好友注册，双方各得100算力</div>
+                        </div>
+                        <button class="activity-action enable" onclick="event.stopPropagation(); showToast('去邀请好友')">去邀请</button>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon checkin">📅</div>
+                        <div class="activity-info">
+                            <div class="activity-name">每日签到</div>
+                            <div class="activity-desc">连续签到7天可获得惊喜算力礼包</div>
+                        </div>
+                        <button class="activity-action done" onclick="event.stopPropagation(); showToast('已签到')">已签到</button>
+                    </div>
+                    <div class="activity-item">
+                        <div class="activity-icon" style="background: #FFF7E6;">🏆</div>
+                        <div class="activity-info">
+                            <div class="activity-name">春日冲刺挑战赛</div>
+                            <div class="activity-desc">3月业绩排名前10可获iPhone大奖</div>
+                        </div>
+                        <button class="activity-action disabled">已结束</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 常用功能 -->
+        <div class="section">
+            <div class="section-title">常用功能</div>
+            <div class="quick-grid">
+                <div class="quick-item" onclick="location.href='task-list.html'">
+                    <div class="quick-icon blue"><i class="fa fa-map-marker"></i></div>
+                    <span class="quick-label">探盘任务</span>
+                </div>
+                <div class="quick-item" onclick="showToast('产品训练')">
+                    <div class="quick-icon purple"><i class="fa fa-graduation-cap"></i></div>
+                    <span class="quick-label">产品训练</span>
+                </div>
+                <div class="quick-item" onclick="location.href='speech-train.html'">
+                    <div class="quick-icon orange"><i class="fa fa-comments"></i></div>
+                    <span class="quick-label">话术训练</span>
+                </div>
+                <div class="quick-item" onclick="showToast('内容生成')">
+                    <div class="quick-icon green"><i class="fa fa-magic"></i></div>
+                    <span class="quick-label">内容生成</span>
+                </div>
+                <div class="quick-item" onclick="showToast('视频生成')">
+                    <div class="quick-icon red"><i class="fa fa-video-camera"></i></div>
+                    <span class="quick-label">视频生成</span>
+                    <span class="quick-badge coming-soon">即将上线</span>
+                </div>
+                <div class="quick-item" onclick="showToast('数据统计')">
+                    <div class="quick-icon indigo"><i class="fa fa-bar-chart"></i></div>
+                    <span class="quick-label">数据统计</span>
+                </div>
+                <div class="quick-item" onclick="showToast('录音分析')">
+                    <div class="quick-icon pink"><i class="fa fa-headphones"></i></div>
+                    <span class="quick-label">录音分析</span>
+                    <span class="quick-badge coming-soon">即将上线</span>
+                </div>
+                <div class="quick-item" onclick="showToast('更多功能')">
+                    <div class="quick-icon gray"><i class="fa fa-ellipsis-h"></i></div>
+                    <span class="quick-label">更多功能</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 我的工具 -->
+        <div class="section">
+            <div class="section-title">我的工具</div>
+            <div class="menu-card">
+                <div class="menu-item" onclick="location.href='task-list.html'">
+                    <div class="menu-icon blue"><i class="fa fa-tasks"></i></div>
+                    <span class="menu-text">我的任务</span>
+                    <span class="menu-badge red">3个待办</span>
+                    <i class="fa fa-angle-right menu-arrow"></i>
+                </div>
+                <div class="menu-item" onclick="location.href='speech-train.html'">
+                    <div class="menu-icon purple"><i class="fa fa-graduation-cap"></i></div>
+                    <span class="menu-text">我的训练</span>
+                    <span class="menu-badge orange">2个待完成</span>
+                    <i class="fa fa-angle-right menu-arrow"></i>
+                </div>
+                <div class="menu-item" onclick="showToast('我的内容')">
+                    <div class="menu-icon green"><i class="fa fa-file-text-o"></i></div>
+                    <span class="menu-text">我的内容</span>
+                    <span class="menu-badge gray">共326条</span>
+                    <i class="fa fa-angle-right menu-arrow"></i>
+                </div>
+                <div class="menu-item" onclick="showToast('录音分析')">
+                    <div class="menu-icon red"><i class="fa fa-microphone"></i></div>
+                    <span class="menu-text">录音分析</span>
+                    <span class="menu-badge gray">共68条</span>
+                    <i class="fa fa-angle-right menu-arrow"></i>
+                </div>
+                <div class="menu-item" onclick="location.href='performance-board.html'">
+                    <div class="menu-icon orange"><i class="fa fa-bar-chart"></i></div>
+                    <span class="menu-text">数据看板</span>
+                    <i class="fa fa-angle-right menu-arrow"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- 其他服务 -->
+        <div class="section">
+            <div class="section-title">其他服务</div>
+            <div class="menu-card">
+                <div class="menu-item" onclick="showToast('客户管理')">
+                    <div class="menu-icon cyan"><i class="fa fa-users"></i></div>
+                    <span class="menu-text">客户管理</span>
+                    <i class="fa fa-angle-right menu-arrow"></i>
+                </div>
+                <div class="menu-item" onclick="location.href='material-library.html'">
+                    <div class="menu-icon indigo"><i class="fa fa-folder-open"></i></div>
+                    <span class="menu-text">物料库</span>
+                    <i class="fa fa-angle-right menu-arrow"></i>
+                </div>
+                <div class="menu-item" onclick="showToast('帮助中心')">
+                    <div class="menu-icon green"><i class="fa fa-question-circle"></i></div>
+                    <span class="menu-text">帮助中心</span>
+                    <i class="fa fa-angle-right menu-arrow"></i>
+                </div>
+                <div class="menu-item" onclick="showToast('意见反馈')">
+                    <div class="menu-icon purple"><i class="fa fa-comment-o"></i></div>
+                    <span class="menu-text">意见反馈</span>
+                    <i class="fa fa-angle-right menu-arrow"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- 设置入口 -->
+        <div class="section">
+            <div class="menu-card">
+                <div class="menu-item" onclick="openSettings()">
+                    <div class="menu-icon gray"><i class="fa fa-cog"></i></div>
+                    <span class="menu-text">设置</span>
+                    <i class="fa fa-angle-right menu-arrow"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- 退出登录 -->
+        <button class="logout-btn" onclick="confirmLogout()">退出登录</button>
+    </div>
+
+    <!-- TabBar -->
+    <div class="tab-bar">
+        <a href="tools.html" class="tab-item"><i class="fa fa-rocket"></i></a>
+        <a href="../other/ai-design.html" class="tab-item"><i class="fa fa-paint-brush"></i></a>
+        <a href="claw.html" class="tab-item"><i class="fa fa-commenting"></i></a>
+        <a href="calendar.html" class="tab-item"><i class="fa fa-calendar"></i></a>
+        <a href="my.html" class="tab-item active"><i class="fa fa-user"></i></a>
+    </div>
+
+    <!-- 设置弹窗 -->
+    <div class="modal-overlay" id="settingsModal" onclick="closeSettings()">
+        <div class="modal-sheet" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <span class="modal-title">设置</span>
+                <button class="modal-close" onclick="closeSettings()"><i class="fa fa-times"></i></button>
+            </div>
+            <div class="setting-item">
+                <div class="setting-left">
+                    <i class="fa fa-bell-o"></i>
+                    <span class="setting-label">消息通知</span>
+                </div>
+                <button class="toggle active" onclick="this.classList.toggle('active')"></button>
+            </div>
+            <div class="setting-item">
+                <div class="setting-left">
+                    <i class="fa fa-volume-up"></i>
+                    <span class="setting-label">声音提醒</span>
+                </div>
+                <button class="toggle active" onclick="this.classList.toggle('active')"></button>
+            </div>
+            <div class="setting-item">
+                <div class="setting-left">
+                    <i class="fa fa-mobile"></i>
+                    <span class="setting-label">自动更新</span>
+                </div>
+                <button class="toggle" onclick="this.classList.toggle('active')"></button>
+            </div>
+            <div class="setting-item" onclick="clearCache()">
+                <div class="setting-left">
+                    <i class="fa fa-trash-o"></i>
+                    <span class="setting-label">清理缓存</span>
+                </div>
+                <span class="setting-value">128MB</span>
+            </div>
+            <div class="setting-item" onclick="showAbout()">
+                <div class="setting-left">
+                    <i class="fa fa-info-circle"></i>
+                    <span class="setting-label">关于我们</span>
+                </div>
+                <span class="setting-value">v1.0.0</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setTodayDate() {
+            const now = new Date();
+            document.getElementById('todayDate').textContent =
+                now.getFullYear() + '-' + (now.getMonth() + 1).toString().padStart(2, '0') + '-' + now.getDate().toString().padStart(2, '0');
+        }
+        setTodayDate();
+
+        function showToast(message) {
+            const existing = document.querySelector('.toast');
+            if (existing) { existing.classList.add('hiding'); setTimeout(() => existing.remove(), 200); }
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => { toast.classList.add('hiding'); setTimeout(() => toast.remove(), 200); }, 2000);
+        }
+
+        function openSettings() { document.getElementById('settingsModal').classList.add('show'); document.body.style.overflow = 'hidden'; }
+        function closeSettings() { document.getElementById('settingsModal').classList.remove('show'); document.body.style.overflow = ''; }
+        function clearCache() { if (confirm('确定要清理缓存吗？')) showToast('缓存清理成功'); }
+        function showAbout() { showToast('房产AI助手 v1.0.0'); }
+        function confirmLogout() { if (confirm('确定要退出登录吗？')) showToast('已退出登录'); }
+        document.addEventListener('keydown', function(e) { if (e.key === 'Escape') closeSettings(); });
+    </script>
+</body>
+</html>

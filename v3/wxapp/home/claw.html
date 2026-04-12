@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Claw 智能助手 - 房产AI助手</title>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --brand-primary: #FA8C16;
+            --brand-primary-light: #FFF7E6;
+            --brand-primary-dark: #E67A0E;
+            --color-success: #00B42A;
+            --color-success-light: #F6FFED;
+            --color-info: #007AFF;
+            --color-info-light: #E8F3FF;
+            --color-danger: #FA5151;
+            --color-purple: #722ED1;
+            --color-purple-light: #F7F0FF;
+            --color-purple-dark: #5B21B6;
+            --color-title: #1D2129;
+            --color-text: #4E5969;
+            --color-sub: #86909C;
+            --color-border: #E5E6EB;
+            --color-bg: #F7F8FA;
+            --color-card: #FFFFFF;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+            --font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            --transition-fast: 0.15s ease;
+            --transition-normal: 0.25s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: var(--font-family);
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--color-text);
+            background: var(--color-bg);
+            -webkit-font-smoothing: antialiased;
+            overflow: hidden;
+        }
+
+        /* ========== 页面容器 ========== */
+        .page {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            height: 100vh;
+            height: 100dvh;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* ========== 顶部导航栏 ========== */
+        .nav-bar {
+            flex-shrink: 0;
+            background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
+            padding: calc(12px + env(safe-area-inset-top)) var(--spacing-md) var(--spacing-md);
+            color: white;
+        }
+
+        .nav-bar-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .nav-back {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.15);
+            border: none;
+            border-radius: var(--radius-lg);
+            color: white;
+            cursor: pointer;
+        }
+
+        .nav-back:active {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .nav-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgba(255,255,255,0.2);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .nav-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .nav-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .nav-status {
+            font-size: 11px;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .nav-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255,255,255,0.15);
+            border: none;
+            border-radius: var(--radius-lg);
+            color: white;
+            cursor: pointer;
+        }
+
+        .nav-btn:active {
+            background: rgba(255,255,255,0.25);
+        }
+
+        .nav-btn i {
+            font-size: 16px;
+        }
+
+        /* ========== 对话区域 ========== */
+        .chat-area {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: var(--spacing-md);
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* 滚动条美化 */
+        .chat-area::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .chat-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-area::-webkit-scrollbar-thumb {
+            background: var(--color-border);
+            border-radius: 2px;
+        }
+
+        /* ========== 底部区域 ========== */
+        .bottom-area {
+            flex-shrink: 0;
+            background: var(--color-card);
+            border-top: 1px solid var(--color-border);
+        }
+
+        /* 快捷指令区 */
+        .quick-commands {
+            padding: 8px var(--spacing-md);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .quick-commands::-webkit-scrollbar {
+            display: none;
+        }
+
+        .quick-commands-scroll {
+            display: flex;
+            gap: 8px;
+        }
+
+        .quick-cmd-pill {
+            flex: 0 0 auto;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--color-text);
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .quick-cmd-pill:active {
+            background: var(--brand-primary);
+            border-color: var(--brand-primary);
+            color: white;
+        }
+
+        .quick-cmd-pill i {
+            font-size: 14px;
+        }
+
+        .quick-cmd-pill:active i {
+            color: white;
+        }
+
+        /* 输入区 */
+        .input-area {
+            padding: var(--spacing-sm) var(--spacing-md);
+            padding-bottom: calc(var(--spacing-sm) + env(safe-area-inset-bottom));
+        }
+
+        .input-row {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .input-actions {
+            display: flex;
+            gap: var(--spacing-xs);
+        }
+
+        .input-action {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-bg);
+            border: none;
+            border-radius: var(--radius-full);
+            color: var(--color-sub);
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .input-action:active {
+            background: var(--brand-primary-light);
+            color: var(--brand-primary);
+        }
+
+        .input-action.voice {
+            background: var(--brand-primary-light);
+            color: var(--brand-primary);
+        }
+
+        .input-wrapper {
+            flex: 1;
+        }
+
+        .input-field {
+            width: 100%;
+            min-height: 40px;
+            max-height: 100px;
+            padding: 8px 14px;
+            background: var(--color-bg);
+            border: 2px solid transparent;
+            border-radius: 20px;
+            font-family: var(--font-family);
+            font-size: 15px;
+            color: var(--color-title);
+            resize: none;
+            outline: none;
+            line-height: 1.4;
+        }
+
+        .input-field:focus {
+            border-color: var(--brand-primary);
+            background: var(--color-card);
+        }
+
+        .send-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(250, 140, 22, 0.35);
+        }
+
+        .send-btn:active {
+            transform: scale(0.92);
+        }
+
+        .send-btn:disabled {
+            background: var(--color-border);
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .send-btn.loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* ========== 欢迎卡片 ========== */
+        .welcome-card {
+            background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-lg);
+            margin-bottom: var(--spacing-md);
+            box-shadow: 0 4px 20px rgba(250, 140, 22, 0.3);
+            animation: welcomeSlideIn 0.5s ease-out;
+        }
+
+        @keyframes welcomeSlideIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .welcome-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .welcome-avatar {
+            width: 48px;
+            height: 48px;
+            background: rgba(255,255,255,0.2);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            animation: welcomeAvatarPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes welcomeAvatarPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .welcome-info {
+            flex: 1;
+        }
+
+        .welcome-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 2px;
+        }
+
+        .welcome-desc {
+            font-size: 12px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        /* 推荐问题 */
+        .suggest-questions {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .suggest-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md);
+            background: rgba(255,255,255,0.95);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+        }
+
+        .suggest-item:active {
+            background: rgba(255,255,255,0.85);
+        }
+
+        .suggest-icon {
+            font-size: 18px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-card);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .suggest-text {
+            flex: 1;
+            font-size: 14px;
+            color: var(--color-text);
+        }
+
+        .suggest-arrow {
+            color: var(--color-sub);
+            font-size: 14px;
+        }
+
+        /* ========== 消息气泡 ========== */
+        .message {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: var(--spacing-lg);
+            animation: fadeInUp 0.3s ease;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.ai {
+            align-items: flex-start;
+        }
+
+        .message.user {
+            align-items: flex-end;
+        }
+
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .message-avatar.ai {
+            background: var(--brand-primary-light);
+            color: var(--brand-primary);
+        }
+
+        .message-avatar.user {
+            background: var(--brand-primary);
+            color: white;
+        }
+
+        .message-content {
+            display: flex;
+            flex-direction: column;
+            max-width: 85%;
+        }
+
+        .message.user .message-content {
+            align-items: flex-end;
+        }
+
+        .message-bubble {
+            padding: var(--spacing-md);
+            border-radius: var(--radius-xl);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .message.ai .message-bubble {
+            background: var(--color-card);
+            color: var(--color-text);
+            border-bottom-left-radius: var(--radius-sm);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .message.user .message-bubble {
+            background: linear-gradient(135deg, var(--brand-primary) 0%, #FF9500 100%);
+            color: white;
+            border-bottom-right-radius: var(--radius-sm);
+            box-shadow: 0 4px 12px rgba(250, 140, 22, 0.25);
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: var(--color-sub);
+            margin-top: var(--spacing-xs);
+            padding: 0 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .message-status {
+            font-size: 10px;
+            color: var(--brand-primary);
+        }
+
+        /* AI 思考指示器 */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: var(--spacing-md);
+            background: var(--color-card);
+            border-radius: var(--radius-xl);
+            border-bottom-left-radius: var(--radius-sm);
+            box-shadow: var(--shadow-sm);
+            width: fit-content;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--brand-primary);
+            border-radius: 50%;
+            animation: typingBounce 1.4s ease-in-out infinite;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: 0s; }
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typingBounce {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-6px); opacity: 1; }
+        }
+
+        /* 数据卡片 */
+        .data-card {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md);
+            margin-top: var(--spacing-md);
+            border: 1px solid var(--color-border);
+        }
+
+        .data-card-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--color-title);
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .data-card-title i {
+            color: var(--brand-primary);
+        }
+
+        .data-card-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: var(--spacing-sm);
+        }
+
+        .data-card-item {
+            background: var(--color-card);
+            border-radius: var(--radius-md);
+            padding: var(--spacing-md);
+            text-align: center;
+            border: 1px solid var(--color-border);
+        }
+
+        .data-card-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--color-title);
+        }
+
+        .data-card-value.primary { color: var(--brand-primary); }
+        .data-card-value.success { color: var(--color-success); }
+        .data-card-value.purple { color: var(--color-purple); }
+
+        .data-card-label {
+            font-size: 12px;
+            color: var(--color-sub);
+            margin-top: 4px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,0,0,0.75);
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--radius-lg);
+            z-index: 99999;
+            font-size: 14px;
+            animation: toastIn 0.3s ease forwards;
+            pointer-events: none;
+        }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- 顶部导航栏 -->
+        <div class="nav-bar">
+            <div class="nav-bar-inner">
+                <div class="nav-left">
+                    <button class="nav-back" onclick="goBack()" aria-label="返回">
+                        <i class="fa fa-chevron-left"></i>
+                    </button>
+                    <div class="nav-avatar">🦷</div>
+                    <div class="nav-info">
+                        <span class="nav-title">Claw</span>
+                        <span class="nav-status">
+                            <span class="status-dot"></span>
+                            在线 · 随时为您服务
+                        </span>
+                    </div>
+                </div>
+                <div class="nav-right">
+                    <button class="nav-btn" onclick="showToast('历史记录')" aria-label="历史记录">
+                        <i class="fa fa-history"></i>
+                    </button>
+                    <button class="nav-btn" onclick="showToast('更多设置')" aria-label="更多设置">
+                        <i class="fa fa-ellipsis-h"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 对话区域 -->
+        <div class="chat-area" id="chatArea">
+            <!-- 欢迎卡片 -->
+            <div class="welcome-card">
+                <div class="welcome-header">
+                    <div class="welcome-avatar">🦷</div>
+                    <div class="welcome-info">
+                        <div class="welcome-title">您好，我是 Claw</div>
+                        <div class="welcome-desc">您的智能房产助手，随时为您服务</div>
+                    </div>
+                </div>
+                
+                <div class="suggest-questions">
+                    <div class="suggest-item" onclick="sendQuickAction('帮我下达一个探盘任务')">
+                        <span class="suggest-icon">📋</span>
+                        <span class="suggest-text">帮我下达一个探盘任务</span>
+                        <i class="fa fa-angle-right suggest-arrow"></i>
+                    </div>
+                    <div class="suggest-item" onclick="sendQuickAction('看看我本周的业绩数据')">
+                        <span class="suggest-icon">📊</span>
+                        <span class="suggest-text">看看我本周的业绩数据</span>
+                        <i class="fa fa-angle-right suggest-arrow"></i>
+                    </div>
+                    <div class="suggest-item" onclick="sendQuickAction('生成一条朋友圈推广文案')">
+                        <span class="suggest-icon">✨</span>
+                        <span class="suggest-text">生成一条朋友圈推广文案</span>
+                        <i class="fa fa-angle-right suggest-arrow"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部区域 -->
+        <div class="bottom-area">
+            <!-- 快捷指令区 -->
+            <div class="quick-commands">
+                <div class="quick-commands-scroll">
+                    <button class="quick-cmd-pill" onclick="sendQuickAction('下达探盘任务')">
+                        <i class="fa fa-map-marker"></i>
+                        下达任务
+                    </button>
+                    <button class="quick-cmd-pill" onclick="sendQuickAction('查看数据看板')">
+                        <i class="fa fa-bar-chart"></i>
+                        数据看板
+                    </button>
+                    <button class="quick-cmd-pill" onclick="sendQuickAction('生成朋友圈文案')">
+                        <i class="fa fa-magic"></i>
+                        生成文案
+                    </button>
+                    <button class="quick-cmd-pill" onclick="sendQuickAction('生成探盘报告')">
+                        <i class="fa fa-file-text-o"></i>
+                        探盘报告
+                    </button>
+                    <button class="quick-cmd-pill" onclick="sendQuickAction('房源推荐')">
+                        <i class="fa fa-home"></i>
+                        房源推荐
+                    </button>
+                </div>
+            </div>
+
+            <!-- 输入区 -->
+            <div class="input-area">
+                <div class="input-row">
+                    <div class="input-actions">
+                        <button class="input-action voice" onclick="toggleVoiceInput()" aria-label="语音输入">
+                            <i class="fa fa-microphone"></i>
+                        </button>
+                    </div>
+                    <div class="input-wrapper">
+                        <textarea 
+                            class="input-field" 
+                            id="inputField" 
+                            placeholder="" 
+                            rows="1" 
+                            oninput="autoResize(this); toggleSendBtn()"
+                            aria-label="输入消息"
+                        ></textarea>
+                    </div>
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()" aria-label="发送消息" disabled>
+                        <i class="fa fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const quickResponses = {
+            '下达探盘任务': {
+                text: '好的，我来帮您下达探盘任务。请告诉我楼盘名称和探盘要求。',
+                data: null
+            },
+            '查看数据看板': {
+                text: '这是您本周的数据概览：',
+                data: {
+                    title: '本周数据统计',
+                    items: [
+                        { label: '探盘任务', value: '5', class: 'primary' },
+                        { label: '内容发布', value: '28', class: '' },
+                        { label: '咨询量', value: '156', class: 'success' },
+                        { label: '报备', value: '23', class: 'purple' }
+                    ]
+                }
+            },
+            '生成朋友圈文案': {
+                text: '好的，请选择楼盘，我可以为您生成专属的推广文案。',
+                data: null
+            },
+            '生成探盘报告': {
+                text: '正在为您生成探盘报告，请稍候...',
+                data: null
+            },
+            '给我推荐房源': {
+                text: '根据您的客户画像，我为您推荐以下房源：',
+                data: null
+            },
+            '帮我下达一个探盘任务': {
+                text: '好的，我来帮您下达探盘任务。请告诉我楼盘名称和探盘要求。',
+                data: null
+            },
+            '看看我本周的业绩数据': {
+                text: '这是您本周的数据概览：',
+                data: {
+                    title: '本周业绩数据',
+                    items: [
+                        { label: '探盘任务', value: '5', class: 'primary' },
+                        { label: '内容发布', value: '28', class: '' },
+                        { label: '咨询量', value: '156', class: 'success' },
+                        { label: '报备', value: '23', class: 'purple' }
+                    ]
+                }
+            },
+            '生成一条朋友圈推广文案': {
+                text: '好的，请选择楼盘，我可以为您生成专属的推广文案。',
+                data: null
+            }
+        };
+
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = 'calendar.html';
+            }
+        }
+
+        function autoResize(el) {
+            el.style.height = 'auto';
+            el.style.height = Math.min(el.scrollHeight, 100) + 'px';
+        }
+
+        function toggleSendBtn() {
+            const input = document.getElementById('inputField');
+            const sendBtn = document.getElementById('sendBtn');
+            if (input.value.trim()) {
+                sendBtn.disabled = false;
+                sendBtn.style.opacity = '1';
+            } else {
+                sendBtn.disabled = true;
+                sendBtn.style.opacity = '0.5';
+            }
+        }
+
+        function toggleVoiceInput() {
+            showToast('语音输入功能即将上线');
+        }
+
+        function sendQuickAction(action) {
+            addMessage('user', action);
+            showTypingIndicator();
+            
+            setTimeout(() => {
+                hideTypingIndicator();
+                const response = quickResponses[action];
+                if (response) {
+                    addAIMessage(response.text, response.data);
+                } else {
+                    addAIMessage(`好的，我将帮您：${action}`);
+                }
+            }, 1000);
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('inputField');
+            const text = input.value.trim();
+            if (!text) return;
+
+            addMessage('user', text);
+            input.value = '';
+            autoResize(input);
+            
+            const sendBtn = document.getElementById('sendBtn');
+            sendBtn.classList.add('loading');
+            sendBtn.innerHTML = '<i class="fa fa-spinner"></i>';
+            
+            showTypingIndicator();
+
+            setTimeout(() => {
+                hideTypingIndicator();
+                sendBtn.classList.remove('loading');
+                sendBtn.innerHTML = '<i class="fa fa-paper-plane"></i>';
+                addAIMessage('收到！我正在处理您的请求...');
+            }, 1200);
+        }
+
+        function showTypingIndicator() {
+            const chat = document.getElementById('chatArea');
+            const html = `
+                <div class="message ai" id="typingIndicator">
+                    <div class="message-avatar ai">🦷</div>
+                    <div class="typing-indicator">
+                        <span class="typing-dot"></span>
+                        <span class="typing-dot"></span>
+                        <span class="typing-dot"></span>
+                    </div>
+                </div>
+            `;
+            chat.insertAdjacentHTML('beforeend', html);
+            scrollToBottom();
+        }
+
+        function hideTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            if (indicator) indicator.remove();
+        }
+
+        function addMessage(role, text) {
+            const chat = document.getElementById('chatArea');
+            const time = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+            
+            const html = `
+                <div class="message ${role}">
+                    <div class="message-avatar ${role}">
+                        ${role === 'ai' ? '🦷' : '👤'}
+                    </div>
+                    <div class="message-content">
+                        <div class="message-bubble">${escapeHtml(text)}</div>
+                        <div class="message-time">
+                            ${role === 'user' ? '<i class="fa fa-check message-status"></i>' : ''}
+                            ${time}
+                        </div>
+                    </div>
+                </div>
+            `;
+            chat.insertAdjacentHTML('beforeend', html);
+            scrollToBottom();
+        }
+
+        function addAIMessage(text, data) {
+            const chat = document.getElementById('chatArea');
+            const time = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+
+            let dataHtml = '';
+            if (data) {
+                dataHtml = `
+                    <div class="data-card">
+                        <div class="data-card-title">
+                            <i class="fa fa-chart-bar"></i>
+                            ${data.title}
+                        </div>
+                        <div class="data-card-grid">
+                            ${data.items.map(item => `
+                                <div class="data-card-item">
+                                    <div class="data-card-value ${item.class}">${item.value}</div>
+                                    <div class="data-card-label">${item.label}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            const html = `
+                <div class="message ai">
+                    <div class="message-avatar ai">🦷</div>
+                    <div class="message-content">
+                        <div class="message-bubble">${text}${dataHtml}</div>
+                        <div class="message-time">${time}</div>
+                    </div>
+                </div>
+            `;
+            chat.insertAdjacentHTML('beforeend', html);
+            scrollToBottom();
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function scrollToBottom() {
+            const chat = document.getElementById('chatArea');
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        function showToast(message) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 2000);
+        }
+
+        document.getElementById('inputField').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
