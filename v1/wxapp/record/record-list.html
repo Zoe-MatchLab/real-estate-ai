@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>约看录音分析 - 房产AI助手</title>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --brand-primary: #165DFF;
+            --brand-primary-dark: #1054D4;
+            --brand-primary-light: #E8F3FF;
+            --color-success: #00B42A;
+            --color-warning: #FF7D00;
+            --color-danger: #F53F3F;
+            --color-info: #007AFF;
+            --color-title: #1D2129;
+            --color-text: #4E5969;
+            --color-sub: #86909C;
+            --color-border: #E5E6EB;
+            --color-bg: #F7F8FA;
+            --color-card: #FFFFFF;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --shadow-md: 0 2px 8px rgba(0,0,0,0.08);
+            --shadow-lg: 0 4px 16px rgba(0,0,0,0.12);
+            --font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        button:focus-visible,
+        a:focus-visible { outline: 2px solid var(--brand-primary); outline-offset: 2px; }
+
+        html, body {
+            font-family: var(--font-family);
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--color-text);
+            background: var(--color-bg);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .page {
+            min-height: 100vh;
+            padding-bottom: calc(100px + env(safe-area-inset-bottom));
+        }
+
+        /* 顶部导航 */
+        .nav-bar {
+            height: 44px;
+            background: white;
+            padding: 0 var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            border-bottom: 1px solid #F0F0F0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-back {
+            color: var(--brand-primary);
+            font-size: 16px;
+            padding: var(--spacing-xs);
+            text-decoration: none;
+        }
+
+        .nav-title {
+            flex: 1;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--color-title);
+            margin-right: 32px;
+        }
+
+        /* 统计卡片 */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-sm);
+            padding: var(--spacing-md);
+            background: white;
+        }
+
+        .stat-card {
+            background: var(--color-bg);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md) var(--spacing-sm);
+            text-align: center;
+        }
+
+        .stat-num {
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        .stat-num.primary { color: var(--brand-primary); }
+        .stat-num.success { color: var(--color-success); }
+        .stat-num.warning { color: var(--color-warning); }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--color-sub);
+            margin-top: 2px;
+        }
+
+        /* 上传按钮 */
+        .upload-section {
+            padding: 0 var(--spacing-md) var(--spacing-md);
+        }
+
+        .upload-btn {
+            width: 100%;
+            height: 48px;
+            background: var(--brand-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-xl);
+            font-size: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(22, 93, 255, 0.3);
+        }
+
+        .upload-btn:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        /* 列表 */
+        .list-section {
+            padding: 0 var(--spacing-md);
+        }
+
+        .list-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .list-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-title);
+        }
+
+        .list-count {
+            font-size: 12px;
+            color: var(--color-sub);
+        }
+
+        .record-item {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+            margin-bottom: var(--spacing-sm);
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .record-item:active {
+            transform: scale(0.99);
+        }
+
+        .record-item.swiped {
+            transform: translateX(-60px);
+        }
+
+        .record-item-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .record-play-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--brand-primary-light);
+            color: var(--brand-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+            border: none;
+            cursor: pointer;
+        }
+
+        .record-play-btn.disabled {
+            background: var(--color-bg);
+            color: var(--color-sub);
+            cursor: not-allowed;
+        }
+
+        .record-play-btn.playing {
+            background: var(--brand-primary);
+            color: white;
+        }
+
+        .record-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .record-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-title);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .record-meta {
+            font-size: 12px;
+            color: var(--color-sub);
+            margin-top: 2px;
+        }
+
+        .record-score {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            flex-shrink: 0;
+            border: 2px solid;
+        }
+
+        .record-score.high {
+            background: #E8FFEA;
+            color: var(--color-success);
+            border-color: var(--color-success);
+        }
+
+        .record-score.mid {
+            background: #FFF7E6;
+            color: var(--color-warning);
+            border-color: var(--color-warning);
+        }
+
+        .record-score.low {
+            background: #FFECE8;
+            color: var(--color-danger);
+            border-color: var(--color-danger);
+        }
+
+        .record-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .record-time {
+            font-size: 12px;
+            color: var(--color-sub);
+        }
+
+        /* 状态标签 */
+        .status-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-tag.pending {
+            background: var(--color-bg);
+            color: var(--color-sub);
+        }
+
+        .status-tag.processing {
+            background: #FFF7E8;
+            color: var(--color-warning);
+        }
+
+        .status-tag.completed {
+            background: #E8FFEA;
+            color: var(--color-success);
+        }
+
+        .status-tag.failed {
+            background: #FFECE8;
+            color: var(--color-danger);
+        }
+
+        /* 删除按钮 */
+        .delete-btn {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 60px;
+            background: var(--color-danger);
+            color: white;
+            border: none;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            padding: 60px var(--spacing-md);
+            text-align: center;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            color: var(--color-border);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .empty-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-title);
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .empty-desc {
+            font-size: 13px;
+            color: var(--color-sub);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        /* 底部TabBar */
+        .tab-bar {
+            position: fixed;
+            bottom: calc(16px + env(safe-area-inset-bottom));
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(29, 33, 41, 0.96);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 28px;
+            padding: 8px 16px;
+            z-index: 9999;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.24);
+            display: flex;
+            gap: 4px;
+        }
+
+        .tab-item {
+            width: 44px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 18px;
+            color: rgba(255,255,255,0.5);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .tab-item i { font-size: 20px; }
+
+        .tab-item.active {
+            background: rgba(22, 93, 255, 0.2);
+            color: var(--brand-primary);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.75);
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--radius-lg);
+            z-index: 99999;
+            font-size: 14px;
+            animation: toastIn 0.3s ease forwards;
+            pointer-events: none;
+        }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* 确认对话框 */
+        .dialog-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 99998;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dialog-overlay.show { display: flex; }
+
+        .dialog-box {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-lg);
+            width: calc(100% - 64px);
+            max-width: 320px;
+            text-align: center;
+        }
+
+        .dialog-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--color-title);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .dialog-desc {
+            font-size: 13px;
+            color: var(--color-text);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .dialog-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .dialog-btn {
+            flex: 1;
+            height: 44px;
+            border-radius: var(--radius-xl);
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .dialog-btn.cancel {
+            background: var(--color-bg);
+            color: var(--color-text);
+        }
+
+        .dialog-btn.confirm {
+            background: var(--color-danger);
+            color: white;
+        }
+
+        /* 加载动画 */
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading { animation: spin 1s linear infinite; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in { animation: fadeInUp 0.3s ease forwards; }
+        .delay-1 { animation-delay: 0.05s; opacity: 0; }
+        .delay-2 { animation-delay: 0.1s; opacity: 0; }
+        .delay-3 { animation-delay: 0.15s; opacity: 0; }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- 顶部导航 -->
+        <div class="nav-bar">
+            <a href="../home/tools.html" class="nav-back"><i class="fa fa-chevron-left"></i></a>
+            <div class="nav-title">约看录音分析</div>
+        </div>
+
+        <!-- 统计卡片 -->
+        <div class="stats-bar animate-in">
+            <div class="stat-card">
+                <div class="stat-num primary" id="statTotal">6</div>
+                <div class="stat-label">录音总数</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num warning" id="statPending">2</div>
+                <div class="stat-label">待分析</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-num success" id="statAvg">83</div>
+                <div class="stat-label">平均评分</div>
+            </div>
+        </div>
+
+        <!-- 上传按钮 -->
+        <div class="upload-section">
+            <button class="upload-btn" onclick="goUpload()">
+                <i class="fa fa-microphone"></i>
+                上传录音
+            </button>
+        </div>
+
+        <!-- 录音列表 -->
+        <div class="list-section">
+            <div class="list-header">
+                <span class="list-title">录音记录</span>
+                <span class="list-count" id="listCount">共 6 条</span>
+            </div>
+            <div id="recordList"></div>
+        </div>
+    </div>
+
+    <!-- 删除确认对话框 -->
+    <div class="dialog-overlay" id="deleteDialog">
+        <div class="dialog-box">
+            <div class="dialog-title">确认删除</div>
+            <div class="dialog-desc">删除后无法恢复，确定要删除这条录音吗？</div>
+            <div class="dialog-actions">
+                <button class="dialog-btn cancel" onclick="hideDeleteDialog()">取消</button>
+                <button class="dialog-btn confirm" onclick="confirmDelete()">删除</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部TabBar -->
+    <nav class="tab-bar">
+        <a href="../home/tools.html" class="tab-item" aria-label="服务工具">
+            <i class="fa fa-rocket"></i>
+        </a>
+        <a href="../other/ai-design.html" class="tab-item" aria-label="AI设计">
+            <i class="fa fa-paint-brush"></i>
+        </a>
+        <a href="claw.html" class="tab-item" aria-label="智能助手">
+            <i class="fa fa-commenting"></i>
+        </a>
+        <a href="../home/calendar.html" class="tab-item" aria-label="任务日历">
+            <i class="fa fa-calendar"></i>
+        </a>
+        <a href="../home/my.html" class="tab-item" aria-label="个人中心">
+            <i class="fa fa-user"></i>
+        </a>
+    </nav>
+
+    <script>
+        // 模拟数据
+        const recordData = [
+            {
+                id: 'RECORD_001',
+                name: '通话录音_20260412.wav',
+                duration: '5分32秒',
+                size: '3.2MB',
+                building: '中海汇德里',
+                customer: '张三',
+                agent: '陈佳佳',
+                status: 'completed',
+                score: 85,
+                time: new Date(Date.now() - 2 * 60 * 60 * 1000)
+            },
+            {
+                id: 'RECORD_002',
+                name: '20260411_100512.wav',
+                duration: '4分18秒',
+                size: '2.8MB',
+                building: '万科翡翠公园',
+                customer: '李四',
+                agent: '李明',
+                status: 'processing',
+                score: null,
+                time: new Date(Date.now() - 26 * 60 * 60 * 1000)
+            },
+            {
+                id: 'RECORD_003',
+                name: '邀约录音_0411.mp3',
+                duration: '3分05秒',
+                size: '1.9MB',
+                building: '华润外滩九里',
+                customer: null,
+                agent: '王芳',
+                status: 'pending',
+                score: null,
+                time: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000)
+            },
+            {
+                id: 'RECORD_004',
+                name: '20260410_161200.wav',
+                duration: '6分22秒',
+                size: '4.5MB',
+                building: '龙湖天琅',
+                customer: '王五',
+                agent: '赵伟',
+                status: 'completed',
+                score: 92,
+                time: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
+            },
+            {
+                id: 'RECORD_005',
+                name: '客户回访_0410.wav',
+                duration: '4分55秒',
+                size: '3.1MB',
+                building: '中海汇德里',
+                customer: '赵六',
+                agent: '陈佳佳',
+                status: 'completed',
+                score: 78,
+                time: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000)
+            },
+            {
+                id: 'RECORD_006',
+                name: '新客户初访_0409.mp3',
+                duration: '5分10秒',
+                size: '3.3MB',
+                building: '万科翡翠公园',
+                customer: '钱七',
+                agent: '李明',
+                status: 'failed',
+                score: null,
+                time: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
+            }
+        ];
+
+        let deleteTargetId = null;
+        let touchStartX = 0;
+
+        function formatTime(date) {
+            const now = new Date();
+            const diff = now - date;
+            const minutes = Math.floor(diff / 60000);
+            const hours = Math.floor(diff / 3600000);
+            const days = Math.floor(diff / 86400000);
+            if (minutes < 1) return '刚刚';
+            if (minutes < 60) return minutes + '分钟前';
+            if (hours < 24) return hours + '小时前';
+            if (days < 7) return days + '天前';
+            return date.toLocaleDateString();
+        }
+
+        function getScoreClass(score) {
+            if (score >= 85) return 'high';
+            if (score >= 70) return 'mid';
+            return 'low';
+        }
+
+        function getStatusLabel(status) {
+            const map = {
+                pending: '待分析',
+                processing: '分析中',
+                completed: '已完成',
+                failed: '分析失败'
+            };
+            return map[status] || status;
+        }
+
+        function renderList() {
+            const list = document.getElementById('recordList');
+            const pendingCount = recordData.filter(r => r.status === 'pending' || r.status === 'processing').length;
+            const completedRecords = recordData.filter(r => r.status === 'completed');
+            const avgScore = completedRecords.length > 0
+                ? Math.round(completedRecords.reduce((sum, r) => sum + r.score, 0) / completedRecords.length)
+                : 0;
+
+            document.getElementById('statTotal').textContent = recordData.length;
+            document.getElementById('statPending').textContent = pendingCount;
+            document.getElementById('statAvg').textContent = avgScore || '--';
+            document.getElementById('listCount').textContent = '共 ' + recordData.length + ' 条';
+
+            if (recordData.length === 0) {
+                list.innerHTML = '<div class="empty-state">' +
+                    '<div class="empty-icon"><i class="fa fa-microphone"></i></div>' +
+                    '<div class="empty-title">暂无录音记录</div>' +
+                    '<div class="empty-desc">点击上方按钮上传录音，开启AI分析</div>' +
+                    '</div>';
+                return;
+            }
+
+            list.innerHTML = recordData.map((r, idx) => {
+                const canPlay = r.status === 'completed';
+                const hasScore = r.status === 'completed' && r.score;
+                const scoreClass = hasScore ? getScoreClass(r.score) : '';
+                const statusClass = r.status;
+                const playDisabled = !canPlay ? 'disabled' : '';
+                const statusDots = r.status === 'processing'
+                    ? '<span class="loading"><i class="fa fa-spinner"></i></span>'
+                    : '';
+
+                return '<div class="record-item animate-in delay-' + ((idx % 3) + 1) + '" ' +
+                    'data-id="' + r.id + '" ' +
+                    'ontouchstart="onTouchStart(event)" ' +
+                    'ontouchend="onTouchEnd(event)" ' +
+                    'onclick="onItemClick(event, \'' + r.id + '\')">' +
+                    '<div class="record-item-header">' +
+                    '<button class="record-play-btn ' + playDisabled + '" ' +
+                    (canPlay ? 'onclick="event.stopPropagation();playRecord(\'' + r.id + '\')"' : 'disabled') + '>' +
+                    '<i class="fa ' + (canPlay ? 'fa-play' : 'fa-lock') + '"></i></button>' +
+                    '<div class="record-info">' +
+                    '<div class="record-name">' + r.name + '</div>' +
+                    '<div class="record-meta">' +
+                    (r.customer ? r.customer + ' · ' : '') + r.building + ' · ' + r.duration +
+                    '</div></div>' +
+                    (hasScore
+                        ? '<div class="record-score ' + scoreClass + '">' + r.score + '</div>'
+                        : '<div style="width:44px"></div>') +
+                    '</div>' +
+                    '<div class="record-footer">' +
+                    '<span class="record-time">' + formatTime(r.time) + '</span>' +
+                    '<span class="status-tag ' + statusClass + '">' + statusDots + getStatusLabel(r.status) + '</span>' +
+                    '</div>' +
+                    '<button class="delete-btn" onclick="event.stopPropagation();showDeleteDialog(\'' + r.id + '\')">' +
+                    '<i class="fa fa-trash-o"></i></button>' +
+                    '</div>';
+            }).join('');
+        }
+
+        function onTouchStart(e) {
+            touchStartX = e.touches[0].clientX;
+        }
+
+        function onTouchEnd(e) {
+            const diff = touchStartX - e.changedTouches[0].clientX;
+            const items = document.querySelectorAll('.record-item');
+            items.forEach(item => item.classList.remove('swiped'));
+            if (diff > 50) {
+                e.target.closest('.record-item').classList.add('swiped');
+            }
+        }
+
+        function onItemClick(e, id) {
+            // 如果已经swiped，不触发点击
+            const item = e.target.closest('.record-item');
+            if (item.classList.contains('swiped')) return;
+            goResult(id);
+        }
+
+        function playRecord(id) {
+            const record = recordData.find(r => r.id === id);
+            if (!record) return;
+            const btn = document.querySelector('[data-id="' + id + '"] .record-play-btn');
+            if (btn.classList.contains('playing')) {
+                btn.classList.remove('playing');
+                btn.innerHTML = '<i class="fa fa-play"></i>';
+                showToast('已停止播放');
+            } else {
+                document.querySelectorAll('.record-play-btn.playing').forEach(b => {
+                    b.classList.remove('playing');
+                    b.innerHTML = '<i class="fa fa-play"></i>';
+                });
+                btn.classList.add('playing');
+                btn.innerHTML = '<i class="fa fa-pause"></i>';
+                showToast('正在播放: ' + record.name);
+            }
+        }
+
+        function showDeleteDialog(id) {
+            deleteTargetId = id;
+            document.getElementById('deleteDialog').classList.add('show');
+        }
+
+        function hideDeleteDialog() {
+            document.getElementById('deleteDialog').classList.remove('show');
+            deleteTargetId = null;
+        }
+
+        function confirmDelete() {
+            if (!deleteTargetId) return;
+            const idx = recordData.findIndex(r => r.id === deleteTargetId);
+            if (idx > -1) recordData.splice(idx, 1);
+            hideDeleteDialog();
+            renderList();
+            showToast('已删除');
+        }
+
+        function goUpload() {
+            window.location.href = 'record-upload.html';
+        }
+
+        function goResult(id) {
+            window.location.href = 'record-result.html?id=' + id;
+        }
+
+        function showToast(msg) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const t = document.createElement('div');
+            t.className = 'toast';
+            t.textContent = msg;
+            document.body.appendChild(t);
+            setTimeout(() => {
+                t.style.opacity = '0';
+                setTimeout(() => t.remove(), 200);
+            }, 2000);
+        }
+
+        document.addEventListener('DOMContentLoaded', renderList);
+    </script>
+</body>
+</html>

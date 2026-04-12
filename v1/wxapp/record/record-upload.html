@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>上传录音 - 房产AI助手</title>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --brand-primary: #165DFF;
+            --brand-primary-dark: #1054D4;
+            --brand-primary-light: #E8F3FF;
+            --color-success: #00B42A;
+            --color-warning: #FF7D00;
+            --color-danger: #F53F3F;
+            --color-info: #007AFF;
+            --color-title: #1D2129;
+            --color-text: #4E5969;
+            --color-sub: #86909C;
+            --color-border: #E5E6EB;
+            --color-bg: #F7F8FA;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        button:focus-visible, a:focus-visible { outline: 2px solid var(--brand-primary); outline-offset: 2px; }
+
+        html, body {
+            font-family: var(--font-family);
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--color-text);
+            background: var(--color-bg);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .page { min-height: 100vh; padding-bottom: calc(32px + env(safe-area-inset-bottom)); }
+
+        /* 顶部导航 */
+        .nav-bar {
+            height: 44px;
+            background: white;
+            padding: 0 var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            border-bottom: 1px solid #F0F0F0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-back {
+            color: var(--brand-primary);
+            font-size: 16px;
+            padding: var(--spacing-xs);
+            text-decoration: none;
+        }
+
+        .nav-title {
+            flex: 1;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--color-title);
+            margin-right: 32px;
+        }
+
+        /* 警告提示 */
+        .limit-tip {
+            margin: var(--spacing-md);
+            background: #FFF7E6;
+            border: 1px solid #FFD580;
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-md);
+            font-size: 13px;
+            color: var(--color-warning);
+        }
+
+        .limit-tip i { margin-right: var(--spacing-xs); }
+
+        /* 上传区域 */
+        .upload-section {
+            padding: 0 var(--spacing-md) var(--spacing-md);
+        }
+
+        .upload-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .upload-option {
+            padding: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            cursor: pointer;
+            transition: background 0.15s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .upload-option:active { background: var(--color-bg); }
+
+        .upload-option + .upload-option {
+            border-top: 1px solid var(--color-bg);
+        }
+
+        .upload-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .upload-icon.local {
+            background: var(--brand-primary-light);
+            color: var(--brand-primary);
+        }
+
+        .upload-icon.chat {
+            background: #F0F7FF;
+            color: #007AFF;
+        }
+
+        .upload-option-text { flex: 1; }
+
+        .upload-option-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-title);
+            margin-bottom: 2px;
+        }
+
+        .upload-option-desc {
+            font-size: 12px;
+            color: var(--color-sub);
+        }
+
+        .upload-option-arrow {
+            color: var(--color-border);
+            font-size: 14px;
+        }
+
+        /* 已选文件 */
+        .file-section {
+            padding: 0 var(--spacing-md) var(--spacing-md);
+            display: none;
+        }
+
+        .file-section.show { display: block; }
+
+        .file-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .file-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .file-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            background: var(--brand-primary-light);
+            color: var(--brand-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .file-info { flex: 1; min-width: 0; }
+
+        .file-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-title);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-meta {
+            font-size: 12px;
+            color: var(--color-sub);
+            margin-top: 2px;
+        }
+
+        .file-remove {
+            color: var(--color-danger);
+            font-size: 16px;
+            cursor: pointer;
+            padding: var(--spacing-xs);
+        }
+
+        /* 验证信息 */
+        .validation-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .validation-item {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            font-size: 13px;
+        }
+
+        .validation-item i { font-size: 14px; }
+        .validation-item.pass { color: var(--color-success); }
+        .validation-item.fail { color: var(--color-danger); }
+        .validation-item.wait { color: var(--color-sub); }
+
+        /* 上传进度 */
+        .progress-section {
+            padding: 0 var(--spacing-md) var(--spacing-md);
+            display: none;
+        }
+
+        .progress-section.show { display: block; }
+
+        .progress-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+        }
+
+        .progress-ring {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto var(--spacing-md);
+            position: relative;
+        }
+
+        .progress-ring svg {
+            width: 80px;
+            height: 80px;
+            transform: rotate(-90deg);
+        }
+
+        .progress-ring circle {
+            fill: none;
+            stroke-width: 6;
+        }
+
+        .progress-ring .bg {
+            stroke: var(--color-border);
+        }
+
+        .progress-ring .fg {
+            stroke: var(--brand-primary);
+            stroke-linecap: round;
+            stroke-dasharray: 226;
+            stroke-dashoffset: 226;
+            transition: stroke-dashoffset 0.3s;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--brand-primary);
+        }
+
+        .progress-label {
+            font-size: 14px;
+            color: var(--color-title);
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .progress-sub {
+            font-size: 12px;
+            color: var(--color-sub);
+        }
+
+        /* 关联信息 */
+        .relation-section {
+            padding: 0 var(--spacing-md) var(--spacing-md);
+        }
+
+        .relation-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .relation-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-title);
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .relation-title span {
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--color-sub);
+        }
+
+        .form-field {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .form-field:last-child { margin-bottom: 0; }
+
+        .form-label {
+            font-size: 13px;
+            color: var(--color-text);
+            margin-bottom: var(--spacing-xs);
+            display: block;
+        }
+
+        .form-select {
+            width: 100%;
+            height: 44px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 0 var(--spacing-md);
+            font-size: 14px;
+            color: var(--color-text);
+            background: white;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2386909C' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            cursor: pointer;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 0 2px rgba(22, 93, 255, 0.1);
+        }
+
+        .form-textarea {
+            width: 100%;
+            min-height: 80px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: 14px;
+            color: var(--color-text);
+            resize: none;
+            font-family: inherit;
+            background: white;
+        }
+
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--brand-primary);
+            box-shadow: 0 0 0 2px rgba(22, 93, 255, 0.1);
+        }
+
+        /* 提交按钮 */
+        .submit-section {
+            padding: var(--spacing-md);
+            position: sticky;
+            bottom: 0;
+            background: var(--color-bg);
+        }
+
+        .submit-btn {
+            width: 100%;
+            height: 48px;
+            background: var(--brand-primary);
+            color: white;
+            border: none;
+            border-radius: var(--radius-xl);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(22, 93, 255, 0.3);
+        }
+
+        .submit-btn:disabled {
+            background: var(--color-border);
+            color: var(--color-sub);
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        .submit-btn:active:not(:disabled) {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.75);
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--radius-lg);
+            z-index: 99999;
+            font-size: 14px;
+            animation: toastIn 0.3s ease forwards;
+            pointer-events: none;
+        }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in { animation: fadeInUp 0.3s ease forwards; }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- 顶部导航 -->
+        <div class="nav-bar">
+            <a href="record-list.html" class="nav-back"><i class="fa fa-chevron-left"></i></a>
+            <div class="nav-title">上传录音</div>
+        </div>
+
+        <!-- 文件限制提示 -->
+        <div class="limit-tip animate-in">
+            <i class="fa fa-info-circle"></i>
+            支持 MP3、WAV 格式，文件大小 ≤20MB，时长 3-30分钟
+        </div>
+
+        <!-- 上传方式 -->
+        <div class="upload-section">
+            <div class="upload-card animate-in delay-1">
+                <button class="upload-option" onclick="selectFromLocal()">
+                    <div class="upload-icon local"><i class="fa fa-folder-open-o"></i></div>
+                    <div class="upload-option-text">
+                        <div class="upload-option-title">从本地选择</div>
+                        <div class="upload-option-desc">从手机存储中选择录音文件</div>
+                    </div>
+                    <i class="fa fa-chevron-right upload-option-arrow"></i>
+                </button>
+                <button class="upload-option" onclick="selectFromChat()">
+                    <div class="upload-icon chat"><i class="fa fa-commenting-o"></i></div>
+                    <div class="upload-option-text">
+                        <div class="upload-option-title">从微信聊天记录</div>
+                        <div class="upload-option-desc">从微信聊天记录中选择语音消息</div>
+                    </div>
+                    <i class="fa fa-chevron-right upload-option-arrow"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 已选文件 -->
+        <div class="file-section" id="fileSection">
+            <div class="file-card">
+                <div class="file-header">
+                    <div class="file-icon"><i class="fa fa-file-audio-o"></i></div>
+                    <div class="file-info">
+                        <div class="file-name" id="fileName">—</div>
+                        <div class="file-meta" id="fileMeta">—</div>
+                    </div>
+                    <i class="fa fa-times-circle file-remove" onclick="removeFile()"></i>
+                </div>
+                <div class="validation-list" id="validationList">
+                    <div class="validation-item wait" id="valFormat"><i class="fa fa-circle-o"></i> 格式校验（MP3、WAV）</div>
+                    <div class="validation-item wait" id="valSize"><i class="fa fa-circle-o"></i> 大小校验（≤20MB）</div>
+                    <div class="validation-item wait" id="valDuration"><i class="fa fa-circle-o"></i> 时长校验（3-30分钟）</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 上传进度 -->
+        <div class="progress-section" id="progressSection">
+            <div class="progress-card">
+                <div class="progress-ring">
+                    <svg viewBox="0 0 80 80">
+                        <circle class="bg" cx="40" cy="40" r="36"/>
+                        <circle class="fg" id="progressCircle" cx="40" cy="40" r="36"/>
+                    </svg>
+                    <div class="progress-text" id="progressText">0%</div>
+                </div>
+                <div class="progress-label">上传中...</div>
+                <div class="progress-sub" id="progressSub">请勿关闭页面</div>
+            </div>
+        </div>
+
+        <!-- 关联信息 -->
+        <div class="relation-section" id="relationSection">
+            <div class="relation-card animate-in delay-2">
+                <div class="relation-title">
+                    关联信息 <span>（可选）</span>
+                </div>
+                <div class="form-field">
+                    <label class="form-label">关联楼盘</label>
+                    <select class="form-select" id="buildingSelect">
+                        <option value="">不关联楼盘</option>
+                        <option value="BLD_001">中海汇德里</option>
+                        <option value="BLD_002">万科翡翠公园</option>
+                        <option value="BLD_003">华润外滩九里</option>
+                        <option value="BLD_004">龙湖天琅</option>
+                        <option value="BLD_005">保利天汇</option>
+                    </select>
+                </div>
+                <div class="form-field">
+                    <label class="form-label">关联客户</label>
+                    <select class="form-select" id="customerSelect">
+                        <option value="">不关联客户</option>
+                        <option value="CUST_001">张三</option>
+                        <option value="CUST_002">李四</option>
+                        <option value="CUST_003">王五</option>
+                        <option value="CUST_004">赵六</option>
+                        <option value="CUST_005">钱七</option>
+                    </select>
+                </div>
+                <div class="form-field">
+                    <label class="form-label">备注</label>
+                    <textarea class="form-textarea" id="remarkInput" placeholder="可填写本次通话的简要说明..."></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- 提交按钮 -->
+        <div class="submit-section" id="submitSection">
+            <button class="submit-btn" id="submitBtn" disabled onclick="submitAnalysis()">
+                提交分析
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let selectedFile = null;
+        let uploadProgress = 0;
+        let isUploading = false;
+
+        // 模拟选中的文件数据
+        function selectFromLocal() {
+            // 模拟文件选择（实际应调用 wx.chooseMessageFile 或 input）
+            const mockFile = {
+                name: '通话录音_' + formatDate(new Date()) + '.wav',
+                size: 3355443, // 3.2MB
+                duration: 332  // 5分32秒
+            };
+            setSelectedFile(mockFile);
+        }
+
+        function selectFromChat() {
+            // 模拟从微信聊天记录选择
+            const mockFile = {
+                name: '微信语音_20260412_143020.amr',
+                size: 2097152, // 2MB
+                duration: 185  // 3分05秒
+            };
+            setSelectedFile(mockFile);
+        }
+
+        function setSelectedFile(file) {
+            selectedFile = file;
+            const fileSection = document.getElementById('fileSection');
+            fileSection.classList.add('show');
+
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileMeta').textContent =
+                '时长: ' + formatDuration(file.duration) + ' · 大小: ' + formatSize(file.size);
+
+            // 验证
+            validateFile(file);
+            updateSubmitBtn();
+        }
+
+        function validateFile(file) {
+            // 格式校验
+            const ext = file.name.split('.').pop().toLowerCase();
+            const validFormat = ['mp3', 'wav', 'amr'].includes(ext);
+            updateValidation('valFormat', validFormat, '格式校验（MP3、WAV）');
+
+            // 大小校验
+            const validSize = file.size <= 20 * 1024 * 1024;
+            updateValidation('valSize', validSize, '大小校验（≤20MB）');
+
+            // 时长校验
+            const validDuration = file.duration >= 180 && file.duration <= 1800;
+            updateValidation('valDuration', validDuration, '时长校验（3-30分钟）');
+
+            return validFormat && validSize && validDuration;
+        }
+
+        function updateValidation(id, pass, label) {
+            const el = document.getElementById(id);
+            if (pass) {
+                el.className = 'validation-item pass';
+                el.innerHTML = '<i class="fa fa-check-circle"></i> ' + label;
+            } else if (pass === false) {
+                el.className = 'validation-item fail';
+                el.innerHTML = '<i class="fa fa-times-circle"></i> ' + label;
+            }
+        }
+
+        function removeFile() {
+            selectedFile = null;
+            document.getElementById('fileSection').classList.remove('show');
+            ['valFormat', 'valSize', 'valDuration'].forEach(id => {
+                const el = document.getElementById(id);
+                el.className = 'validation-item wait';
+                const label = el.textContent.replace(/^[\s✓✗]+/, '');
+                el.innerHTML = '<i class="fa fa-circle-o"></i> ' + label;
+            });
+            updateSubmitBtn();
+        }
+
+        function updateSubmitBtn() {
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = !selectedFile || isUploading;
+        }
+
+        function formatDuration(seconds) {
+            const m = Math.floor(seconds / 60);
+            const s = seconds % 60;
+            return m + '分' + (s > 0 ? s + '秒' : '');
+        }
+
+        function formatSize(bytes) {
+            if (bytes < 1024) return bytes + 'B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + 'KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + 'MB';
+        }
+
+        function formatDate(date) {
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            const h = String(date.getHours()).padStart(2, '0');
+            const mi = String(date.getMinutes()).padStart(2, '0');
+            const s = String(date.getSeconds()).padStart(2, '0');
+            return m + '' + d + '_' + h + '' + mi + '' + s;
+        }
+
+        function submitAnalysis() {
+            if (!selectedFile) return;
+
+            const progressSection = document.getElementById('progressSection');
+            const relationSection = document.getElementById('relationSection');
+            const submitSection = document.getElementById('submitSection');
+            const submitBtn = document.getElementById('submitBtn');
+
+            progressSection.classList.add('show');
+            submitBtn.disabled = true;
+            isUploading = true;
+
+            // 模拟上传进度
+            let progress = 0;
+            const circle = document.getElementById('progressCircle');
+            const text = document.getElementById('progressText');
+            const circumference = 2 * Math.PI * 36; // r=36
+
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 100) progress = 100;
+
+                const offset = circumference * (1 - progress / 100);
+                circle.style.strokeDashoffset = offset;
+                text.textContent = Math.round(progress) + '%';
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    document.getElementById('progressSub').textContent = '上传完成，正在提交分析...';
+                    setTimeout(() => {
+                        showToast('提交成功！分析完成后将通知您');
+                        setTimeout(() => {
+                            window.location.href = 'record-list.html';
+                        }, 1500);
+                    }, 800);
+                }
+            }, 200);
+        }
+
+        function showToast(msg) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const t = document.createElement('div');
+            t.className = 'toast';
+            t.textContent = msg;
+            document.body.appendChild(t);
+            setTimeout(() => {
+                t.style.opacity = '0';
+                setTimeout(() => t.remove(), 200);
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

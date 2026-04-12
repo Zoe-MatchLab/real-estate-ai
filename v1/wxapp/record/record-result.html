@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>分析结果 - 房产AI助手</title>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --brand-primary: #165DFF;
+            --brand-primary-dark: #1054D4;
+            --brand-primary-light: #E8F3FF;
+            --color-success: #00B42A;
+            --color-warning: #FF7D00;
+            --color-danger: #F53F3F;
+            --color-title: #1D2129;
+            --color-text: #4E5969;
+            --color-sub: #86909C;
+            --color-border: #E5E6EB;
+            --color-bg: #F7F8FA;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-full: 9999px;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+            --font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        button:focus-visible, a:focus-visible { outline: 2px solid var(--brand-primary); outline-offset: 2px; }
+
+        html, body {
+            font-family: var(--font-family);
+            font-size: 14px;
+            line-height: 1.5;
+            color: var(--color-text);
+            background: var(--color-bg);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .page { min-height: 100vh; padding-bottom: calc(32px + env(safe-area-inset-bottom)); }
+
+        /* 顶部导航 */
+        .nav-bar {
+            height: 44px;
+            background: white;
+            padding: 0 var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            border-bottom: 1px solid #F0F0F0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-back {
+            color: var(--brand-primary);
+            font-size: 16px;
+            padding: var(--spacing-xs);
+            text-decoration: none;
+        }
+
+        .nav-title {
+            flex: 1;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--color-title);
+            margin-right: 32px;
+        }
+
+        .nav-share {
+            color: var(--brand-primary);
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        /* 录音信息卡片 */
+        .audio-card {
+            margin: var(--spacing-md);
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            cursor: pointer;
+            transition: transform 0.15s;
+        }
+
+        .audio-card:active { transform: scale(0.99); }
+
+        .audio-play-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--brand-primary);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(22, 93, 255, 0.3);
+        }
+
+        .audio-play-btn.playing {
+            background: var(--color-danger);
+            box-shadow: 0 4px 12px rgba(245, 63, 63, 0.3);
+        }
+
+        .audio-info { flex: 1; min-width: 0; }
+
+        .audio-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-title);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .audio-meta {
+            font-size: 12px;
+            color: var(--color-sub);
+            margin-top: 2px;
+        }
+
+        .audio-wave {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            height: 20px;
+        }
+
+        .audio-wave span {
+            width: 3px;
+            background: var(--brand-primary);
+            border-radius: 2px;
+            opacity: 0.5;
+        }
+
+        .audio-wave.playing span { opacity: 1; }
+
+        /* 综合评分 */
+        .score-card {
+            margin: 0 var(--spacing-md) var(--spacing-md);
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-lg);
+            box-shadow: var(--shadow-sm);
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .score-gauge {
+            position: relative;
+            width: 140px;
+            height: 140px;
+            margin: 0 auto var(--spacing-md);
+        }
+
+        .score-gauge svg {
+            width: 140px;
+            height: 140px;
+            transform: rotate(-90deg);
+        }
+
+        .score-gauge circle {
+            fill: none;
+            stroke-width: 10;
+        }
+
+        .score-gauge .track {
+            stroke: var(--color-border);
+        }
+
+        .score-gauge .fill {
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s ease;
+        }
+
+        .score-gauge .fill.high { stroke: var(--color-success); }
+        .score-gauge .fill.mid { stroke: var(--color-warning); }
+        .score-gauge .fill.low { stroke: var(--color-danger); }
+
+        .score-number {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .score-value {
+            font-size: 36px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .score-value.high { color: var(--color-success); }
+        .score-value.mid { color: var(--color-warning); }
+        .score-value.low { color: var(--color-danger); }
+
+        .score-max {
+            font-size: 14px;
+            color: var(--color-sub);
+            font-weight: 400;
+        }
+
+        .score-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--color-title);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .score-desc {
+            font-size: 13px;
+            color: var(--color-text);
+        }
+
+        /* 维度评分 */
+        .dimensions-card {
+            margin: 0 var(--spacing-md) var(--spacing-md);
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .card-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-md);
+            background: var(--brand-primary-light);
+            color: var(--brand-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-title);
+        }
+
+        .dimension-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .dimension-item:last-child { margin-bottom: 0; }
+
+        .dimension-label {
+            width: 80px;
+            font-size: 13px;
+            color: var(--color-text);
+            flex-shrink: 0;
+        }
+
+        .dimension-bar-wrap {
+            flex: 1;
+            margin: 0 var(--spacing-sm);
+        }
+
+        .dimension-bar {
+            height: 8px;
+            background: var(--color-bg);
+            border-radius: var(--radius-full);
+            overflow: hidden;
+        }
+
+        .dimension-fill {
+            height: 100%;
+            border-radius: var(--radius-full);
+            transition: width 1s ease;
+        }
+
+        .dimension-fill.high { background: var(--color-success); }
+        .dimension-fill.mid { background: var(--color-warning); }
+        .dimension-fill.low { background: var(--color-danger); }
+
+        .dimension-score {
+            width: 36px;
+            text-align: right;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--color-title);
+        }
+
+        /* 客户意向 */
+        .intent-card {
+            margin: 0 var(--spacing-md) var(--spacing-md);
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .intent-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+            padding: var(--spacing-xs) var(--spacing-md);
+            border-radius: var(--radius-full);
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .intent-badge.high {
+            background: #E8FFEA;
+            color: var(--color-success);
+        }
+
+        .intent-badge.mid {
+            background: #FFF7E6;
+            color: var(--color-warning);
+        }
+
+        .intent-badge.low {
+            background: #FFECE8;
+            color: var(--color-danger);
+        }
+
+        .intent-text {
+            font-size: 14px;
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        /* 客户需求 */
+        .needs-card {
+            margin: 0 var(--spacing-md) var(--spacing-md);
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .needs-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .needs-tag {
+            padding: var(--spacing-xs) var(--spacing-sm);
+            background: var(--brand-primary-light);
+            color: var(--brand-primary);
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+        }
+
+        .needs-desc {
+            font-size: 14px;
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        /* 改进建议 */
+        .suggestions-card {
+            margin: 0 var(--spacing-md) var(--spacing-md);
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .suggestion-item {
+            display: flex;
+            align-items: flex-start;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .suggestion-item:last-child { margin-bottom: 0; }
+
+        .suggestion-num {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--brand-primary);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .suggestion-text {
+            font-size: 14px;
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        /* 关联客户 */
+        .relation-card {
+            margin: 0 var(--spacing-md) var(--spacing-md);
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .relation-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .relation-info {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .relation-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--brand-primary-light);
+            color: var(--brand-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .relation-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-title);
+        }
+
+        .relation-phone {
+            font-size: 12px;
+            color: var(--color-sub);
+        }
+
+        .relation-action {
+            color: var(--brand-primary);
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.75);
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--radius-lg);
+            z-index: 99999;
+            font-size: 14px;
+            animation: toastIn 0.3s ease forwards;
+            pointer-events: none;
+        }
+
+        @keyframes toastIn {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in { animation: fadeInUp 0.3s ease forwards; }
+        .delay-1 { animation-delay: 0.05s; opacity: 0; }
+        .delay-2 { animation-delay: 0.1s; opacity: 0; }
+        .delay-3 { animation-delay: 0.15s; opacity: 0; }
+        .delay-4 { animation-delay: 0.2s; opacity: 0; }
+    </style>
+</head>
+<body>
+    <div class="page">
+        <!-- 顶部导航 -->
+        <div class="nav-bar">
+            <a href="record-list.html" class="nav-back"><i class="fa fa-chevron-left"></i></a>
+            <div class="nav-title">分析结果</div>
+            <i class="fa fa-share-alt nav-share" onclick="showToast('已分享')"></i>
+        </div>
+
+        <!-- 录音信息 -->
+        <div class="audio-card animate-in">
+            <button class="audio-play-btn" id="playBtn" onclick="togglePlay()">
+                <i class="fa fa-play"></i>
+            </button>
+            <div class="audio-info">
+                <div class="audio-name" id="audioName">通话录音_20260412.wav</div>
+                <div class="audio-meta" id="audioMeta">张三 · 2026-04-12 14:30 · 5分32秒</div>
+            </div>
+            <div class="audio-wave" id="audioWave">
+                <span style="height:8px"></span>
+                <span style="height:14px"></span>
+                <span style="height:10px"></span>
+                <span style="height:18px"></span>
+                <span style="height:12px"></span>
+                <span style="height:6px"></span>
+                <span style="height:16px"></span>
+                <span style="height:9px"></span>
+                <span style="height:13px"></span>
+                <span style="height:7px"></span>
+            </div>
+        </div>
+
+        <!-- 综合评分 -->
+        <div class="score-card animate-in delay-1" id="scoreCard">
+            <div class="score-gauge">
+                <svg viewBox="0 0 140 140">
+                    <circle class="track" cx="70" cy="70" r="60"/>
+                    <circle class="fill high" id="scoreFill" cx="70" cy="70" r="60"
+                        stroke-dasharray="377" stroke-dashoffset="377"/>
+                </svg>
+                <div class="score-number">
+                    <div class="score-value high" id="scoreValue">85</div>
+                    <div class="score-max">/ 100</div>
+                </div>
+            </div>
+            <div class="score-label">综合评分</div>
+            <div class="score-desc" id="scoreDesc">话术表现良好，有小幅提升空间</div>
+        </div>
+
+        <!-- 话术技巧 -->
+        <div class="dimensions-card animate-in delay-1">
+            <div class="card-header">
+                <div class="card-icon"><i class="fa fa-star-o"></i></div>
+                <div class="card-title">话术技巧</div>
+            </div>
+            <div class="dimension-item">
+                <div class="dimension-label">开场白</div>
+                <div class="dimension-bar-wrap">
+                    <div class="dimension-bar">
+                        <div class="dimension-fill high" id="dimOpening" style="width:0%"></div>
+                    </div>
+                </div>
+                <div class="dimension-score" id="scoreOpening">85</div>
+            </div>
+            <div class="dimension-item">
+                <div class="dimension-label">需求挖掘</div>
+                <div class="dimension-bar-wrap">
+                    <div class="dimension-bar">
+                        <div class="dimension-fill mid" id="dimNeeds" style="width:0%"></div>
+                    </div>
+                </div>
+                <div class="dimension-score" id="scoreNeeds">80</div>
+            </div>
+            <div class="dimension-item">
+                <div class="dimension-label">异议处理</div>
+                <div class="dimension-bar-wrap">
+                    <div class="dimension-bar">
+                        <div class="dimension-fill high" id="dimObjection" style="width:0%"></div>
+                    </div>
+                </div>
+                <div class="dimension-score" id="scoreObjection">90</div>
+            </div>
+        </div>
+
+        <!-- 客户意向 -->
+        <div class="intent-card animate-in delay-2">
+            <div class="card-header">
+                <div class="card-icon" style="background:#F0F7FF;color:#007AFF"><i class="fa fa-commenting-o"></i></div>
+                <div class="card-title">客户意向</div>
+            </div>
+            <div class="intent-badge high" id="intentBadge">
+                <i class="fa fa-long-arrow-up"></i> 购买意向高
+            </div>
+            <div class="intent-text" id="intentText">
+                客户在通话中对户型和价格表现出明显兴趣，主动询问了周边配套和交房时间，表现出较强的购房意向，建议重点跟进。
+            </div>
+        </div>
+
+        <!-- 客户需求 -->
+        <div class="needs-card animate-in delay-2">
+            <div class="card-header">
+                <div class="card-icon" style="background:#FFF7E6;color:#FF7D00"><i class="fa fa-lightbulb-o"></i></div>
+                <div class="card-title">客户需求</div>
+            </div>
+            <div class="needs-tags" id="needsTags">
+                <span class="needs-tag">三室户型</span>
+                <span class="needs-tag">价格敏感</span>
+                <span class="needs-tag">关注学区</span>
+                <span class="needs-tag">改善型需求</span>
+            </div>
+            <div class="needs-desc" id="needsDesc">
+                客户主要关注110-130㎡的三室户型，预算在800-1000万之间。对学区资源和周边地铁配套有明确需求，属于改善型购房客户。
+            </div>
+        </div>
+
+        <!-- 改进建议 -->
+        <div class="suggestions-card animate-in delay-3">
+            <div class="card-header">
+                <div class="card-icon" style="background:#F7F0FF;color:#722ED1"><i class="fa fa-flag-o"></i></div>
+                <div class="card-title">改进建议</div>
+            </div>
+            <div class="suggestion-item">
+                <div class="suggestion-num">1</div>
+                <div class="suggestion-text">建议加强需求挖掘环节，在客户回答后追加"为什么"类问题，深入了解真实需求和决策权重。</div>
+            </div>
+            <div class="suggestion-item">
+                <div class="suggestion-num">2</div>
+                <div class="suggestion-text">异议处理环节表现较好，但可以更果断地给出解决方案，减少客户犹豫时间。</div>
+            </div>
+            <div class="suggestion-item">
+                <div class="suggestion-num">3</div>
+                <div class="suggestion-text">开场白略显冗长，建议在前30秒内完成价值主张表达，提高客户注意力。</div>
+            </div>
+        </div>
+
+        <!-- 关联客户 -->
+        <div class="relation-card animate-in delay-4">
+            <div class="card-header">
+                <div class="card-icon" style="background:#E8FFEA;color:#00B42A"><i class="fa fa-user-circle-o"></i></div>
+                <div class="card-title">关联客户</div>
+            </div>
+            <div class="relation-row">
+                <div class="relation-info">
+                    <div class="relation-avatar">张</div>
+                    <div>
+                        <div class="relation-name">张三</div>
+                        <div class="relation-phone">138****8821</div>
+                    </div>
+                </div>
+                <div class="relation-action" onclick="showToast('关联管理')">管理</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let isPlaying = false;
+        let waveInterval = null;
+
+        // 获取URL参数
+        function getQueryParam(key) {
+            const params = new URLSearchParams(window.location.search);
+            return params.get(key);
+        }
+
+        // 初始化数据（模拟）
+        const mockResult = {
+            recordId: 'RECORD_001',
+            name: '通话录音_20260412.wav',
+            customer: '张三',
+            phone: '138****8821',
+            building: '中海汇德里',
+            duration: '5分32秒',
+            time: '2026-04-12 14:30',
+            status: 'completed',
+            score: 85,
+            speechSkills: {
+                opening: 85,
+                needs: 80,
+                objection: 90
+            },
+            emotionJudgment: '高',
+            customerNeeds: '客户主要关注110-130㎡的三室户型，预算在800-1000万之间。对学区资源和周边地铁配套有明确需求，属于改善型购房客户。',
+            improvementSuggestions: [
+                '建议加强需求挖掘环节，在客户回答后追加"为什么"类问题，深入了解真实需求和决策权重。',
+                '异议处理环节表现较好，但可以更果断地给出解决方案，减少客户犹豫时间。',
+                '开场白略显冗长，建议在前30秒内完成价值主张表达，提高客户注意力。'
+            ]
+        };
+
+        function getScoreClass(score) {
+            if (score >= 85) return 'high';
+            if (score >= 70) return 'mid';
+            return 'low';
+        }
+
+        function getScoreLabel(score) {
+            if (score >= 85) return '优秀';
+            if (score >= 70) return '良好';
+            if (score >= 60) return '一般';
+            return '较差';
+        }
+
+        function getIntentClass(level) {
+            if (level === '高') return 'high';
+            if (level === '中') return 'mid';
+            return 'low';
+        }
+
+        function getIntentIcon(level) {
+            if (level === '高') return 'fa-long-arrow-up';
+            if (level === '中') return 'fa-arrows-h';
+            return 'fa-long-arrow-down';
+        }
+
+        function renderResult() {
+            const data = mockResult;
+            const scoreClass = getScoreClass(data.score);
+
+            // 更新录音信息
+            document.getElementById('audioName').textContent = data.name;
+            document.getElementById('audioMeta').textContent =
+                data.customer + ' · ' + data.time + ' · ' + data.duration;
+
+            // 更新评分
+            const scoreValue = document.getElementById('scoreValue');
+            scoreValue.textContent = data.score;
+            scoreValue.className = 'score-value ' + scoreClass;
+
+            const scoreFill = document.getElementById('scoreFill');
+            scoreFill.className = 'fill ' + scoreClass;
+            // 动画填充
+            setTimeout(() => {
+                const circumference = 2 * Math.PI * 60;
+                const offset = circumference * (1 - data.score / 100);
+                scoreFill.style.strokeDashoffset = offset;
+            }, 100);
+
+            document.getElementById('scoreDesc').textContent =
+                '话术表现' + getScoreLabel(data.score) + '，' +
+                (scoreClass === 'high' ? '继续保持' : scoreClass === 'mid' ? '有小幅提升空间' : '建议针对性练习');
+
+            // 更新维度评分
+            const updateDim = (id, scoreDim, label) => {
+                const cls = getScoreClass(scoreDim);
+                const el = document.getElementById('dim' + label);
+                const scoreEl = document.getElementById('score' + label);
+                el.className = 'dimension-fill ' + cls;
+                scoreEl.textContent = scoreDim;
+                setTimeout(() => {
+                    el.style.width = scoreDim + '%';
+                }, 200);
+            };
+
+            updateDim('dimOpening', data.speechSkills.opening, 'Opening');
+            updateDim('dimNeeds', data.speechSkills.needs, 'Needs');
+            updateDim('dimObjection', data.speechSkills.objection, 'Objection');
+
+            // 更新客户意向
+            const intentBadge = document.getElementById('intentBadge');
+            intentBadge.className = 'intent-badge ' + getIntentClass(data.emotionJudgment);
+            intentBadge.innerHTML = '<i class="fa ' + getIntentIcon(data.emotionJudgment) + '"></i> 购买意向' + data.emotionJudgment;
+
+            // 更新客户需求
+            document.getElementById('needsDesc').textContent = data.customerNeeds;
+        }
+
+        function togglePlay() {
+            const btn = document.getElementById('playBtn');
+            const wave = document.getElementById('audioWave');
+
+            isPlaying = !isPlaying;
+            if (isPlaying) {
+                btn.classList.add('playing');
+                btn.innerHTML = '<i class="fa fa-pause"></i>';
+                wave.classList.add('playing');
+                // 模拟波形动画
+                animateWave(wave);
+                showToast('正在播放录音');
+            } else {
+                btn.classList.remove('playing');
+                btn.innerHTML = '<i class="fa fa-play"></i>';
+                wave.classList.remove('playing');
+                clearInterval(waveInterval);
+            }
+        }
+
+        function animateWave(wave) {
+            const spans = wave.querySelectorAll('span');
+            waveInterval = setInterval(() => {
+                spans.forEach(span => {
+                    span.style.height = (Math.random() * 16 + 4) + 'px';
+                    span.style.background = '#165DFF';
+                });
+            }, 300);
+        }
+
+        function showToast(msg) {
+            const existing = document.querySelector('.toast');
+            if (existing) existing.remove();
+            const t = document.createElement('div');
+            t.className = 'toast';
+            t.textContent = msg;
+            document.body.appendChild(t);
+            setTimeout(() => {
+                t.style.opacity = '0';
+                setTimeout(() => t.remove(), 200);
+            }, 2000);
+        }
+
+        document.addEventListener('DOMContentLoaded', renderResult);
+    </script>
+</body>
+</html>
