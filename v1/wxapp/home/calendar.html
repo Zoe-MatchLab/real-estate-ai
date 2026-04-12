@@ -491,6 +491,19 @@
         .task-card.type-custom::before { background: var(--color-warning); }
         .task-card.type-pending::before { background: var(--color-sub); }
 
+        /* 任务状态标签 */
+        .task-status-badge {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 500;
+            margin-left: 8px;
+        }
+        .task-status-badge.active { background: #FFF7E6; color: var(--brand-primary); }
+        .task-status-badge.completed { background: #E8FFEA; color: var(--color-success); }
+        .task-status-badge.overdue { background: #FFECE8; color: var(--color-danger); }
+        .task-status-badge.pending { background: #F2F3F5; color: var(--color-sub); }
+
         .task-header {
             display: flex;
             align-items: center;
@@ -1223,7 +1236,7 @@
                             <i class="fa fa-clock-o"></i> 今日18:00
                         </span>
                     </div>
-                    <div class="task-title">中海汇德里新盘探盘</div>
+                    <div class="task-title">中海汇德里新盘探盘<span class="task-status-badge active">进行中</span></div>
                     
                     <!-- 探盘进度(4阶段) + 训练进度(3阶段) -->
                     <div class="stage-group-row">
@@ -1295,7 +1308,7 @@
                             <i class="fa fa-clock-o"></i> 明天 10:00
                         </span>
                     </div>
-                    <div class="task-title">议价谈判话术练习</div>
+                    <div class="task-title">议价谈判话术练习<span class="task-status-badge pending">待执行</span></div>
                     
                     <!-- 训练进度(3阶段) -->
                     <div class="stage-group">
@@ -1332,7 +1345,7 @@
                             <i class="fa fa-clock-o"></i> 今日17:00
                         </span>
                     </div>
-                    <div class="task-title">中海汇德里朋友圈文案</div>
+                    <div class="task-title">中海汇德里朋友圈文案<span class="task-status-badge active">进行中</span></div>
                     
                     <!-- 文案进度(4阶段) -->
                     <div class="stage-group">
@@ -1373,7 +1386,7 @@
                             <i class="fa fa-clock-o"></i> 明日12:00
                         </span>
                     </div>
-                    <div class="task-title">中海汇德里楼盘介绍视频</div>
+                    <div class="task-title">中海汇德里楼盘介绍视频<span class="task-status-badge completed">已完成</span></div>
                     
                     <!-- 视频进度(4阶段) -->
                     <div class="stage-group">
@@ -1413,7 +1426,7 @@
                             <i class="fa fa-clock-o"></i> 4月10日
                         </span>
                     </div>
-                    <div class="task-title">整理客户跟进记录</div>
+                    <div class="task-title">整理客户跟进记录<span class="task-status-badge overdue">已超时</span></div>
                     
                     <!-- 自定义任务状态 -->
                     <div class="stage-group">
@@ -1443,7 +1456,7 @@
                             <i class="fa fa-clock-o"></i> 4月15日
                         </span>
                     </div>
-                    <div class="task-title">万科翡翠公园探盘任务</div>
+                    <div class="task-title">万科翡翠公园探盘任务<span class="task-status-badge pending">待执行</span></div>
                     
                     <!-- 待下发说明 -->
                     <div class="stage-group">
@@ -1469,7 +1482,7 @@
                             <i class="fa fa-clock-o"></i> 明天 14:00
                         </span>
                     </div>
-                    <div class="task-title">保利天汇新盘探盘</div>
+                    <div class="task-title">保利天汇新盘探盘<span class="task-status-badge completed">已完成</span></div>
                     
                     <div class="stage-group-row">
                         <div class="stage-group">
@@ -1530,7 +1543,7 @@
                             <i class="fa fa-check-circle"></i> 已完成
                         </span>
                     </div>
-                    <div class="task-title">公园壹号探盘任务</div>
+                    <div class="task-title">公园壹号探盘任务<span class="task-status-badge completed">已完成</span></div>
                     
                     <div class="stage-group-row">
                         <div class="stage-group">
